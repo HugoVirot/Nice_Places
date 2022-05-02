@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('email', 50)->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('departement', 3)->nullable();
+            $table->foreignId('role_id')->default(1)->constrained();
             $table->rememberToken();
             $table->timestamps();
         });

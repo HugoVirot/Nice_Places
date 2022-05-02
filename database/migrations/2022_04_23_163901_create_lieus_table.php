@@ -13,18 +13,22 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('lieux', function (Blueprint $table) {
+        Schema::create('lieus', function (Blueprint $table) {
             $table->id();
             $table->string('nom', 100);
-            $table->decimal('latitude', 9, 6);  // 1er chiffre = nombre total de chiffres, 2ème = longueur partie décimale
-            $table->decimal('longitude', 9, 6);  // idem
-            $table->float('note', 2, 1);  // idem
+            $table->text('description', 3000);
+            $table->decimal('latitude', 10, 7);  // 1er chiffre = nombre total de chiffres, 2ème = longueur partie décimale
+            $table->decimal('longitude', 10, 7);  // idem
+            $table->float('note', 3, 1);  // idem
             $table->integer('temps'); // temps en heures
             $table->enum('difficulte', ['famille', 'amateur', 'sportif'])->nullable();
             $table->string('adresse', 75);
             $table->char('code_postal', 5);
             $table->string('ville', 50);
             $table->timestamps();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            //$table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
         });
     }
 
@@ -35,6 +39,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('lieux');
+        Schema::dropIfExists('lieus');
     }
 };

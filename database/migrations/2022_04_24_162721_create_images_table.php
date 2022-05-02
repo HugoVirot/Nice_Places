@@ -16,9 +16,10 @@ return new class extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->id();
             $table->string('nom', 30);
-            $table->foreignId('user_id')->constrained()->onDelete('set null');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->unsignedBigInteger('lieu_id')->nullable();
-            $table->foreign('lieu_id')->references('id')->on('lieu')->onDelete('cascade');
+            $table->foreign('lieu_id')->references('id')->on('lieus')->onDelete('cascade');
             $table->boolean('profil')->default(false);
             $table->timestamps();
         });

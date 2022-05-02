@@ -18,13 +18,17 @@ class LieuFactory extends Factory
     public function definition()
     {
         return [
-            'nom' => $this->faker->cityName(),
+            'nom' => Str::random(),
+            'description' => $this->faker->sentence(),
             'latitude' => rand(0, 100),
             'longitude' => rand(0, 100),
-            'note' => rand(0, 5),
-            'temps' => rand(0, 4),
+            'note' => rand(6, 10),
+            'temps' => rand(0, 5),
             'difficulte' => $this->faker->randomElement(['famille' ,'amateur', 'sportif']),
-            'note' => rand(0, 5),
+            'adresse' => $this->faker->secondaryAddress(),
+            'code_postal' => substr($this->faker->departmentNumber() . '000', 0, 5),
+            'ville' => $this->faker->randomElement(['Lyon' ,'Marseille', 'Nantes', 'Niort', 'Fontenay-le-Comte', 'Bordeaux', 'Annecy']),
+            'user_id' => rand(2, 10)
         ];
     }
 }
