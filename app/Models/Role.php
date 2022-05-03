@@ -13,4 +13,13 @@ class Role extends Model
     {
         return $this->hasMany(User::class);
     }
+
+        /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'role'
+    ];
 }

@@ -13,4 +13,13 @@ class Categorie extends Model
     {
         return $this->belongsToMany(Lieu::class, 'categories_lieux');
     }
+
+        /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'nom'
+    ];
 }

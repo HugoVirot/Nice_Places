@@ -35,4 +35,23 @@ class Lieu extends Model
     {
         return $this->hasMany(Image::class);
     }
+
+        /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'nom',
+        'description',
+        'latitude',
+        'longitude',
+        'note',
+        'temps',
+        'difficulte',
+        'adresse',
+        'code_postal',
+        'ville',
+        'user_id'
+    ];
 }

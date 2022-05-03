@@ -14,6 +14,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\LieuController;
+use App\Http\Controllers\API\AuthController;
+
+Route::post('login', [AuthController::class, 'signin']);
+
+// l'inscription fonctionne avec un token créé (mix des 2 tutos)
+Route::post('register', [UserController::class, 'store']);
+
+// routes concernées par sanctum
+Route::middleware('auth:sanctum')->group(function () {
+
+    // Les routes "users.*" de l'API (mode ressource version API)
+    Route::apiResource("users", UserController::class);
+
+    // Les routes "lieux.*" de l'API (mode ressource version API)
+    Route::apiResource("lieus", LieuController::class);
 });

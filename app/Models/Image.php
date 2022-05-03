@@ -18,4 +18,16 @@ class Image extends Model
     {
         return $this->belongsTo(Lieu::class);
     }
+
+        /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'nom',
+        'user_id',
+        'lieu_id',
+        'profil'
+    ];
 }

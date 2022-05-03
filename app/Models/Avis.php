@@ -18,4 +18,17 @@ class Avis extends Model
     {
         return $this->belongsTo(Lieu::class);
     }
+
+    
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'user_id',
+        'lieu_id',
+        'note',
+        'commentaire'
+    ];
 }
