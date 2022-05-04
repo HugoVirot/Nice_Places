@@ -2,15 +2,24 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\API\BaseController;
 
 class UserController extends BaseController
 {
+
+    public function __construct()
+    {
+        // middleware sanctum appliqué sur index / update / destroy
+        $this->middleware('auth:sanctum')->except(['store', 'show']);
+
+        //middleware admin à ajouter pour index (en supplément)
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -22,7 +31,7 @@ class UserController extends BaseController
         $users = User::all();
 
         // On retourne les informations des utilisateurs en JSON
-        // $users = body de la réponse / on peut ajouter un code de statut, faculatif
+        // $users = body de la réponse / on peut ajouter un code de statut, faculatif (200 par défaut)
         return response()->json($users);
     }
 
@@ -34,39 +43,17 @@ class UserController extends BaseController
      */
     public function store(Request $request)
     {
-        // ************** tuto akilischool ************
-
-        // // La validation de données
-        // $this->validate($request, [
-        //     'pseudo' => 'required|max:100',
-        //     'email' => 'required|email|unique:users',
-        //     'password' => 'required|min:8',
-        //     'departement' => 'required|max:3'
-        // ]);
-
-        // // On crée un nouvel utilisateur
-        // $user = User::create([
-        //     'pseudo' => $request->pseudo,
-        //     'email' => $request->email,
-        //     'password' => Hash::make($request->password),
-        //     'departement' => $request->departement
-        // ]);
-
-        // // On retourne les informations du nouvel utilisateur en JSON
-        // return response()->json($user, 201);
-
-        // ************** tuto tutswinds (mixé avec akilischool) *********
         $validator = Validator::make($request->all(), [
             'pseudo' => 'required|max:100',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
             'departement' => 'required|max:3'
         ]);
-   
-        if($validator->fails()){
-            return $this->sendError('Error validation', $validator->errors());       
+
+        if ($validator->fails()) {
+            return $this->sendError('Error validation', $validator->errors());
         }
-   
+
         $user = User::create([
             'pseudo' => $request->pseudo,
             'email' => $request->email,
@@ -74,9 +61,10 @@ class UserController extends BaseController
             'departement' => $request->departement
         ]);
 
-        $success['token'] =  $user->createToken('MyAuthApp')->plainTextToken;
+        // création d'un token pour le user
+        $success['token'] =  $user->createToken('RegistrationUser' . $user->id)->plainTextToken;
         $success['pseudo'] =  $user->pseudo;
-   
+
         return $this->sendResponse($success, 'User created successfully.');
     }
 
@@ -88,17 +76,25 @@ class UserController extends BaseController
      */
     public function show(User $user)
     {
-        // 1) On retourne les informations de l'utilisateur en JSON
-        //return response()->json($user);
-        
         // 2) on retourne uniquement les infos précisées dans la ressource
-        //(pseudo et département) => utile pour le profil public
-        // pour le compte client => il faudra toutes les infos
+        //(pseudo et département) => pour le profil public
         return new UserResource($user);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Return all the user's informations to be displayed on his profile.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function profile(User $user)
+    {
+        // 1) On retourne toutes les informations de l'utilisateur en JSON
+        return response()->json($user);
+    }
+
+    /**
+     * Update the user in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\User  $user
@@ -106,12 +102,17 @@ class UserController extends BaseController
      */
     public function update(Request $request, User $user)
     {
-        $this->validate($request, [
+
+        $validator = Validator::make($request->all(), [
             'pseudo' => 'required|max:100',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
             'departement' => 'required|max:3'
         ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Error validation', $validator->errors());
+        }
 
         // On modifie les informations de l'utilisateur
         $user->update([
@@ -126,7 +127,7 @@ class UserController extends BaseController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the user from storage.
      *
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response

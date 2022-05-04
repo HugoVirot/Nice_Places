@@ -5,9 +5,20 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Lieu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class LieuController extends Controller
 {
+
+    public function __construct()
+    {
+        // middleware sanctum appliqué sur store / update / destroy
+        $this->middleware('auth:sanctum')->except(['index', 'show']);
+
+        //middleware admin à ajouter pour destroy (en supplément)
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -27,8 +38,8 @@ class LieuController extends Controller
      */
     public function store(Request $request)
     {
-        // on valide les données
-        $this->validate($request, [
+
+        $validator = Validator::make($request->all(), [
             'nom' => 'required|max:100',
             'description' => 'required|max:3000',
             'latitude' => 'required',
@@ -36,10 +47,14 @@ class LieuController extends Controller
             'note' => 'required',
             'temps' => 'required',
             'difficulte' => 'required',
-            'adresse' => 'required',
+            'adresse' => 'required|max:75',
             'code_postal' => 'required',
             'ville' => 'required'
         ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Error validation', $validator->errors());
+        }
 
         // on crée un nouveau lieu
         $lieu = Lieu::create([
@@ -52,7 +67,8 @@ class LieuController extends Controller
             'difficulte' => $request->difficulte,
             'adresse' =>  $request->adresse,
             'code_postal' =>  $request->code_postal,
-            'ville' =>  $request->ville
+            'ville' =>  $request->ville,
+            'user_id' => Auth::user()->id
         ]);
 
         // On retourne les informations du nouvel utilisateur en JSON
@@ -79,8 +95,7 @@ class LieuController extends Controller
      */
     public function update(Request $request, Lieu $lieu)
     {
-        // on valide les données
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'nom' => 'required|max:100',
             'description' => 'required|max:3000',
             'latitude' => 'required',
@@ -88,10 +103,14 @@ class LieuController extends Controller
             'note' => 'required',
             'temps' => 'required',
             'difficulte' => 'required',
-            'adresse' => 'required',
+            'adresse' => 'required|max:75',
             'code_postal' => 'required',
             'ville' => 'required'
         ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Error validation', $validator->errors());
+        }
 
         // on modifie les infos du lieu
         $lieu->update($request->except('_token'));
