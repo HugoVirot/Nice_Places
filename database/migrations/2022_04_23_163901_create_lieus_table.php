@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('adresse', 75);
             $table->char('code_postal', 5);
             $table->string('ville', 50);
+            $table->boolean('valide')->default(false);
             $table->timestamps();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');

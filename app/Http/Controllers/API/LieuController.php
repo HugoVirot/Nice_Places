@@ -129,8 +129,57 @@ class LieuController extends Controller
     {
         // on supprime le lieu
         $lieu->delete();
-        
+
         // on retourne la réponse JSON
         return response()->json("Lieu supprimé avec succès");
+    }
+
+    /**
+     * Add a new category to the place.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Lieu  $lieu
+     * @return \Illuminate\Http\Response
+     */
+    public function addCategory(Lieu $lieu, Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'categorie_id' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Error validation', $validator->errors());
+        }
+
+        // on ajoute la catégorie à la table intermédiaire avec attach
+        $lieu->categories()->attach($request['categorie_id']);
+
+        return response()->json("Categorie ajoutée au lieu avec succès");
+    }
+
+    /**
+     * Add a new category to the place.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Lieu  $lieu
+     * @return \Illuminate\Http\Response
+     */
+
+    public function removeCategory(Lieu $lieu, Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'categorie_id' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Error validation', $validator->errors());
+        }
+
+        // on ajoute la catégorie à la table intermédiaire avec attach
+        $lieu->categories()->detach($request['categorie_id']);
+
+        return response()->json("Categorie retirée du lieu avec succès");
     }
 }

@@ -1,5 +1,7 @@
 require('./bootstrap');
 
+import "bootstrap/dist/css/bootstrap.min.css"
+import "bootstrap"
 
 // 1. On importe createApp
 import { createApp } from "vue"

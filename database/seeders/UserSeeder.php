@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
         // création de l'administrateur
         User::create([
             'pseudo' => 'administrateur',
-            'password' => Hash::make('Azerty88@'), // password
+            'password' => Hash::make('Azerty88@'), 
             'email' => 'admin@niceplaces.fr',
             'email_verified_at' => now(),
             'departement' => '79',

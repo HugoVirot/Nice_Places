@@ -8,7 +8,6 @@
         <link href="{{asset('css/app.css')}}" rel="stylesheet" type="text/css">
     </head>
     <body>
-        <img src="{{ asset('images/logo.png') }}">
         <div id="app">
         </div>
          <script>

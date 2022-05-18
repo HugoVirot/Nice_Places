@@ -1,15 +1,16 @@
 <script>
+import Header from "./Header.vue"
+
 export default {
-	data () {
+	data() {
 		return {
-			message : "Bienvenue sur Vue 3"
-		}
-	}
+			message: "Bienvenue sur Vue 3"
+		};
+	},
+	components: { Header }
 }
 </script>
 
 <template>
-	<div>
-		<h1>{{ message }}</h1>
-	</div>
+	<Header />
 </template>
