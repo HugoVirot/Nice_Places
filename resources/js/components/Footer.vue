@@ -14,9 +14,9 @@ footer p {
 </style>
 
 <template>
-    <footer class="container-fluid p-5 mt-5">
-        <img src="images/logo2.png">
-        <p class="mx-auto text-white fs-4">sorties nature près de chez vous</p>
+    <footer class="container-fluid text-center p-5 mt-5">
+        <img class="w-100" src="images/logo2.png">
+        <p class="text-white fs-4">sorties nature près de chez vous</p>
         <p><a href="/">mentions légales</a> | <a href="/">politique de confidentialité</a></p>
         <p>© 2022 Nice Places</p>
     </footer>

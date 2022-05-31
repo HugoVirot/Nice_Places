@@ -476,7 +476,8 @@ h2 {
 
 		</section>
 
-		<Footer />
-
 	</div>
+
+	<Footer />
+
 </template>
