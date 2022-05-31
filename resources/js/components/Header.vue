@@ -1,10 +1,5 @@
 <script>
 export default {
-    data() {
-        return {
-            message: "Bienvenue sur Vue 3"
-        }
-    }
 }
 </script>
 
@@ -12,6 +7,22 @@ export default {
 @font-face {
     font-family: 'Cooper';
     src: './Cooper Black Regular.ttf';
+}
+
+header {
+    background-color: white;
+}
+
+#twostripes {
+    width: 15vw
+} 
+
+#logo {
+    width: 260px
+}
+
+#textelogo {
+    font-size: 16px;
 }
 
 a {
@@ -24,19 +35,15 @@ body {
 }
 
 #leftstripe {
-    width: 27vw;
+    width: 33vw;
     background-color: #94D1BE;
-    height: 5vh;
-}
-
-#logo {
-    width: 46vw
+    height: 2vh;
 }
 
 #rightstripe {
-    width: 27vw;
+    width: 33vw;
     background-color: #1C6E8C;
-    height: 5vh;
+    height: 2vh;
 }
 
 #greentext {
@@ -58,29 +65,32 @@ body {
     border-radius: 30%;
 }
 
-/* ne marche pas */
-/* .nav-link:nth-child(odd) {
-    color: #1C6E8C
+@media screen and (max-width: 480px) {
+    #logo {
+        width: 180px
+    }
 }
-
-.nav-link:nth-child(even) {
-    color: #94D1BE
-} */
 </style>
 
 <template>
+
     <header class="sticky-top">
 
         <div class="container-fluid pt-3 d-flex align-items-center navbar-dark">
 
             <!-- ************************** titre et bandes ***********************-->
-            <div class="mt-3 d-none d-md-block" id="leftstripe"></div>
+
+            <div class="mt-1 d-none d-md-block" id="leftstripe"></div>
+
+            <!-- image avec deux bandes (mobiles uniquement) -->
+            <img class="d-block mt-3 d-md-none" id="twostripes" alt="twostripes"
+                src="images/bandes-gauche-header.png" />
 
             <div class="d-flex flex-column mx-auto text-center">
                 <router-link to="/">
                     <img id="logo" alt="logo" src="images/logo.png" />
                 </router-link>
-                <p class="mx-auto d-none d-md-block fs-4">
+                <p id="textelogo" class="mx-auto d-none d-md-block">
                     <span id="greentext">sorties nature </span>
                     <span id="bluetext">près de chez vous</span>
                 </p>
@@ -90,7 +100,7 @@ body {
 
             <!-- hamburger -->
 
-            <button class="navbar-toggler d-md-none my-auto" type="button" data-bs-toggle="collapse"
+            <button class="navbar-toggler mt-3 d-md-none my-auto" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -103,18 +113,19 @@ body {
 
             <div class="container-fluid">
 
-
                 <!-- liens -->
 
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
 
                     <div class="navbar-nav container d-md-flex justify-content-around text-center">
                         <router-link to="/" class="navbar-brand">accueil</router-link>
-                        <router-link to="/FrenchMovies" class="nav-link active" aria-current="page">carte</router-link>
-                        <router-link to="/FrenchMovies" class="nav-link">top des lieux</router-link>
-                        <router-link to="/FrenchMovies" class="nav-link">proposer un lieu</router-link>
+                        <router-link to="/" class="nav-link active" aria-current="page">carte</router-link>
+                        <router-link to="/" class="nav-link">top des lieux</router-link>
+                        <router-link to="/" class="nav-link">proposer un lieu</router-link>
                         <!-- ajouter condition : si pas connecté : inscription/connexion, si connecté : mon compte -->
-                        <router-link to="/FrenchMovies" class="nav-link">mon compte</router-link>
+                        <router-link to="/" class="nav-link">inscription</router-link>
+                        <router-link to="/" class="nav-link">connexion</router-link>
+                        <router-link to="/" class="nav-link">mon compte</router-link>
                     </div>
                 </div>
 
@@ -124,5 +135,4 @@ body {
 
     </header>
 
-    <div style="height: 200vh">Test</div>
 </template>
