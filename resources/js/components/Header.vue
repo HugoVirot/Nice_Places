@@ -119,13 +119,13 @@ body {
 
                     <div class="navbar-nav container d-md-flex justify-content-around text-center">
                         <router-link to="/" class="navbar-brand">accueil</router-link>
-                        <router-link to="/" class="nav-link active" aria-current="page">carte</router-link>
-                        <router-link to="/" class="nav-link">top des lieux</router-link>
-                        <router-link to="/" class="nav-link">proposer un lieu</router-link>
+                        <router-link to="/carte" class="nav-link active" aria-current="page">carte</router-link>
+                        <router-link to="/toplieux" class="nav-link">top des lieux</router-link>
+                        <router-link to="/proposerlieu" class="nav-link">proposer un lieu</router-link>
                         <!-- ajouter condition : si pas connecté : inscription/connexion, si connecté : mon compte -->
-                        <router-link to="/" class="nav-link">inscription</router-link>
-                        <router-link to="/" class="nav-link">connexion</router-link>
-                        <router-link to="/" class="nav-link">mon compte</router-link>
+                        <router-link to="/inscription" class="nav-link">inscription</router-link>
+                        <router-link to="/connexion" class="nav-link">connexion</router-link>
+                        <router-link to="/moncompte" class="nav-link">mon compte</router-link>
                     </div>
                 </div>
 

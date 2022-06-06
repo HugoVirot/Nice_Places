@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\API\BaseController;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends BaseController
 {
@@ -43,15 +44,29 @@ class UserController extends BaseController
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'pseudo' => 'required|max:100',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
-            'departement' => 'required|max:3'
-        ]);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'pseudo' => 'required|max:20|unique:users',
+                'email' => 'required|email|max:50|unique:users',
+                'password' => [
+                    'required', 'confirmed',
+                    Password::min(8) // minimum 8 caractères   
+                        ->mixedCase() // au moins 1 minuscule et une majuscule
+                        ->letters()  // au moins une lettre
+                        ->numbers() // au moins un chiffre
+                        ->symbols() // au moins un caractère spécial     
+                ],
+                'departement' => 'nullable|max:3'
+            ],
+            // messages d'erreur personnalisés
+            [
+                'password.min' => 'Votre mot de passe doit faire au moins :min caractères.',
+            ]
+        );
 
         if ($validator->fails()) {
-            return $this->sendError('Error validation', $validator->errors());
+            return $this->sendError('Error validation', $validator->errors(), 400);
         }
 
         $user = User::create([
