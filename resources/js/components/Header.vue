@@ -15,7 +15,7 @@ header {
 
 #twostripes {
     width: 15vw
-} 
+}
 
 #logo {
     width: 260px
@@ -76,7 +76,7 @@ body {
 
     <header class="sticky-top">
 
-        <div class="container-fluid pt-3 d-flex align-items-center navbar-dark">
+        <div class="container-fluid pt-1 d-flex align-items-center navbar-dark">
 
             <!-- ************************** titre et bandes ***********************-->
 

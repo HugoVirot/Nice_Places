@@ -1,6 +1,7 @@
 <script>
 import axios from 'axios'
 import ValidationErrors from "./ValidationErrors.vue"
+import { store } from "../store.js";
 
 export default {
 
@@ -17,23 +18,19 @@ export default {
     methods: {
         sendData() {
             axios.post('/api/register', { pseudo: this.pseudo, email: this.email, password: this.password, password_confirmation: this.password_confirmation })
-                .then(() => {
-                    //document.getElementById('#successModal').modal('show')
-                    this.$refs['successModal'].modal('show')
-                    //router.push('/connexion')
-                     this.$router.push('/connexion')
+                .then((response) => {
+                    // on stocke le message de succès dans le store ("inscription réussie")
+                    store.commit('storeMessage', response.data.message);
+                    console.log(store.getters.getMessage)
+                    this.$router.push('/successmessage');
                 })
                 .catch((error) => {
-                    // problème : inscription réussie = passage dans le .catch
-                    // => error undefined (logique)
-                    let errormessages = error.response.data.data
-                    // fonctionne (testé en console)
-                    console.log(error.response)
-                    for (let errormessage in errormessages) {
-                        this.validationErrors = error.response.data.data;
-                        alert(errormessages[errormessage])
-                    }
+                    this.validationErrors = error.response.data.data;
                 })
+        },
+        resetState() {
+            store.commit('resetState');
+            console.log(store.getters.getMessage)
         }
     }
 }
@@ -81,6 +78,8 @@ h1 {
         <img class="mx-auto" src="images/icons/user.png" alt="user">
         <h1 class="mt-2">Inscription</h1>
     </div>
+
+    <button class="btn btn-danger" @click="resetState">Reset State</button>
 
     <div class="container-fluid p-3 p-lg-5">
 

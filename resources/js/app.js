@@ -6,11 +6,14 @@ import "bootstrap"
 // 1. On importe createApp
 import { createApp } from "vue"
 
-// 2. On importe AppComponent.vue
+import { store } from "./store";
+
+// On importe le composant principal App
 import App from "./components/App.vue"
 
-// 3. On importe le routeur
+// On importe le routeur
 import router from './router'
 
-// 4. On monte l'application Vue sur l'élément #app
-createApp(App).use(router).mount("#app")
+// On monte l'application Vue sur l'élément #app
+// on inclut le routeur et le store dans l'application
+createApp(App).use(router, store).mount("#app")

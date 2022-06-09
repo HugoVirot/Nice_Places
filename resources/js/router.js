@@ -6,6 +6,7 @@ import ProposerLieu from "./components/ProposerLieu.vue"
 import Inscription from "./components/Inscription.vue"
 import Connexion from "./components/Connexion.vue"
 import MonCompte from "./components/MonCompte.vue"
+import SuccessMessage from "./components/SuccessMessage.vue"
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
     path: "/moncompte",
     name: "MonCompte",
     component: MonCompte,
+  },
+  {
+    path: "/successmessage",
+    name: "SuccessMessage",
+    component: SuccessMessage,
   }
 ];
 

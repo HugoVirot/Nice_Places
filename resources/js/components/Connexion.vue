@@ -1,6 +1,7 @@
 <script>
 import axios from 'axios'
 import ValidationErrors from "./ValidationErrors.vue"
+import { store } from "../store.js";
 
 export default {
 
@@ -13,36 +14,80 @@ export default {
     },
     components: { ValidationErrors },
     methods: {
-        logIn() {
+        logIn() {  
+            // console.log(store.getters.getUserData) // MARCHE (on peut accéder à userData)
+            // store.commit('storeUserData', { pseudo: "test2", email:" test2@test", token: "aajreg645r4f5erf"})
+            // console.log(store.getters.getUserData) // MARCHE (on peut accéder à userData)
+
             axios.post('/api/login', { email: this.email, password: this.password })
-                .then((response) => {
-                    console.log(response)
-                    //document.getElementById('#successModal').modal('show')
-                    this.$refs['successModal'].modal('show')
-                    router.push('/')
-                    this.$router.push('/')
+
+                .then(response => {
+                    this.loginSuccess(response)
                 })
-                .catch((error) => {
-                  // problème : inscription réussie (réponse = code 200) = passage dans le .catch
-                    // => error undefined (logique)
-                    // même pb que pour l'inscription
-                    let errormessages = error.response.data.data
+
+                .catch(error => {
                     console.log(error.response)
-                
-                    for (let errormessage in errormessages) {
-                        this.validationErrors = error.response.data.data;
-                        alert(errormessages[errormessage])
-                    }
+                    // on stocke les messages d'erreurs dans la variable validationErrors du composant
+                    this.validationErrors = error.response.data.data;
                 })
+        },
+        loginSuccess(response) {
+            
+            console.log(response)
+
+            // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
+            // ici, response.data.data est le payload transmis au store
+            store.commit('storeUserData', response.data.data)
+
+            // // on teste le résultat
+            console.log(store.getters.getUserData)
+
+            // //idem pour le message de succès
+            store.commit('storeMessage', response.data.message)
+            console.log(store.getters.getMessage)
+
+            // on redirige vers l'accueil
+            this.$router.push('/SuccessMessage')
         }
     }
 }
 </script>
 
+<style scoped>
+h1 {
+    color: #1C6E8C
+}
+
+img {
+    width: 6vw
+}
+
+.card {
+    color: #1C6E8C;
+}
+
+.card-header {
+    background-color: #94D1BE
+}
+
+.container-fluid {
+    background-image: url(../../../public/images/plage.jpg);
+    background-position: center;
+    background-size: cover;
+}
+
+
+@media screen and (max-width: 768px) {
+    img {
+        width: 10vw
+    }
+}
+</style>
+
 <template>
 
     <div class="p-5">
-        <!-- <img class="mx-auto" src="images/icons/user.png" alt="user"> -->
+        <img class="mx-auto" src="images/icons/user.png" alt="user">
         <h1 class="mt-2">Connexion</h1>
     </div>
 
@@ -53,7 +98,7 @@ export default {
         <div class="row justify-content-center p-2 p-lg-5">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header text-white mb-3">Lorem ipsum</div>
+                    <div class="card-header text-white mb-3">Entrez ici vos informations</div>
 
                     <div class="card-body">
 
@@ -91,8 +136,8 @@ export default {
             </div>
         </div>
     </div>
-
-    <div class="modal bg-success" id="successModal" ref="successModal" tabindex="-1">
+<!-- 
+    <div v-if="loginSuccess" class="modal bg-success" id="successModal" ref="successModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -108,5 +153,5 @@ export default {
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 </template>

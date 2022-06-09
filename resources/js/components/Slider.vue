@@ -13,7 +13,7 @@ p {
 }
 
 h2 {
-    font-size: 3.1vw;
+    font-size: 2.6vw;
     z-index: 1;
 }
 
@@ -27,7 +27,7 @@ h2 {
     <div id="carouselAccueil" class="carousel slide carousel-fade container" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="images/barque.jpg" class="d-block w-100" alt="marais poitevin">
+                <img src="images/coulon.jpg" class="d-block w-100" alt="marais poitevin">
                 <div class="carousel-caption captionfondbleu d-none d-md-block p-5">
                     <h2>Redécouvrez votre région !</h2>
                     <p>Vous serez étonné(e) par les nombreux lieux extraordinaires qu'elle propose.</p>
@@ -42,13 +42,13 @@ h2 {
                     <p>Faites profiter la communauté de vos petits coins de paradis.</p>
                     <a href=""><button class="btn btn-lg">Voir la carte des lieux</button></a>
                 </div>
-                <h2 class="carousel-caption d-block d-md-none fs-1">Partagez vos coups de coeur !</h2>
+                <h2 class="carousel-caption d-block d-md-none fs-1">Partagez vos coups de coeur</h2>
             </div>
             <div class="carousel-item">
                 <img src="images/mervent.jpg" class="d-block w-100" alt="forêt de Mervent">
                 <div class="carousel-caption captionfondbleu d-none d-md-block p-5">
                     <h2>Destination nature !</h2>
-                    <p>Plages, forêts, rivières ou encore zoos : il y a toujours une nouvelle sortie sur Nice Places !
+                    <p>Il y a toujours une nouvelle sortie sur Nice Places !
                     </p>
                     <a href=""><button class="btn btn-lg">Voir la carte des lieux</button></a>
                 </div>

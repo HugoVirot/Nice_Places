@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Nice Places</title>
         <link href="{{asset('css/app.css')}}" rel="stylesheet" type="text/css">
+        <script src="https://kit.fontawesome.com/6259f9b52f.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <div id="app">

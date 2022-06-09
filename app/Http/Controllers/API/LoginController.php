@@ -28,7 +28,7 @@ class LoginController extends BaseController
             $success['pseudo'] =  $authUser->pseudo;
 
             // on renvoie la réponse 
-            return $this->sendResponse($success, 'User signed in');
+            return $this->sendResponse($success, 'Vous êtes connecté');
             
         } else {
             // si échec de la connexion, on renvoie un message d'erreur
