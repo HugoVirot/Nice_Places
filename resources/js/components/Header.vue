@@ -1,5 +1,12 @@
 <script>
+import { store } from '../store'
+
 export default {
+    data() {
+        return {
+            userData: store.getters.getUserData
+        }
+    },
 }
 </script>
 
@@ -30,6 +37,10 @@ a {
     color: inherit
 }
 
+.dropdown-menu .router-link {
+    color: #94D1BE
+}
+
 body {
     font-family: 'Cooper';
 }
@@ -46,12 +57,12 @@ body {
     height: 2vh;
 }
 
-#greentext {
+.greentext {
     color: #94D1BE
 }
 
 
-#bluetext {
+.bluetext {
     color: #1C6E8C
 }
 
@@ -91,8 +102,8 @@ body {
                     <img id="logo" alt="logo" src="images/logo.png" />
                 </router-link>
                 <p id="textelogo" class="mx-auto d-none d-md-block">
-                    <span id="greentext">sorties nature </span>
-                    <span id="bluetext">près de chez vous</span>
+                    <span class="greentext">sorties nature </span>
+                    <span class="bluetext">près de chez vous</span>
                 </p>
             </div>
 
@@ -118,14 +129,32 @@ body {
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
 
                     <div class="navbar-nav container d-md-flex justify-content-around text-center">
+
                         <router-link to="/" class="navbar-brand">accueil</router-link>
                         <router-link to="/carte" class="nav-link active" aria-current="page">carte</router-link>
                         <router-link to="/toplieux" class="nav-link">top des lieux</router-link>
                         <router-link to="/proposerlieu" class="nav-link">proposer un lieu</router-link>
-                        <!-- ajouter condition : si pas connecté : inscription/connexion, si connecté : mon compte -->
-                        <router-link to="/inscription" class="nav-link">inscription</router-link>
-                        <router-link to="/connexion" class="nav-link">connexion</router-link>
-                        <router-link to="/moncompte" class="nav-link">mon compte</router-link>
+
+                        <!-- si utilisateur connecté : mon compte / mes lieux, si pas connecté : inscription/connexion -->
+                        <span v-if="userData.pseudo">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                   {{ userData.pseudo }}
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <li><router-link to="/moncompte" class="nav-link">mon compte</router-link></li>
+                                    <li><router-link to="/meslieuxpostes" class="nav-link">mes lieux postés</router-link></li>
+                                    <li><router-link to="/meslieuxfavoris" class="nav-link">mes lieux favoris</router-link></li>
+                                </ul>
+                            </li>
+                        </span>
+
+                        <span v-else class="d-md-flex justify-content-center">
+                            <router-link to="/inscription" class="nav-link me-md-3 me-lg-5">inscription</router-link>
+                            <router-link to="/connexion" class="nav-link">connexion</router-link>
+                        </span>
+
                     </div>
                 </div>
 

@@ -27,6 +27,11 @@ h2 {
 	color: #1c6e8c
 }
 
+.btn {
+    background-color: #94D1BE !important;
+    color: white;
+}
+
 #presentation {
 	background-position: center;
 	background-size: cover;
@@ -34,13 +39,11 @@ h2 {
 }
 
 #presentationTopStripe {
-	width: 100vw;
 	background-color: #94D1BE;
 	height: 2vh;
 }
 
 #presentationBottomStripe {
-	width: 100vw;
 	background-color: #1C6E8C;
 	height: 2vh;
 }

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\API\BaseController;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class UserController extends BaseController
@@ -57,7 +58,11 @@ class UserController extends BaseController
                         ->numbers() // au moins un chiffre
                         ->symbols() // au moins un caractère spécial     
                 ],
-                'departement' => 'nullable|max:3'
+                'departement' => [
+                    'nullable',
+                    'max:3',
+                    Rule::in(departmentsList())
+                ]
             ],
             // messages d'erreur personnalisés
             [
@@ -118,28 +123,56 @@ class UserController extends BaseController
      */
     public function update(Request $request, User $user)
     {
-
         $validator = Validator::make($request->all(), [
-            'pseudo' => 'required|max:100',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
-            'departement' => 'required|max:3'
+            'pseudo' => 'required|max:50',
+            'email' => 'required|email',
+            'oldPassword' => 'nullable',
+            'password' => [
+                'nullable', 'confirmed',
+                Password::min(8) // minimum 8 caractères   
+                    ->mixedCase() // au moins 1 minuscule et une majuscule
+                    ->letters()  // au moins une lettre
+                    ->numbers() // au moins un chiffre
+                    ->symbols() // au moins un caractère spécial     
+            ],
+            'departement' => [
+                'nullable',
+                'max:3',
+                Rule::in(departmentsList())  // on vérifie si le département est bien dans la liste (sinon => erreur)
+            ]
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Error validation', $validator->errors());
+            return $this->sendError('Error validation', $validator->errors(), 400);
         }
 
         // On modifie les informations de l'utilisateur
         $user->update([
             'pseudo' => $request->pseudo,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'departement' => $request->departement
         ]);
 
+        // si nouveau mdp choisi
+        if (isset($request->password)) {
+            // si ancien mdp fourni ET valide, modification validée 
+            if (isset($request->oldPassword) && Hash::check($request->oldPassword, User::find($user->id)->password)) {
+                $user->update([
+                    'password' => Hash::make($request->password)
+                ]);
+            // sinon => on renvoie une erreur
+            } else {
+                return $this->sendError('Error validation', ['mot de passe actuel non renseigné ou incorrect']);
+            }
+        }
+
+        if (isset($request->departement)) {
+            $user->update([
+                'departement' => $request->departement
+            ]);
+        }
+
         // On retourne la réponse JSON
-        return response()->json($user, 200);
+        return $this->sendResponse($user, 'Modifications validées.');
     }
 
     /**
@@ -154,6 +187,7 @@ class UserController extends BaseController
         $user->delete();
 
         // On retourne la réponse JSON
-        return response()->json();
+        // return response()->json();
+        return $this->sendResponse(null, 'Le compte a bien été supprimé.');
     }
 }

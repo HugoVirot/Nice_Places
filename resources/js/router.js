@@ -7,6 +7,8 @@ import Inscription from "./components/Inscription.vue"
 import Connexion from "./components/Connexion.vue"
 import MonCompte from "./components/MonCompte.vue"
 import SuccessMessage from "./components/SuccessMessage.vue"
+import MesLieuxPostes from "./components/MesLieuxPostes.vue"
+import MesLieuxFavoris from "./components/MesLieuxFavoris.vue"
 
 const routes = [
   {
@@ -43,6 +45,16 @@ const routes = [
     path: "/moncompte",
     name: "MonCompte",
     component: MonCompte,
+  },
+  {
+    path: "/meslieuxpostes",
+    name: "MesLieuxPostes",
+    component: MesLieuxPostes,
+  },
+  {
+    path: "/meslieuxfavoris",
+    name: "MesLieuxFavoris",
+    component: MesLieuxFavoris,
   },
   {
     path: "/successmessage",

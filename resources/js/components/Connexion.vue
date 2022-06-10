@@ -12,8 +12,11 @@ export default {
             validationErrors: ""
         }
     },
+
     components: { ValidationErrors },
+
     methods: {
+
         logIn() {  
             // console.log(store.getters.getUserData) // MARCHE (on peut accéder à userData)
             // store.commit('storeUserData', { pseudo: "test2", email:" test2@test", token: "aajreg645r4f5erf"})
@@ -31,6 +34,7 @@ export default {
                     this.validationErrors = error.response.data.data;
                 })
         },
+        
         loginSuccess(response) {
             
             console.log(response)
@@ -76,6 +80,10 @@ img {
     background-size: cover;
 }
 
+.btn {
+    background-color: #94D1BE !important;
+    color: white;
+}
 
 @media screen and (max-width: 768px) {
     img {

@@ -9,7 +9,7 @@ export default {
         }
     },
     mounted() {
-        setTimeout(() => this.$router.push('/'), 3000)
+        setTimeout(() => this.$router.push('/'), 2500)
     }
 }
 </script>
@@ -22,10 +22,10 @@ export default {
 
 <template>
 
-    <div class="container-fluid text-center p-5 m-5 text-white">
-        <h3 class="p-5">Félicitations</h3>
-        <i class="p-5 fa-solid fa-check fa-5x"></i>
-        <h2 class="p-5">{{ message }}</h2>
+    <div class="container-fluid text-center py-5 my-5 text-white">
+        <h3 class="p-2">Félicitations</h3>
+        <i class="p-2 fa-solid fa-check fa-5x"></i>
+        <h2 class="p-2">{{ message }}</h2>
     </div>
 
 </template>

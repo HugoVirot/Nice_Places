@@ -3,7 +3,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .captionfondbleu {
     background-color: rgba(50, 61, 158, 0.5);
 }

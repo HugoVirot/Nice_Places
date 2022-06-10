@@ -27,10 +27,6 @@ export default {
                 .catch((error) => {
                     this.validationErrors = error.response.data.data;
                 })
-        },
-        resetState() {
-            store.commit('resetState');
-            console.log(store.getters.getMessage)
         }
     }
 }
@@ -78,8 +74,6 @@ h1 {
         <img class="mx-auto" src="images/icons/user.png" alt="user">
         <h1 class="mt-2">Inscription</h1>
     </div>
-
-    <button class="btn btn-danger" @click="resetState">Reset State</button>
 
     <div class="container-fluid p-3 p-lg-5">
 
