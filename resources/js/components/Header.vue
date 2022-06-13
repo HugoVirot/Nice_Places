@@ -7,81 +7,34 @@ export default {
             userData: store.getters.getUserData
         }
     },
-}
-</script>
 
-<style>
-@font-face {
-    font-family: 'Cooper';
-    src: './Cooper Black Regular.ttf';
-}
+// computed permet de surveiller automatiquement les changements
+// de userData dans le state => utile pour la déconnexion
+    computed: {
+        userData() {
+            return store.state.userData
+        }
+    },
 
-header {
-    background-color: white;
-}
+    methods: {
+        logOut() {
+            // on réinitialise le state en appelant l'action "logOut"
+            store.dispatch("logOut");
 
-#twostripes {
-    width: 15vw
-}
+            // // on teste le résultat
+            console.log(store.getters.getUserData)
 
-#logo {
-    width: 260px
-}
+            // //idem pour le message de succès
+            store.commit('storeMessage', "Déconnexion réussie")
+            console.log(store.getters.getMessage)
 
-#textelogo {
-    font-size: 16px;
-}
-
-a {
-    text-decoration: none;
-    color: inherit
-}
-
-.dropdown-menu .router-link {
-    color: #94D1BE
-}
-
-body {
-    font-family: 'Cooper';
-}
-
-#leftstripe {
-    width: 33vw;
-    background-color: #94D1BE;
-    height: 2vh;
-}
-
-#rightstripe {
-    width: 33vw;
-    background-color: #1C6E8C;
-    height: 2vh;
-}
-
-.greentext {
-    color: #94D1BE
-}
-
-
-.bluetext {
-    color: #1C6E8C
-}
-
-.navbar-brand,
-.nav-link {
-    color: #1C6E8C !important
-}
-
-.navbar-toggler {
-    background-color: #94D1BE;
-    border-radius: 30%;
-}
-
-@media screen and (max-width: 480px) {
-    #logo {
-        width: 180px
+            // on redirige vers l'accueil
+            this.$router.push('/SuccessMessage')
+            // rediriger vers SuccessMessage
+        }
     }
 }
-</style>
+</script>
 
 <template>
 
@@ -136,18 +89,27 @@ body {
                         <router-link to="/proposerlieu" class="nav-link">proposer un lieu</router-link>
 
                         <!-- si utilisateur connecté : mon compte / mes lieux, si pas connecté : inscription/connexion -->
-                        <span v-if="userData.pseudo">
+                        <span v-if="userData.pseudo" class="d-flex justify-content-between">
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false">
-                                   {{ userData.pseudo }}
+                                    {{ userData.pseudo }}
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <li><router-link to="/moncompte" class="nav-link">mon compte</router-link></li>
-                                    <li><router-link to="/meslieuxpostes" class="nav-link">mes lieux postés</router-link></li>
-                                    <li><router-link to="/meslieuxfavoris" class="nav-link">mes lieux favoris</router-link></li>
+                                    <li>
+                                        <router-link to="/moncompte" class="nav-link">mon compte</router-link>
+                                    </li>
+                                    <li>
+                                        <router-link to="/meslieuxpostes" class="nav-link">mes lieux postés
+                                        </router-link>
+                                    </li>
+                                    <li>
+                                        <router-link to="/meslieuxfavoris" class="nav-link">mes lieux favoris
+                                        </router-link>
+                                    </li>
                                 </ul>
                             </li>
+                            <i id="logoutIcon" class="fa-solid fa-right-from-bracket my-auto" @click="logOut()"></i>
                         </span>
 
                         <span v-else class="d-md-flex justify-content-center">
@@ -165,3 +127,80 @@ body {
     </header>
 
 </template>
+
+<style>
+@font-face {
+    font-family: 'Cooper';
+    src: './Cooper Black Regular.ttf';
+}
+
+header {
+    background-color: white;
+}
+
+#twostripes {
+    width: 15vw
+}
+
+#logo {
+    width: 260px
+}
+
+#textelogo {
+    font-size: 16px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit
+}
+
+#logoutIcon{
+    color: #94D1BE
+}
+
+.dropdown-menu .router-link {
+    color: #94D1BE
+}
+
+body {
+    font-family: 'Cooper';
+}
+
+#leftstripe {
+    width: 33vw;
+    background-color: #94D1BE;
+    height: 2vh;
+}
+
+#rightstripe {
+    width: 33vw;
+    background-color: #1C6E8C;
+    height: 2vh;
+}
+
+.greentext {
+    color: #94D1BE
+}
+
+
+.bluetext {
+    color: #1C6E8C
+}
+
+.navbar-brand,
+.nav-link {
+    color: #1C6E8C !important
+}
+
+.navbar-toggler {
+    background-color: #94D1BE;
+    border-radius: 30%;
+}
+
+@media screen and (max-width: 480px) {
+    #logo {
+        width: 180px
+    }
+}
+</style>

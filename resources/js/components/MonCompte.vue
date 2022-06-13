@@ -21,6 +21,10 @@ export default {
 
     methods: {
 
+        checkPassword(password) {
+            console.log("lettre saisie")
+        },
+
         sendData() {
             axios.put('/api/users/' + this.id, {
                 pseudo: this.pseudo, email: this.email, departement: this.departement, oldPassword: this.oldPassword,
@@ -158,8 +162,27 @@ export default {
                                     passe</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="password" id="password" type="password" class="form-control"
-                                        name="password">
+                                    <input v-model="password" @keyup="checkPassword(password)" id="password"
+                                        type="password" class="form-control" name="password">
+                                </div>
+                            </div>
+
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-4 offset-2 text-left">
+                                        <p>minimum 8 caractères</p>
+                                        <p>minimum 1 lettre</p>
+                                        <p>minimum 1 chiffre</p>
+                                        <p>minimum 1 majuscule et 1 minuscule</p>
+                                        <p>minimum 1 caractère spécial</p>
+                                    </div>
+                                    <div class="col-4">
+                                        <i class="fa-solid fa-xmark-large"></i><i class="p-2 fa-solid fa-check"></i>
+                                        <i class="fa-solid fa-xmark-large"></i><i class="p-2 fa-solid fa-check"></i>
+                                        <i class="fa-solid fa-xmark-large"></i><i class="p-2 fa-solid fa-check"></i>
+                                        <i class="fa-solid fa-xmark-large"></i><i class="p-2 fa-solid fa-check"></i>
+                                        <i class="fa-solid fa-xmark-large"></i><i class="p-2 fa-solid fa-check"></i>
+                                    </div>
                                 </div>
                             </div>
 
@@ -197,8 +220,9 @@ export default {
                             <i class="fa-solid fa-triangle-exclamation fa-5x text-danger mb-2"></i>
 
                             <p class="text-danger">Attention : cette action est irréversible.</p>
-                            <p class="text-danger">Vous perdrez tous vos favoris.</p>
-                            <p>Les lieux que vous avez postés seront conservés.</p>
+                            <p class="text-danger">En supprimant votre compte, vous perdrez tous vos favoris.</p>
+                            <p>Les lieux, notes et avis que vous avez postés seront conservés (les avis seront
+                                anonymisés).</p>
 
                             <div class="form-group row m-3 text-center">
                                 <div class="col-md-6 offset-md-3">

@@ -94,7 +94,7 @@ img {
 
 <template>
 
-    <div class="p-5">
+    <div class="p-3">
         <img class="mx-auto" src="images/icons/user.png" alt="user">
         <h1 class="mt-2">Connexion</h1>
     </div>

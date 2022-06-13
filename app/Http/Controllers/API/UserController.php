@@ -71,7 +71,7 @@ class UserController extends BaseController
         );
 
         if ($validator->fails()) {
-            return $this->sendError('Error validation', $validator->errors(), 400);
+            return $this->sendError('Error validation', $validator->errors());
         }
 
         $user = User::create([
@@ -143,7 +143,7 @@ class UserController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Error validation', $validator->errors(), 400);
+            return $this->sendError('Error validation', $validator->errors());
         }
 
         // On modifie les informations de l'utilisateur
