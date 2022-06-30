@@ -22,63 +22,63 @@ class ImageSeeder extends Seeder
         ]);
 
         Image::create([
-            'nom' => 'oiseauxdumarais.jpg',
+            'nom' => 'parc-des-oiseaux.jpg',
             'profil' => false,
             'user_id' => 1,
             'lieu_id' => 2
         ]);
 
         Image::create([
-            'nom' => 'jardindesplantesnantes.jpg',
+            'nom' => 'jardin-des-plantes-nantes.jpg',
             'profil' => false,
             'user_id' => 1,
             'lieu_id' => 3
         ]);
 
         Image::create([
-            'nom' => 'zoodelapalmyre.jpg',
+            'nom' => 'zoo-de-la-palmyre.jpg',
             'profil' => false,
             'user_id' => 1,
             'lieu_id' => 4
         ]);
 
         Image::create([
-            'nom' => 'planetesauvage.jpg',
+            'nom' => 'planete-sauvage.jpg',
             'profil' => false,
             'user_id' => 1,
             'lieu_id' => 5
         ]);
 
         Image::create([
-            'nom' => 'maraispoitevin.jpg',
+            'nom' => 'marais-poitevin.jpg',
             'profil' => false,
             'user_id' => 1,
             'lieu_id' => 6
         ]);
 
         Image::create([
-            'nom' => 'plagedeschardons.jpg',
+            'nom' => 'plage-des-chardons.jpg',
             'profil' => false,
             'user_id' => 1,
             'lieu_id' => 7
         ]);
 
         Image::create([
-            'nom' => 'plagedesconches.jpg',
+            'nom' => 'plage-des-conches.jpg',
             'profil' => false,
             'user_id' => 1,
             'lieu_id' => 8
         ]);
 
         Image::create([
-            'nom' => 'parcpreleroy.jpg',
+            'nom' => 'parc-pre-leroy.png',
             'profil' => false,
             'user_id' => 1,
             'lieu_id' => 9
         ]);
 
         Image::create([
-            'nom' => 'valleedessinges.jpg',
+            'nom' => 'vallee-des-singes.jpg',
             'profil' => false,
             'user_id' => 1,
             'lieu_id' => 10

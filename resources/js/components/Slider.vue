@@ -36,7 +36,7 @@ h2 {
                 <h2 class="carousel-caption d-block d-md-none fs-1">Redécouvrez votre région !</h2>
             </div>
             <div class="carousel-item">
-                <img src="images/plage_la_faute.jpg" class="d-block w-100" alt="plage de la Faute">
+                <img src="images/plage-des-chardons.jpg" class="d-block w-100" alt="plage de la Faute">
                 <div class="carousel-caption captionfondbleu d-none d-md-block p-5">
                     <h2>Partagez vos coups de coeur !</h2>
                     <p>Faites profiter la communauté de vos petits coins de paradis.</p>

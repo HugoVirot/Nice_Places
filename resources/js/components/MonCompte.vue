@@ -13,16 +13,63 @@ export default {
             oldPassword: "",
             password: "",
             password_confirmation: "",
-            validationErrors: ""
+            validationErrors: "",
+            passwordTyped: false,
+            eightCharacters: false,
+            oneLetter: false,
+            oneUppercaseOneLowercase: false,
+            oneDigit: false,
+            oneSpecialCharacter: false
         }
     },
 
     components: { ValidationErrors },
 
     methods: {
-
         checkPassword(password) {
-            console.log("lettre saisie")
+
+            this.passwordTyped = true
+
+            let correctCriterias = 0;
+
+            if (password.length >= 8) {
+                this.eightCharacters = true
+                correctCriterias++
+            } else {
+                this.eightCharacters = false
+            }
+
+            if (password.match(/[a-z]/)) {
+                this.oneLetter = true
+                correctCriterias++
+            } else {
+                this.oneLetter = false
+            }
+
+            if (password.match(/(?=.*[a-z])(?=.*[A-Z])/)) {
+                this.oneUppercaseOneLowercase = true
+                correctCriterias++
+            } else {
+                this.oneUppercaseOneLowercase = false
+            }
+
+            if (password.match(/\d/)) {
+                this.oneDigit = true
+                correctCriterias++
+            } else {
+                this.oneDigit = false;
+            }
+
+            if (password.match(/[!@#$%^&*?]/)) {
+                this.oneSpecialCharacter = true
+                correctCriterias++
+            } else {
+                this.oneSpecialCharacter = false;
+            }
+
+            if (correctCriterias == 7) {
+                this.passwordTyped = false
+            }
         },
 
         sendData() {
@@ -167,43 +214,62 @@ export default {
                                 </div>
                             </div>
 
-                            <div class="container">
+                            <div v-if="passwordTyped" class="container" id="dynamicPasswordCheck">
+
                                 <div class="row">
-                                    <div class="col-4 offset-2 text-left">
-                                        <p>minimum 8 caractères</p>
-                                        <p>minimum 1 lettre</p>
-                                        <p>minimum 1 chiffre</p>
-                                        <p>minimum 1 majuscule et 1 minuscule</p>
-                                        <p>minimum 1 caractère spécial</p>
-                                    </div>
-                                    <div class="col-4">
-                                        <i class="fa-solid fa-xmark-large"></i><i class="p-2 fa-solid fa-check"></i>
-                                        <i class="fa-solid fa-xmark-large"></i><i class="p-2 fa-solid fa-check"></i>
-                                        <i class="fa-solid fa-xmark-large"></i><i class="p-2 fa-solid fa-check"></i>
-                                        <i class="fa-solid fa-xmark-large"></i><i class="p-2 fa-solid fa-check"></i>
-                                        <i class="fa-solid fa-xmark-large"></i><i class="p-2 fa-solid fa-check"></i>
-                                    </div>
+                                    <p>minimum 8 caractères
+                                        <i v-if="eightCharacters" class="p-2 fa-solid fa-check"></i>
+                                        <i v-else class="fa-solid fa-xmark"></i>
+                                    </p>
                                 </div>
+
+                                <div class="row">
+                                    <p>minimum 1 lettre
+                                        <i v-if="oneLetter" class="p-2 fa-solid fa-check"></i>
+                                        <i v-else class="fa-solid fa-xmark"></i>
+                                    </p>
+                                </div>
+
+                                <div class="row">
+                                    <p>minimum 1 chiffre
+                                        <i v-if="oneDigit" class="p-2 fa-solid fa-check"></i>
+                                        <i v-else class="fa-solid fa-xmark"></i>
+                                    </p>
+                                </div>
+
+                                <div class="row">
+                                    <p>minimum 1 majuscule et 1 minuscule
+                                        <i v-if="oneUppercaseOneLowercase" class="p-2 fa-solid fa-check"></i>
+                                        <i v-else class="fa-solid fa-xmark"></i>
+                                    </p>
+                                </div>
+
+                                <div class="row">
+                                    <p>minimum 1 caractère spécial
+                                        <i v-if="oneSpecialCharacter" class="p-2 fa-solid fa-check"></i>
+                                        <i v-else class="fa-solid fa-xmark"></i>
+                                    </p>
+                                </div>
+
                             </div>
+                        </div>
 
-                            <div class="form-group row m-2">
-                                <label for="password_confirmation"
-                                    class="col-md-4 col-form-label text-md-right">confirmez
-                                    le
-                                    mot de passe</label>
+                        <div class="form-group row m-2">
+                            <label for="password_confirmation" class="col-md-4 col-form-label text-md-right">confirmez
+                                le
+                                mot de passe</label>
 
-                                <div class="col-md-6">
-                                    <input v-model="password_confirmation" id="password_confirmation" type="password"
-                                        class="form-control" name="password_confirmation">
-                                </div>
+                            <div class="col-md-6">
+                                <input v-model="password_confirmation" id="password_confirmation" type="password"
+                                    class="form-control" name="password_confirmation">
                             </div>
+                        </div>
 
-                            <div class="form-group row m-3 text-center">
-                                <div class="col-md-6 offset-md-3">
-                                    <button id="boutonValider" type="submit" class="btn btn-lg rounded-pill text-light">
-                                        Valider
-                                    </button>
-                                </div>
+                        <div class="form-group row m-3 text-center">
+                            <div class="col-md-6 offset-md-3">
+                                <button id="boutonValider" type="submit" class="btn btn-lg rounded-pill text-light">
+                                    Valider
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -221,9 +287,7 @@ export default {
 
                             <p class="text-danger">Attention : cette action est irréversible.</p>
                             <p class="text-danger">En supprimant votre compte, vous perdrez tous vos favoris.</p>
-                            <p>Les lieux, notes et avis que vous avez postés seront conservés (les avis seront
-                                anonymisés).</p>
-
+                            <p>Les lieux et les avis que vous avez postés seront conservés (ils seront anonymisés).</p>
                             <div class="form-group row m-3 text-center">
                                 <div class="col-md-6 offset-md-3">
                                     <button type="submit" class="btn rounded-pill text-light btn-danger">
@@ -257,6 +321,10 @@ h1 {
 
 i {
     color: #94D1BE
+}
+
+.fa-xmark {
+    color: red
 }
 
 .card {

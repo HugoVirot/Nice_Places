@@ -19,7 +19,10 @@ const defaultState = {
         departement: "",
         token: "",
     },
-    message: ""
+    message: "",
+    geolocationAnswered: false,
+    userPosition: "",
+    lieux: ""
 }
 
 export const store = createStore({
@@ -47,6 +50,20 @@ export const store = createStore({
         // stocker un message de succès dans le state
         storeMessage(state, payload) {
             state.message = payload
+        },
+
+        // mémoriser le fait qu'un choix a été fait par rapport à la géoloc
+        storeGeolocationAnswered(state, payload) {
+            state.geolocationAnswered = payload
+        },
+
+        // stocker la position de l'utilisateur si géoloc acceptée
+        storeUserPosition(state, payload) {
+            state.userPosition = payload
+        },
+
+        storeLieux(state, payload) {
+            state.lieux = payload
         },
 
         // réinitialiser le state

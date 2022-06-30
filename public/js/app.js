@@ -22923,15 +22923,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Slider_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Slider.vue */ "./resources/js/components/Slider.vue");
 /* harmony import */ var _Map_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Map.vue */ "./resources/js/components/Map.vue");
 /* harmony import */ var _Footer_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Footer.vue */ "./resources/js/components/Footer.vue");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../store */ "./resources/js/store.js");
+
 
 
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  data: function data() {
-    return {
-      message: "Bienvenue sur Vue 3"
-    };
+  // computed permet de surveiller automatiquement les changements
+  // de userData dans le state => utile pour la déconnexion
+  computed: {
+    userData: function userData() {
+      return _store__WEBPACK_IMPORTED_MODULE_4__.store.state.userData;
+    }
   },
   components: {
     Header: _Header_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
@@ -23058,18 +23062,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../store */ "./resources/js/store.js");
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  data: function data() {
-    return {
-      userData: _store__WEBPACK_IMPORTED_MODULE_0__.store.getters.getUserData
-    };
-  },
-  // computed permet de surveiller automatiquement les changements
-  // de userData dans le state => utile pour la déconnexion
-  computed: {
-    userData: function userData() {
-      return _store__WEBPACK_IMPORTED_MODULE_0__.store.state.userData;
-    }
-  },
+  props: ["userData"],
   methods: {
     logOut: function logOut() {
       // on réinitialise le state en appelant l'action "logOut"
@@ -23112,7 +23105,13 @@ __webpack_require__.r(__webpack_exports__);
       email: "",
       password: "",
       password_confirmation: "",
-      validationErrors: ""
+      validationErrors: "",
+      passwordTyped: false,
+      eightCharacters: false,
+      oneLetter: false,
+      oneUppercaseOneLowercase: false,
+      oneDigit: false,
+      oneSpecialCharacter: false
     };
   },
   components: {
@@ -23136,6 +23135,49 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         _this.validationErrors = error.response.data.data;
       });
+    },
+    checkPassword: function checkPassword(password) {
+      this.passwordTyped = true;
+      var correctCriterias = 0;
+
+      if (password.length >= 8) {
+        this.eightCharacters = true;
+        correctCriterias++;
+      } else {
+        this.eightCharacters = false;
+      }
+
+      if (password.match(/[a-z]/)) {
+        this.oneLetter = true;
+        correctCriterias++;
+      } else {
+        this.oneLetter = false;
+      }
+
+      if (password.match(/(?=.*[a-z])(?=.*[A-Z])/)) {
+        this.oneUppercaseOneLowercase = true;
+        correctCriterias++;
+      } else {
+        this.oneUppercaseOneLowercase = false;
+      }
+
+      if (password.match(/\d/)) {
+        this.oneDigit = true;
+        correctCriterias++;
+      } else {
+        this.oneDigit = false;
+      }
+
+      if (password.match(/[!@#$%^&*?]/)) {
+        this.oneSpecialCharacter = true;
+        correctCriterias++;
+      } else {
+        this.oneSpecialCharacter = false;
+      }
+
+      if (correctCriterias == 7) {
+        this.passwordTyped = false;
+      }
     }
   }
 });
@@ -23153,7 +23195,117 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../store.js */ "./resources/js/store.js");
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  computed: {
+    userPosition: function userPosition() {
+      return _store_js__WEBPACK_IMPORTED_MODULE_1__.store.state.userPosition;
+    },
+    geolocationAnswered: function geolocationAnswered() {
+      return _store_js__WEBPACK_IMPORTED_MODULE_1__.store.state.geolocationAnswered;
+    }
+  },
+  data: function data() {
+    return {
+      map: ""
+    };
+  },
+  methods: {
+    initializeMap: function initializeMap(component) {
+      var _this = this;
+
+      // ********* si le user a accepté la géoloc => on crée une map avec son emplacement ***********
+      if (this.userPosition) {
+        console.log("géoloc déjà acceptée, coordonnées déjà stockées dans le state");
+        this.map = L.map('map').setView([this.userPosition.latitude, this.userPosition.longitude], 13); // pour pouvoir ajouter des tuiles
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '© OpenStreetMap'
+        }).addTo(this.map); // création du pointeur indiquant la position de l'utilisateur
+
+        L.marker([this.userPosition.latitude, this.userPosition.longitude]).addTo(this.map); // **** si le user n'a pas accepté la géoloc => on crée une map avec un emplacement par défaut (Paris) ****
+      } else {
+        this.map = L.map('map').setView([48.8534100, 2.3488000], 13); // pour pouvoir ajouter des tuiles
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '© OpenStreetMap'
+        }).addTo(this.map);
+      } // ajouter les pointeurs des lieux à la map
+
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/lieus").then(function (response) {
+        var lieux = response.data; // on stocke les lieux dans le state
+
+        _store_js__WEBPACK_IMPORTED_MODULE_1__.store.commit("storeLieux", lieux); // on ajoute un pointeur par lieu à la map
+
+        lieux.forEach(function (lieu) {
+          function redirectOnPlace() {
+            component.$router.push('/inscription');
+          }
+
+          var popupContent = "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom + "<i class=\"fa-solid fa-star ms-3 me-2 mt-1\" style=\"color: yellow\"></i>" + lieu.note + "</h5>" + // lieu.categories.forEach(category => { console.log(category.icone) }) + // impossible d'afficher les icônes des catégories
+          // tests : document.write, concaténation
+          "<img class=\"mx-auto\" src=\"images/" + lieu.images[0].nom + "\" style=\"width: 30vw\">" + "<p style=\"font-family:'Cooper'\" class=\"text-center\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p>" + "<button class=\"btn moreInfoButton mx-auto\" id=\"" + lieu.id + "\" style=\"color:white; background-color: #94D1BE\">plus d'infos</button>" + "<a target=\"_self\" onclick=\"event.preventDefault(); " + // document.getElementById(lieu.id).addEventListener('click', (button) => component.$router.push('/inscription'));
+          +"\">plus d'infos</a>";
+          var popupOptions = {
+            'maxWidth': '30vw',
+            'className': 'popupLieu'
+          };
+          L.marker([lieu.latitude, lieu.longitude]).addTo(_this.map).bindPopup(popupContent, popupOptions); // marker._icon.classList.add("huechange"); //  + img.huechange { filter: hue-rotate(120deg); } => ne marchent pas
+        });
+      });
+    }
+  },
+  mounted: function mounted() {
+    var _this2 = this;
+
+    // *************ne marche pas******************
+    // let moreInfosButtons = document.getElementsByClassName("popupLieu")
+    // console.log(moreInfosButtons)
+    // for (let i = 0; i < moreInfosButtons.length; i++) {
+    //     moreInfosButtons[i].addEventListener('click', (button) => console.log(button.id));
+    // }
+    // *********************si géolocalisation pas déjà demandée***********************
+    if (!this.geolocationAnswered) {
+      // ************************ on la demande ************************
+      // si le navigateur supporte la géolocalisation (pas dispo sur les + anciens)
+      if (navigator.geolocation) {
+        // on demande l'accès à la position via une petite fenêtre 
+        // si accepté, on stocke les coordonnées de l'utilisateur dans le state
+        navigator.geolocation.getCurrentPosition(function (position) {
+          console.log(position.coords);
+          _store_js__WEBPACK_IMPORTED_MODULE_1__.store.commit('storeGeolocationAnswered', true);
+          _store_js__WEBPACK_IMPORTED_MODULE_1__.store.commit('storeUserPosition', {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          });
+          console.log("accès position accepté, choix et coordonnées stockés dans le state");
+
+          _this2.initializeMap(); // si accès refusé, on stocke cela dans le state et on l'affiche dans la console
+
+        }, function () {
+          _store_js__WEBPACK_IMPORTED_MODULE_1__.store.commit('storeGeolocationAnswered', true);
+          console.log("accès à la position refusé, choix stocké dans le state");
+
+          _this2.initializeMap();
+        });
+      } else {
+        alert("La géolocalisation est indisponible sur votre navigateur");
+        this.initializeMap();
+      } // *********************si géolocalisation déjà demandée***********************
+
+    } else {
+      // *************** on initialise la map *****************
+      this.initializeMap(this);
+    }
+  }
+});
 
 /***/ }),
 
@@ -23215,7 +23367,13 @@ __webpack_require__.r(__webpack_exports__);
       oldPassword: "",
       password: "",
       password_confirmation: "",
-      validationErrors: ""
+      validationErrors: "",
+      passwordTyped: false,
+      eightCharacters: false,
+      oneLetter: false,
+      oneUppercaseOneLowercase: false,
+      oneDigit: false,
+      oneSpecialCharacter: false
     };
   },
   components: {
@@ -23223,7 +23381,47 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     checkPassword: function checkPassword(password) {
-      console.log("lettre saisie");
+      this.passwordTyped = true;
+      var correctCriterias = 0;
+
+      if (password.length >= 8) {
+        this.eightCharacters = true;
+        correctCriterias++;
+      } else {
+        this.eightCharacters = false;
+      }
+
+      if (password.match(/[a-z]/)) {
+        this.oneLetter = true;
+        correctCriterias++;
+      } else {
+        this.oneLetter = false;
+      }
+
+      if (password.match(/(?=.*[a-z])(?=.*[A-Z])/)) {
+        this.oneUppercaseOneLowercase = true;
+        correctCriterias++;
+      } else {
+        this.oneUppercaseOneLowercase = false;
+      }
+
+      if (password.match(/\d/)) {
+        this.oneDigit = true;
+        correctCriterias++;
+      } else {
+        this.oneDigit = false;
+      }
+
+      if (password.match(/[!@#$%^&*?]/)) {
+        this.oneSpecialCharacter = true;
+        correctCriterias++;
+      } else {
+        this.oneSpecialCharacter = false;
+      }
+
+      if (correctCriterias == 7) {
+        this.passwordTyped = false;
+      }
     },
     sendData: function sendData() {
       var _this = this;
@@ -23407,9 +23605,9 @@ var _hoisted_3 = {
 
 var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div id=\"presentationTopStripe\" class=\"mt-5\" data-v-332fccf4></div><div class=\"container-fluid p-5\" id=\"presentation\" style=\"background-image:url(images/mervent3.jpg);\" data-v-332fccf4><div class=\"row pb-4\" data-v-332fccf4><div class=\"col-md-6 my-auto\" data-v-332fccf4><img class=\"w-100 h-100 bg-white rounded\" src=\"images/logo.png\" data-v-332fccf4></div><div class=\"col-md-6 my-auto\" data-v-332fccf4><p class=\"text-white fs-3\" data-v-332fccf4>Un site et un appli mobile simples à utiliser, pour trouver et partager des sorties nature (plage, forêt, lac, montagne...) près de chez vous !</p></div></div><a href=\"/\" data-v-332fccf4><button class=\"btn btn-lg mt-3 rounded-pill\" data-v-332fccf4>Je m&#39;inscris</button></a></div><div id=\"presentationBottomStripe\" class=\"mb-3\" data-v-332fccf4></div><img class=\"titleIcon mt-5 mx-auto\" src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4><h2 class=\"fs-2 m-3\" data-v-332fccf4> Carte des lieux autour de chez vous</h2>", 5);
 
-var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div data-v-332fccf4><img class=\"titleIcon mt-5 mx-auto\" src=\"images/icons/star.png\" alt=\"étoile\" data-v-332fccf4><h2 class=\"fs-2 m-3\" data-v-332fccf4>Le top des lieux dans votre région</h2></div><div class=\"container-fluid\" data-v-332fccf4><div class=\"row m-1 p-1\" id=\"toplieux\" data-v-332fccf4><!-- ********************** lieu 1 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/oiseaux.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between align-items-center\" data-v-332fccf4><div class=\"col-2\" data-v-332fccf4><span class=\"ranking\" data-v-332fccf4> #1 </span></div><div class=\"col-10\" data-v-332fccf4><h4 data-v-332fccf4>Parc Ornithologique</h4></div></div><div class=\"row\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/star.png\" alt=\"pointeur\" data-v-332fccf4> 9.3 </div><div class=\"col-7\" data-v-332fccf4><h5 data-v-332fccf4>St-Hilaire-la-Palud (79)</h5></div><div class=\"col-2 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div><!-- ********************** lieu 2 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/oiseaux.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between align-items-center\" data-v-332fccf4><div class=\"col-2\" data-v-332fccf4><span class=\"ranking\" data-v-332fccf4> #1 </span></div><div class=\"col-10\" data-v-332fccf4><h4 data-v-332fccf4>Parc Ornithologique</h4></div></div><div class=\"row\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/star.png\" alt=\"pointeur\" data-v-332fccf4> 9.3 </div><div class=\"col-7\" data-v-332fccf4><h5 data-v-332fccf4>St-Hilaire-la-Palud (79)</h5></div><div class=\"col-2 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div><!-- ********************** lieu 3 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/oiseaux.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between align-items-center\" data-v-332fccf4><div class=\"col-2\" data-v-332fccf4><span class=\"ranking\" data-v-332fccf4> #1 </span></div><div class=\"col-10\" data-v-332fccf4><h4 data-v-332fccf4>Parc Ornithologique</h4></div></div><div class=\"row\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/star.png\" alt=\"pointeur\" data-v-332fccf4> 9.3 </div><div class=\"col-7\" data-v-332fccf4><h5 data-v-332fccf4>St-Hilaire-la-Palud (79)</h5></div><div class=\"col-2 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div></div><a href=\"/\" data-v-332fccf4><button class=\"btn btn-lg mt-3 rounded-pill\" data-v-332fccf4>Classement complet</button></a></div>", 2);
+var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div data-v-332fccf4><img class=\"titleIcon mt-5 mx-auto\" src=\"images/icons/star.png\" alt=\"étoile\" data-v-332fccf4><h2 class=\"fs-2 m-3\" data-v-332fccf4>Le top des lieux dans votre région</h2></div><div class=\"container-fluid\" data-v-332fccf4><div class=\"row m-1 p-1\" id=\"toplieux\" data-v-332fccf4><!-- ********************** lieu 1 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/parc-des-oiseaux-du-marais.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between align-items-center\" data-v-332fccf4><div class=\"col-2\" data-v-332fccf4><span class=\"ranking\" data-v-332fccf4> #1 </span></div><div class=\"col-10\" data-v-332fccf4><h4 data-v-332fccf4>Parc Ornithologique</h4></div></div><div class=\"row\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/star.png\" alt=\"pointeur\" data-v-332fccf4> 9.3 </div><div class=\"col-7\" data-v-332fccf4><h5 data-v-332fccf4>St-Hilaire-la-Palud (79)</h5></div><div class=\"col-2 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div><!-- ********************** lieu 2 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/parc-des-oiseaux-du-marais.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between align-items-center\" data-v-332fccf4><div class=\"col-2\" data-v-332fccf4><span class=\"ranking\" data-v-332fccf4> #1 </span></div><div class=\"col-10\" data-v-332fccf4><h4 data-v-332fccf4>Parc Ornithologique</h4></div></div><div class=\"row\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/star.png\" alt=\"pointeur\" data-v-332fccf4> 9.3 </div><div class=\"col-7\" data-v-332fccf4><h5 data-v-332fccf4>St-Hilaire-la-Palud (79)</h5></div><div class=\"col-2 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div><!-- ********************** lieu 3 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/parc-des-oiseaux-du-marais.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between align-items-center\" data-v-332fccf4><div class=\"col-2\" data-v-332fccf4><span class=\"ranking\" data-v-332fccf4> #1 </span></div><div class=\"col-10\" data-v-332fccf4><h4 data-v-332fccf4>Parc Ornithologique</h4></div></div><div class=\"row\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/star.png\" alt=\"pointeur\" data-v-332fccf4> 9.3 </div><div class=\"col-7\" data-v-332fccf4><h5 data-v-332fccf4>St-Hilaire-la-Palud (79)</h5></div><div class=\"col-2 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div></div><a href=\"/\" data-v-332fccf4><button class=\"btn btn-lg mt-3 rounded-pill\" data-v-332fccf4>Classement complet</button></a></div>", 2);
 
-var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<img class=\"titleIcon mt-5 mx-auto\" src=\"images/icons/clock.png\" alt=\"pointeur\" data-v-332fccf4><h2 class=\"fs-2 m-3\" data-v-332fccf4> Derniers lieux ajoutés</h2><div class=\"container-fluid\" data-v-332fccf4><div class=\"row m-1 p-1\" id=\"dernierslieux\" data-v-332fccf4><!-- ********************** lieu 1 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/planete_sauvage.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between\" data-v-332fccf4><div class=\"col-8\" data-v-332fccf4><h4 class=\"fs-3\" data-v-332fccf4>Planète Sauvage</h4></div><div class=\"col-4 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div><div class=\"row\" data-v-332fccf4><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><p data-v-332fccf4>Port-St-Père (44)</p></div></div><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/user.png\" alt=\"user\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><h5 data-v-332fccf4>par Sam Martin</h5></div></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div><!-- ********************** lieu 2 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/planete_sauvage.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between\" data-v-332fccf4><div class=\"col-8\" data-v-332fccf4><h4 class=\"fs-3\" data-v-332fccf4>Planète Sauvage</h4></div><div class=\"col-4 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div><div class=\"row\" data-v-332fccf4><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><p data-v-332fccf4>Port-St-Père (44)</p></div></div><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/user.png\" alt=\"user\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><h5 data-v-332fccf4>par Sam Martin</h5></div></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div><!-- ********************** lieu 3 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/planete_sauvage.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between\" data-v-332fccf4><div class=\"col-8\" data-v-332fccf4><h4 class=\"fs-3\" data-v-332fccf4>Planète Sauvage</h4></div><div class=\"col-4 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div><div class=\"row\" data-v-332fccf4><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><p data-v-332fccf4>Port-St-Père (44)</p></div></div><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/user.png\" alt=\"user\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><h5 data-v-332fccf4>par Sam Martin</h5></div></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div></div></div><a href=\"/\" data-v-332fccf4><button class=\"btn btn-lg mt-3 rounded-pill\" data-v-332fccf4>Proposer un lieu</button></a>", 4);
+var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<img class=\"titleIcon mt-5 mx-auto\" src=\"images/icons/clock.png\" alt=\"pointeur\" data-v-332fccf4><h2 class=\"fs-2 m-3\" data-v-332fccf4> Derniers lieux ajoutés</h2><div class=\"container-fluid\" data-v-332fccf4><div class=\"row m-1 p-1\" id=\"dernierslieux\" data-v-332fccf4><!-- ********************** lieu 1 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/planete-sauvage.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between\" data-v-332fccf4><div class=\"col-8\" data-v-332fccf4><h4 class=\"fs-3\" data-v-332fccf4>Planète Sauvage</h4></div><div class=\"col-4 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div><div class=\"row\" data-v-332fccf4><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><p data-v-332fccf4>Port-St-Père (44)</p></div></div><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/user.png\" alt=\"user\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><h5 data-v-332fccf4>par Sam Martin</h5></div></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div><!-- ********************** lieu 2 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/planete-sauvage.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between\" data-v-332fccf4><div class=\"col-8\" data-v-332fccf4><h4 class=\"fs-3\" data-v-332fccf4>Planète Sauvage</h4></div><div class=\"col-4 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div><div class=\"row\" data-v-332fccf4><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><p data-v-332fccf4>Port-St-Père (44)</p></div></div><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/user.png\" alt=\"user\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><h5 data-v-332fccf4>par Sam Martin</h5></div></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div><!-- ********************** lieu 3 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/planete-sauvage.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between\" data-v-332fccf4><div class=\"col-8\" data-v-332fccf4><h4 class=\"fs-3\" data-v-332fccf4>Planète Sauvage</h4></div><div class=\"col-4 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div><div class=\"row\" data-v-332fccf4><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><p data-v-332fccf4>Port-St-Père (44)</p></div></div><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/user.png\" alt=\"user\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><h5 data-v-332fccf4>par Sam Martin</h5></div></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div></div></div><a href=\"/\" data-v-332fccf4><button class=\"btn btn-lg mt-3 rounded-pill\" data-v-332fccf4>Proposer un lieu</button></a>", 4);
 
 var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<section id=\"inscrivezVous\" data-v-332fccf4><img class=\"titleIcon mt-5 mx-auto\" src=\"images/icons/user.png\" alt=\"user\" data-v-332fccf4><h2 class=\"fs-2 m-3\" data-v-332fccf4>Inscrivez-vous gratuitement !</h2><div class=\"container-fluid px-5\" data-v-332fccf4><div class=\"row\" id=\"inscrivezVousIcones\" data-v-332fccf4><div class=\"col-md-4 p-1\" data-v-332fccf4><img class=\"inscrivezVousIcones\" src=\"images/icons/france.png\" alt=\"France\" data-v-332fccf4><p class=\"fs-4 mt-3\" data-v-332fccf4>Des lieux dans toute la France</p></div><div class=\"col-md-4 p-1\" data-v-332fccf4><img id=\"pointer\" src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4><p class=\"fs-4 mt-3\" data-v-332fccf4>Partagez vos coins préférés</p></div><div class=\"col-md-4 p-1\" data-v-332fccf4><img class=\"inscrivezVousIcones\" src=\"images/icons/phone.png\" alt=\"téléphone\" data-v-332fccf4><p class=\"fs-4 mt-3\" data-v-332fccf4>Un site web et une appli mobile</p></div></div></div><a href=\"/\" data-v-332fccf4><button class=\"btn btn-lg mt-3 rounded-pill\" data-v-332fccf4>Je m&#39;inscris</button></a></section>", 1);
 
@@ -23424,7 +23622,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   var _component_Footer = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Footer");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Header), _ctx.$route.path !== '/' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" si la route est différente de / (racine du site) "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" on affiche le template du composant concerné par la route "), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_router_view, {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Header, {
+    userData: $options.userData
+  }, null, 8
+  /* PROPS */
+  , ["userData"]), _ctx.$route.path !== '/' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" si la route est différente de / (racine du site) "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" on affiche le template du composant concerné par la route "), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_router_view, {
     key: _ctx.$route.fullPath
   }))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" si la route est / => on affiche le code de l'accueil"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Slider), _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Map), _hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ********************************* derniers lieux ajoutés *************************************** "), _hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ******************* inscrivez-vous ****************************** "), _hoisted_15]))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Footer)], 64
   /* STABLE_FRAGMENT */
@@ -23601,7 +23803,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* NEED_PATCH */
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.password]])])]), _hoisted_14], 32
   /* HYDRATE_EVENTS */
-  )])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" \r\n    <div v-if=\"loginSuccess\" class=\"modal bg-success\" id=\"successModal\" ref=\"successModal\" tabindex=\"-1\">\r\n        <div class=\"modal-dialog\">\r\n            <div class=\"modal-content\">\r\n                <div class=\"modal-header\">\r\n                    <h5 class=\"modal-title\">Félicitations !</h5>\r\n                    <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button>\r\n                </div>\r\n                <div class=\"modal-body\">\r\n                    <p>Vous êtes connecté(e) ! </p>\r\n                </div>\r\n                <div class=\"modal-footer\">\r\n                    <button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">Close</button>\r\n                    <button type=\"button\" class=\"btn btn-primary\">Save changes</button>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </div> ")], 64
+  )])])])])])], 64
   /* STABLE_FRAGMENT */
   );
 }
@@ -23847,7 +24049,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
     /* STABLE */
 
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" si utilisateur connecté : mon compte / mes lieux, si pas connecté : inscription/connexion "), $options.userData.pseudo ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", _hoisted_20, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.userData.pseudo), 1
+  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" si utilisateur connecté : mon compte / mes lieux, si pas connecté : inscription/connexion "), $props.userData.pseudo ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", _hoisted_20, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.userData.pseudo), 1
   /* TEXT */
   ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
     to: "/moncompte",
@@ -24028,10 +24230,85 @@ var _hoisted_17 = {
   "class": "col-md-6"
 };
 var _hoisted_18 = {
+  key: 0,
+  "class": "container",
+  id: "dynamicPasswordCheck"
+};
+var _hoisted_19 = {
+  "class": "row"
+};
+
+var _hoisted_20 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 8 caractères ");
+
+var _hoisted_21 = {
+  key: 0,
+  "class": "p-2 fa-solid fa-check"
+};
+var _hoisted_22 = {
+  key: 1,
+  "class": "fa-solid fa-xmark"
+};
+var _hoisted_23 = {
+  "class": "row"
+};
+
+var _hoisted_24 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 lettre ");
+
+var _hoisted_25 = {
+  key: 0,
+  "class": "p-2 fa-solid fa-check"
+};
+var _hoisted_26 = {
+  key: 1,
+  "class": "fa-solid fa-xmark"
+};
+var _hoisted_27 = {
+  "class": "row"
+};
+
+var _hoisted_28 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 chiffre ");
+
+var _hoisted_29 = {
+  key: 0,
+  "class": "p-2 fa-solid fa-check"
+};
+var _hoisted_30 = {
+  key: 1,
+  "class": "fa-solid fa-xmark"
+};
+var _hoisted_31 = {
+  "class": "row"
+};
+
+var _hoisted_32 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 majuscule et 1 minuscule ");
+
+var _hoisted_33 = {
+  key: 0,
+  "class": "p-2 fa-solid fa-check"
+};
+var _hoisted_34 = {
+  key: 1,
+  "class": "fa-solid fa-xmark"
+};
+var _hoisted_35 = {
+  "class": "row"
+};
+
+var _hoisted_36 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 caractère spécial ");
+
+var _hoisted_37 = {
+  key: 0,
+  "class": "p-2 fa-solid fa-check"
+};
+var _hoisted_38 = {
+  key: 1,
+  "class": "fa-solid fa-xmark"
+};
+var _hoisted_39 = {
   "class": "form-group row m-2"
 };
 
-var _hoisted_19 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_40 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
     "for": "password_confirmation",
     "class": "col-md-4 col-form-label text-md-right"
@@ -24040,11 +24317,11 @@ var _hoisted_19 = /*#__PURE__*/_withScopeId(function () {
   );
 });
 
-var _hoisted_20 = {
+var _hoisted_41 = {
   "class": "col-md-6"
 };
 
-var _hoisted_21 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_42 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "form-group row mt-3 text-center"
   }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
@@ -24057,16 +24334,16 @@ var _hoisted_21 = /*#__PURE__*/_withScopeId(function () {
   );
 });
 
-var _hoisted_22 = {
+var _hoisted_43 = {
   "class": "modal bg-success",
   id: "successModal",
   ref: "successModal",
   tabindex: "-1"
 };
 
-var _hoisted_23 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"modal-dialog\" data-v-51196a86><div class=\"modal-content\" data-v-51196a86><div class=\"modal-header\" data-v-51196a86><h5 class=\"modal-title\" data-v-51196a86>Félicitations !</h5><button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\" data-v-51196a86></button></div><div class=\"modal-body\" data-v-51196a86><p data-v-51196a86>Inscription réussie ! </p></div><div class=\"modal-footer\" data-v-51196a86><button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\" data-v-51196a86>Close</button><button type=\"button\" class=\"btn btn-primary\" data-v-51196a86>Save changes</button></div></div></div>", 1);
+var _hoisted_44 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"modal-dialog\" data-v-51196a86><div class=\"modal-content\" data-v-51196a86><div class=\"modal-header\" data-v-51196a86><h5 class=\"modal-title\" data-v-51196a86>Félicitations !</h5><button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\" data-v-51196a86></button></div><div class=\"modal-body\" data-v-51196a86><p data-v-51196a86>Inscription réussie ! </p></div><div class=\"modal-footer\" data-v-51196a86><button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\" data-v-51196a86>Close</button><button type=\"button\" class=\"btn btn-primary\" data-v-51196a86>Save changes</button></div></div></div>", 1);
 
-var _hoisted_24 = [_hoisted_23];
+var _hoisted_45 = [_hoisted_44];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_ValidationErrors = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ValidationErrors");
 
@@ -24076,7 +24353,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, null, 8
   /* PROPS */
   , ["errors"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [_hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
-    onSubmit: _cache[4] || (_cache[4] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
+    onSubmit: _cache[5] || (_cache[5] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.sendData && $options.sendData.apply($options, arguments);
     }, ["prevent"]))
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [_hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
@@ -24108,16 +24385,19 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
       return $data.password = $event;
     }),
+    onKeyup: _cache[3] || (_cache[3] = function ($event) {
+      return $options.checkPassword($data.password);
+    }),
     id: "password",
     type: "password",
     "class": "form-control",
     name: "password",
     required: "",
     autocomplete: "new-password"
-  }, null, 512
-  /* NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.password]])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, [_hoisted_19, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
-    "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
+  }, null, 544
+  /* HYDRATE_EVENTS, NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.password]])])]), $data.passwordTyped ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_20, $data.eightCharacters ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_21)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_22))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_24, $data.oneLetter ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_25)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_26))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_28, $data.oneDigit ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_29)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_30))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_32, $data.oneUppercaseOneLowercase ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_33)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_34))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_35, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_36, $data.oneSpecialCharacter ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_37)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_38))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_39, [_hoisted_40, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_41, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
       return $data.password_confirmation = $event;
     }),
     id: "password_confirmation",
@@ -24128,13 +24408,32 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     autocomplete: "new-password"
   }, null, 512
   /* NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.password_confirmation]])])]), _hoisted_21], 32
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.password_confirmation]])])]), _hoisted_42], 32
   /* HYDRATE_EVENTS */
-  )])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, _hoisted_24, 512
+  )])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_43, _hoisted_45, 512
   /* NEED_PATCH */
   )], 64
   /* STABLE_FRAGMENT */
   );
+}
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/Lieu.vue?vue&type=template&id=48023150":
+/*!**************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/Lieu.vue?vue&type=template&id=48023150 ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+function render(_ctx, _cache) {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h1", null, "Page du lieu");
 }
 
 /***/ }),
@@ -24158,17 +24457,10 @@ var _withScopeId = function _withScopeId(n) {
 };
 
 var _hoisted_1 = {
-  "class": "container m-1 mx-auto",
-  src: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d176399.9358206558!2d-0.7937642076360492!3d46.3048922!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4806c804a154b499%3A0x6fe5fe4c48c45ad3!2sParc%20naturel%20r%C3%A9gional%20du%20Marais%20poitevin!5e0!3m2!1sfr!2sfr!4v1653835102430!5m2!1sfr!2sfr",
-  style: {
-    "border": "0"
-  },
-  allowfullscreen: "",
-  loading: "lazy",
-  referrerpolicy: "no-referrer-when-downgrade"
+  id: "map"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("iframe", _hoisted_1);
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1);
 }
 
 /***/ }),
@@ -24370,14 +24662,86 @@ var _hoisted_24 = /*#__PURE__*/_withScopeId(function () {
 var _hoisted_25 = {
   "class": "col-md-6"
 };
-
-var _hoisted_26 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"container\" data-v-6ff82411><div class=\"row\" data-v-6ff82411><div class=\"col-4 offset-2 text-left\" data-v-6ff82411><p data-v-6ff82411>minimum 8 caractères</p><p data-v-6ff82411>minimum 1 lettre</p><p data-v-6ff82411>minimum 1 chiffre</p><p data-v-6ff82411>minimum 1 majuscule et 1 minuscule</p><p data-v-6ff82411>minimum 1 caractère spécial</p></div><div class=\"col-4\" data-v-6ff82411><i class=\"fa-solid fa-xmark-large\" data-v-6ff82411></i><i class=\"p-2 fa-solid fa-check\" data-v-6ff82411></i><i class=\"fa-solid fa-xmark-large\" data-v-6ff82411></i><i class=\"p-2 fa-solid fa-check\" data-v-6ff82411></i><i class=\"fa-solid fa-xmark-large\" data-v-6ff82411></i><i class=\"p-2 fa-solid fa-check\" data-v-6ff82411></i><i class=\"fa-solid fa-xmark-large\" data-v-6ff82411></i><i class=\"p-2 fa-solid fa-check\" data-v-6ff82411></i><i class=\"fa-solid fa-xmark-large\" data-v-6ff82411></i><i class=\"p-2 fa-solid fa-check\" data-v-6ff82411></i></div></div></div>", 1);
-
+var _hoisted_26 = {
+  key: 0,
+  "class": "container",
+  id: "dynamicPasswordCheck"
+};
 var _hoisted_27 = {
+  "class": "row"
+};
+
+var _hoisted_28 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 8 caractères ");
+
+var _hoisted_29 = {
+  key: 0,
+  "class": "p-2 fa-solid fa-check"
+};
+var _hoisted_30 = {
+  key: 1,
+  "class": "fa-solid fa-xmark"
+};
+var _hoisted_31 = {
+  "class": "row"
+};
+
+var _hoisted_32 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 lettre ");
+
+var _hoisted_33 = {
+  key: 0,
+  "class": "p-2 fa-solid fa-check"
+};
+var _hoisted_34 = {
+  key: 1,
+  "class": "fa-solid fa-xmark"
+};
+var _hoisted_35 = {
+  "class": "row"
+};
+
+var _hoisted_36 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 chiffre ");
+
+var _hoisted_37 = {
+  key: 0,
+  "class": "p-2 fa-solid fa-check"
+};
+var _hoisted_38 = {
+  key: 1,
+  "class": "fa-solid fa-xmark"
+};
+var _hoisted_39 = {
+  "class": "row"
+};
+
+var _hoisted_40 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 majuscule et 1 minuscule ");
+
+var _hoisted_41 = {
+  key: 0,
+  "class": "p-2 fa-solid fa-check"
+};
+var _hoisted_42 = {
+  key: 1,
+  "class": "fa-solid fa-xmark"
+};
+var _hoisted_43 = {
+  "class": "row"
+};
+
+var _hoisted_44 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 caractère spécial ");
+
+var _hoisted_45 = {
+  key: 0,
+  "class": "p-2 fa-solid fa-check"
+};
+var _hoisted_46 = {
+  key: 1,
+  "class": "fa-solid fa-xmark"
+};
+var _hoisted_47 = {
   "class": "form-group row m-2"
 };
 
-var _hoisted_28 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_48 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
     "for": "password_confirmation",
     "class": "col-md-4 col-form-label text-md-right"
@@ -24386,11 +24750,11 @@ var _hoisted_28 = /*#__PURE__*/_withScopeId(function () {
   );
 });
 
-var _hoisted_29 = {
+var _hoisted_49 = {
   "class": "col-md-6"
 };
 
-var _hoisted_30 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_50 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "form-group row m-3 text-center"
   }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
@@ -24404,11 +24768,11 @@ var _hoisted_30 = /*#__PURE__*/_withScopeId(function () {
   );
 });
 
-var _hoisted_31 = {
+var _hoisted_51 = {
   "class": "card"
 };
 
-var _hoisted_32 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_52 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "card-header text-white mb-3"
   }, "Supprimer mon compte", -1
@@ -24416,9 +24780,9 @@ var _hoisted_32 = /*#__PURE__*/_withScopeId(function () {
   );
 });
 
-var _hoisted_33 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"card-body\" data-v-6ff82411><i class=\"fa-solid fa-triangle-exclamation fa-5x text-danger mb-2\" data-v-6ff82411></i><p class=\"text-danger\" data-v-6ff82411>Attention : cette action est irréversible.</p><p class=\"text-danger\" data-v-6ff82411>En supprimant votre compte, vous perdrez tous vos favoris.</p><p data-v-6ff82411>Les lieux, notes et avis que vous avez postés seront conservés (les avis seront anonymisés).</p><div class=\"form-group row m-3 text-center\" data-v-6ff82411><div class=\"col-md-6 offset-md-3\" data-v-6ff82411><button type=\"submit\" class=\"btn rounded-pill text-light btn-danger\" data-v-6ff82411> Supprimer mon compte </button></div></div></div>", 1);
+var _hoisted_53 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"card-body\" data-v-6ff82411><i class=\"fa-solid fa-triangle-exclamation fa-5x text-danger mb-2\" data-v-6ff82411></i><p class=\"text-danger\" data-v-6ff82411>Attention : cette action est irréversible.</p><p class=\"text-danger\" data-v-6ff82411>En supprimant votre compte, vous perdrez tous vos favoris.</p><p data-v-6ff82411>Les lieux et les avis que vous avez postés seront conservés (ils seront anonymisés).</p><div class=\"form-group row m-3 text-center\" data-v-6ff82411><div class=\"col-md-6 offset-md-3\" data-v-6ff82411><button type=\"submit\" class=\"btn rounded-pill text-light btn-danger\" data-v-6ff82411> Supprimer mon compte </button></div></div></div>", 1);
 
-var _hoisted_34 = [_hoisted_33];
+var _hoisted_54 = [_hoisted_53];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_ValidationErrors = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ValidationErrors");
 
@@ -24488,7 +24852,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     name: "password"
   }, null, 544
   /* HYDRATE_EVENTS, NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.password]])])]), _hoisted_26, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [_hoisted_28, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_29, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.password]])])]), $data.passwordTyped ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_26, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_28, $data.eightCharacters ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_29)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_30))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_32, $data.oneLetter ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_33)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_34))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_35, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_36, $data.oneDigit ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_37)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_38))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_39, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_40, $data.oneUppercaseOneLowercase ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_41)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_42))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_43, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_44, $data.oneSpecialCharacter ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_45)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_46))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_47, [_hoisted_48, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_49, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     "onUpdate:modelValue": _cache[6] || (_cache[6] = function ($event) {
       return $data.password_confirmation = $event;
     }),
@@ -24498,13 +24862,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     name: "password_confirmation"
   }, null, 512
   /* NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.password_confirmation]])])]), _hoisted_30])], 32
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.password_confirmation]])])]), _hoisted_50], 32
   /* HYDRATE_EVENTS */
-  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_31, [_hoisted_32, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
+  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_51, [_hoisted_52, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
     onSubmit: _cache[8] || (_cache[8] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.deleteAccount && $options.deleteAccount.apply($options, arguments);
     }, ["prevent"]))
-  }, _hoisted_34, 32
+  }, _hoisted_54, 32
   /* HYDRATE_EVENTS */
   )])])])])], 64
   /* STABLE_FRAGMENT */
@@ -24556,7 +24920,7 @@ var _hoisted_1 = {
   "data-bs-ride": "carousel"
 };
 
-var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"carousel-inner\" data-v-872262e8><div class=\"carousel-item active\" data-v-872262e8><img src=\"images/coulon.jpg\" class=\"d-block w-100\" alt=\"marais poitevin\" data-v-872262e8><div class=\"carousel-caption captionfondbleu d-none d-md-block p-5\" data-v-872262e8><h2 data-v-872262e8>Redécouvrez votre région !</h2><p data-v-872262e8>Vous serez étonné(e) par les nombreux lieux extraordinaires qu&#39;elle propose.</p><a href=\"\" data-v-872262e8><button class=\"btn btn-lg\" data-v-872262e8>Voir la carte des lieux</button></a></div><h2 class=\"carousel-caption d-block d-md-none fs-1\" data-v-872262e8>Redécouvrez votre région !</h2></div><div class=\"carousel-item\" data-v-872262e8><img src=\"images/plage_la_faute.jpg\" class=\"d-block w-100\" alt=\"plage de la Faute\" data-v-872262e8><div class=\"carousel-caption captionfondbleu d-none d-md-block p-5\" data-v-872262e8><h2 data-v-872262e8>Partagez vos coups de coeur !</h2><p data-v-872262e8>Faites profiter la communauté de vos petits coins de paradis.</p><a href=\"\" data-v-872262e8><button class=\"btn btn-lg\" data-v-872262e8>Voir la carte des lieux</button></a></div><h2 class=\"carousel-caption d-block d-md-none fs-1\" data-v-872262e8>Partagez vos coups de coeur</h2></div><div class=\"carousel-item\" data-v-872262e8><img src=\"images/mervent.jpg\" class=\"d-block w-100\" alt=\"forêt de Mervent\" data-v-872262e8><div class=\"carousel-caption captionfondbleu d-none d-md-block p-5\" data-v-872262e8><h2 data-v-872262e8>Destination nature !</h2><p data-v-872262e8>Il y a toujours une nouvelle sortie sur Nice Places ! </p><a href=\"\" data-v-872262e8><button class=\"btn btn-lg\" data-v-872262e8>Voir la carte des lieux</button></a></div><h2 class=\"carousel-caption d-block d-md-none fs-1\" data-v-872262e8>Destination nature !</h2></div><div class=\"carousel-indicators\" data-v-872262e8><button type=\"button\" data-bs-target=\"#carouselAccueil\" data-bs-slide-to=\"0\" class=\"active\" aria-current=\"true\" aria-label=\"Slide 1\" data-v-872262e8></button><button type=\"button\" data-bs-target=\"#carouselAccueil\" data-bs-slide-to=\"1\" aria-label=\"Slide 2\" data-v-872262e8></button><button type=\"button\" data-bs-target=\"#carouselAccueil\" data-bs-slide-to=\"2\" aria-label=\"Slide 3\" data-v-872262e8></button></div></div><button class=\"carousel-control-prev\" type=\"button\" data-bs-target=\"#carouselAccueil\" data-bs-slide=\"prev\" data-v-872262e8><span class=\"carousel-control-prev-icon\" aria-hidden=\"true\" data-v-872262e8></span><span class=\"visually-hidden\" data-v-872262e8>Previous</span></button><button class=\"carousel-control-next\" type=\"button\" data-bs-target=\"#carouselAccueil\" data-bs-slide=\"next\" data-v-872262e8><span class=\"carousel-control-next-icon\" aria-hidden=\"true\" data-v-872262e8></span><span class=\"visually-hidden\" data-v-872262e8>Next</span></button>", 3);
+var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"carousel-inner\" data-v-872262e8><div class=\"carousel-item active\" data-v-872262e8><img src=\"images/coulon.jpg\" class=\"d-block w-100\" alt=\"marais poitevin\" data-v-872262e8><div class=\"carousel-caption captionfondbleu d-none d-md-block p-5\" data-v-872262e8><h2 data-v-872262e8>Redécouvrez votre région !</h2><p data-v-872262e8>Vous serez étonné(e) par les nombreux lieux extraordinaires qu&#39;elle propose.</p><a href=\"\" data-v-872262e8><button class=\"btn btn-lg\" data-v-872262e8>Voir la carte des lieux</button></a></div><h2 class=\"carousel-caption d-block d-md-none fs-1\" data-v-872262e8>Redécouvrez votre région !</h2></div><div class=\"carousel-item\" data-v-872262e8><img src=\"images/plage-des-chardons.jpg\" class=\"d-block w-100\" alt=\"plage de la Faute\" data-v-872262e8><div class=\"carousel-caption captionfondbleu d-none d-md-block p-5\" data-v-872262e8><h2 data-v-872262e8>Partagez vos coups de coeur !</h2><p data-v-872262e8>Faites profiter la communauté de vos petits coins de paradis.</p><a href=\"\" data-v-872262e8><button class=\"btn btn-lg\" data-v-872262e8>Voir la carte des lieux</button></a></div><h2 class=\"carousel-caption d-block d-md-none fs-1\" data-v-872262e8>Partagez vos coups de coeur</h2></div><div class=\"carousel-item\" data-v-872262e8><img src=\"images/mervent.jpg\" class=\"d-block w-100\" alt=\"forêt de Mervent\" data-v-872262e8><div class=\"carousel-caption captionfondbleu d-none d-md-block p-5\" data-v-872262e8><h2 data-v-872262e8>Destination nature !</h2><p data-v-872262e8>Il y a toujours une nouvelle sortie sur Nice Places ! </p><a href=\"\" data-v-872262e8><button class=\"btn btn-lg\" data-v-872262e8>Voir la carte des lieux</button></a></div><h2 class=\"carousel-caption d-block d-md-none fs-1\" data-v-872262e8>Destination nature !</h2></div><div class=\"carousel-indicators\" data-v-872262e8><button type=\"button\" data-bs-target=\"#carouselAccueil\" data-bs-slide-to=\"0\" class=\"active\" aria-current=\"true\" aria-label=\"Slide 1\" data-v-872262e8></button><button type=\"button\" data-bs-target=\"#carouselAccueil\" data-bs-slide-to=\"1\" aria-label=\"Slide 2\" data-v-872262e8></button><button type=\"button\" data-bs-target=\"#carouselAccueil\" data-bs-slide-to=\"2\" aria-label=\"Slide 3\" data-v-872262e8></button></div></div><button class=\"carousel-control-prev\" type=\"button\" data-bs-target=\"#carouselAccueil\" data-bs-slide=\"prev\" data-v-872262e8><span class=\"carousel-control-prev-icon\" aria-hidden=\"true\" data-v-872262e8></span><span class=\"visually-hidden\" data-v-872262e8>Previous</span></button><button class=\"carousel-control-next\" type=\"button\" data-bs-target=\"#carouselAccueil\" data-bs-slide=\"next\" data-v-872262e8><span class=\"carousel-control-next-icon\" aria-hidden=\"true\" data-v-872262e8></span><span class=\"visually-hidden\" data-v-872262e8>Next</span></button>", 3);
 
 var _hoisted_5 = [_hoisted_2];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
@@ -24744,17 +25108,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm-bundler.js");
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm-bundler.js");
 /* harmony import */ var _components_App_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/App.vue */ "./resources/js/components/App.vue");
 /* harmony import */ var _components_Carte_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Carte.vue */ "./resources/js/components/Carte.vue");
 /* harmony import */ var _components_TopLieux_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/TopLieux.vue */ "./resources/js/components/TopLieux.vue");
-/* harmony import */ var _components_ProposerLieu_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/ProposerLieu.vue */ "./resources/js/components/ProposerLieu.vue");
-/* harmony import */ var _components_Inscription_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/Inscription.vue */ "./resources/js/components/Inscription.vue");
-/* harmony import */ var _components_Connexion_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/Connexion.vue */ "./resources/js/components/Connexion.vue");
-/* harmony import */ var _components_MonCompte_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/MonCompte.vue */ "./resources/js/components/MonCompte.vue");
-/* harmony import */ var _components_SuccessMessage_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/SuccessMessage.vue */ "./resources/js/components/SuccessMessage.vue");
-/* harmony import */ var _components_MesLieuxPostes_vue__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/MesLieuxPostes.vue */ "./resources/js/components/MesLieuxPostes.vue");
-/* harmony import */ var _components_MesLieuxFavoris_vue__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./components/MesLieuxFavoris.vue */ "./resources/js/components/MesLieuxFavoris.vue");
+/* harmony import */ var _components_Lieu_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/Lieu.vue */ "./resources/js/components/Lieu.vue");
+/* harmony import */ var _components_ProposerLieu_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/ProposerLieu.vue */ "./resources/js/components/ProposerLieu.vue");
+/* harmony import */ var _components_Inscription_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/Inscription.vue */ "./resources/js/components/Inscription.vue");
+/* harmony import */ var _components_Connexion_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/Connexion.vue */ "./resources/js/components/Connexion.vue");
+/* harmony import */ var _components_MonCompte_vue__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/MonCompte.vue */ "./resources/js/components/MonCompte.vue");
+/* harmony import */ var _components_SuccessMessage_vue__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/SuccessMessage.vue */ "./resources/js/components/SuccessMessage.vue");
+/* harmony import */ var _components_MesLieuxPostes_vue__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./components/MesLieuxPostes.vue */ "./resources/js/components/MesLieuxPostes.vue");
+/* harmony import */ var _components_MesLieuxFavoris_vue__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./components/MesLieuxFavoris.vue */ "./resources/js/components/MesLieuxFavoris.vue");
+
 
 
 
@@ -24779,36 +25145,40 @@ var routes = [{
   name: "TopLieux",
   component: _components_TopLieux_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
 }, {
+  path: "/lieu",
+  name: "Lieu",
+  component: _components_Lieu_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
+}, {
   path: "/proposerlieu",
   name: "ProposerLieu",
-  component: _components_ProposerLieu_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
+  component: _components_ProposerLieu_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
 }, {
   path: "/inscription",
   name: "Inscription",
-  component: _components_Inscription_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
+  component: _components_Inscription_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
 }, {
   path: "/connexion",
   name: "Connexion",
-  component: _components_Connexion_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
+  component: _components_Connexion_vue__WEBPACK_IMPORTED_MODULE_6__["default"]
 }, {
   path: "/moncompte",
   name: "MonCompte",
-  component: _components_MonCompte_vue__WEBPACK_IMPORTED_MODULE_6__["default"]
+  component: _components_MonCompte_vue__WEBPACK_IMPORTED_MODULE_7__["default"]
 }, {
   path: "/meslieuxpostes",
   name: "MesLieuxPostes",
-  component: _components_MesLieuxPostes_vue__WEBPACK_IMPORTED_MODULE_8__["default"]
+  component: _components_MesLieuxPostes_vue__WEBPACK_IMPORTED_MODULE_9__["default"]
 }, {
   path: "/meslieuxfavoris",
   name: "MesLieuxFavoris",
-  component: _components_MesLieuxFavoris_vue__WEBPACK_IMPORTED_MODULE_9__["default"]
+  component: _components_MesLieuxFavoris_vue__WEBPACK_IMPORTED_MODULE_10__["default"]
 }, {
   path: "/successmessage",
   name: "SuccessMessage",
-  component: _components_SuccessMessage_vue__WEBPACK_IMPORTED_MODULE_7__["default"]
+  component: _components_SuccessMessage_vue__WEBPACK_IMPORTED_MODULE_8__["default"]
 }];
-var router = (0,vue_router__WEBPACK_IMPORTED_MODULE_10__.createRouter)({
-  history: (0,vue_router__WEBPACK_IMPORTED_MODULE_10__.createWebHistory)(),
+var router = (0,vue_router__WEBPACK_IMPORTED_MODULE_11__.createRouter)({
+  history: (0,vue_router__WEBPACK_IMPORTED_MODULE_11__.createWebHistory)(),
   routes: routes
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (router);
@@ -24846,7 +25216,10 @@ var defaultState = {
     departement: "",
     token: ""
   },
-  message: ""
+  message: "",
+  geolocationAnswered: false,
+  userPosition: "",
+  lieux: ""
 };
 var store = (0,vuex__WEBPACK_IMPORTED_MODULE_1__.createStore)({
   state: function state() {
@@ -24872,6 +25245,17 @@ var store = (0,vuex__WEBPACK_IMPORTED_MODULE_1__.createStore)({
     // stocker un message de succès dans le state
     storeMessage: function storeMessage(state, payload) {
       state.message = payload;
+    },
+    // mémoriser le fait qu'un choix a été fait par rapport à la géoloc
+    storeGeolocationAnswered: function storeGeolocationAnswered(state, payload) {
+      state.geolocationAnswered = payload;
+    },
+    // stocker la position de l'utilisateur si géoloc acceptée
+    storeUserPosition: function storeUserPosition(state, payload) {
+      state.userPosition = payload;
+    },
+    storeLieux: function storeLieux(state, payload) {
+      state.lieux = payload;
     },
     // réinitialiser le state
     resetState: function resetState(state) {
@@ -29964,7 +30348,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nimg[data-v-332fccf4] {\r\n\theight: 1.7em\n}\n.titleIcon[data-v-332fccf4] {\r\n\theight: 8vh\n}\nh2[data-v-332fccf4] {\r\n\tcolor: #1c6e8c\n}\n.btn[data-v-332fccf4] {\r\n    background-color: #94D1BE !important;\r\n    color: white;\n}\n#presentation[data-v-332fccf4] {\r\n\tbackground-position: center;\r\n\tbackground-size: cover;\r\n\theight: 55vh\n}\n#presentationTopStripe[data-v-332fccf4] {\r\n\tbackground-color: #94D1BE;\r\n\theight: 2vh;\n}\n#presentationBottomStripe[data-v-332fccf4] {\r\n\tbackground-color: #1C6E8C;\r\n\theight: 2vh;\n}\n#toplieux[data-v-332fccf4],\r\n#dernierslieux[data-v-332fccf4] {\r\n\theight: 50vh;\r\n\tcolor: white\n}\n#toplieux button[data-v-332fccf4],\r\n#dernierslieux button[data-v-332fccf4] {\r\n\tbackground-color: #1c6e8c !important;\n}\n.infoslieu[data-v-332fccf4] {\r\n\tbackground-color: rgba(50, 61, 158, 0.5);\n}\n.ranking[data-v-332fccf4] {\r\n\tfont-size: 2em;\n}\n.categoryicon[data-v-332fccf4] {\r\n\tbackground-color: white;\n}\n#inscrivezVous[data-v-332fccf4] {\r\n\tcolor: #1c6e8c;\n}\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\twidth: 10vw;\r\n\theight: 10vw\n}\n#pointer[data-v-332fccf4] {\r\n\twidth: 7vw;\r\n\theight: 10vw\n}\n@media screen and (max-width: 580px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 120vh;\n}\n#presentation[data-v-332fccf4] {\r\n\t\theight: 62vh\n}\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\t\twidth: 30vw;\r\n\t\theight: 30vw\n}\n#pointer[data-v-332fccf4] {\r\n\t\twidth: 20vw;\r\n\t\theight: 30vw\n}\n}\n@media screen and (min-width: 581px) and (max-width: 768px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 70vh;\n}\n#presentation[data-v-332fccf4] {\r\n\t\theight: 57vh\n}\n}\n@media screen and (min-width: 769px) and (max-width: 992px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 60vh;\n}\n}\n@media screen and (min-width: 581px) and (max-width: 992px) {\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\t\twidth: 17vw;\r\n\t\theight: 17vw\n}\n#pointer[data-v-332fccf4] {\r\n\t\twidth: 11vw;\r\n\t\theight: 17vw\n}\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nimg[data-v-332fccf4] {\r\n\theight: 1.7em\n}\n.titleIcon[data-v-332fccf4] {\r\n\theight: 8vh\n}\nh2[data-v-332fccf4] {\r\n\tcolor: #1c6e8c\n}\n.btn[data-v-332fccf4] {\r\n\tbackground-color: #94D1BE !important;\r\n\tcolor: white;\n}\n#presentation[data-v-332fccf4] {\r\n\tbackground-position: center;\r\n\tbackground-size: cover;\r\n\theight: 55vh\n}\n#presentationTopStripe[data-v-332fccf4] {\r\n\tbackground-color: #94D1BE;\r\n\theight: 2vh;\n}\n#presentationBottomStripe[data-v-332fccf4] {\r\n\tbackground-color: #1C6E8C;\r\n\theight: 2vh;\n}\n#toplieux[data-v-332fccf4],\r\n#dernierslieux[data-v-332fccf4] {\r\n\theight: 50vh;\r\n\tcolor: white\n}\n#toplieux button[data-v-332fccf4],\r\n#dernierslieux button[data-v-332fccf4] {\r\n\tbackground-color: #1c6e8c !important;\n}\n.infoslieu[data-v-332fccf4] {\r\n\tbackground-color: rgba(50, 61, 158, 0.5);\n}\n.ranking[data-v-332fccf4] {\r\n\tfont-size: 2em;\n}\n.categoryicon[data-v-332fccf4] {\r\n\tbackground-color: white;\n}\n#inscrivezVous[data-v-332fccf4] {\r\n\tcolor: #1c6e8c;\n}\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\twidth: 10vw;\r\n\theight: 10vw\n}\n#pointer[data-v-332fccf4] {\r\n\twidth: 7vw;\r\n\theight: 10vw\n}\n@media screen and (max-width: 580px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 120vh;\n}\n#presentation[data-v-332fccf4] {\r\n\t\theight: 62vh\n}\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\t\twidth: 30vw;\r\n\t\theight: 30vw\n}\n#pointer[data-v-332fccf4] {\r\n\t\twidth: 20vw;\r\n\t\theight: 30vw\n}\n}\n@media screen and (min-width: 581px) and (max-width: 768px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 70vh;\n}\n#presentation[data-v-332fccf4] {\r\n\t\theight: 57vh\n}\n}\n@media screen and (min-width: 769px) and (max-width: 992px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 60vh;\n}\n}\n@media screen and (min-width: 581px) and (max-width: 992px) {\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\t\twidth: 17vw;\r\n\t\theight: 17vw\n}\n#pointer[data-v-332fccf4] {\r\n\t\twidth: 11vw;\r\n\t\theight: 17vw\n}\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -30072,7 +30456,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 var ___CSS_LOADER_URL_REPLACEMENT_0___ = _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_1___default()(_public_images_foret_jpg__WEBPACK_IMPORTED_MODULE_2__["default"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\r\n/*#94D1BE*/\nimg[data-v-51196a86] {\r\n    width: 6vw\n}\n.container-fluid[data-v-51196a86] {\r\n    background-image: linear-gradient(rgba(132, 247, 192, 0.4),\r\n            rgba(7, 117, 230, 0.3)), url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\r\n    background-position: center;\r\n    background-size: cover;\n}\nh1[data-v-51196a86] {\r\n    color: #1C6E8C\n}\n.card[data-v-51196a86] {\r\n    color: #1C6E8C;\n}\n.card-header[data-v-51196a86] {\r\n    background-color: #94D1BE\n}\n#passwordHelpBlock[data-v-51196a86] {\r\n    max-width: 600px;\n}\n@media screen and (max-width: 768px) {\nimg[data-v-51196a86] {\r\n        width: 10vw\n}\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\r\n/*#94D1BE*/\nimg[data-v-51196a86] {\r\n    width: 6vw\n}\n.container-fluid[data-v-51196a86] {\r\n    background-image: linear-gradient(rgba(132, 247, 192, 0.4),\r\n            rgba(7, 117, 230, 0.3)), url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\r\n    background-position: center;\r\n    background-size: cover;\n}\nh1[data-v-51196a86] {\r\n    color: #1C6E8C\n}\n.card[data-v-51196a86] {\r\n    color: #1C6E8C;\n}\n.card-header[data-v-51196a86] {\r\n    background-color: #94D1BE\n}\n#passwordHelpBlock[data-v-51196a86] {\r\n    max-width: 600px;\n}\ni[data-v-51196a86] {\r\n    color: #94D1BE\n}\n.fa-xmark[data-v-51196a86] {\r\n    color: red\n}\n@media screen and (max-width: 768px) {\nimg[data-v-51196a86] {\r\n        width: 10vw\n}\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -30096,7 +30480,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\niframe[data-v-479a2f41] {\r\n    height : 75vh;\r\n    margin : auto;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#map[data-v-479a2f41] {\r\n    height: 75vh;\r\n    margin: auto;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -30126,7 +30510,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 var ___CSS_LOADER_URL_REPLACEMENT_0___ = _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_1___default()(_public_images_rochers_jpg__WEBPACK_IMPORTED_MODULE_2__["default"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.container-fluid[data-v-6ff82411] {\r\n    background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\r\n    background-position: center;\r\n    background-size: cover;\n}\nh1[data-v-6ff82411] {\r\n    color: #1C6E8C\n}\ni[data-v-6ff82411] {\r\n    color: #94D1BE\n}\n.card[data-v-6ff82411] {\r\n    color: #1C6E8C;\n}\n.card-header[data-v-6ff82411] {\r\n    background-color: #94D1BE\n}\n#passwordHelpBlock[data-v-6ff82411] {\r\n    max-width: 600px;\n}\n#boutonValider[data-v-6ff82411] {\r\n    background-color: #1C6E8C;\r\n    color: white;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.container-fluid[data-v-6ff82411] {\r\n    background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\r\n    background-position: center;\r\n    background-size: cover;\n}\nh1[data-v-6ff82411] {\r\n    color: #1C6E8C\n}\ni[data-v-6ff82411] {\r\n    color: #94D1BE\n}\n.fa-xmark[data-v-6ff82411] {\r\n    color: red\n}\n.card[data-v-6ff82411] {\r\n    color: #1C6E8C;\n}\n.card-header[data-v-6ff82411] {\r\n    background-color: #94D1BE\n}\n#passwordHelpBlock[data-v-6ff82411] {\r\n    max-width: 600px;\n}\n#boutonValider[data-v-6ff82411] {\r\n    background-color: #1C6E8C;\r\n    color: white;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -48693,6 +49077,32 @@ if (false) {}
 
 /***/ }),
 
+/***/ "./resources/js/components/Lieu.vue":
+/*!******************************************!*\
+  !*** ./resources/js/components/Lieu.vue ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _Lieu_vue_vue_type_template_id_48023150__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Lieu.vue?vue&type=template&id=48023150 */ "./resources/js/components/Lieu.vue?vue&type=template&id=48023150");
+/* harmony import */ var C_wamp64_www_Nice_Places_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+
+const script = {}
+
+;
+const __exports__ = /*#__PURE__*/(0,C_wamp64_www_Nice_Places_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_1__["default"])(script, [['render',_Lieu_vue_vue_type_template_id_48023150__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/components/Lieu.vue"]])
+/* hot reload */
+if (false) {}
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__exports__);
+
+/***/ }),
+
 /***/ "./resources/js/components/Map.vue":
 /*!*****************************************!*\
   !*** ./resources/js/components/Map.vue ***!
@@ -49289,6 +49699,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Inscription_vue_vue_type_template_id_51196a86_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Inscription_vue_vue_type_template_id_51196a86_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Inscription.vue?vue&type=template&id=51196a86&scoped=true */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/Inscription.vue?vue&type=template&id=51196a86&scoped=true");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Lieu.vue?vue&type=template&id=48023150":
+/*!************************************************************************!*\
+  !*** ./resources/js/components/Lieu.vue?vue&type=template&id=48023150 ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Lieu_vue_vue_type_template_id_48023150__WEBPACK_IMPORTED_MODULE_0__.render)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Lieu_vue_vue_type_template_id_48023150__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Lieu.vue?vue&type=template&id=48023150 */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/Lieu.vue?vue&type=template&id=48023150");
 
 
 /***/ }),

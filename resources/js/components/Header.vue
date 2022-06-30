@@ -2,19 +2,7 @@
 import { store } from '../store'
 
 export default {
-    data() {
-        return {
-            userData: store.getters.getUserData
-        }
-    },
-
-// computed permet de surveiller automatiquement les changements
-// de userData dans le state => utile pour la déconnexion
-    computed: {
-        userData() {
-            return store.state.userData
-        }
-    },
+    props: ["userData"],
 
     methods: {
         logOut() {

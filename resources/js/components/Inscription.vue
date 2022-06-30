@@ -11,10 +11,17 @@ export default {
             email: "",
             password: "",
             password_confirmation: "",
-            validationErrors: ""
+            validationErrors: "",
+            passwordTyped: false,
+            eightCharacters: false,
+            oneLetter: false,
+            oneUppercaseOneLowercase: false,
+            oneDigit: false,
+            oneSpecialCharacter: false
         }
     },
     components: { ValidationErrors },
+
     methods: {
         sendData() {
             axios.post('/api/register', { pseudo: this.pseudo, email: this.email, password: this.password, password_confirmation: this.password_confirmation })
@@ -27,6 +34,52 @@ export default {
                 .catch((error) => {
                     this.validationErrors = error.response.data.data;
                 })
+        },
+
+        checkPassword(password) {
+
+            this.passwordTyped = true
+
+            let correctCriterias = 0;
+
+            if (password.length >= 8) {
+                this.eightCharacters = true
+                correctCriterias++
+            } else {
+                this.eightCharacters = false
+            }
+
+            if (password.match(/[a-z]/)) {
+                this.oneLetter = true
+                correctCriterias++
+            } else {
+                this.oneLetter = false
+            }
+
+            if (password.match(/(?=.*[a-z])(?=.*[A-Z])/)) {
+                this.oneUppercaseOneLowercase = true
+                correctCriterias++
+            } else {
+                this.oneUppercaseOneLowercase = false
+            }
+
+            if (password.match(/\d/)) {
+                this.oneDigit = true
+                correctCriterias++
+            } else {
+                this.oneDigit = false;
+            }
+
+            if (password.match(/[!@#$%^&*?]/)) {
+                this.oneSpecialCharacter = true
+                correctCriterias++
+            } else {
+                this.oneSpecialCharacter = false;
+            }
+
+            if (correctCriterias == 7) {
+                this.passwordTyped = false
+            }
         }
     }
 }
@@ -60,6 +113,14 @@ h1 {
 
 #passwordHelpBlock {
     max-width: 600px;
+}
+
+i {
+    color: #94D1BE
+}
+
+.fa-xmark {
+    color: red
 }
 
 @media screen and (max-width: 768px) {
@@ -117,9 +178,49 @@ h1 {
                                 <label for="password" class="col-md-4 col-form-label text-md-right">mot de passe</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="password" id="password" type="password" class="form-control"
-                                        name="password" required autocomplete="new-password">
+                                    <input v-model="password" @keyup="checkPassword(password)" id="password"
+                                        type="password" class="form-control" name="password" required
+                                        autocomplete="new-password">
                                 </div>
+                            </div>
+
+                            <div v-if="passwordTyped" class="container" id="dynamicPasswordCheck">
+
+                                <div class="row">
+                                    <p>minimum 8 caractères
+                                        <i v-if="eightCharacters" class="p-2 fa-solid fa-check"></i>
+                                        <i v-else class="fa-solid fa-xmark"></i>
+                                    </p>
+                                </div>
+
+                                <div class="row">
+                                    <p>minimum 1 lettre
+                                        <i v-if="oneLetter" class="p-2 fa-solid fa-check"></i>
+                                        <i v-else class="fa-solid fa-xmark"></i>
+                                    </p>
+                                </div>
+
+                                <div class="row">
+                                    <p>minimum 1 chiffre
+                                        <i v-if="oneDigit" class="p-2 fa-solid fa-check"></i>
+                                        <i v-else class="fa-solid fa-xmark"></i>
+                                    </p>
+                                </div>
+
+                                <div class="row">
+                                    <p>minimum 1 majuscule et 1 minuscule
+                                        <i v-if="oneUppercaseOneLowercase" class="p-2 fa-solid fa-check"></i>
+                                        <i v-else class="fa-solid fa-xmark"></i>
+                                    </p>
+                                </div>
+
+                                <div class="row">
+                                    <p>minimum 1 caractère spécial
+                                        <i v-if="oneSpecialCharacter" class="p-2 fa-solid fa-check"></i>
+                                        <i v-else class="fa-solid fa-xmark"></i>
+                                    </p>
+                                </div>
+
                             </div>
 
                             <div class="form-group row m-2">

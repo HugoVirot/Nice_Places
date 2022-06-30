@@ -9,7 +9,7 @@ class Lieu extends Model
 {
     use HasFactory;
 
-    protected $with = ['categories'];  // chargement automatique des catégories associées
+    protected $with = ['categories', 'images'];  // chargement automatique des catégories associées
                                        // lorsque l'on récupère le lieu
     public function categories()
     {

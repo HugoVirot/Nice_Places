@@ -3,13 +3,18 @@ import Header from "./Header.vue"
 import Slider from "./Slider.vue"
 import Map from "./Map.vue"
 import Footer from "./Footer.vue"
+import { store } from '../store'
 
 export default {
-	data() {
-		return {
-			message: "Bienvenue sur Vue 3"
-		};
+
+	// computed permet de surveiller automatiquement les changements
+	// de userData dans le state => utile pour la déconnexion
+	computed: {
+		userData() {
+			return store.state.userData
+		}
 	},
+
 	components: { Header, Slider, Map, Footer }
 }
 </script>
@@ -28,8 +33,8 @@ h2 {
 }
 
 .btn {
-    background-color: #94D1BE !important;
-    color: white;
+	background-color: #94D1BE !important;
+	color: white;
 }
 
 #presentation {
@@ -143,7 +148,7 @@ h2 {
 
 <template>
 	<div class="text-center p-1">
-		<Header />
+		<Header :userData="userData" />
 
 		<div v-if="$route.path !== '/'">
 			<!-- si la route est différente de / (racine du site) -->
@@ -196,7 +201,7 @@ h2 {
 					<!-- ********************** lieu 1 ************************* -->
 
 					<div class="mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
-						style="background-image: url(images/oiseaux.jpg); background-position: center; background-size: cover;">
+						style="background-image: url(images/parc-des-oiseaux-du-marais.jpg); background-position: center; background-size: cover;">
 
 						<div class="infoslieu p-1">
 
@@ -230,7 +235,7 @@ h2 {
 					<!-- ********************** lieu 2 ************************* -->
 
 					<div class="mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
-						style="background-image: url(images/oiseaux.jpg); background-position: center; background-size: cover;">
+						style="background-image: url(images/parc-des-oiseaux-du-marais.jpg); background-position: center; background-size: cover;">
 
 						<div class="infoslieu p-1">
 
@@ -264,7 +269,7 @@ h2 {
 					<!-- ********************** lieu 3 ************************* -->
 
 					<div class="mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
-						style="background-image: url(images/oiseaux.jpg); background-position: center; background-size: cover;">
+						style="background-image: url(images/parc-des-oiseaux-du-marais.jpg); background-position: center; background-size: cover;">
 
 						<div class="infoslieu p-1">
 
@@ -314,7 +319,7 @@ h2 {
 					<!-- ********************** lieu 1 ************************* -->
 
 					<div class="mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
-						style="background-image: url(images/planete_sauvage.jpg); background-position: center; background-size: cover;">
+						style="background-image: url(images/planete-sauvage.jpg); background-position: center; background-size: cover;">
 
 						<div class="infoslieu p-1">
 
@@ -362,7 +367,7 @@ h2 {
 					<!-- ********************** lieu 2 ************************* -->
 
 					<div class="mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
-						style="background-image: url(images/planete_sauvage.jpg); background-position: center; background-size: cover;">
+						style="background-image: url(images/planete-sauvage.jpg); background-position: center; background-size: cover;">
 
 						<div class="infoslieu p-1">
 
@@ -410,7 +415,7 @@ h2 {
 					<!-- ********************** lieu 3 ************************* -->
 
 					<div class="mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
-						style="background-image: url(images/planete_sauvage.jpg); background-position: center; background-size: cover;">
+						style="background-image: url(images/planete-sauvage.jpg); background-position: center; background-size: cover;">
 
 						<div class="infoslieu p-1">
 

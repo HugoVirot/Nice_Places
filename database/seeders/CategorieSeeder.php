@@ -15,39 +15,48 @@ class CategorieSeeder extends Seeder
     public function run()
     {
         Categorie::create([  //1
-            'nom' => 'plages'
+            'nom' => 'plages',
+            'icone' => '<i class="fa-solid fa-umbrella-beach"></i>'
         ]);
 
         Categorie::create([  //2
-            'nom' => 'forêts et bois'
+            'nom' => 'forêts et bois',
+            'icone' => '<i class="fa-solid fa-tree"></i>'
         ]);
 
         Categorie::create([  //3
-            'nom' => 'lacs'
+            'nom' => 'lacs et étangs',
+            'icone' => '<i class="fa-solid fa-water"></i>'
         ]);
 
         Categorie::create([  //4
-            'nom' => 'fleuves, rivières et cours d\'eau'
+            'nom' => 'fleuves, rivières et cours d\'eau',
+            'icone' => '<i class="fa-solid fa-droplet"></i>'
         ]);
 
         Categorie::create([  //5
-            'nom' => 'parcs naturels régionaux'
+            'nom' => 'parcs naturels régionaux',
+            'icone' => '<i class="fa-solid fa-signs-post"></i>'
         ]);
 
         Categorie::create([  //6
-            'nom' => 'parcs urbains'
+            'nom' => 'parcs urbains',
+            'icone' => '<i class="fa-solid fa-tree-city"></i>'
         ]);
 
         Categorie::create([  //7
-            'nom' => 'randonnées en montagne'
+            'nom' => 'randonnées en montagne',
+            'icone' => '<i class="fa-solid fa-mountains"></i>'
         ]);
 
         Categorie::create([  //8
-            'nom' => 'zoos et réserves naturelles'
+            'nom' => 'zoos et réserves naturelles',
+            'icone' => '<i class="fa-solid fa-paw"></i>'
         ]);
 
         Categorie::create([  //9
-            'nom' => 'parcs de loisirs / accrobranches'
+            'nom' => 'parcs de loisirs / accrobranches',
+            'icone' => '<i class="fa-solid fa-squirrel"></i>'
         ]);
     }
 }

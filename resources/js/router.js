@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from "vue-router";
 import App from "./components/App.vue";
 import Carte from "./components/Carte.vue"
 import TopLieux from "./components/TopLieux.vue"
+import Lieu from "./components/Lieu.vue"
 import ProposerLieu from "./components/ProposerLieu.vue"
 import Inscription from "./components/Inscription.vue"
 import Connexion from "./components/Connexion.vue"
@@ -25,6 +26,11 @@ const routes = [
     path: "/toplieux",
     name: "TopLieux",
     component: TopLieux,
+  },
+  {
+    path: "/lieu",
+    name: "Lieu",
+    component: Lieu,
   },
   {
     path: "/proposerlieu",
