@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Lieu extends Model
 {
     use HasFactory;
-
-    protected $with = ['categories', 'images'];  // chargement automatique des catégories associées
-                                       // lorsque l'on récupère le lieu
+    // chargement automatique des catégories / images / user / avis associés lorsque l'on récupère le lieu
+    protected $with = ['categories', 'images', 'user', 'avis'];  
+                                       
     public function categories()
     {
         return $this->belongsToMany(Categorie::class, 'categories_lieux');

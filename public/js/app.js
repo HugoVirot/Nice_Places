@@ -22924,6 +22924,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Map_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Map.vue */ "./resources/js/components/Map.vue");
 /* harmony import */ var _Footer_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Footer.vue */ "./resources/js/components/Footer.vue");
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../store */ "./resources/js/store.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_5__);
+
 
 
 
@@ -22935,6 +22938,75 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     userData: function userData() {
       return _store__WEBPACK_IMPORTED_MODULE_4__.store.state.userData;
+    },
+    threeTopPlaces: function threeTopPlaces() {
+      return _store__WEBPACK_IMPORTED_MODULE_4__.store.state.threeTopPlaces;
+    },
+    threeLastPlaces: function threeLastPlaces() {
+      return _store__WEBPACK_IMPORTED_MODULE_4__.store.state.threeLastPlaces;
+    },
+    lieux: function lieux() {
+      return _store__WEBPACK_IMPORTED_MODULE_4__.store.state.lieux;
+    }
+  },
+  watch: {
+    userData: {
+      handler: function handler() {
+        this.getThreeTopAndLastPlaces();
+      },
+      deep: true
+    }
+  },
+  methods: {
+    getThreeTopAndLastPlaces: function getThreeTopAndLastPlaces() {
+      var _this = this;
+
+      var department; // si l'utilisateur a choisi un département
+
+      if (_store__WEBPACK_IMPORTED_MODULE_4__.store.state.userData.departement) {
+        department = _store__WEBPACK_IMPORTED_MODULE_4__.store.state.userData.departement; //sinon => on cible la France entière
+      } else {
+        department = "all";
+      } // on récupère les 3 lieux les mieux notés du dép. / de la France entière
+      // on les stocke dans le store
+
+
+      axios__WEBPACK_IMPORTED_MODULE_5___default().post("http://localhost:8000/api/lieus/gettopplacesbydep", null, {
+        params: {
+          department: department
+        }
+      }).then(function (response) {
+        _store__WEBPACK_IMPORTED_MODULE_4__.store.commit('storeThreeTopPlaces', response.data);
+        console.log(_this.threeTopPlaces);
+      })["catch"](function (error) {
+        console.log(error.response);
+      }); // on récupère les 3 derniers lieux ajoutés du dép. / de la France entière
+      // on les stocke dans le store
+
+      axios__WEBPACK_IMPORTED_MODULE_5___default().post("http://localhost:8000/api/lieus/getlastplacesbydep", null, {
+        params: {
+          department: department
+        }
+      }).then(function (response) {
+        _store__WEBPACK_IMPORTED_MODULE_4__.store.commit('storeThreeLastPlaces', response.data);
+        console.log(_this.threeLastPlaces);
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
+    }
+  },
+  created: function created() {
+    console.log(_store__WEBPACK_IMPORTED_MODULE_4__.store.state.userPosition); // ******************* si réponse à la demande de géoloc ************************
+
+    if (_store__WEBPACK_IMPORTED_MODULE_4__.store.state.geolocationAnswered) {
+      //*********** si géoloc acceptée => userPosition disponible (pas vide)*********
+      if (_store__WEBPACK_IMPORTED_MODULE_4__.store.state.userPosition) {// on détecte le département de l'utilisateur
+        // on récupère les 3 derniers lieux ajoutés + les 3 les mieux notés du dép.
+        // on les stocke dans des variables locales ou du store
+      } else {
+        // *************** si le user a refusé la géoloc  *****
+        this.getThreeTopAndLastPlaces();
+      }
     }
   },
   components: {
@@ -23605,11 +23677,193 @@ var _hoisted_3 = {
 
 var _hoisted_4 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div id=\"presentationTopStripe\" class=\"mt-5\" data-v-332fccf4></div><div class=\"container-fluid p-5\" id=\"presentation\" style=\"background-image:url(images/mervent3.jpg);\" data-v-332fccf4><div class=\"row pb-4\" data-v-332fccf4><div class=\"col-md-6 my-auto\" data-v-332fccf4><img class=\"w-100 h-100 bg-white rounded\" src=\"images/logo.png\" data-v-332fccf4></div><div class=\"col-md-6 my-auto\" data-v-332fccf4><p class=\"text-white fs-3\" data-v-332fccf4>Un site et un appli mobile simples à utiliser, pour trouver et partager des sorties nature (plage, forêt, lac, montagne...) près de chez vous !</p></div></div><a href=\"/\" data-v-332fccf4><button class=\"btn btn-lg mt-3 rounded-pill\" data-v-332fccf4>Je m&#39;inscris</button></a></div><div id=\"presentationBottomStripe\" class=\"mb-3\" data-v-332fccf4></div><img class=\"titleIcon mt-5 mx-auto\" src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4><h2 class=\"fs-2 m-3\" data-v-332fccf4> Carte des lieux autour de chez vous</h2>", 5);
 
-var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div data-v-332fccf4><img class=\"titleIcon mt-5 mx-auto\" src=\"images/icons/star.png\" alt=\"étoile\" data-v-332fccf4><h2 class=\"fs-2 m-3\" data-v-332fccf4>Le top des lieux dans votre région</h2></div><div class=\"container-fluid\" data-v-332fccf4><div class=\"row m-1 p-1\" id=\"toplieux\" data-v-332fccf4><!-- ********************** lieu 1 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/parc-des-oiseaux-du-marais.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between align-items-center\" data-v-332fccf4><div class=\"col-2\" data-v-332fccf4><span class=\"ranking\" data-v-332fccf4> #1 </span></div><div class=\"col-10\" data-v-332fccf4><h4 data-v-332fccf4>Parc Ornithologique</h4></div></div><div class=\"row\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/star.png\" alt=\"pointeur\" data-v-332fccf4> 9.3 </div><div class=\"col-7\" data-v-332fccf4><h5 data-v-332fccf4>St-Hilaire-la-Palud (79)</h5></div><div class=\"col-2 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div><!-- ********************** lieu 2 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/parc-des-oiseaux-du-marais.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between align-items-center\" data-v-332fccf4><div class=\"col-2\" data-v-332fccf4><span class=\"ranking\" data-v-332fccf4> #1 </span></div><div class=\"col-10\" data-v-332fccf4><h4 data-v-332fccf4>Parc Ornithologique</h4></div></div><div class=\"row\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/star.png\" alt=\"pointeur\" data-v-332fccf4> 9.3 </div><div class=\"col-7\" data-v-332fccf4><h5 data-v-332fccf4>St-Hilaire-la-Palud (79)</h5></div><div class=\"col-2 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div><!-- ********************** lieu 3 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/parc-des-oiseaux-du-marais.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between align-items-center\" data-v-332fccf4><div class=\"col-2\" data-v-332fccf4><span class=\"ranking\" data-v-332fccf4> #1 </span></div><div class=\"col-10\" data-v-332fccf4><h4 data-v-332fccf4>Parc Ornithologique</h4></div></div><div class=\"row\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/star.png\" alt=\"pointeur\" data-v-332fccf4> 9.3 </div><div class=\"col-7\" data-v-332fccf4><h5 data-v-332fccf4>St-Hilaire-la-Palud (79)</h5></div><div class=\"col-2 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div></div><a href=\"/\" data-v-332fccf4><button class=\"btn btn-lg mt-3 rounded-pill\" data-v-332fccf4>Classement complet</button></a></div>", 2);
+var _hoisted_9 = {
+  key: 0
+};
 
-var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<img class=\"titleIcon mt-5 mx-auto\" src=\"images/icons/clock.png\" alt=\"pointeur\" data-v-332fccf4><h2 class=\"fs-2 m-3\" data-v-332fccf4> Derniers lieux ajoutés</h2><div class=\"container-fluid\" data-v-332fccf4><div class=\"row m-1 p-1\" id=\"dernierslieux\" data-v-332fccf4><!-- ********************** lieu 1 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/planete-sauvage.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between\" data-v-332fccf4><div class=\"col-8\" data-v-332fccf4><h4 class=\"fs-3\" data-v-332fccf4>Planète Sauvage</h4></div><div class=\"col-4 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div><div class=\"row\" data-v-332fccf4><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><p data-v-332fccf4>Port-St-Père (44)</p></div></div><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/user.png\" alt=\"user\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><h5 data-v-332fccf4>par Sam Martin</h5></div></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div><!-- ********************** lieu 2 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/planete-sauvage.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between\" data-v-332fccf4><div class=\"col-8\" data-v-332fccf4><h4 class=\"fs-3\" data-v-332fccf4>Planète Sauvage</h4></div><div class=\"col-4 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div><div class=\"row\" data-v-332fccf4><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><p data-v-332fccf4>Port-St-Père (44)</p></div></div><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/user.png\" alt=\"user\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><h5 data-v-332fccf4>par Sam Martin</h5></div></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div><!-- ********************** lieu 3 ************************* --><div class=\"mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between\" style=\"background-image:url(images/planete-sauvage.jpg);background-position:center;background-size:cover;\" data-v-332fccf4><div class=\"infoslieu p-1\" data-v-332fccf4><div class=\"row d-flex justify-content-between\" data-v-332fccf4><div class=\"col-8\" data-v-332fccf4><h4 class=\"fs-3\" data-v-332fccf4>Planète Sauvage</h4></div><div class=\"col-4 d-flex justify-content-center align-items-center\" data-v-332fccf4><img class=\"bg-white rounded-pill p-1\" src=\"images/icons/step.png\" alt=\"patte\" data-v-332fccf4></div></div><div class=\"row\" data-v-332fccf4><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><p data-v-332fccf4>Port-St-Père (44)</p></div></div><div class=\"row col-xxl-6\" data-v-332fccf4><div class=\"col-3\" data-v-332fccf4><img src=\"images/icons/user.png\" alt=\"user\" data-v-332fccf4></div><div class=\"col-9\" data-v-332fccf4><h5 data-v-332fccf4>par Sam Martin</h5></div></div></div></div><button class=\"btn btn-lg rounded-pill\" data-v-332fccf4>découvrir</button></div></div></div><a href=\"/\" data-v-332fccf4><button class=\"btn btn-lg mt-3 rounded-pill\" data-v-332fccf4>Proposer un lieu</button></a>", 4);
+var _hoisted_10 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+    "class": "titleIcon mt-5 mx-auto",
+    src: "images/icons/star.png",
+    alt: "étoile"
+  }, null, -1
+  /* HOISTED */
+  );
+});
 
-var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<section id=\"inscrivezVous\" data-v-332fccf4><img class=\"titleIcon mt-5 mx-auto\" src=\"images/icons/user.png\" alt=\"user\" data-v-332fccf4><h2 class=\"fs-2 m-3\" data-v-332fccf4>Inscrivez-vous gratuitement !</h2><div class=\"container-fluid px-5\" data-v-332fccf4><div class=\"row\" id=\"inscrivezVousIcones\" data-v-332fccf4><div class=\"col-md-4 p-1\" data-v-332fccf4><img class=\"inscrivezVousIcones\" src=\"images/icons/france.png\" alt=\"France\" data-v-332fccf4><p class=\"fs-4 mt-3\" data-v-332fccf4>Des lieux dans toute la France</p></div><div class=\"col-md-4 p-1\" data-v-332fccf4><img id=\"pointer\" src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4><p class=\"fs-4 mt-3\" data-v-332fccf4>Partagez vos coins préférés</p></div><div class=\"col-md-4 p-1\" data-v-332fccf4><img class=\"inscrivezVousIcones\" src=\"images/icons/phone.png\" alt=\"téléphone\" data-v-332fccf4><p class=\"fs-4 mt-3\" data-v-332fccf4>Un site web et une appli mobile</p></div></div></div><a href=\"/\" data-v-332fccf4><button class=\"btn btn-lg mt-3 rounded-pill\" data-v-332fccf4>Je m&#39;inscris</button></a></section>", 1);
+var _hoisted_11 = {
+  key: 0,
+  "class": "fs-2 m-3"
+};
+var _hoisted_12 = {
+  key: 1,
+  "class": "fs-2 m-3"
+};
+var _hoisted_13 = {
+  "class": "container-fluid"
+};
+var _hoisted_14 = {
+  "class": "row m-1 p-1",
+  id: "toplieux"
+};
+var _hoisted_15 = {
+  "class": "infosTopLieux p-1"
+};
+var _hoisted_16 = {
+  "class": "rankingAndName row d-flex justify-content-between align-items-center"
+};
+var _hoisted_17 = {
+  "class": "col-2"
+};
+var _hoisted_18 = {
+  "class": "ranking"
+};
+var _hoisted_19 = {
+  "class": "col-10"
+};
+var _hoisted_20 = {
+  "class": "row"
+};
+var _hoisted_21 = {
+  "class": "col-4 d-flex justify-content-start"
+};
+
+var _hoisted_22 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+    "class": "me-1",
+    src: "images/icons/star.png",
+    alt: "étoile"
+  }, null, -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_23 = {
+  "class": "col-8 d-flex justify-content-end"
+};
+
+var _hoisted_24 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+    "class": "me-1",
+    src: "images/icons/pointer.png",
+    alt: "pointeur"
+  }, null, -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_25 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    "class": "btn btn-lg rounded-pill"
+  }, "découvrir", -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_26 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
+    href: "/"
+  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    "class": "btn btn-lg mt-3 rounded-pill"
+  }, "Classement complet")], -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_27 = {
+  key: 1
+};
+
+var _hoisted_28 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+    "class": "titleIcon mt-5 mx-auto",
+    src: "images/icons/clock.png",
+    alt: "pointeur"
+  }, null, -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_29 = {
+  key: 0,
+  "class": "fs-2 m-3"
+};
+var _hoisted_30 = {
+  key: 1,
+  "class": "fs-2 m-3"
+};
+var _hoisted_31 = {
+  "class": "container-fluid"
+};
+var _hoisted_32 = {
+  "class": "row m-1 p-1",
+  id: "dernierslieux"
+};
+var _hoisted_33 = {
+  "class": "infosDerniersLieux pt-2 px-1"
+};
+var _hoisted_34 = {
+  "class": "row d-flex justify-content-between"
+};
+var _hoisted_35 = {
+  "class": "row"
+};
+var _hoisted_36 = {
+  "class": "row col-lg-6"
+};
+
+var _hoisted_37 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+    "class": "col-3"
+  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+    src: "images/icons/pointer.png",
+    alt: "pointeur"
+  })], -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_38 = {
+  "class": "col-9"
+};
+var _hoisted_39 = {
+  "class": "row col-lg-6"
+};
+
+var _hoisted_40 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+    "class": "col-3"
+  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+    src: "images/icons/user.png",
+    alt: "user"
+  })], -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_41 = {
+  "class": "col-9"
+};
+
+var _hoisted_42 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    "class": "btn btn-lg rounded-pill"
+  }, "découvrir", -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_43 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("a", {
+    href: "/"
+  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    "class": "btn btn-lg mt-3 rounded-pill"
+  }, "Proposer un lieu")], -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_44 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<section id=\"inscrivezVous\" data-v-332fccf4><img class=\"titleIcon mt-5 mx-auto\" src=\"images/icons/user.png\" alt=\"user\" data-v-332fccf4><h2 class=\"fs-2 m-3\" data-v-332fccf4>Inscrivez-vous gratuitement !</h2><div class=\"container-fluid px-5\" data-v-332fccf4><div class=\"row\" id=\"inscrivezVousIcones\" data-v-332fccf4><div class=\"col-md-4 p-1\" data-v-332fccf4><img class=\"inscrivezVousIcones\" src=\"images/icons/france.png\" alt=\"France\" data-v-332fccf4><p class=\"fs-4 mt-3\" data-v-332fccf4>Des lieux dans toute la France</p></div><div class=\"col-md-4 p-1\" data-v-332fccf4><img id=\"pointer\" src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4><p class=\"fs-4 mt-3\" data-v-332fccf4>Partagez vos coins préférés</p></div><div class=\"col-md-4 p-1\" data-v-332fccf4><img class=\"inscrivezVousIcones\" src=\"images/icons/phone.png\" alt=\"téléphone\" data-v-332fccf4><p class=\"fs-4 mt-3\" data-v-332fccf4>Un site web et une appli mobile</p></div></div></div><a href=\"/\" data-v-332fccf4><button class=\"btn btn-lg mt-3 rounded-pill\" data-v-332fccf4>Je m&#39;inscris</button></a></section>", 1);
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Header = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Header");
@@ -23622,13 +23876,45 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   var _component_Footer = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Footer");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Header, {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ******************************************* HEADER *********************************************** "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Header, {
     userData: $options.userData
   }, null, 8
   /* PROPS */
   , ["userData"]), _ctx.$route.path !== '/' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" si la route est différente de / (racine du site) "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" on affiche le template du composant concerné par la route "), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_router_view, {
     key: _ctx.$route.fullPath
-  }))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" si la route est / => on affiche le code de l'accueil"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Slider), _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Map), _hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ********************************* derniers lieux ajoutés *************************************** "), _hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ******************* inscrivez-vous ****************************** "), _hoisted_15]))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Footer)], 64
+  }))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" si la route est / => on affiche le code de l'accueil"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ******************************************* SLIDER *********************************************** "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Slider), _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" *********************************************** CARTE ************************************************** "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Map), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ******************************************* TOP DES LIEUX *********************************************** "), $options.threeTopPlaces && $options.threeTopPlaces.length > 2 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [_hoisted_10, $options.userData.departement ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h2", _hoisted_11, "Le top des lieux dans votre département")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h2", _hoisted_12, "Le top des lieux (France entière)"))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ********************** boucle qui affiche les 3 lieux ************************* "), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.threeTopPlaces, function (topPlace, index) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+      "class": "mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between",
+      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)("background-image: url(images/".concat(topPlace.images[0].nom, "); background-position: center; background-size: cover;"))
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_18, " #" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(index + 1), 1
+    /* TEXT */
+    )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(topPlace.nom), 1
+    /* TEXT */
+    )])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [_hoisted_22, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(topPlace.note), 1
+    /* TEXT */
+    )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [_hoisted_24, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(topPlace.ville) + " (" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(topPlace.code_postal.substr(0, 2)) + ")", 1
+    /* TEXT */
+    )])])]), _hoisted_25], 4
+    /* STYLE */
+    );
+  }), 256
+  /* UNKEYED_FRAGMENT */
+  ))]), _hoisted_26])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ********************************* DERNIERS LIEUX AJOUTES *************************************** "), $options.threeTopPlaces && $options.threeTopPlaces.length > 2 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_27, [_hoisted_28, $options.userData.departement ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h2", _hoisted_29, " Derniers lieux ajoutés dans votre département")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h2", _hoisted_30, " Derniers lieux ajoutés (France entière)")), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_32, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ********************** boucle qui affiche les 3 lieux ************************* "), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.threeLastPlaces, function (lastPlace) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+      "class": "mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between",
+      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)("background-image: url(images/".concat(lastPlace.images[0].nom, "); background-position: center; background-size: cover;"))
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_33, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_34, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(lastPlace.nom), 1
+    /* TEXT */
+    )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_35, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_36, [_hoisted_37, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_38, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(lastPlace.ville) + " (" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(lastPlace.code_postal.substr(0, 2)) + ")", 1
+    /* TEXT */
+    )])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_39, [_hoisted_40, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_41, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, "par " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(lastPlace.user.pseudo), 1
+    /* TEXT */
+    )])])])]), _hoisted_42], 4
+    /* STYLE */
+    );
+  }), 256
+  /* UNKEYED_FRAGMENT */
+  ))])]), _hoisted_43])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" *********************************** INSCRIVEZ-VOUS ************************************** "), _hoisted_44]))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" **************************************** FOOTER ******************************************** "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Footer)], 64
   /* STABLE_FRAGMENT */
   );
 }
@@ -24432,8 +24718,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
+
+var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", null, "Page du lieu", -1
+/* HOISTED */
+);
+
 function render(_ctx, _cache) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h1", null, "Page du lieu");
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"col-2 d-flex justify-content-center align-items-center\">\r\n\t\t\t\t\t\t\t\t\t<div v-for=\"category in topPlace.categories\">\r\n\t\t\t\t\t\t\t\t\t\t<span class=\"text-info bg-white rounded-circle py-1 px-2\"\r\n\t\t\t\t\t\t\t\t\t\t\tv-html=\"category.icone\"></span>\r\n\t\t\t\t\t\t\t\t\t</div>\r\n\t\t\t\t\t\t\t\t</div> ")], 2112
+  /* STABLE_FRAGMENT, DEV_ROOT_FRAGMENT */
+  );
 }
 
 /***/ }),
@@ -25219,7 +25512,9 @@ var defaultState = {
   message: "",
   geolocationAnswered: false,
   userPosition: "",
-  lieux: ""
+  lieux: "",
+  threeTopPlaces: "",
+  threeLastPlaces: ""
 };
 var store = (0,vuex__WEBPACK_IMPORTED_MODULE_1__.createStore)({
   state: function state() {
@@ -25235,11 +25530,7 @@ var store = (0,vuex__WEBPACK_IMPORTED_MODULE_1__.createStore)({
       state.userData.pseudo = payload.pseudo;
       state.userData.email = payload.email;
       state.userData.id = payload.id;
-
-      if (payload.departement) {
-        state.userData.departement = payload.departement;
-      }
-
+      state.userData.departement = payload.departement;
       state.userData.token = payload.token;
     },
     // stocker un message de succès dans le state
@@ -25257,6 +25548,12 @@ var store = (0,vuex__WEBPACK_IMPORTED_MODULE_1__.createStore)({
     storeLieux: function storeLieux(state, payload) {
       state.lieux = payload;
     },
+    storeThreeTopPlaces: function storeThreeTopPlaces(state, payload) {
+      state.threeTopPlaces = payload;
+    },
+    storeThreeLastPlaces: function storeThreeLastPlaces(state, payload) {
+      state.threeLastPlaces = payload;
+    },
     // réinitialiser le state
     resetState: function resetState(state) {
       Object.assign(state, defaultState);
@@ -25268,6 +25565,12 @@ var store = (0,vuex__WEBPACK_IMPORTED_MODULE_1__.createStore)({
     },
     getMessage: function getMessage(state) {
       return state.message;
+    },
+    getThreeTopPlaces: function getThreeTopPlaces(state) {
+      return state.threeTopPlaces;
+    },
+    getThreeLastPlaces: function getThreeLastPlaces(state) {
+      return state.threeLastPlaces;
     }
   },
   actions: {
@@ -30348,7 +30651,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nimg[data-v-332fccf4] {\r\n\theight: 1.7em\n}\n.titleIcon[data-v-332fccf4] {\r\n\theight: 8vh\n}\nh2[data-v-332fccf4] {\r\n\tcolor: #1c6e8c\n}\n.btn[data-v-332fccf4] {\r\n\tbackground-color: #94D1BE !important;\r\n\tcolor: white;\n}\n#presentation[data-v-332fccf4] {\r\n\tbackground-position: center;\r\n\tbackground-size: cover;\r\n\theight: 55vh\n}\n#presentationTopStripe[data-v-332fccf4] {\r\n\tbackground-color: #94D1BE;\r\n\theight: 2vh;\n}\n#presentationBottomStripe[data-v-332fccf4] {\r\n\tbackground-color: #1C6E8C;\r\n\theight: 2vh;\n}\n#toplieux[data-v-332fccf4],\r\n#dernierslieux[data-v-332fccf4] {\r\n\theight: 50vh;\r\n\tcolor: white\n}\n#toplieux button[data-v-332fccf4],\r\n#dernierslieux button[data-v-332fccf4] {\r\n\tbackground-color: #1c6e8c !important;\n}\n.infoslieu[data-v-332fccf4] {\r\n\tbackground-color: rgba(50, 61, 158, 0.5);\n}\n.ranking[data-v-332fccf4] {\r\n\tfont-size: 2em;\n}\n.categoryicon[data-v-332fccf4] {\r\n\tbackground-color: white;\n}\n#inscrivezVous[data-v-332fccf4] {\r\n\tcolor: #1c6e8c;\n}\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\twidth: 10vw;\r\n\theight: 10vw\n}\n#pointer[data-v-332fccf4] {\r\n\twidth: 7vw;\r\n\theight: 10vw\n}\n@media screen and (max-width: 580px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 120vh;\n}\n#presentation[data-v-332fccf4] {\r\n\t\theight: 62vh\n}\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\t\twidth: 30vw;\r\n\t\theight: 30vw\n}\n#pointer[data-v-332fccf4] {\r\n\t\twidth: 20vw;\r\n\t\theight: 30vw\n}\n}\n@media screen and (min-width: 581px) and (max-width: 768px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 70vh;\n}\n#presentation[data-v-332fccf4] {\r\n\t\theight: 57vh\n}\n}\n@media screen and (min-width: 769px) and (max-width: 992px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 60vh;\n}\n}\n@media screen and (min-width: 581px) and (max-width: 992px) {\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\t\twidth: 17vw;\r\n\t\theight: 17vw\n}\n#pointer[data-v-332fccf4] {\r\n\t\twidth: 11vw;\r\n\t\theight: 17vw\n}\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nimg[data-v-332fccf4] {\r\n\theight: 1.7em\n}\n.titleIcon[data-v-332fccf4] {\r\n\theight: 8vh\n}\nh2[data-v-332fccf4] {\r\n\tcolor: #1c6e8c\n}\n.btn[data-v-332fccf4] {\r\n\tbackground-color: #94D1BE !important;\r\n\tcolor: white;\n}\n#presentation[data-v-332fccf4] {\r\n\tbackground-position: center;\r\n\tbackground-size: cover;\r\n\theight: 55vh\n}\n#presentationTopStripe[data-v-332fccf4] {\r\n\tbackground-color: #94D1BE;\r\n\theight: 2vh;\n}\n#presentationBottomStripe[data-v-332fccf4] {\r\n\tbackground-color: #1C6E8C;\r\n\theight: 2vh;\n}\n#toplieux[data-v-332fccf4],\r\n#dernierslieux[data-v-332fccf4] {\r\n\theight: 50vh;\r\n\tcolor: white\n}\n#toplieux button[data-v-332fccf4],\r\n#dernierslieux button[data-v-332fccf4] {\r\n\tbackground-color: #1c6e8c !important;\n}\n.infosTopLieux[data-v-332fccf4],\r\n.infosDerniersLieux[data-v-332fccf4] {\r\n\tbackground-color: rgba(50, 61, 158, 0.5);\r\n\theight: 30%\n}\n.ranking[data-v-332fccf4] {\r\n\tfont-size: 2em;\n}\n.rankingAndName[data-v-332fccf4] {\r\n\theight: 70%\n}\n.categoryicon[data-v-332fccf4] {\r\n\tbackground-color: white;\n}\n#inscrivezVous[data-v-332fccf4] {\r\n\tcolor: #1c6e8c;\n}\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\twidth: 10vw;\r\n\theight: 10vw\n}\n#pointer[data-v-332fccf4] {\r\n\twidth: 7vw;\r\n\theight: 10vw\n}\n@media screen and (max-width: 580px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 120vh;\n}\n#presentation[data-v-332fccf4] {\r\n\t\theight: 62vh\n}\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\t\twidth: 30vw;\r\n\t\theight: 30vw\n}\n#pointer[data-v-332fccf4] {\r\n\t\twidth: 20vw;\r\n\t\theight: 30vw\n}\n}\n@media screen and (min-width: 581px) and (max-width: 768px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 70vh;\n}\n#presentation[data-v-332fccf4] {\r\n\t\theight: 57vh\n}\n}\n@media screen and (min-width: 769px) and (max-width: 992px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 60vh;\n}\n}\n@media screen and (min-width: 581px) and (max-width: 992px) {\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\t\twidth: 17vw;\r\n\t\theight: 17vw\n}\n#pointer[data-v-332fccf4] {\r\n\t\twidth: 11vw;\r\n\t\theight: 17vw\n}\n}\n@media screen and (max-width: 992px) {\n.infosTopLieux[data-v-332fccf4] {\r\n\t\theight: 35%\n}\n.infosDerniersLieux[data-v-332fccf4] {\r\n\t\theight: 45%\n}\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

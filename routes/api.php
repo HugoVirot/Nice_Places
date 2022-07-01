@@ -24,6 +24,10 @@ Route::apiResource("users", App\Http\Controllers\API\UserController::class)->exc
 
 // Les routes "lieux.*" de l'API (même principe)
 Route::apiResource("lieus", App\Http\Controllers\API\LieuController::class);
+// récupérer les 3 lieux les mieux notés du département
+Route::post('lieus/gettopplacesbydep', [App\Http\Controllers\API\LieuController::class, 'getTopPlacesByDep'])->name('gettopplacesbydep');
+// récupérer les 3 derniers lieux postés du département
+Route::post('lieus/getlastplacesbydep', [App\Http\Controllers\API\LieuController::class, 'getLastPlacesByDep'])->name('getlastplacesbydep');
 
 // Les routes "avis.*" de l'API (même principe)
 Route::apiResource("avis", App\Http\Controllers\API\AvisController::class);

@@ -14,7 +14,7 @@ class LieuController extends Controller
     public function __construct()
     {
         // middleware sanctum appliqué sur store / update / destroy
-        $this->middleware('auth:sanctum')->except(['index', 'show']);
+        // $this->middleware('auth:sanctum')->except(['index', 'show']);
 
         //middleware admin à ajouter pour destroy (en supplément)
     }
@@ -85,6 +85,43 @@ class LieuController extends Controller
     {
         return response()->json($lieu);
     }
+
+    // récupérer les trois lieux les mieux notés par département
+
+    public function getTopPlacesByDep(Request $request)
+    {
+        if ($request->department == "all") {
+            $topPlaces = Lieu::orderBy('note', 'desc')
+                ->limit(3)
+                ->get();
+        } else {
+            $topPlaces = Lieu::where('code_postal', 'like', "$request->department%")
+                ->orderBy('note', 'desc')
+                ->limit(3)
+                ->get();
+        }
+
+        return response()->json($topPlaces);
+    }
+
+    // récupérer les trois derniers lieux ajoutés par département
+
+    public function getLastPlacesByDep(Request $request)
+    {
+        if ($request->department == "all") {
+            $lastPlaces = Lieu::latest()
+                ->limit(3)
+                ->get();
+        } else {
+            $lastPlaces = Lieu::where('code_postal', 'like', "$request->department%")
+                ->latest()
+                ->limit(3)
+                ->get();
+        }
+
+        return response()->json($lastPlaces);
+    }
+
 
     /**
      * Update the specified resource in storage.

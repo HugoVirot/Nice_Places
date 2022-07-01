@@ -150,6 +150,7 @@ class UserController extends BaseController
         $user->update([
             'pseudo' => $request->pseudo,
             'email' => $request->email,
+            'departement' => $request->departement
         ]);
 
         // si nouveau mdp choisi
@@ -163,12 +164,6 @@ class UserController extends BaseController
             } else {
                 return $this->sendError('Error validation', ['mot de passe actuel non renseigné ou incorrect']);
             }
-        }
-
-        if (isset($request->departement)) {
-            $user->update([
-                'departement' => $request->departement
-            ]);
         }
 
         // On retourne la réponse JSON

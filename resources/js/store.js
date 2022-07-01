@@ -22,7 +22,9 @@ const defaultState = {
     message: "",
     geolocationAnswered: false,
     userPosition: "",
-    lieux: ""
+    lieux: "",
+    threeTopPlaces: "",
+    threeLastPlaces: ""
 }
 
 export const store = createStore({
@@ -41,9 +43,7 @@ export const store = createStore({
             state.userData.pseudo = payload.pseudo
             state.userData.email = payload.email
             state.userData.id = payload.id
-            if (payload.departement) {
-                state.userData.departement = payload.departement
-            }
+            state.userData.departement = payload.departement
             state.userData.token = payload.token
         },
 
@@ -66,6 +66,14 @@ export const store = createStore({
             state.lieux = payload
         },
 
+        storeThreeTopPlaces(state, payload) {
+            state.threeTopPlaces = payload
+        },
+
+        storeThreeLastPlaces(state, payload) {
+            state.threeLastPlaces = payload
+        },
+
         // réinitialiser le state
         resetState(state) {
             Object.assign(state, defaultState)
@@ -79,6 +87,14 @@ export const store = createStore({
 
         getMessage(state) {
             return state.message
+        },
+
+        getThreeTopPlaces(state) {
+            return state.threeTopPlaces
+        },
+
+        getThreeLastPlaces(state) {
+            return state.threeLastPlaces
         }
 
     },
