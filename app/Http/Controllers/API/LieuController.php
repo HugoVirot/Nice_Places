@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Lieu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
-class LieuController extends Controller
+class LieuController extends BaseController
 {
 
     public function __construct()
@@ -26,7 +26,7 @@ class LieuController extends Controller
      */
     public function index()
     {
-        $lieux = Lieu::all();
+        $lieux = Lieu::where('valide', true)->get();
         return response()->json($lieux);
     }
 
@@ -40,12 +40,13 @@ class LieuController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|max:100',
+            'nom' => 'required|max:100|unique:lieus',
             'description' => 'required|max:3000',
             'latitude' => 'required',
             'longitude' => 'required',
-            'note' => 'required',
-            'temps' => 'required',
+            'categorie' => 'required|integer',
+            'note' => 'required|integer',
+            'temps' => 'required|integer',
             'difficulte' => 'required',
             'adresse' => 'required|max:75',
             'code_postal' => 'required',
@@ -56,7 +57,17 @@ class LieuController extends Controller
             return $this->sendError('Error validation', $validator->errors());
         }
 
-        // on crée un nouveau lieu
+        $message = "";
+        // si le user est Admin => on valide directement la création du lieu (valide = true)
+        if ($request->user_id == 1) {
+            $message = "Le lieu a bien été créé.";
+
+            // sinon, le lieu est créé mais en attente de validation (valide = false)
+            // il n'est donc pas encore affiché sur la carte
+        } else {
+            $message = "Le lieu a bien été proposé (en attente de validation par l'administrateur).";
+        }
+
         $lieu = Lieu::create([
             'nom' => $request->nom,
             'description' => $request->description,
@@ -68,11 +79,18 @@ class LieuController extends Controller
             'adresse' =>  $request->adresse,
             'code_postal' =>  $request->code_postal,
             'ville' =>  $request->ville,
-            'user_id' => Auth::user()->id
+            'user_id' => $request->user_id,
+            // selon le statut de l'utilisateur (id 1 = admin), on valide ou non le lieu
+            'valide' => $request->user_id == 1 ? true : false
         ]);
 
-        // On retourne les informations du nouvel utilisateur en JSON
-        return response()->json($lieu, 201);
+        DB::table('categories_lieux')->insert([
+            'categorie_id' => $request->categorie,
+            'lieu_id' => $lieu->id
+        ]);
+
+        // On retourne la réponse JSON
+        return $this->sendResponse($lieu, $message, 201);
     }
 
     /**

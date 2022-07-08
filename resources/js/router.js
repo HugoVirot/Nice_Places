@@ -28,7 +28,7 @@ const routes = [
     component: TopLieux,
   },
   {
-    path: "/lieu",
+    path: "/lieu/:id",
     name: "Lieu",
     component: Lieu,
   },

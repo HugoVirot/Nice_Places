@@ -22,6 +22,9 @@ export default {
 		},
 		lieux() {
 			return store.state.lieux
+		},
+		categories() {
+			return store.state.categories
 		}
 	},
 
@@ -34,6 +37,23 @@ export default {
 	},
 
 	methods: {
+
+		// on récupère les catégories et on les stocke dans le store
+		
+		getCategories() {
+			axios.get("http://localhost:8000/api/categories")
+				.then(response => {
+					store.commit('storeCategories', response.data)
+					console.log(this.categories)
+				}
+				)
+				.catch(error => {
+					console.log(error.response)
+				})
+		},
+
+		// on récupère les 3 endroits les mieux notés + les 3 derniers
+
 		getThreeTopAndLastPlaces() {
 			let department
 
@@ -82,6 +102,10 @@ export default {
 	},
 
 	created() {
+
+		// on récupère les catégories et on les stocke dans le store
+		this.getCategories()
+
 		console.log(store.state.userPosition)
 
 		// ******************* si réponse à la demande de géoloc ************************
@@ -276,7 +300,7 @@ export default {
 				<a href="/"><button class="btn btn-lg mt-3 rounded-pill">Proposer un lieu</button></a>
 
 			</div>
-			
+
 			<!-- *********************************** INSCRIVEZ-VOUS ************************************** -->
 
 			<section id="inscrivezVous">

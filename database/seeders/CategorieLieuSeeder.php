@@ -86,64 +86,64 @@ class CategorieLieuSeeder extends Seeder
             'lieu_id' => 10
         ]);
 
-        // Lieu aléatoire 1 => catégorie 1
-        DB::table('categories_lieux')->insert([
-            'categorie_id' => 1,
-            'lieu_id' => 11
-        ]);
+        // // Lieu aléatoire 1 => catégorie 1
+        // DB::table('categories_lieux')->insert([
+        //     'categorie_id' => 1,
+        //     'lieu_id' => 11
+        // ]);
 
-        // Lieu aléatoire 2 => catégorie 2
-        DB::table('categories_lieux')->insert([
-            'categorie_id' => 1,
-            'lieu_id' => 12
-        ]);
+        // // Lieu aléatoire 2 => catégorie 2
+        // DB::table('categories_lieux')->insert([
+        //     'categorie_id' => 1,
+        //     'lieu_id' => 12
+        // ]);
 
-        // Lieu aléatoire 3 => catégorie 3
-        DB::table('categories_lieux')->insert([
-            'categorie_id' => 3,
-            'lieu_id' => 13
-        ]);
+        // // Lieu aléatoire 3 => catégorie 3
+        // DB::table('categories_lieux')->insert([
+        //     'categorie_id' => 3,
+        //     'lieu_id' => 13
+        // ]);
 
-        // Lieu aléatoire 4 => catégorie 4
-        DB::table('categories_lieux')->insert([
-            'categorie_id' => 4,
-            'lieu_id' => 14
-        ]);
+        // // Lieu aléatoire 4 => catégorie 4
+        // DB::table('categories_lieux')->insert([
+        //     'categorie_id' => 4,
+        //     'lieu_id' => 14
+        // ]);
 
-        // Lieu aléatoire 5 => catégorie 5
-        DB::table('categories_lieux')->insert([
-            'categorie_id' => 5,
-            'lieu_id' => 15
-        ]);
+        // // Lieu aléatoire 5 => catégorie 5
+        // DB::table('categories_lieux')->insert([
+        //     'categorie_id' => 5,
+        //     'lieu_id' => 15
+        // ]);
 
-        // Lieu aléatoire 6 => catégorie 6
-        DB::table('categories_lieux')->insert([
-            'categorie_id' => 6,
-            'lieu_id' => 16
-        ]);
+        // // Lieu aléatoire 6 => catégorie 6
+        // DB::table('categories_lieux')->insert([
+        //     'categorie_id' => 6,
+        //     'lieu_id' => 16
+        // ]);
 
-        // Lieu aléatoire 7 => catégorie 7
-        DB::table('categories_lieux')->insert([
-            'categorie_id' => 7,
-            'lieu_id' => 17
-        ]);
+        // // Lieu aléatoire 7 => catégorie 7
+        // DB::table('categories_lieux')->insert([
+        //     'categorie_id' => 7,
+        //     'lieu_id' => 17
+        // ]);
 
-        // Lieu aléatoire 8 => catégorie 8
-        DB::table('categories_lieux')->insert([
-            'categorie_id' => 8,
-            'lieu_id' => 18
-        ]);
+        // // Lieu aléatoire 8 => catégorie 8
+        // DB::table('categories_lieux')->insert([
+        //     'categorie_id' => 8,
+        //     'lieu_id' => 18
+        // ]);
 
-        // Lieu aléatoire 9 => catégorie 9
-        DB::table('categories_lieux')->insert([
-            'categorie_id' => 9,
-            'lieu_id' => 19
-        ]);
+        // // Lieu aléatoire 9 => catégorie 9
+        // DB::table('categories_lieux')->insert([
+        //     'categorie_id' => 9,
+        //     'lieu_id' => 19
+        // ]);
 
-        // Lieu aléatoire 10 => catégorie 9
-        DB::table('categories_lieux')->insert([
-            'categorie_id' => 9,
-            'lieu_id' => 20
-        ]);
+        // // Lieu aléatoire 10 => catégorie 9
+        // DB::table('categories_lieux')->insert([
+        //     'categorie_id' => 9,
+        //     'lieu_id' => 20
+        // ]);
     }
 }

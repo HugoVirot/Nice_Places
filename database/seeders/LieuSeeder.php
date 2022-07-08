@@ -29,7 +29,8 @@ class LieuSeeder extends Seeder
             'adresse' => 'Forêt Domaniale de Mervent-Vouvant',
             'code_postal' => '85200',
             'ville' => 'Mervent',
-            'user_id' => 1
+            'user_id' => 1,
+            'valide' => true
         ]);
 
         Lieu::create([
@@ -44,7 +45,8 @@ class LieuSeeder extends Seeder
             'adresse' => 'Le Petit Buisson',
             'code_postal' => '79210',
             'ville' => 'Saint-Hilaire-la-Palud',
-            'user_id' => 1
+            'user_id' => 1,
+            'valide' => true
         ]);
 
         Lieu::create([
@@ -65,7 +67,8 @@ class LieuSeeder extends Seeder
             'adresse' => 'Rue Stanislas Baudry',
             'code_postal' => '44000',
             'ville' => 'Nantes',
-            'user_id' => 1
+            'user_id' => 1,
+            'valide' => true
         ]);
 
         Lieu::create([
@@ -87,7 +90,8 @@ class LieuSeeder extends Seeder
             'adresse' => '6 Av. de Royan',
             'code_postal' => '17570',
             'ville' => 'Les Mathes',
-            'user_id' => 1
+            'user_id' => 1,
+            'valide' => true
         ]);
 
         Lieu::create([
@@ -105,7 +109,8 @@ class LieuSeeder extends Seeder
             'adresse' => 'La Chevalerie',
             'code_postal' => '44710',
             'ville' => 'Port-Saint-Père',
-            'user_id' => 1
+            'user_id' => 1,
+            'valide' => true
         ]);
 
         Lieu::create([
@@ -121,7 +126,8 @@ class LieuSeeder extends Seeder
             'adresse' => '2 rue de l\'église',
             'code_postal' => '79510',
             'ville' => 'Coulon',
-            'user_id' => 1
+            'user_id' => 1,
+            'valide' => true
         ]);
 
         Lieu::create([
@@ -135,7 +141,8 @@ class LieuSeeder extends Seeder
             'adresse' => 'Accès 12 - Boulevard de la Forêt',
             'code_postal' => '85460',
             'ville' => ' 85460 L\'AIGUILLON-LA-PRESQU\'ILE',
-            'user_id' => 1
+            'user_id' => 1,
+            'valide' => true
         ]);
 
         Lieu::create([
@@ -156,7 +163,8 @@ class LieuSeeder extends Seeder
             'adresse' => 'Avenue du Docteur Joussemet',
             'code_postal' => '85560',
             'ville' => 'Longeville-sur-Mer',
-            'user_id' => 1
+            'user_id' => 1,
+            'valide' => true
         ]);
 
         Lieu::create([
@@ -172,7 +180,8 @@ class LieuSeeder extends Seeder
             'adresse' => 'Parc de Pré Leroy',
             'code_postal' => '79000',
             'ville' => 'Niort',
-            'user_id' => 1
+            'user_id' => 1,
+            'valide' => true
         ]);
 
         Lieu::create([
@@ -189,10 +198,11 @@ class LieuSeeder extends Seeder
             'adresse' => 'Le Gureau',
             'code_postal' => '86700',
             'ville' => 'Romagne', 
-            'user_id' => 1
+            'user_id' => 1,
+            'valide' => true
         ]);
 
         // insertion de 10 lieux aléatoires via la LieuFactory (ids 11 à 20)
-        \App\Models\Lieu::factory(10)->create();
+        // \App\Models\Lieu::factory(10)->create();
     }
 }

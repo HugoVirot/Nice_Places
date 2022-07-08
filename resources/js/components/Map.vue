@@ -7,6 +7,11 @@
 import axios from "axios";
 import { store } from "../store.js";
 
+import Vue from 'vue';
+window.Vue = Vue;
+// import router from '../router.js';
+// Vue.router = router;
+
 export default {
 
     computed: {
@@ -79,12 +84,18 @@ export default {
 
                             "<img class=\"mx-auto\" src=\"images/" + lieu.images[0].nom + "\" style=\"width: 30vw\">" +
 
-                            "<p style=\"font-family:'Cooper'\" class=\"text-center\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p>" +
+                            "<p style=\"font-family:'Cooper'\" class=\"text-center\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p>"
 
-                            "<button class=\"btn moreInfoButton mx-auto\" id=\"" + lieu.id + "\" style=\"color:white; background-color: #94D1BE\">plus d'infos</button>" +
-                            "<a target=\"_self\" onclick=\"event.preventDefault(); " + 
-                            // document.getElementById(lieu.id).addEventListener('click', (button) => component.$router.push('/inscription'));
-                             + "\">plus d'infos</a>"
+                        // `<router-link to="/lieu/${lieu.id}">` + 
+                        // "<button class=\"btn moreInfoButton mx-auto\" id=\"" + lieu.id + "\" style=\"color:white; background-color: #94D1BE\">plus d'infos</button>" +
+                        // "</router-link>"
+
+                        // ne marche pas (component (ou $router) in undefined)
+                        // "<a target=\"_self\" onclick=\"component.$router.push(`/lieu/${lieu.id}`)\">plus d'infos</a>"
+                        // `<a id=\""${lieu.id}"\" href =\"/lieu/${lieu.id}\" target = \"_self\" onclick = \"event.preventDefault(); Vue.router.push('/lieu/${lieu.id}')\"> Plus d'infos</a>`
+
+                        // "<a target=\"_self\" class=\"popupLink\" onclick=\"component.redirectOnPlace()\">plus d'infos</a>"
+
 
                         var popupOptions =
                         {
@@ -92,8 +103,14 @@ export default {
                             'className': 'popupLieu'
                         }
 
-                        L.marker([lieu.latitude, lieu.longitude]).addTo(this.map)
+                        //ne marche pas
+                        let marker = L.marker([lieu.latitude, lieu.longitude]).addTo(this.map)
                             .bindPopup(popupContent, popupOptions)
+
+                        // marker.on('popupopen', function (e) {
+
+                        //     e.popup.on("click", () => alert("hello"))
+                        // });
 
                         // marker._icon.classList.add("huechange"); //  + img.huechange { filter: hue-rotate(120deg); } => ne marchent pas
                     })
@@ -129,17 +146,17 @@ export default {
                     store.commit('storeGeolocationAnswered', true)
                     store.commit('storeUserPosition', { latitude: position.coords.latitude, longitude: position.coords.longitude })
                     console.log("accès position accepté, choix et coordonnées stockés dans le state")
-                    this.initializeMap()
+                    this.initializeMap(this)
                     // si accès refusé, on stocke cela dans le state et on l'affiche dans la console
                 }, () => {
                     store.commit('storeGeolocationAnswered', true)
                     console.log("accès à la position refusé, choix stocké dans le state")
-                    this.initializeMap()
+                    this.initializeMap(this)
                 }
                 )
             } else {
                 alert("La géolocalisation est indisponible sur votre navigateur")
-                this.initializeMap()
+                this.initializeMap(this)
             }
 
             // *********************si géolocalisation déjà demandée***********************

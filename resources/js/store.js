@@ -24,7 +24,8 @@ const defaultState = {
     userPosition: "",
     lieux: "",
     threeTopPlaces: "",
-    threeLastPlaces: ""
+    threeLastPlaces: "",
+    categories: ""
 }
 
 export const store = createStore({
@@ -74,6 +75,10 @@ export const store = createStore({
             state.threeLastPlaces = payload
         },
 
+        storeCategories(state, payload) {
+            state.categories = payload
+        },
+
         // réinitialiser le state
         resetState(state) {
             Object.assign(state, defaultState)
@@ -95,6 +100,10 @@ export const store = createStore({
 
         getThreeLastPlaces(state) {
             return state.threeLastPlaces
+        },
+
+        getCategories(state){
+            return state.categories
         }
 
     },

@@ -329,6 +329,7 @@ i {
 
 .card {
     color: #1C6E8C;
+    background: rgba(254, 254, 254, 0.73)
 }
 
 .card-header {

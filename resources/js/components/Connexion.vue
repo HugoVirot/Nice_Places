@@ -17,7 +17,7 @@ export default {
 
     methods: {
 
-        logIn() {  
+        logIn() {
             // console.log(store.getters.getUserData) // MARCHE (on peut accéder à userData)
             // store.commit('storeUserData', { pseudo: "test2", email:" test2@test", token: "aajreg645r4f5erf"})
             // console.log(store.getters.getUserData) // MARCHE (on peut accéder à userData)
@@ -34,9 +34,9 @@ export default {
                     this.validationErrors = error.response.data.data;
                 })
         },
-        
+
         loginSuccess(response) {
-            
+
             console.log(response)
 
             // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
@@ -68,6 +68,7 @@ img {
 
 .card {
     color: #1C6E8C;
+    background: rgba(254, 254, 254, 0.73)
 }
 
 .card-header {

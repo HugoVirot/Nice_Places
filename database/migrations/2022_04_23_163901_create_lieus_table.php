@@ -21,11 +21,11 @@ return new class extends Migration
             $table->decimal('longitude', 10, 7);  // idem
             $table->float('note', 3, 1);  // idem
             $table->integer('temps'); // temps en heures
-            $table->enum('difficulte', ['famille', 'amateur', 'sportif'])->nullable();
+            $table->enum('difficulte', ['famille', 'amateur', 'sportif']);
             $table->string('adresse', 75);
             $table->char('code_postal', 5);
             $table->string('ville', 50);
-            $table->boolean('valide')->default(false);
+            $table->boolean('valide');
             $table->timestamps();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
