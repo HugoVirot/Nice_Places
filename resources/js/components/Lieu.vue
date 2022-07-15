@@ -14,23 +14,18 @@
 
 
 
-		<div class="container" v-if="lieu.images.length == 1"
-			:style="`background-image: url(images/${lieu.images[0].nom}); background-position: center; background-size: cover;`">
-		</div>
+		<img class="singlePicture" v-if="lieu.images.length == 1" :src="`/images/${lieu.images[0].nom}`">
 
-		<div v-else class="carousel slide carousel-fade container" data-bs-ride="carousel">
+		<div v-else id="carouselLieu" class="carousel slide carousel-fade container" data-bs-ride="carousel">
 
 			<div class="carousel-inner">
 
 				<div v-for="(image, index) in lieu.images" :class="['carousel-item', { active: index == 0 }]">
-					<img :src="`../../public/images/${image.nom}`" class="d-block w-100" alt="">
-					<div class="carousel-caption captionfondbleu d-none d-md-block p-5">
-					</div>
+					<img :src="`/images/${image.nom}`" class="d-block w-100" alt="">
 				</div>
 
 				<div class="carousel-indicators">
-
-					<button v-for="(image, index) in lieu.images" type="button" data-bs-target="#carouselAccueil"
+					<button v-for="(image, index) in lieu.images" type="button" data-bs-target="#carouselLieu"
 						:data-bs-slide-to="index" :class="{ active: index == 0 }" aria-current="true"
 						:aria-label="`Slide ${index + 1}`">
 					</button>
@@ -38,12 +33,12 @@
 
 			</div>
 
-			<button class="carousel-control-prev" type="button" data-bs-target="#carouselAccueil" data-bs-slide="prev">
+			<button class="carousel-control-prev" type="button" data-bs-target="#carouselLieu" data-bs-slide="prev">
 				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
 				<span class="visually-hidden">Previous</span>
 			</button>
 
-			<button class="carousel-control-next" type="button" data-bs-target="#carouselAccueil" data-bs-slide="next">
+			<button class="carousel-control-next" type="button" data-bs-target="#carouselLieu" data-bs-slide="next">
 				<span class="carousel-control-next-icon" aria-hidden="true"></span>
 				<span class="visually-hidden">Next</span>
 			</button>
@@ -51,14 +46,14 @@
 
 		<div id="detailsLieu" class="container p-4">
 
-			<p class="m-5">{{ lieu.description }}</p>
-			<i class="fa-solid fa-timer"></i>
-			<div class="row">
+			<p class="m-3">{{ lieu.description }}</p>
+
+			<div class="row px-5 py-4 mt-4 border border-primary">
 				<div class="col-md-6">
 					<p> <i class="fa-2x fa-solid fa-road me-3"></i>
 						{{ lieu.adresse }}</p>
 					<p> <i class="fa-2x fa-solid fa-location-dot me-3"></i>
-						{{ lieu.code_postal + " " + lieu.ville }}</p>
+						{{ lieu.code_postal + " " + lieu.ville.toUpperCase() }}</p>
 					<p> <i class="fa-2x fa-solid fa-hourglass me-3"></i>
 						{{ lieu.temps }} heures
 					</p>
@@ -77,7 +72,7 @@
 						{{ lieu.note }} / 10
 					</p>
 					<p v-if="lieu.kilometres"> <i class="fa-2x fa-solid fa-shoe-prints me-3"></i>
-						{{ lieu.kilometres }} kilomètres</p>
+						{{ lieu.kilometres }} kilomètres environ (moyenne)</p>
 				</div>
 			</div>
 		</div>
@@ -121,6 +116,10 @@ export default {
 h1,
 .rating {
 	color: #1C6E8C
+}
+
+.singlePicture {
+	width: 90vw
 }
 
 p {

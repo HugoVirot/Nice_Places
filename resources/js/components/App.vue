@@ -155,7 +155,7 @@ export default {
 
 			<div id="presentationTopStripe" class="mt-5"></div>
 
-			<div class="container-fluid p-5" id="presentation" style="background-image: url(images/mervent3.jpg)">
+			<div class="container-fluid p-5" id="presentation" style="background-image: url(images/mervent2.jpg)">
 				<div class="row pb-4">
 					<div class="col-md-6 my-auto">
 						<img class="w-100 h-100 bg-white rounded" src="images/logo.png">
