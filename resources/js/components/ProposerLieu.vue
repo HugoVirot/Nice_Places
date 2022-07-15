@@ -55,7 +55,7 @@ export default {
 <template>
 
     <div class="p-5">
-        <i class="mx-auto fa-solid fa-droplet"></i>
+        <i class="mx-auto fa-3x fa-solid fa-paper-plane"></i>
         <h1 class="mt-2">Proposer un lieu</h1>
     </div>
 
@@ -122,10 +122,10 @@ export default {
                             </div>
 
                             <div class="form-group row m-2">
-                                <label for="note" class="col-md-4 col-form-label text-md-right">note sur 10</label>
+                                <label for="note"  class="col-md-4 col-form-label text-md-right">note sur 10</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="note" id="note" type="number" class="form-control" name="note"
+                                    <input v-model="note" id="note" min="0" max="10" type="number" class="form-control" name="note"
                                         required autocomplete="note">
                                 </div>
                             </div>
@@ -220,6 +220,11 @@ export default {
 h1 {
     color: #1C6E8C
 }
+
+i {
+    color: #94D1BE
+}
+
 
 img {
     width: 6vw

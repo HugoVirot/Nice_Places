@@ -22,6 +22,7 @@ return new class extends Migration
             $table->float('note', 3, 1);  // idem
             $table->integer('temps'); // temps en heures
             $table->enum('difficulte', ['famille', 'amateur', 'sportif']);
+            $table->integer('kilometres')->nullable();
             $table->string('adresse', 75);
             $table->char('code_postal', 5);
             $table->string('ville', 50);

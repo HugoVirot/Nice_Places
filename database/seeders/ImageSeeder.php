@@ -22,7 +22,7 @@ class ImageSeeder extends Seeder
         ]);
 
         Image::create([
-            'nom' => 'parc-des-oiseaux.jpg',
+            'nom' => 'parc-des-oiseaux-du-marais.jpg',
             'profil' => false,
             'user_id' => 1,
             'lieu_id' => 2
@@ -71,7 +71,7 @@ class ImageSeeder extends Seeder
         ]);
 
         Image::create([
-            'nom' => 'parc-pre-leroy.png',
+            'nom' => 'parc-pre-leroy.jpg',
             'profil' => false,
             'user_id' => 1,
             'lieu_id' => 9

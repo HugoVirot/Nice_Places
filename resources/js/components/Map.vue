@@ -7,8 +7,8 @@
 import axios from "axios";
 import { store } from "../store.js";
 
-import Vue from 'vue';
-window.Vue = Vue;
+// import Vue from 'vue';
+// window.Vue = Vue;
 // import router from '../router.js';
 // Vue.router = router;
 

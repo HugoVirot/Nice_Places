@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Lieu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -19,6 +18,7 @@ class LieuController extends BaseController
         //middleware admin à ajouter pour destroy (en supplément)
     }
 
+
     /**
      * Display a listing of the resource.
      *
@@ -29,6 +29,7 @@ class LieuController extends BaseController
         $lieux = Lieu::where('valide', true)->get();
         return response()->json($lieux);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -93,6 +94,7 @@ class LieuController extends BaseController
         return $this->sendResponse($lieu, $message, 201);
     }
 
+
     /**
      * Display the specified resource.
      *
@@ -103,6 +105,7 @@ class LieuController extends BaseController
     {
         return response()->json($lieu);
     }
+
 
     // récupérer les trois lieux les mieux notés par département
 
@@ -122,6 +125,7 @@ class LieuController extends BaseController
         return response()->json($topPlaces);
     }
 
+
     // récupérer les trois derniers lieux ajoutés par département
 
     public function getLastPlacesByDep(Request $request)
@@ -138,6 +142,16 @@ class LieuController extends BaseController
         }
 
         return response()->json($lastPlaces);
+    }
+
+
+    // récupérer les lieux postés par l'utilisateur
+
+    public function getPlacesByUser(Request $request)
+    {
+        $userPlaces = Lieu::where('user_id', intval($request->user_id))->get();
+
+        return response()->json($userPlaces);
     }
 
 
