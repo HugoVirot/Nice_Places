@@ -46,6 +46,8 @@ export const store = createStore({
             state.userData.email = payload.email
             state.userData.id = payload.id
             state.userData.departement = payload.departement
+            // state.userData.role = payload.role.role
+            state.userData.role_id = payload.role_id
             state.userData.token = payload.token
         },
 
@@ -91,30 +93,6 @@ export const store = createStore({
     },
 
     getters: {
-        getUserId(state) {
-            return state.userData.id
-        },
-
-        getUserData(state) {
-            return state.userData
-        },
-
-        getMessage(state) {
-            return state.message
-        },
-
-        getThreeTopPlaces(state) {
-            return state.threeTopPlaces
-        },
-
-        getThreeLastPlaces(state) {
-            return state.threeLastPlaces
-        },
-
-        getCategories(state) {
-            return state.categories
-        }
-
     },
 
     actions: {

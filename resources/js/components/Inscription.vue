@@ -28,7 +28,7 @@ export default {
                 .then((response) => {
                     // on stocke le message de succès dans le store ("inscription réussie")
                     store.commit('storeMessage', response.data.message);
-                    console.log(store.getters.getMessage)
+                    console.log(store.state.message)
                     this.$router.push('/successmessage');
                 })
                 .catch((error) => {

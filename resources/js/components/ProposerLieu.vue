@@ -3,6 +3,12 @@ import { store } from "../store";
 import ValidationErrors from "./ValidationErrors.vue"
 
 export default {
+    computed: {
+        categories() {
+            return store.state.categories
+        }
+    },
+
     data() {
         return {
             nom: "",
@@ -17,12 +23,13 @@ export default {
             code_postal: "",
             ville: "",
             validationErrors: "",
-            categories: store.getters.getCategories
         }
     },
+
     components: { ValidationErrors },
 
     methods: {
+        // poste le nouveau lieu pour le sauvegarder en base de données
         sendData() {
             axios.post('/api/lieus', {
                 nom: this.nom,
@@ -33,15 +40,16 @@ export default {
                 note: this.note,
                 temps: this.temps,
                 difficulte: this.difficulte,
+                kilometres: this.kilometres,
                 adresse: this.adresse,
                 code_postal: this.code_postal,
                 ville: this.ville,
-                user_id: store.getters.getUserData.id
+                user_id: store.state.userData.id
             })
                 .then((response) => {
                     // on stocke le message de succès dans le store ("création de lieu réussie")
                     store.commit('storeMessage', response.data.message);
-                    console.log(store.getters.getMessage)
+                    console.log(store.state.message)
                     this.$router.push('/successmessage');
                 })
                 .catch((error) => {
@@ -66,7 +74,7 @@ export default {
         <div class="row justify-content-center p-2 p-lg-5">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header text-white mb-3">Faites-nous partager votre coup de coeur !</div>
+                    <div class="card-header text-white mb-3">Partagez vos coups de coeur avec nous !</div>
 
                     <div class="card-body">
 
@@ -116,17 +124,18 @@ export default {
 
                                 <div class="col-md-6">
                                     <select required v-model="categorie" class="form-select" aria-label="categorie">
-                                        <option v-for="categorie in categories" :key="categorie.id" :value="categorie.id">{{categorie.nom}}</option>
+                                        <option v-for="categorie in categories" :key="categorie.id"
+                                            :value="categorie.id">{{ categorie.nom }}</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="form-group row m-2">
-                                <label for="note"  class="col-md-4 col-form-label text-md-right">note sur 10</label>
+                                <label for="note" class="col-md-4 col-form-label text-md-right">votre note sur 10</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="note" id="note" min="0" max="10" type="number" class="form-control" name="note"
-                                        required autocomplete="note">
+                                    <input v-model="note" id="note" min="0" max="10" type="number" class="form-control"
+                                        name="note" required autocomplete="note">
                                 </div>
                             </div>
 
@@ -150,6 +159,16 @@ export default {
                                         <option value="amateur">amateur</option>
                                         <option value="sportif">sportif</option>
                                     </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row m-2">
+                                <label for="temps" class="col-md-4 col-form-label text-md-right">distance moyenne en
+                                    km (facultatif)</label>
+
+                                <div class="col-md-6">
+                                    <input min="1" max="150" v-model="kilometres" id="kilometres" type="number"
+                                        class="form-control" name="kilometres" required autocomplete="kilometres">
                                 </div>
                             </div>
 

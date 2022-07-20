@@ -49,6 +49,7 @@ class LieuController extends BaseController
             'note' => 'required|integer',
             'temps' => 'required|integer',
             'difficulte' => 'required',
+            'kilometres' => 'nullable|integer',
             'adresse' => 'required|max:75',
             'code_postal' => 'required',
             'ville' => 'required'
@@ -77,6 +78,7 @@ class LieuController extends BaseController
             'note' => $request->note,
             'temps' => $request->temps,
             'difficulte' => $request->difficulte,
+            'kilometres' => $request->kilometres,
             'adresse' =>  $request->adresse,
             'code_postal' =>  $request->code_postal,
             'ville' =>  $request->ville,
@@ -103,6 +105,9 @@ class LieuController extends BaseController
      */
     public function show(Lieu $lieu)
     {
+        $lieu->load(['avis'=> function ($query){
+            $query->latest()->get();
+        }]);
         return response()->json($lieu);
     }
 

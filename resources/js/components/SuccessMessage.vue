@@ -5,7 +5,7 @@ export default {
 
     data() {
         return {
-            message: store.getters.getMessage
+            message: store.state.message
         }
     },
     mounted() {
@@ -24,7 +24,7 @@ export default {
 
     <div class="container-fluid text-center py-5 my-5 text-white">
         <h3 class="p-2">Félicitations</h3>
-        <i class="p-2 fa-solid fa-check fa-5x"></i>
+        <i class="p-2 fa-solid fa-location-check fa-5x"></i>
         <h2 class="p-2">{{ message }}</h2>
     </div>
 

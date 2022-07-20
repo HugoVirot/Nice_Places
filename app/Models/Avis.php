@@ -19,7 +19,8 @@ class Avis extends Model
         return $this->belongsTo(Lieu::class);
     }
 
-    
+    protected $with = ['user'];
+
     /**
      * The attributes that are mass assignable.
      *

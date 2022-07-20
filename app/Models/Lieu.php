@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Lieu extends Model
 {
     use HasFactory;
-    // chargement automatique des catégories / images / user / avis associés lorsque l'on récupère le lieu
-    protected $with = ['categories', 'images', 'user', 'avis'];  
-                                       
+    // chargement automatique des catégories / images / user associés lorsque l'on récupère le lieu
+    // les avis ne sont pas inclus car tri par date de publication (le dernier en 1er) nécessaire 
+    // récupération et tri réalisés dans le contrôleur
+    protected $with = ['categories', 'images', 'user'];
+
     public function categories()
     {
         return $this->belongsToMany(Categorie::class, 'categories_lieux');
@@ -36,7 +38,7 @@ class Lieu extends Model
         return $this->hasMany(Image::class);
     }
 
-        /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -49,6 +51,7 @@ class Lieu extends Model
         'note',
         'temps',
         'difficulte',
+        'kilometres',
         'adresse',
         'code_postal',
         'ville',

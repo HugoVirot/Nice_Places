@@ -39,7 +39,7 @@ export default {
 	methods: {
 
 		// on récupère les catégories et on les stocke dans le store
-		
+
 		getCategories() {
 			axios.get("http://localhost:8000/api/categories")
 				.then(response => {
@@ -104,8 +104,10 @@ export default {
 	created() {
 
 		// on récupère les catégories et on les stocke dans le store
-		this.getCategories()
-
+		if (!store.state.categories) {
+			this.getCategories()
+		}
+		
 		console.log(store.state.userPosition)
 
 		// ******************* si réponse à la demande de géoloc ************************
@@ -134,7 +136,7 @@ export default {
 </script>
 
 <template>
-	<div class="text-center p-1">
+	<div class="text-center">
 
 		<!-- ******************************************* HEADER *********************************************** -->
 

@@ -6,7 +6,7 @@
 			<i class="titleIcon mx-auto fa-3x fa-solid fa-map-location-dot"></i>
 			<h1 class="mt-2">{{ lieu.nom }}</h1>
 			<p class="rating fs-3">
-			<div class="mx-auto"><i id="star" class="fa-solid fa-star ms-2 me-1"></i>
+			<div class="mx-auto"><i class="yellowStar fa-solid fa-star ms-2 me-1"></i>
 				{{ lieu.note }}</div>
 			</p>
 			<p><i class="fa-solid fa-user fa-2x ms-2 me-3"></i>Posté par {{ lieu.user.pseudo }}</p>
@@ -77,35 +77,135 @@
 			</div>
 		</div>
 
+		<Map v-if="lieu" :lieuSeul="lieu" />
+
+		<h2 class="m-5">Avis sur ce lieu</h2>
+
+		<div v-for="(avis, index) in lieu.avis">
+
+			<div class="container p-4 mb-3 border border-secondary" v-if="index + 1 <= 5">
+				<div class="row">
+					<div class="col-md-4 p-3 p-md-0">
+						<i class="yellowStar fa-solid fa-star fa-2x ms-2 me-1"></i>
+						{{ avis.note }} / 10
+					</div>
+					<div class="col-md-4 p-3 p-md-0">
+						<i class="fa-solid fa-user fa-2x ms-2 me-3"></i>Posté par {{ avis.user.pseudo }}
+					</div>
+					<div class="col-md-4 p-3 p-md-0">
+						<i class="fa-solid fa-calendar-days fa-2x ms-2 me-3"></i>
+						<p class="text-dark">{{ moment(avis.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</p>
+					</div>
+				</div>
+				<!-- si - de 500 caractères  -->
+				<p v-if="avis.commentaire.length <= 500">{{ avis.commentaire }}</p>
+
+				<!-- si + de 500 caractères  -->
+				<p v-else>
+					<!-- si commentaire limité à 500 => bouton "lire plus" pour afficher  -->
+				<div v-if="!showFullComment">
+					{{ avis.commentaire.substring(0, 500) + "..." }}
+					<span class="blueText" @click="showFullComment = !showFullComment">lire plus</span>
+				</div>
+
+				<!-- si commentaire entièrement affiché => bouton "lire moins" pour replier  -->
+				<div v-else>
+					{{ avis.commentaire }}
+					<span class="blueText" @click="showFullComment = !showFullComment">lire moins</span>
+				</div>
+				</p>
+
+			</div>
+
+			<div v-else>
+				<!-- si avis n°6 ou + : on l'affiche (ainsi que les autres de numéro > 6) au clic sur le bouton -->
+				<button v-if="index + 1 == 6 && !showAllReviews" class="btn btn-lg rounded-pill mb-2"
+					@click="showAllReviews = !showAllReviews">Afficher tous les avis</button>
+
+				<button v-if="index + 1 == 6 && showAllReviews" class="btn btn-lg rounded-pill mb-2"
+					@click="showAllReviews = !showAllReviews">Masquer</button>
+
+				<div v-if="showAllReviews">
+
+					<div class="container p-4 mb-3 border border-secondary">
+						<div class="row">
+							<div class="col-md-4 p-3 p-md-0">
+								<i class="yellowStar fa-solid fa-star fa-2x ms-2 me-1"></i>
+								{{ avis.note }} / 10
+							</div>
+							<div class="col-md-4 p-3 p-md-0">
+								<i class="fa-solid fa-user fa-2x ms-2 me-3"></i>Posté par {{ avis.user.pseudo }}
+							</div>
+							<div class="col-md-4 p-3 p-md-0">
+								<i class="fa-solid fa-calendar-days fa-2x ms-2 me-3"></i>
+								<p class="text-dark">{{ moment(avis.created_at).format("ddd MMM DD, YYYY [at] HH:mm a")
+								}}</p>
+							</div>
+						</div>
+						<!-- si - de 500 caractères  -->
+						<p v-if="avis.commentaire.length <= 500">{{ avis.commentaire }}</p>
+
+						<!-- si + de 500 caractères  -->
+						<p v-else>
+							<!-- si commentaire limité à 500 => bouton "lire plus" pour afficher  -->
+						<div v-if="!showFullComment">
+							{{ avis.commentaire.substring(0, 500) + "..." }}
+							<span class="blueText fs-5" @click="showFullComment = !showFullComment">lire plus</span>
+						</div>
+
+						<!-- si commentaire entièrement affiché => bouton "lire moins" pour replier  -->
+						<div v-else>
+							{{ avis.commentaire }}
+							<span class="blueText fs-5" @click="showFullComment = !showFullComment">lire moins</span>
+						</div>
+						</p>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+
+		<PosterAvis :lieu_id="lieu.id"/>
 	</div>
 </template>
 
 <script>
 import axios from 'axios'
+import Map from './Map.vue'
+import moment from 'moment';
+moment.locale('fr');
+
+import PosterAvis from './PosterAvis.vue';
 
 export default {
-
 	data() {
 		return {
 			lieuId: this.$route.params.id,
-			lieu: ''
-		}
+			lieu: null,
+			showAllReviews: false,
+			showFullComment: false
+		};
+	},
+
+	components: {
+		Map, PosterAvis
 	},
 
 	created() {
+		this.moment = moment
 
-		axios.get('/api/lieus/' + this.lieuId)
-
+		axios.get("/api/lieus/" + this.lieuId)
 			.then((response) => {
 				// on stocke le message de succès dans le store ("inscription réussie")
-				console.log(response.data)
-				this.lieu = response.data
+				console.log(response.data);
+				this.lieu = response.data;
 			})
-
 			.catch((error) => {
 				this.validationErrors = error.response.data.data;
-			})
-	}
+			});
+	},
+	components: { Map, PosterAvis }
 }</script>
 
 <style scoped>
@@ -114,6 +214,7 @@ export default {
 }
 
 h1,
+h2,
 .rating {
 	color: #1C6E8C
 }
@@ -130,12 +231,21 @@ i {
 	color: #1C6E8C
 }
 
-#star {
+.yellowStar {
 	color: yellow
 }
 
 #detailsLieu p {
 	display: flex;
 	align-items: center
+}
+
+.btn {
+	background-color: #94D1BE !important;
+	color: white;
+}
+
+.blueText {
+	color: #1C6E8C
 }
 </style>

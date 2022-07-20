@@ -115,9 +115,10 @@ class LieuSeeder extends Seeder
 
         Lieu::create([
             'nom' => 'Parc naturel régional du Marais poitevin',
-            'description' => 'Le marais poitevin s\étend sur 3 départements et 100 000 hectares. Il est composé d\'une myriade de petits canaux sur lesquels on peut 
+            'description' => 'Le marais poitevin s\'étend sur 3 départements et 100 000 hectares. Il est composé d\'une myriade de petits canaux sur lesquels on peut 
              naviguer en barque. On lui attribue d\'ailleurs le surnom de "Venise Verte" à cause des lentilles qui recouvrent l\'eau.
-             Il est également possible de s\'y promener à pied ou à vélo. Les plus jolis villages sont Arçais et Coulon, tous deux dotés d\'embarcadères.',
+             Il est également possible de s\'y promener à pied ou à vélo. Les plus jolis villages sont Arçais et Coulon, tous deux dotés d\'embarcadères.
+             NB :l\'adresse ci-dessous est celle du siège administratif du Parc.',
              'latitude' => '46.3220216',
              'longitude' => '-0.5859276',
             'note' => '9.3',

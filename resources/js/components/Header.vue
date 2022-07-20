@@ -10,11 +10,11 @@ export default {
             store.dispatch("logOut");
 
             // // on teste le résultat
-            console.log(store.getters.getUserData)
+            console.log(store.state.userData)
 
             // //idem pour le message de succès
             store.commit('storeMessage', "Déconnexion réussie")
-            console.log(store.getters.getMessage)
+            console.log(store.state.message)
 
             // on redirige vers l'accueil
             this.$router.push('/SuccessMessage')
@@ -95,6 +95,14 @@ export default {
                                         <router-link to="/meslieuxfavoris" class="nav-link">mes lieux favoris
                                         </router-link>
                                     </li>
+                                    <li>
+                                        <router-link to="/mesavispostes" class="nav-link">mes avis postés
+                                        </router-link>
+                                    </li>
+                                    <li v-if="userData.role == 'admin'">
+                                        <router-link to="/backoffice" class="nav-link">back-office
+                                        </router-link>
+                                    </li>
                                 </ul>
                             </li>
                             <i id="logoutIcon" class="fa-solid fa-right-from-bracket my-auto" @click="logOut()"></i>
@@ -124,6 +132,7 @@ export default {
 
 header {
     background-color: white;
+    box-shadow: 5px 3px 3px #94D1BE;
 }
 
 #twostripes {
@@ -143,7 +152,7 @@ a {
     color: inherit
 }
 
-#logoutIcon{
+#logoutIcon {
     color: #94D1BE
 }
 

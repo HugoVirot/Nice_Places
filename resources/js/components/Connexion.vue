@@ -18,9 +18,6 @@ export default {
     methods: {
 
         logIn() {
-            // console.log(store.getters.getUserData) // MARCHE (on peut accéder à userData)
-            // store.commit('storeUserData', { pseudo: "test2", email:" test2@test", token: "aajreg645r4f5erf"})
-            // console.log(store.getters.getUserData) // MARCHE (on peut accéder à userData)
 
             axios.post('/api/login', { email: this.email, password: this.password })
 
@@ -44,11 +41,11 @@ export default {
             store.commit('storeUserData', response.data.data)
 
             // // on teste le résultat
-            console.log(store.getters.getUserData)
+            console.log(store.state.userData)
 
             // //idem pour le message de succès
             store.commit('storeMessage', response.data.message)
-            console.log(store.getters.getMessage)
+            console.log(store.state.message)
 
             // on redirige vers l'accueil
             this.$router.push('/SuccessMessage')

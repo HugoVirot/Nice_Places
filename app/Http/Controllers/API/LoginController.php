@@ -27,7 +27,9 @@ class LoginController extends BaseController
             $success['token'] =  $authUser->createToken('LoginUser' . $authUser->id)->plainTextToken;
             $success['pseudo'] =  $authUser->pseudo;
             $success["email"] = $authUser->email;
+            $success["departement"] = $authUser->departement;
             $success['id'] = $authUser->id;
+            $success['role_id'] = $authUser->role_id;
 
             // on renvoie la réponse 
             return $this->sendResponse($success, 'Vous êtes connecté');

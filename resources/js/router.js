@@ -10,6 +10,8 @@ import MonCompte from "./components/MonCompte.vue"
 import SuccessMessage from "./components/SuccessMessage.vue"
 import MesLieuxPostes from "./components/MesLieuxPostes.vue"
 import MesLieuxFavoris from "./components/MesLieuxFavoris.vue"
+import MesAvisPostes from "./components/MesAvisPostes.vue"
+import BackOffice from "./components/BackOffice"
 
 const routes = [
   {
@@ -61,6 +63,16 @@ const routes = [
     path: "/meslieuxfavoris",
     name: "MesLieuxFavoris",
     component: MesLieuxFavoris,
+  },
+  {
+    path: "/mesavispostes",
+    name: "MesAvisPostes",
+    component: MesAvisPostes,
+  },
+  {
+    path: "/backoffice",
+    name: "BackOffice",
+    component: BackOffice,
   },
   {
     path: "/successmessage",

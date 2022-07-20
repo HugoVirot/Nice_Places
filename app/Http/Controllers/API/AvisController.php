@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Avis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
 
-class AvisController extends Controller
+class AvisController extends BaseController
 {
 
     public function __construct()
     {
         // middleware sanctum appliqué sur tout sauf show
-        $this->middleware('auth:sanctum')->except(['show']);
+        // $this->middleware('auth:sanctum')->except(['show']);
 
         //middleware admin à ajouter pour index (en supplément de sanctum)
     }
@@ -48,16 +46,17 @@ class AvisController extends Controller
             return $this->sendError('Error validation', $validator->errors());
         }
 
-        // on crée un nouveau lieu
+        // on crée un nouvel avis 
         $avis = Avis::create([
             'note' => $request->note,
             'commentaire' => $request->commentaire,
             'lieu_id' => $request->lieu_id,
-            'user_id' => Auth::user()->id
+            'user_id' => $request->user_id
         ]);
 
-        // On retourne les informations du nouvel utilisateur en JSON
-        return response()->json($avis, 201);
+        // On retourne l'avis créé avec un message de confirmation
+        $message = "Votre avis a bien été enregistré.";
+        return $this->sendResponse($avis, $message, 201);
     }
 
     /**

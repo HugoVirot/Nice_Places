@@ -15,7 +15,7 @@ export default {
         getLieuxPostes() {
             axios.post("http://localhost:8000/api/lieus/getplacesbyuser", null, {
                 params: {
-                    user_id: store.getters.getUserId
+                    user_id: store.state.userData.id
                 }
             })
                 .then(response => {

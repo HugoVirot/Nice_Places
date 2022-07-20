@@ -6,10 +6,10 @@ export default {
 
     data() {
         return {
-            pseudo: store.getters.getUserData.pseudo,
-            email: store.getters.getUserData.email,
-            id: store.getters.getUserData.id,
-            departement: store.getters.getUserData.departement,
+            pseudo: store.state.userData.pseudo,
+            email: store.state.userData.email,
+            id: store.state.userData.id,
+            departement: store.state.userData.departement,
             oldPassword: "",
             password: "",
             password_confirmation: "",
@@ -104,11 +104,10 @@ export default {
             store.commit('storeUserData', response.data.data)
 
             // // on teste le résultat
-            console.log(store.getters.getUserData)
+            console.log(store.state.userData)
 
             // //idem pour le message de succès
             store.commit('storeMessage', response.data.message)
-            console.log(store.getters.getMessage)
 
             this.$router.push('/SuccessMessage')
         },
@@ -116,7 +115,6 @@ export default {
         deleteAccountSuccess(response) {
 
             store.commit('storeMessage', response.data.message)
-            console.log(store.getters.getMessage)
 
             // la suppression fonctionne, le message de succès aussi
             //ajouter ici la déconnexion
@@ -127,7 +125,7 @@ export default {
     },
 
     mounted() {
-        console.log(store.getters.getUserData)
+        console.log(store.state.userData)
     }
 }
 </script>
@@ -172,7 +170,7 @@ export default {
                             </div>
 
                             <div class="form-group row m-2">
-                                <label for="email" class="col-md-4 col-form-label text-md-right">departement</label>
+                                <label for="email" class="col-md-4 col-form-label text-md-right">département (facultatif)</label>
 
                                 <div class="col-md-6">
                                     <input v-model="departement" id="departement" type="text" class="form-control"
