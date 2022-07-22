@@ -1,17 +1,20 @@
 import { createWebHistory, createRouter } from "vue-router";
-import App from "./components/App.vue";
-import Carte from "./components/Carte.vue"
-import TopLieux from "./components/TopLieux.vue"
-import Lieu from "./components/Lieu.vue"
-import ProposerLieu from "./components/ProposerLieu.vue"
-import Inscription from "./components/Inscription.vue"
-import Connexion from "./components/Connexion.vue"
-import MonCompte from "./components/MonCompte.vue"
-import SuccessMessage from "./components/SuccessMessage.vue"
-import MesLieuxPostes from "./components/MesLieuxPostes.vue"
-import MesLieuxFavoris from "./components/MesLieuxFavoris.vue"
-import MesAvisPostes from "./components/MesAvisPostes.vue"
+import App from "./components/App";
+import Carte from "./components/Carte"
+import TopLieux from "./components/TopLieux"
+import Lieu from "./components/Lieu"
+import ProposerLieu from "./components/ProposerLieu"
+import Inscription from "./components/Inscription"
+import Connexion from "./components/Connexion"
+import MonCompte from "./components/MonCompte"
+import SuccessMessage from "./components/SuccessMessage"
+import MesLieuxPostes from "./components/MesLieuxPostes"
+import MesLieuxFavoris from "./components/MesLieuxFavoris"
+import MesAvisPostes from "./components/MesAvisPostes"
 import BackOffice from "./components/BackOffice"
+import ModifierLieu from "./components/ModifierLieu"
+import ModifierCategorie from "./components/ModifierCategorie"
+import ModifierAvis from "./components/ModifierAvis"
 
 const routes = [
   {
@@ -21,63 +24,63 @@ const routes = [
   },
   {
     path: "/carte",
-    name: "Carte",
     component: Carte,
   },
   {
     path: "/toplieux",
-    name: "TopLieux",
     component: TopLieux,
   },
   {
     path: "/lieu/:id",
-    name: "Lieu",
     component: Lieu,
   },
   {
     path: "/proposerlieu",
-    name: "ProposerLieu",
     component: ProposerLieu,
   },
   {
     path: "/inscription",
-    name: "Inscription",
     component: Inscription,
   },
   {
     path: "/connexion",
-    name: "Connexion",
     component: Connexion,
   },
   {
     path: "/moncompte",
-    name: "MonCompte",
     component: MonCompte,
   },
   {
     path: "/meslieuxpostes",
-    name: "MesLieuxPostes",
     component: MesLieuxPostes,
   },
   {
     path: "/meslieuxfavoris",
-    name: "MesLieuxFavoris",
     component: MesLieuxFavoris,
   },
   {
     path: "/mesavispostes",
-    name: "MesAvisPostes",
     component: MesAvisPostes,
   },
   {
     path: "/backoffice",
-    name: "BackOffice",
     component: BackOffice,
   },
   {
     path: "/successmessage",
-    name: "SuccessMessage",
     component: SuccessMessage,
+  },
+  {
+    path: "/modifierlieu/:id",
+    component: ModifierLieu
+  },
+  {
+    path: "/modifiercategorie/:id",
+    component: ModifierCategorie
+  },
+  {
+    path: "/modifieravis/:id",
+    component: ModifierAvis
   }
 ];
 

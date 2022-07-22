@@ -38,7 +38,7 @@
 
                             <div class="form-group row mt-3 text-center">
                                 <div class="col-md-6 offset-md-3">
-                                    <button type="submit" class="btn btn-lg rounded-pill text-light btn-info">
+                                    <button type="submit" class="greenButton btn btn-lg rounded-pill text-light btn-info">
                                         Valider
                                     </button>
                                 </div>
@@ -89,8 +89,8 @@ export default {
 }
 </script>
 
-<style>
-h1 {
+<style scoped>
+h2 {
     color: #1C6E8C
 }
 
@@ -100,5 +100,10 @@ i {
 
 .card-header {
     background-color: #94D1BE
+}
+
+.greenButton {
+    color : white;
+    background-color: #94D1BE;
 }
 </style>

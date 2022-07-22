@@ -2,7 +2,12 @@
 import { store } from '../store'
 
 export default {
-    props: ["userData"],
+    
+    computed: {
+        userData() {
+            return store.state.userData
+        }
+    },
 
     methods: {
         logOut() {

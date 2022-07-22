@@ -11,11 +11,11 @@ class Lieu extends Model
     // chargement automatique des catégories / images / user associés lorsque l'on récupère le lieu
     // les avis ne sont pas inclus car tri par date de publication (le dernier en 1er) nécessaire 
     // récupération et tri réalisés dans le contrôleur
-    protected $with = ['categories', 'images', 'user'];
+    protected $with = ['categorie', 'images', 'user'];
 
-    public function categories()
+    public function categorie()
     {
-        return $this->belongsToMany(Categorie::class, 'categories_lieux');
+        return $this->belongsTo(Categorie::class);
     }
 
     public function users()

@@ -11,15 +11,15 @@ class Categorie extends Model
 
     public function lieux()
     {
-        return $this->belongsToMany(Lieu::class, 'categories_lieux');
+        return $this->hasMany(Lieu::class);
     }
 
-        /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'nom'
+        'nom', 'icone'
     ];
 }

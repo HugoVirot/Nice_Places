@@ -21,7 +21,8 @@ class LoginController extends BaseController
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
 
              // on récupère l'utilisateur 
-            $authUser = User::find(Auth::user()->id); 
+            $authUser = User::find(Auth::user()->id);
+            $authUser->load('role'); 
 
             // on lui crée un token (enregistré dans la table personnal_access_tokens)
             $success['token'] =  $authUser->createToken('LoginUser' . $authUser->id)->plainTextToken;
@@ -29,7 +30,7 @@ class LoginController extends BaseController
             $success["email"] = $authUser->email;
             $success["departement"] = $authUser->departement;
             $success['id'] = $authUser->id;
-            $success['role_id'] = $authUser->role_id;
+            $success['role'] = $authUser->role->role;
 
             // on renvoie la réponse 
             return $this->sendResponse($success, 'Vous êtes connecté');

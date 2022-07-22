@@ -1,22 +1,26 @@
 <script>
-import axios from "axios";
-import { store } from "../store";
+import axios from 'axios'
 import ValidationErrors from "./ValidationErrors.vue"
+import { store } from "../store.js";
 
 export default {
+
     computed: {
-        categories() {
-            return store.state.categories
+        userData() {
+            return store.state.userData
         }
     },
 
     data() {
         return {
+            lieuId: this.$route.params.id,
+            lieu: "",
             nom: "",
             description: "",
             latitude: "",
             longitude: "",
             categorie: "",
+            categories: store.state.categories,
             note: "",
             temps: "",
             difficulte: "",
@@ -24,21 +28,42 @@ export default {
             adresse: "",
             code_postal: "",
             ville: "",
-            validationErrors: "",
+            valide: "",
+            validationErrors: ""
         }
     },
 
     components: { ValidationErrors },
 
     methods: {
-        // poste le nouveau lieu pour le sauvegarder en base de données
-        sendData() {
-            axios.post('/api/lieus', {
+        // cette fonction permet de mettre à jour les données locales du composant
+        // une fois que l'appel API a récupéré le lieu
+        updateLocalData(lieu) {
+            console.log(lieu)
+            this.lieu = lieu
+            this.nom = lieu.nom
+            this.description = lieu.description
+            this.latitude = lieu.latitude
+            this.longitude = lieu.longitude
+            this.note = lieu.note
+            this.categorie = lieu.categorie
+            this.temps = lieu.temps
+            this.difficulte = lieu.difficulte
+            this.kilometres = lieu.kilometres
+            this.adresse = lieu.adresse
+            this.code_postal = lieu.code_postal
+            this.ville = lieu.ville
+            this.valide = lieu.valide
+        },
+
+        saveChanges() {
+
+            axios.put('/api/lieus/' + this.lieu.id, {
                 nom: this.nom,
                 description: this.description,
                 latitude: this.latitude,
                 longitude: this.longitude,
-                categorie: this.categorie,
+                categorie_id: this.categorie,
                 note: this.note,
                 temps: this.temps,
                 difficulte: this.difficulte,
@@ -46,53 +71,92 @@ export default {
                 adresse: this.adresse,
                 code_postal: this.code_postal,
                 ville: this.ville,
-                user_id: store.state.userData.id
+                valide: this.valide
             })
-                .then((response) => {
-
-                    // on stocke le message de succès dans le store ("création de lieu réussie")
+                .then(response => {
+                    // on stocke le message de succès dans le store 
                     store.commit('storeMessage', response.data.message);
                     console.log(store.state.message)
 
-                    // on récupère la nouvelle liste des lieux (avec le nouveau lieu en +)
-                    axios.get('/api/lieus').then(response => {
-
-                        // on la stocke dans le store
-                        store.commit('storeLieux', response.data)
-                        console.log(store.state.lieux)
-                        // on redirige sur le message de succès
-                        this.$router.push('/successmessage');
-
-                    }).catch(response => console.log(response.error))
-
+                    axios.get('/api/lieus')
+                        .then(response => {
+                            store.commit("storeLieux", response.data)
+                            console.log("lieux actualisés")
+                            this.$router.push('/successmessage');
+                        }).catch((response) => {
+                            console.log(response.error);
+                        })
                 })
+
                 .catch((error) => {
                     this.validationErrors = error.response.data.data;
                 })
-        },
-    }
+
+
+            // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
+            // ici, response.data.data est le payload transmis au store
+            store.commit('storeUserData', response.data.data)
+
+            // // on teste le résultat
+            console.log(store.state.userData)
+
+            // //idem pour le message de succès
+            store.commit('storeMessage', response.data.message)
+            console.log(store.state.message)
+
+            // on redirige vers l'accueil
+            this.$router.push('/SuccessMessage')
+        }
+    },
+
+    created() {
+
+        axios.get("/api/lieus/" + this.lieuId)
+            .then(response => {
+                this.updateLocalData(response.data)
+            })
+            .catch((error) => {
+                console.log(error)
+                this.validationErrors = error.response.data.data;
+            });
+    },
 }
 </script>
 
 <template>
 
-    <div class="p-5">
-        <i class="mx-auto fa-3x fa-solid fa-paper-plane"></i>
-        <h1 class="mt-2">Proposer un lieu</h1>
+    <div class="p-3">
+        <i class="fa-3x fa-solid fa-pen-to-square"></i>
+        <h1 class="mt-2">Modifier {{ lieu.nom }}</h1>
     </div>
+
+    <div v-if="lieu.valide" class="text-white mx-auto bg-success w-25 mb-3">validé</div>
+    <div v-else class="text-white mx-auto bg-danger w-25 mb-3">en attente de validation</div>
 
     <div class="container-fluid p-3 p-lg-5">
 
         <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
 
-        <div class="row justify-content-center p-2 p-lg-5">
+        <div v-if="lieu !== ''" class="row justify-content-center p-2 p-lg-5">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header text-white mb-3">Partagez vos coups de coeur avec nous !</div>
+                    <div class="card-header text-white mb-3">Entrez les nouvelles informations</div>
 
                     <div class="card-body">
 
-                        <form @submit.prevent="sendData">
+                        <form @submit.prevent="saveChanges">
+
+                            <div v-if="userData.role == 'admin'" class="form-group row m-2">
+                                <label for="valide" class="col-md-4 col-form-label text-md-right">valider le
+                                    lieu</label>
+
+                                <div class="col-md-6">
+                                    <select required v-model="valide" class="form-select" aria-label="valide">
+                                        <option value="1">Oui</option>
+                                        <option value="0">Non</option>
+                                    </select>
+                                </div>
+                            </div>
 
                             <div class="form-group row m-2">
                                 <label for="nom" class="col-md-4 col-form-label text-md-right">nom</label>
@@ -131,13 +195,15 @@ export default {
                                         name="longitude" required autocomplete="longitude">
                                 </div>
                             </div>
-                            <div class="form-text">entre -180 et 180. Partie décimale : maximum 7 chiffres.</div>
+                            <div class="form-text mb-2">entre -180 et 180. Partie décimale : maximum 7 chiffres.</div>
 
+                            <p>Catégorie actuelle : {{ categorie.nom }}</p>
+                            
                             <div class="form-group row m-2">
                                 <label for="categorie" class="col-md-4 col-form-label text-md-right">catégorie</label>
 
                                 <div class="col-md-6">
-                                    <select required v-model="categorie" class="form-select" aria-label="categorie">
+                                    <select v-model="categorie" class="form-select" aria-label="categorie">
                                         <option v-for="categorie in categories" :key="categorie.id"
                                             :value="categorie.id">{{ categorie.nom }}</option>
                                     </select>
@@ -145,7 +211,8 @@ export default {
                             </div>
 
                             <div class="form-group row m-2">
-                                <label for="note" class="col-md-4 col-form-label text-md-right">votre note sur 10</label>
+                                <label for="note" class="col-md-4 col-form-label text-md-right">votre note sur
+                                    10</label>
 
                                 <div class="col-md-6">
                                     <input v-model="note" id="note" min="0" max="10" type="number" class="form-control"
@@ -182,7 +249,7 @@ export default {
 
                                 <div class="col-md-6">
                                     <input min="1" max="150" v-model="kilometres" id="kilometres" type="number"
-                                        class="form-control" name="kilometres" required autocomplete="kilometres">
+                                        class="form-control" name="kilometres" autocomplete="kilometres">
                                 </div>
                             </div>
 
@@ -228,36 +295,12 @@ export default {
             </div>
         </div>
     </div>
-
-    <div class="modal bg-success" id="successModal" ref="successModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Félicitations !</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Inscription réussie ! </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </template>
 
 <style scoped>
 h1 {
     color: #1C6E8C
 }
-
-i {
-    color: #94D1BE
-}
-
 
 img {
     width: 6vw
@@ -273,7 +316,7 @@ img {
 }
 
 .container-fluid {
-    background-image: url(../../../public/images/riviere.jpg);
+    background-image: url(../../../public/images/plage.jpg);
     background-position: center;
     background-size: cover;
 }

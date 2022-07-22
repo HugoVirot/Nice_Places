@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\Avis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Lieu;
 
 class AvisController extends BaseController
 {
@@ -54,6 +55,23 @@ class AvisController extends BaseController
             'user_id' => $request->user_id
         ]);
 
+        // actualiser la note moyenne du lieu en fonction de la note de l'avis
+
+        // 1 ) on récupère le lieu avec son nombre d'avis
+        $lieu = Lieu::find($avis->lieu_id);
+        $lieu->loadCount('avis');
+
+        // 2) on calcule la nouvelle note moyenne = (note actuelle * nb notes + nouvelle note) / (nb notes + 1)
+
+        $reviewRating = intval($request->note); // intval transforme la note en integer
+        $currentAverageRating = $lieu->note;    // note moyenne actuelle de l'article
+        $notesNumber = $lieu->avis_count + 1;   // comptage du nombre de notes
+        $newAverageRating = ($currentAverageRating * $notesNumber + $reviewRating) / ($notesNumber + 1); // calcul final
+
+        // 3) on la sauvegarde
+        $lieu->note = $newAverageRating;
+        $lieu->save();
+
         // On retourne l'avis créé avec un message de confirmation
         $message = "Votre avis a bien été enregistré.";
         return $this->sendResponse($avis, $message, 201);
@@ -82,7 +100,6 @@ class AvisController extends BaseController
         $validator = Validator::make($request->all(), [
             'note' => 'required|max:10',
             'commentaire' => 'nullable|max:2000',
-            'lieu_id' => 'required'  // à transmettre en input hidden
         ]);
 
         if ($validator->fails()) {
@@ -91,7 +108,8 @@ class AvisController extends BaseController
 
         $avi->update($request->except('_token'));
 
-        return response()->json($avi, 200);
+        $message = "L'avis a bien été modifié";
+        return $this->sendResponse($avi, $message, 201);
     }
 
     /**
@@ -100,9 +118,10 @@ class AvisController extends BaseController
      * @param  \App\Models\Avis  $avis
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Avis $avis)
+    public function destroy(Avis $avi)
     {
-        $avis->delete();
-        return response()->json("Avis supprimé avec succès");
+        $avi->delete();
+        $message = "Avis supprimé avec succès";
+        return $this->sendResponse($avi, $message, 204);
     }
 }

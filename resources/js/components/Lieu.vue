@@ -80,93 +80,97 @@
 		<Map v-if="lieu" :lieuSeul="lieu" />
 
 		<h2 class="m-5">Avis sur ce lieu</h2>
+		<div v-if="lieu.avis.length > 0">
+			<div v-for="(avis, index) in lieu.avis">
 
-		<div v-for="(avis, index) in lieu.avis">
+				<div class="container p-4 mb-3 border border-secondary" v-if="index + 1 <= 5">
+					<div class="row">
+						<div class="col-md-4 p-3 p-md-0">
+							<i class="yellowStar fa-solid fa-star fa-2x ms-2 me-1"></i>
+							{{ avis.note }} / 10
+						</div>
+						<div class="col-md-4 p-3 p-md-0">
+							<i class="fa-solid fa-user fa-2x ms-2 me-3"></i>Posté par {{ avis.user.pseudo }}
+						</div>
+						<div class="col-md-4 p-3 p-md-0">
+							<i class="fa-solid fa-calendar-days fa-2x ms-2 me-3"></i>
+							<p class="text-dark">{{ moment(avis.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</p>
+						</div>
+					</div>
+					<!-- si - de 500 caractères  -->
+					<p v-if="avis.commentaire.length <= 500">{{ avis.commentaire }}</p>
 
-			<div class="container p-4 mb-3 border border-secondary" v-if="index + 1 <= 5">
-				<div class="row">
-					<div class="col-md-4 p-3 p-md-0">
-						<i class="yellowStar fa-solid fa-star fa-2x ms-2 me-1"></i>
-						{{ avis.note }} / 10
+					<!-- si + de 500 caractères  -->
+					<p v-else>
+						<!-- si commentaire limité à 500 => bouton "lire plus" pour afficher  -->
+					<div v-if="!showFullComment">
+						{{ avis.commentaire.substring(0, 500) + "..." }}
+						<span class="blueText" @click="showFullComment = !showFullComment">lire plus</span>
 					</div>
-					<div class="col-md-4 p-3 p-md-0">
-						<i class="fa-solid fa-user fa-2x ms-2 me-3"></i>Posté par {{ avis.user.pseudo }}
+
+					<!-- si commentaire entièrement affiché => bouton "lire moins" pour replier  -->
+					<div v-else>
+						{{ avis.commentaire }}
+						<span class="blueText" @click="showFullComment = !showFullComment">lire moins</span>
 					</div>
-					<div class="col-md-4 p-3 p-md-0">
-						<i class="fa-solid fa-calendar-days fa-2x ms-2 me-3"></i>
-						<p class="text-dark">{{ moment(avis.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</p>
-					</div>
+					</p>
+
 				</div>
-				<!-- si - de 500 caractères  -->
-				<p v-if="avis.commentaire.length <= 500">{{ avis.commentaire }}</p>
 
-				<!-- si + de 500 caractères  -->
-				<p v-else>
-					<!-- si commentaire limité à 500 => bouton "lire plus" pour afficher  -->
-				<div v-if="!showFullComment">
-					{{ avis.commentaire.substring(0, 500) + "..." }}
-					<span class="blueText" @click="showFullComment = !showFullComment">lire plus</span>
-				</div>
-
-				<!-- si commentaire entièrement affiché => bouton "lire moins" pour replier  -->
 				<div v-else>
-					{{ avis.commentaire }}
-					<span class="blueText" @click="showFullComment = !showFullComment">lire moins</span>
-				</div>
-				</p>
+					<!-- si avis n°6 ou + : on l'affiche (ainsi que les autres de numéro > 6) au clic sur le bouton -->
+					<button v-if="index + 1 == 6 && !showAllReviews" class="btn btn-lg rounded-pill mb-2"
+						@click="showAllReviews = !showAllReviews">Afficher tous les avis</button>
 
-			</div>
+					<button v-if="index + 1 == 6 && showAllReviews" class="btn btn-lg rounded-pill mb-2"
+						@click="showAllReviews = !showAllReviews">Masquer</button>
 
-			<div v-else>
-				<!-- si avis n°6 ou + : on l'affiche (ainsi que les autres de numéro > 6) au clic sur le bouton -->
-				<button v-if="index + 1 == 6 && !showAllReviews" class="btn btn-lg rounded-pill mb-2"
-					@click="showAllReviews = !showAllReviews">Afficher tous les avis</button>
+					<div v-if="showAllReviews">
 
-				<button v-if="index + 1 == 6 && showAllReviews" class="btn btn-lg rounded-pill mb-2"
-					@click="showAllReviews = !showAllReviews">Masquer</button>
-
-				<div v-if="showAllReviews">
-
-					<div class="container p-4 mb-3 border border-secondary">
-						<div class="row">
-							<div class="col-md-4 p-3 p-md-0">
-								<i class="yellowStar fa-solid fa-star fa-2x ms-2 me-1"></i>
-								{{ avis.note }} / 10
+						<div class="container p-4 mb-3 border border-secondary">
+							<div class="row">
+								<div class="col-md-4 p-3 p-md-0">
+									<i class="yellowStar fa-solid fa-star fa-2x ms-2 me-1"></i>
+									{{ avis.note }} / 10
+								</div>
+								<div class="col-md-4 p-3 p-md-0">
+									<i class="fa-solid fa-user fa-2x ms-2 me-3"></i>Posté par {{ avis.user.pseudo }}
+								</div>
+								<div class="col-md-4 p-3 p-md-0">
+									<i class="fa-solid fa-calendar-days fa-2x ms-2 me-3"></i>
+									<p class="text-dark">{{ moment(avis.created_at).format("ddd DD MMM YYYY [à] HH:mm")}}</p>
+								</div>
 							</div>
-							<div class="col-md-4 p-3 p-md-0">
-								<i class="fa-solid fa-user fa-2x ms-2 me-3"></i>Posté par {{ avis.user.pseudo }}
-							</div>
-							<div class="col-md-4 p-3 p-md-0">
-								<i class="fa-solid fa-calendar-days fa-2x ms-2 me-3"></i>
-								<p class="text-dark">{{ moment(avis.created_at).format("ddd MMM DD, YYYY [at] HH:mm a")
-								}}</p>
-							</div>
-						</div>
-						<!-- si - de 500 caractères  -->
-						<p v-if="avis.commentaire.length <= 500">{{ avis.commentaire }}</p>
+							<!-- si - de 500 caractères  -->
+							<p v-if="avis.commentaire.length <= 500">{{ avis.commentaire }}</p>
 
-						<!-- si + de 500 caractères  -->
-						<p v-else>
-							<!-- si commentaire limité à 500 => bouton "lire plus" pour afficher  -->
-						<div v-if="!showFullComment">
-							{{ avis.commentaire.substring(0, 500) + "..." }}
-							<span class="blueText fs-5" @click="showFullComment = !showFullComment">lire plus</span>
+							<!-- si + de 500 caractères  -->
+							<p v-else>
+								<!-- si commentaire limité à 500 => bouton "lire plus" pour afficher  -->
+							<div v-if="!showFullComment">
+								{{ avis.commentaire.substring(0, 500) + "..." }}
+								<span class="blueText fs-5" @click="showFullComment = !showFullComment">lire plus</span>
+							</div>
+
+							<!-- si commentaire entièrement affiché => bouton "lire moins" pour replier  -->
+							<div v-else>
+								{{ avis.commentaire }}
+								<span class="blueText fs-5" @click="showFullComment = !showFullComment">lire
+									moins</span>
+							</div>
+							</p>
 						</div>
 
-						<!-- si commentaire entièrement affiché => bouton "lire moins" pour replier  -->
-						<div v-else>
-							{{ avis.commentaire }}
-							<span class="blueText fs-5" @click="showFullComment = !showFullComment">lire moins</span>
-						</div>
-						</p>
 					</div>
 
 				</div>
-
 			</div>
 		</div>
+		<div v-else>
+			<p>Aucun avis posté. Partagez le vôtre !</p>
+		</div>
 
-		<PosterAvis :lieu_id="lieu.id"/>
+		<PosterAvis :lieu_id="lieu.id" />
 	</div>
 </template>
 
@@ -204,8 +208,7 @@ export default {
 			.catch((error) => {
 				this.validationErrors = error.response.data.data;
 			});
-	},
-	components: { Map, PosterAvis }
+	}
 }</script>
 
 <style scoped>

@@ -12,7 +12,7 @@ class CategorieController extends BaseController
     public function __construct()
     {
         // middleware sanctum appliqué sur toutes les méthodes
-        $this->middleware('auth:sanctum')->except('index');
+        // $this->middleware('auth:sanctum')->except('index');
 
         //middleware admin à ajouter pour tout (en supplément)
     }
@@ -46,11 +46,13 @@ class CategorieController extends BaseController
 
         // on crée un nouveau lieu
         $categorie = Categorie::create([
-            'nom' => $request->nom
+            'nom' => $request->nom,
+            'icone' => $request->icone
         ]);
 
         // On retourne les informations du nouvel utilisateur en JSON
-        return response()->json($categorie, 201);
+        $message = "La catégorie a bien été créée";
+        return $this->sendResponse($categorie, $message, 201);
     }
 
     /**
@@ -75,6 +77,7 @@ class CategorieController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'nom' => 'required|max:75',
+            'icone' => 'required|max:100'
         ]);
 
         if ($validator->fails()) {
@@ -97,7 +100,7 @@ class CategorieController extends BaseController
     public function destroy(Categorie $category)
     {
         $category->delete();
-
-        return response()->json("Catégorie supprimée avec succès");
+        $message = "Catégorie supprimée avec succès";
+        return $this->sendResponse($category, $message, 204);
     }
 }

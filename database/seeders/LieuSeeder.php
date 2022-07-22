@@ -30,7 +30,8 @@ class LieuSeeder extends Seeder
             'code_postal' => '85200',
             'ville' => 'Mervent',
             'user_id' => 1,
-            'valide' => true
+            'valide' => true,
+            'categorie_id' => 2
         ]);
 
         Lieu::create([
@@ -46,7 +47,8 @@ class LieuSeeder extends Seeder
             'code_postal' => '79210',
             'ville' => 'Saint-Hilaire-la-Palud',
             'user_id' => 1,
-            'valide' => true
+            'valide' => true,
+            'categorie_id' => 8
         ]);
 
         Lieu::create([
@@ -68,7 +70,8 @@ class LieuSeeder extends Seeder
             'code_postal' => '44000',
             'ville' => 'Nantes',
             'user_id' => 1,
-            'valide' => true
+            'valide' => true,
+            'categorie_id' => 6
         ]);
 
         Lieu::create([
@@ -91,7 +94,8 @@ class LieuSeeder extends Seeder
             'code_postal' => '17570',
             'ville' => 'Les Mathes',
             'user_id' => 1,
-            'valide' => true
+            'valide' => true,
+            'categorie_id' => 8
         ]);
 
         Lieu::create([
@@ -110,7 +114,8 @@ class LieuSeeder extends Seeder
             'code_postal' => '44710',
             'ville' => 'Port-Saint-Père',
             'user_id' => 1,
-            'valide' => true
+            'valide' => true,
+            'categorie_id' => 8
         ]);
 
         Lieu::create([
@@ -128,7 +133,8 @@ class LieuSeeder extends Seeder
             'code_postal' => '79510',
             'ville' => 'Coulon',
             'user_id' => 1,
-            'valide' => true
+            'valide' => true,
+            'categorie_id' => 5
         ]);
 
         Lieu::create([
@@ -143,7 +149,8 @@ class LieuSeeder extends Seeder
             'code_postal' => '85460',
             'ville' => ' 85460 L\'AIGUILLON-LA-PRESQU\'ILE',
             'user_id' => 1,
-            'valide' => true
+            'valide' => true,
+            'categorie_id' => 1
         ]);
 
         Lieu::create([
@@ -165,7 +172,8 @@ class LieuSeeder extends Seeder
             'code_postal' => '85560',
             'ville' => 'Longeville-sur-Mer',
             'user_id' => 1,
-            'valide' => true
+            'valide' => true,
+            'categorie_id' => 1
         ]);
 
         Lieu::create([
@@ -182,7 +190,8 @@ class LieuSeeder extends Seeder
             'code_postal' => '79000',
             'ville' => 'Niort',
             'user_id' => 1,
-            'valide' => true
+            'valide' => true,
+            'categorie_id' => 6
         ]);
 
         Lieu::create([
@@ -191,8 +200,8 @@ class LieuSeeder extends Seeder
             Néerlandais Wim Mager en 1998, vingt-sept ans après avoir fondé le parc Apenheul, le parc présente aujourd\'hui une 
             grande diversité de primates sur des îles végétalisées que le visiteur traverse en circulant au milieu des singes 
             et autres lémuriens. (source : Wikipédia)',
-            'latitude' => '0.30221',
-            'longitude' => '46.2702',
+            'latitude' => '46.2702',
+            'longitude' => '0.30221',
             'note' => '7.5',
             'temps' => '3',
             'difficulte' => 'famille',
@@ -200,7 +209,8 @@ class LieuSeeder extends Seeder
             'code_postal' => '86700',
             'ville' => 'Romagne', 
             'user_id' => 1,
-            'valide' => true
+            'valide' => true,
+            'categorie_id' => 8
         ]);
 
         // insertion de 10 lieux aléatoires via la LieuFactory (ids 11 à 20)

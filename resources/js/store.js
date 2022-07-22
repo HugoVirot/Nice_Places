@@ -18,6 +18,7 @@ const defaultState = {
         id: "",
         departement: "",
         token: "",
+        role: ""
     },
     message: "",
     geolocationAnswered: false,
@@ -26,7 +27,9 @@ const defaultState = {
     threeTopPlaces: "",
     threeLastPlaces: "",
     categories: "",
-    userPlaces: ""
+    userPlaces: "",
+    avis: "",
+    users: ""
 }
 
 export const store = createStore({
@@ -46,8 +49,7 @@ export const store = createStore({
             state.userData.email = payload.email
             state.userData.id = payload.id
             state.userData.departement = payload.departement
-            // state.userData.role = payload.role.role
-            state.userData.role_id = payload.role_id
+            state.userData.role = payload.role
             state.userData.token = payload.token
         },
 
@@ -70,6 +72,10 @@ export const store = createStore({
             state.lieux = payload
         },
 
+        storeUsers(state, payload) {
+            state.users = payload
+        },
+
         storeThreeTopPlaces(state, payload) {
             state.threeTopPlaces = payload
         },
@@ -86,6 +92,10 @@ export const store = createStore({
             state.userPlaces = payload
         },
 
+        storeAvis(state, payload) {
+            state.avis = payload
+        },
+
         // réinitialiser le state
         resetState(state) {
             Object.assign(state, defaultState)
@@ -93,6 +103,9 @@ export const store = createStore({
     },
 
     getters: {
+        getValidatedPlaces(state) {
+            return state.lieux.filter(lieu => lieu.valide)
+        }
     },
 
     actions: {

@@ -31,11 +31,13 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function lieux(){
+    public function lieux()
+    {
         return $this->hasMany(Lieu::class);
     }
 
-
+    protected $with = ['role'];
+    
     /**
      * The attributes that are mass assignable.
      *

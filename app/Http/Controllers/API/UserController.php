@@ -17,7 +17,7 @@ class UserController extends BaseController
     public function __construct()
     {
         // middleware sanctum appliqué sur index / update / destroy
-        $this->middleware('auth:sanctum')->except(['store', 'show']);
+        // $this->middleware('auth:sanctum')->except(['store', 'show']);
 
         //middleware admin à ajouter pour index (en supplément)
     }

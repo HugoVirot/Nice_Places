@@ -20,11 +20,11 @@ export default {
 		threeLastPlaces() {
 			return store.state.threeLastPlaces
 		},
-		lieux() {
-			return store.state.lieux
-		},
 		categories() {
 			return store.state.categories
+		},
+		lieux(){
+			return store.state.lieux
 		}
 	},
 
@@ -45,6 +45,18 @@ export default {
 				.then(response => {
 					store.commit('storeCategories', response.data)
 					console.log(this.categories)
+				}
+				)
+				.catch(error => {
+					console.log(error.response)
+				})
+		},
+
+		getLieux() {
+			axios.get("http://localhost:8000/api/lieus")
+				.then(response => {
+					store.commit('storeLieux', response.data)
+					console.log(this.lieux)
 				}
 				)
 				.catch(error => {
@@ -104,8 +116,12 @@ export default {
 	created() {
 
 		// on récupère les catégories et on les stocke dans le store
-		if (!store.state.categories) {
+		if (!this.categories) {
 			this.getCategories()
+		}
+
+		if (!this.lieux) {
+			this.getLieux()
 		}
 		
 		console.log(store.state.userPosition)
@@ -140,7 +156,7 @@ export default {
 
 		<!-- ******************************************* HEADER *********************************************** -->
 
-		<Header :userData="userData" />
+		<Header />
 
 		<div v-if="$route.path !== '/'">
 			<!-- si la route est différente de / (racine du site) -->

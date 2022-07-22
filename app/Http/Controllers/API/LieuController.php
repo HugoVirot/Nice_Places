@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API;
 use App\Models\Lieu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
 
 class LieuController extends BaseController
 {
@@ -26,7 +25,7 @@ class LieuController extends BaseController
      */
     public function index()
     {
-        $lieux = Lieu::where('valide', true)->get();
+        $lieux = Lieu::all();
         return response()->json($lieux);
     }
 
@@ -84,12 +83,8 @@ class LieuController extends BaseController
             'ville' =>  $request->ville,
             'user_id' => $request->user_id,
             // selon le statut de l'utilisateur (id 1 = admin), on valide ou non le lieu
-            'valide' => $request->user_id == 1 ? true : false
-        ]);
-
-        DB::table('categories_lieux')->insert([
-            'categorie_id' => $request->categorie,
-            'lieu_id' => $lieu->id
+            'valide' => $request->user_id == 1 ? true : false,
+            'categorie_id' => $request->categorie
         ]);
 
         // On retourne la réponse JSON
@@ -105,7 +100,7 @@ class LieuController extends BaseController
      */
     public function show(Lieu $lieu)
     {
-        $lieu->load(['avis'=> function ($query){
+        $lieu->load(['avis' => function ($query) {
             $query->latest()->get();
         }]);
         return response()->json($lieu);
@@ -176,10 +171,13 @@ class LieuController extends BaseController
             'longitude' => 'required',
             'note' => 'required',
             'temps' => 'required',
+            'categorie' => 'nullable',
             'difficulte' => 'required',
+            'kilometres' => 'nullable|integer',
             'adresse' => 'required|max:75',
             'code_postal' => 'required',
-            'ville' => 'required'
+            'ville' => 'required',
+            'valide' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -190,7 +188,8 @@ class LieuController extends BaseController
         $lieu->update($request->except('_token'));
 
         // On retourne la réponse en JSON
-        return response()->json($lieu, 200);
+        $message = "Lieu modifié avec succès";
+        return $this->sendResponse($lieu, $message);
     }
 
     /**
@@ -205,55 +204,7 @@ class LieuController extends BaseController
         $lieu->delete();
 
         // on retourne la réponse JSON
-        return response()->json("Lieu supprimé avec succès");
-    }
-
-    /**
-     * Add a new category to the place.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Lieu  $lieu
-     * @return \Illuminate\Http\Response
-     */
-    public function addCategory(Lieu $lieu, Request $request)
-    {
-
-        $validator = Validator::make($request->all(), [
-            'categorie_id' => 'required|integer',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError('Error validation', $validator->errors());
-        }
-
-        // on ajoute la catégorie à la table intermédiaire avec attach
-        $lieu->categories()->attach($request['categorie_id']);
-
-        return response()->json("Categorie ajoutée au lieu avec succès");
-    }
-
-    /**
-     * Add a new category to the place.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Lieu  $lieu
-     * @return \Illuminate\Http\Response
-     */
-
-    public function removeCategory(Lieu $lieu, Request $request)
-    {
-
-        $validator = Validator::make($request->all(), [
-            'categorie_id' => 'required|integer',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError('Error validation', $validator->errors());
-        }
-
-        // on ajoute la catégorie à la table intermédiaire avec attach
-        $lieu->categories()->detach($request['categorie_id']);
-
-        return response()->json("Categorie retirée du lieu avec succès");
+        $message = "Lieu supprimé avec succès";
+        return $this->sendResponse($lieu, $message, 204);
     }
 }
