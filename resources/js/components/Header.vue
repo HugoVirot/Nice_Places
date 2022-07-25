@@ -2,7 +2,7 @@
 import { store } from '../store'
 
 export default {
-    
+
     computed: {
         userData() {
             return store.state.userData
@@ -106,6 +106,10 @@ export default {
                                     </li>
                                     <li v-if="userData.role == 'admin'">
                                         <router-link to="/backoffice" class="nav-link">back-office
+                                        </router-link>
+                                    </li>
+                                    <li v-if="userData.role == 'admin'">
+                                        <router-link to="/uploadimages" class="nav-link">test dropzone
                                         </router-link>
                                     </li>
                                 </ul>

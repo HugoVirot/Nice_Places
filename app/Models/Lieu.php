@@ -51,6 +51,7 @@ class Lieu extends Model
         'note',
         'temps',
         'difficulte',
+        'categorie_id',
         'kilometres',
         'adresse',
         'code_postal',

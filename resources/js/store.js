@@ -29,7 +29,8 @@ const defaultState = {
     categories: "",
     userPlaces: "",
     avis: "",
-    users: ""
+    users: "",
+    placeCreated: false
 }
 
 export const store = createStore({
@@ -94,6 +95,10 @@ export const store = createStore({
 
         storeAvis(state, payload) {
             state.avis = payload
+        },
+
+        storePlaceCreated(state, payload) {
+            state.storePlaceCreated = payload
         },
 
         // réinitialiser le state

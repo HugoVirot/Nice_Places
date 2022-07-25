@@ -15,6 +15,7 @@ import BackOffice from "./components/BackOffice"
 import ModifierLieu from "./components/ModifierLieu"
 import ModifierCategorie from "./components/ModifierCategorie"
 import ModifierAvis from "./components/ModifierAvis"
+import UploadImages from "./components/UploadImages"
 
 const routes = [
   {
@@ -81,6 +82,10 @@ const routes = [
   {
     path: "/modifieravis/:id",
     component: ModifierAvis
+  },
+  {
+    path: "/uploadimages",
+    component: UploadImages
   }
 ];
 

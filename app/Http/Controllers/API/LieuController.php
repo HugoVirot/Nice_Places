@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\Lieu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Image;
 
 class LieuController extends BaseController
 {
@@ -40,8 +41,8 @@ class LieuController extends BaseController
     {
 
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|max:100|unique:lieus',
-            'description' => 'required|max:3000',
+            
+            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'latitude' => 'required',
             'longitude' => 'required',
             'categorie' => 'required|integer',
@@ -85,6 +86,15 @@ class LieuController extends BaseController
             // selon le statut de l'utilisateur (id 1 = admin), on valide ou non le lieu
             'valide' => $request->user_id == 1 ? true : false,
             'categorie_id' => $request->categorie
+        ]);
+
+        $imageName = time() . '.' . $request->image->extension();
+        $request->image->move(public_path('images'), $imageName);
+
+        Image::create([
+            'nom' => $imageName,
+            'user_id' => $request->user_id,
+            'lieu_id' => $lieu->id
         ]);
 
         // On retourne la réponse JSON
