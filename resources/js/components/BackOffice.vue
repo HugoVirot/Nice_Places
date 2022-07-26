@@ -24,6 +24,12 @@
                 <h2>Utilisateurs</h2>
             </div>
         </div>
+        <div class="row">
+            <div @click="showImages = !showImages" class="col-md-6 py-5 border border-secondary">
+                <i class="bigIcon fa-3x fa-solid fa-camera"></i>
+                <h2>Images</h2>
+            </div>
+        </div>
     </div>
 
     <section v-if="showLieux" class="container-fluid">
@@ -68,7 +74,7 @@
                     <td>{{ lieu.note }}</td>
                     <td>{{ lieu.temps }}</td>
                     <td>{{ lieu.difficulte }}</td>
-                    <td>{{ lieu.kilomètres }}</td>
+                    <td>{{ lieu.kilometres }}</td>
                     <td>{{ lieu.adresse }}</td>
                     <td>{{ lieu.code_postal }}</td>
                     <td>{{ lieu.ville }}</td>
@@ -193,7 +199,8 @@
                         <td>{{ avis.user.pseudo }}</td>
                         <td>{{ avis.lieu.nom }}</td>
                         <td>{{ avis.note }}</td>
-                        <td>{{ avis.commentaire.substring(0, 100) }}</td>
+                        <td v-if="avis.commentaire">{{ avis.commentaire.substring(0, 60) }}</td>
+                        <td v-else>aucun</td>
                         <td>{{ moment(avis.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
                         <td> {{ avis.created_at == avis.updated_at ? "jamais modifié" :
                                 moment(avis.updated_at).format("ddd DD MMM YYYY [à] HH:mm")
@@ -247,6 +254,57 @@
 
     </section>
 
+    <section v-if="showImages" class="container-fluid p-3 p-lg-5">
+
+        <h2 class="mb-2">Liste des images</h2>
+
+        <div class="container">
+            <table class="table table-striped table-secondary">
+                <thead>
+                    <tr>
+                        <th scope="col">aperçu</th>
+                        <th scope="col">id</th>
+                        <th scope="col">nom</th>
+                        <th scope="col">postée par</th>
+                        <th scope="col">lieu</th>
+                        <th scope="col">mise en avant</th>
+                        <th scope="col">ajoutée le</th>
+                        <!-- <th scope="col">modifier</th> -->
+                        <th scope="col">supprimer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="image in images">
+                        <th>
+                            <button class="m-3" type="button" data-bs-toggle="modal"
+                                :data-bs-target="`.imageZoom${image.id}`" style="border: none; outline:none">
+                                <img class="w-50" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
+                            </button>
+                        </th>
+                        <th scope="row">{{ image.id }}</th>
+                        <td>{{ image.nom }}</td>
+                        <td>{{ image.user.pseudo }}</td>
+                        <td>lieu</td>
+                        <td>{{ image.profil ? 'oui' : 'non' }}</td>
+                        <td>{{ moment(image.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
+                        <td><i class="fa-solid fa-eraser" @click="deleteImage(image.id)"></i></td>
+
+                        <!-- modal pour afficher l'image en grand -->
+                        <div :class="`modal fade imageZoom${image.id}`" tabindex="-1" role="dialog"
+                            aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-xl">
+                                <div class="modal-body w-100">
+                                    <img class="w-100" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+
 </template>
 
 <script>
@@ -271,6 +329,9 @@ export default {
         },
         users() {
             return store.state.users
+        },
+        images() {
+            return store.state.images
         }
     },
 
@@ -282,6 +343,7 @@ export default {
             showLieux: false,
             showCategories: false,
             showAvis: false,
+            showImages: false
         }
     },
 
@@ -439,34 +501,74 @@ export default {
                     console.log(error.response)
                 })
         },
+
+        deleteImage(id) {
+
+            console.log("suppression image d'id " + id)
+            axios.delete("/api/images/" + id)
+
+                .then(response => {
+                    // on stocke le message de succès dans le store pour l'afficher juste après
+                    store.commit('storeMessage', response.data.message)
+                    console.log(store.state.message)
+
+                    // on va récupérer la nouvelle liste des lieux
+                    axios.get('/api/images')
+
+                        .then(response => {
+                            store.commit("storeImages", response.data)
+                            console.log(this.images)
+                            // on redirige vers l'accueil en affichant le message de succès
+                            this.$router.push('/SuccessMessage')
+                        })
+
+                        .catch(error => {
+                            console.log(error.response)
+                        })
+
+                })
+
+                .catch(error => {
+                    console.log(error.response)
+                })
+        },
     },
 
     created() {
         this.moment = moment
 
-        if (!this.avis) {
-            axios.get("http://localhost:8000/api/avis")
-                .then(response => {
-                    store.commit('storeAvis', response.data)
-                    console.log(this.avis)
-                }
-                )
-                .catch(error => {
-                    console.log(error.response)
-                })
-        }
+        axios.get("http://localhost:8000/api/avis")
+            .then(response => {
+                store.commit('storeAvis', response.data)
+                console.log(this.avis)
+            }
+            )
+            .catch(error => {
+                console.log(error.response)
+            })
 
-        if (!this.users) {
-            axios.get("http://localhost:8000/api/users")
-                .then(response => {
-                    store.commit('storeUsers', response.data)
-                    console.log(this.users)
-                }
-                )
-                .catch(error => {
-                    console.log(error.response)
-                })
-        }
+
+        axios.get("http://localhost:8000/api/users")
+            .then(response => {
+                store.commit('storeUsers', response.data)
+                console.log(this.users)
+            }
+            )
+            .catch(error => {
+                console.log(error.response)
+            })
+
+
+        axios.get("http://localhost:8000/api/images")
+            .then(response => {
+                store.commit('storeImages', response.data)
+                console.log(this.images)
+            }
+            )
+            .catch(error => {
+                console.log(error.response)
+            })
+
 
         // let models = ['users', 'avis', 'categories', 'lieux']
 

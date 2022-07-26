@@ -28,6 +28,11 @@ class Image extends Model
         'nom',
         'user_id',
         'lieu_id',
-        'profil'
+        'profil',
+        'longueur',
+        'largeur',
+        'taille'
     ];
+
+    protected $with = ['user'];
 }

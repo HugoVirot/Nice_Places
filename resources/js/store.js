@@ -30,7 +30,7 @@ const defaultState = {
     userPlaces: "",
     avis: "",
     users: "",
-    placeCreated: false
+    images: ""
 }
 
 export const store = createStore({
@@ -97,8 +97,8 @@ export const store = createStore({
             state.avis = payload
         },
 
-        storePlaceCreated(state, payload) {
-            state.storePlaceCreated = payload
+        storeImages(state, payload) {
+            state.images = payload
         },
 
         // réinitialiser le state

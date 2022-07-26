@@ -10,7 +10,7 @@ class Lieu extends Model
     use HasFactory;
     // chargement automatique des catégories / images / user associés lorsque l'on récupère le lieu
     // les avis ne sont pas inclus car tri par date de publication (le dernier en 1er) nécessaire 
-    // récupération et tri réalisés dans le contrôleur
+    // => récupération et tri réalisés dans le contrôleur
     protected $with = ['categorie', 'images', 'user'];
 
     public function categorie()

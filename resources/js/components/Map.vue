@@ -89,50 +89,52 @@ export default {
 
 
                 // on ajoute un pointeur par lieu à la map
-                component.lieux.forEach(lieu => {
+                if (component.lieux) {
+                    component.lieux.forEach(lieu => {
 
-                    // function redirectOnPlace() {
-                    //     component.$router.push('/inscription')
-                    // }
+                        // function redirectOnPlace() {
+                        //     component.$router.push('/inscription')
+                        // }
 
-                    var popupContent = "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom +
-                        "<i class=\"fa-solid fa-star ms-3 me-2 mt-1\" style=\"color: yellow\"></i>" + lieu.note + "</h5>" +
+                        var popupContent = "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom +
+                            "<i class=\"fa-solid fa-star ms-3 me-2 mt-1\" style=\"color: yellow\"></i>" + lieu.note + "</h5>" +
 
-                        // lieu.categories.forEach(category => { console.log(category.icone) }) + // impossible d'afficher les icônes des catégories
-                        // tests : document.write, concaténation
+                            // lieu.categories.forEach(category => { console.log(category.icone) }) + // impossible d'afficher les icônes des catégories
+                            // tests : document.write, concaténation
 
-                        "<img class=\"mx-auto\" src=\"images/" + lieu.images[0].nom + "\" style=\"width: 30vw\">" +
+                            "<img class=\"mx-auto\" src=\"images/" + lieu.images[0].nom + "\" style=\"width: 30vw\">" +
 
-                        "<p style=\"font-family:'Cooper'\" class=\"text-center\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p>"
+                            "<p style=\"font-family:'Cooper'\" class=\"text-center\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p>"
 
-                    // `<router-link to="/lieu/${lieu.id}">` + 
-                    // "<button class=\"btn moreInfoButton mx-auto\" id=\"" + lieu.id + "\" style=\"color:white; background-color: #94D1BE\">plus d'infos</button>" +
-                    // "</router-link>"
+                        // `<router-link to="/lieu/${lieu.id}">` + 
+                        // "<button class=\"btn moreInfoButton mx-auto\" id=\"" + lieu.id + "\" style=\"color:white; background-color: #94D1BE\">plus d'infos</button>" +
+                        // "</router-link>"
 
-                    // ne marche pas (component (ou $router) in undefined)
-                    // "<a target=\"_self\" onclick=\"component.$router.push(`/lieu/${lieu.id}`)\">plus d'infos</a>"
-                    // `<a id=\""${lieu.id}"\" href =\"/lieu/${lieu.id}\" target = \"_self\" onclick = \"event.preventDefault(); Vue.router.push('/lieu/${lieu.id}')\"> Plus d'infos</a>`
+                        // ne marche pas (component (ou $router) in undefined)
+                        // "<a target=\"_self\" onclick=\"component.$router.push(`/lieu/${lieu.id}`)\">plus d'infos</a>"
+                        // `<a id=\""${lieu.id}"\" href =\"/lieu/${lieu.id}\" target = \"_self\" onclick = \"event.preventDefault(); Vue.router.push('/lieu/${lieu.id}')\"> Plus d'infos</a>`
 
-                    // "<a target=\"_self\" class=\"popupLink\" onclick=\"component.redirectOnPlace()\">plus d'infos</a>"
+                        // "<a target=\"_self\" class=\"popupLink\" onclick=\"component.redirectOnPlace()\">plus d'infos</a>"
 
 
-                    var popupOptions =
-                    {
-                        'maxWidth': '30vw',
-                        'className': 'popupLieu'
-                    }
+                        var popupOptions =
+                        {
+                            'maxWidth': '30vw',
+                            'className': 'popupLieu'
+                        }
 
-                    //ne marche pas
-                    let marker = L.marker([lieu.latitude, lieu.longitude]).addTo(component.map)
-                        .bindPopup(popupContent, popupOptions)
+                        //ne marche pas
+                        let marker = L.marker([lieu.latitude, lieu.longitude]).addTo(component.map)
+                            .bindPopup(popupContent, popupOptions)
 
-                    // marker.on('popupopen', function (e) {
+                        // marker.on('popupopen', function (e) {
 
-                    //     e.popup.on("click", () => alert("hello"))
-                    // });
+                        //     e.popup.on("click", () => alert("hello"))
+                        // });
 
-                    // marker._icon.classList.add("huechange"); //  + img.huechange { filter: hue-rotate(120deg); } => ne marchent pas
-                })
+                        // marker._icon.classList.add("huechange"); //  + img.huechange { filter: hue-rotate(120deg); } => ne marchent pas
+                    })
+                }
             }
         }
     },

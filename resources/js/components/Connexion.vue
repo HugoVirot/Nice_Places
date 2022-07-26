@@ -45,7 +45,6 @@ export default {
 
             // //idem pour le message de succès
             store.commit('storeMessage', response.data.message)
-            console.log(store.state.message)
 
             // on redirige vers l'accueil
             this.$router.push('/SuccessMessage')

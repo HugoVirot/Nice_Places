@@ -40,9 +40,10 @@ class LieuController extends BaseController
     public function store(Request $request)
     {
 
+        // dd($request->images);
+
         $validator = Validator::make($request->all(), [
-            
-            'image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'images.*' => 'required|image|mimes:jpg,jpeg,png,gif,svg|max:2048',
             'latitude' => 'required',
             'longitude' => 'required',
             'categorie' => 'required|integer',
@@ -88,14 +89,34 @@ class LieuController extends BaseController
             'categorie_id' => $request->categorie
         ]);
 
-        $imageName = time() . '.' . $request->image->extension();
-        $request->image->move(public_path('images'), $imageName);
+        // $imagesLastId = Image::max("id"); // on récupère le dernier id de la table images
+        $imagesTotalForPlace = Image::where('lieu_id', $lieu->id)->count();
+        $images = $request->file('images'); // on accède au tableau d'images transmises via le formulaire
 
-        Image::create([
-            'nom' => $imageName,
-            'user_id' => $request->user_id,
-            'lieu_id' => $lieu->id
-        ]);
+        foreach ($images as $key => $image) {
+
+            //nom de l'image = nom du lieu (espaces changés en underscores) + _image_ + le N° de l'image pour ce lieu + l'extension
+            $imageName = str_replace(' ', '_', $request->nom) . "_image_" . $imagesTotalForPlace + $key + 1  . '.' . $image->extension();
+
+            // on récupère les dimensions de l'image
+            $imageInfos = getimagesize($image);
+
+            // on récupère le poids en kb de l'image
+            $fileSize = round(filesize($image)/1000);
+
+            // on déplace l'image de son emplacement temporaire vers le dossier public/images
+            $image->move(public_path('images'), $imageName);
+
+            // on sauvegarde l'image en bdd
+            Image::create([
+                'nom' => $imageName,
+                'user_id' => $request->user_id,
+                'lieu_id' => $lieu->id,
+                'longueur' => $imageInfos[0],
+                'largeur' => $imageInfos[1],
+                'taille' => $fileSize
+            ]);
+        }
 
         // On retourne la réponse JSON
         return $this->sendResponse($lieu, $message, 201);

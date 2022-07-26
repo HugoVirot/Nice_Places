@@ -108,10 +108,6 @@ export default {
                                         <router-link to="/backoffice" class="nav-link">back-office
                                         </router-link>
                                     </li>
-                                    <li v-if="userData.role == 'admin'">
-                                        <router-link to="/uploadimages" class="nav-link">test dropzone
-                                        </router-link>
-                                    </li>
                                 </ul>
                             </li>
                             <i id="logoutIcon" class="fa-solid fa-right-from-bracket my-auto" @click="logOut()"></i>
