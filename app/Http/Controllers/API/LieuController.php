@@ -102,7 +102,7 @@ class LieuController extends BaseController
             $imageInfos = getimagesize($image);
 
             // on récupère le poids en kb de l'image
-            $fileSize = round(filesize($image)/1000);
+            $fileSize = round(filesize($image) / 1000);
 
             // on déplace l'image de son emplacement temporaire vers le dossier public/images
             $image->move(public_path('images'), $imageName);
@@ -114,7 +114,8 @@ class LieuController extends BaseController
                 'lieu_id' => $lieu->id,
                 'longueur' => $imageInfos[0],
                 'largeur' => $imageInfos[1],
-                'taille' => $fileSize
+                'taille' => $fileSize,
+                'mise_en_avant' => $key == 0 ? true : false
             ]);
         }
 
@@ -186,6 +187,14 @@ class LieuController extends BaseController
     }
 
 
+    // récupérer le nombre d'images par lieu
+
+    public function getImagesNumberByPlace(Lieu $lieu)
+    {
+        $imagesNumber = count($lieu->images);
+        return response()->json($imagesNumber);
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -222,6 +231,7 @@ class LieuController extends BaseController
         $message = "Lieu modifié avec succès";
         return $this->sendResponse($lieu, $message);
     }
+
 
     /**
      * Remove the specified resource from storage.

@@ -31,7 +31,8 @@ class Image extends Model
         'profil',
         'longueur',
         'largeur',
-        'taille'
+        'taille',
+        'mise_en_avant'
     ];
 
     protected $with = ['user'];

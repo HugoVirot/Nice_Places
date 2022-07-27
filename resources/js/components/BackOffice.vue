@@ -7,25 +7,24 @@
 
     <div class="container mb-4">
         <div class="row">
-            <div @click="showLieux = !showLieux" class="col-md-6 py-5 border border-secondary">
+            <div @click="showLieux = !showLieux" class="col-6 col-lg-4 py-5 border border-secondary">
                 <i class="bigIcon fa-3x fa-solid fa-map-location-dot"></i>
                 <h2>Lieux</h2>
             </div>
-            <div @click="showCategories = !showCategories" class="col-md-6 py-5 border border-secondary">
+            <div @click="showCategories = !showCategories"
+                class="col-6 col-lg-4 py-5 border border-secondary">
                 <i class="bigIcon fa-solid fa-3x fa-rectangle-list"></i>
                 <h2>Catégories</h2>
             </div>
-            <div @click="showAvis = !showAvis" class="col-md-6 py-5 border border-secondary">
+            <div @click="showAvis = !showAvis" class="col-6 col-lg-4  py-5 border border-secondary">
                 <i class="bigIcon fa-solid fa-3x fa-pen"></i>
                 <h2>Avis</h2>
             </div>
-            <div @click="showUsers = !showUsers" class="col-md-6 py-5 border border-secondary">
-                <i class="bigIcon fa-solid fa-3x fa-user border"></i>
+            <div @click="showUsers = !showUsers" class="col-6 col-lg-4 py-5 border border-secondary">
+                <i class="bigIcon fa-solid fa-3x fa-user"></i>
                 <h2>Utilisateurs</h2>
             </div>
-        </div>
-        <div class="row">
-            <div @click="showImages = !showImages" class="col-md-6 py-5 border border-secondary">
+            <div @click="showImages = !showImages" class="col-6 col-lg-4 py-5 border border-secondary">
                 <i class="bigIcon fa-3x fa-solid fa-camera"></i>
                 <h2>Images</h2>
             </div>
@@ -36,7 +35,7 @@
 
         <h2 class="mb-2">Liste des lieux</h2>
 
-        <table class="table table-striped">
+        <table class="table table-striped table-responsive">
             <thead>
                 <tr>
                     <th scope="col">id</th>
@@ -96,7 +95,7 @@
         <h2 class="mb-2">Liste des catégories</h2>
 
         <div class="container">
-            <table class="table table-striped table-success">
+            <table class="table table-striped table-responsive">
                 <thead>
                     <tr>
                         <th scope="col">id</th>
@@ -179,7 +178,7 @@
         <h2 class="mb-2">Liste des avis</h2>
 
         <div class="container">
-            <table class="table table-striped table-primary">
+            <table class="table table-striped table-responsive">
                 <thead>
                     <tr>
                         <th scope="col">id</th>
@@ -223,7 +222,7 @@
         <h2 class="mb-2">Liste des utilisateurs</h2>
 
         <div class="container">
-            <table class="table table-striped table-secondary">
+            <table class="table table-striped table-responsive">
                 <thead>
                     <tr>
                         <th scope="col">id</th>
@@ -254,55 +253,59 @@
 
     </section>
 
-    <section v-if="showImages" class="container-fluid p-3 p-lg-5">
-
+    <section v-if="showImages" class="container-fluid  p-3 p-lg-5">
         <h2 class="mb-2">Liste des images</h2>
 
-        <div class="container">
-            <table class="table table-striped table-secondary">
-                <thead>
-                    <tr>
-                        <th scope="col">aperçu</th>
-                        <th scope="col">id</th>
-                        <th scope="col">nom</th>
-                        <th scope="col">postée par</th>
-                        <th scope="col">lieu</th>
-                        <th scope="col">mise en avant</th>
-                        <th scope="col">ajoutée le</th>
-                        <!-- <th scope="col">modifier</th> -->
-                        <th scope="col">supprimer</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="image in images">
-                        <th>
-                            <button class="m-3" type="button" data-bs-toggle="modal"
-                                :data-bs-target="`.imageZoom${image.id}`" style="border: none; outline:none">
-                                <img class="w-50" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
-                            </button>
-                        </th>
-                        <th scope="row">{{ image.id }}</th>
-                        <td>{{ image.nom }}</td>
-                        <td>{{ image.user.pseudo }}</td>
-                        <td>lieu</td>
-                        <td>{{ image.profil ? 'oui' : 'non' }}</td>
-                        <td>{{ moment(image.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
-                        <td><i class="fa-solid fa-eraser" @click="deleteImage(image.id)"></i></td>
+        <table class="table table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th scope="col">aperçu</th>
+                    <th scope="col">id</th>
+                    <th scope="col">nom</th>
+                    <th scope="col">postée par</th>
+                    <th scope="col">mise en avant</th>
+                    <th scope="col">longueur</th>
+                    <th scope="col">largeur</th>
+                    <th scope="col">taille</th>
+                    <th scope="col">ajoutée le</th>
+                    <th scope="col">modifier</th>
+                    <th scope="col">supprimer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="image in images">
+                    <th>
+                        <button class="m-3" data-bs-toggle="modal" :data-bs-target="`.imageZoom${image.id}`"
+                            style="border: none; outline:none">
+                            <img class="w-75" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
+                        </button>
+                    </th>
+                    <th>{{ image.id }}</th>
+                    <td>{{ image.nom }}</td>
+                    <td>{{ image.user.pseudo }}</td>
+                    <td>{{ image.mise_en_avant ? 'oui' : 'non' }}</td>
+                    <td>{{ image.longueur }} px</td>
+                    <td>{{ image.largeur }} px</td>
+                    <td>{{ image.taille }} kb</td>
+                    <td>{{ moment(image.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
+                    <td>
+                        <router-link :to="`/modifierimage/${image.id}`"><i class="fa-solid fa-pen-to-square"></i>
+                        </router-link>
+                    </td>
+                    <td><i class="fa-solid fa-eraser" @click="deleteImage(image.id)"></i></td>
 
-                        <!-- modal pour afficher l'image en grand -->
-                        <div :class="`modal fade imageZoom${image.id}`" tabindex="-1" role="dialog"
-                            aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-xl">
-                                <div class="modal-body w-100">
-                                    <img class="w-100" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
-                                </div>
+                    <!-- modal pour afficher l'image en grand -->
+                    <div :class="`modal fade imageZoom${image.id}`" tabindex="-1" role="dialog"
+                        aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-body w-100">
+                                <img class="w-100" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
                             </div>
                         </div>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
+                    </div>
+                </tr>
+            </tbody>
+        </table>
     </section>
 
 </template>
@@ -606,5 +609,11 @@ i {
 
 .bigIcon {
     color: #94D1BE
+}
+
+@media screen and (max-width: 1200px) {
+    img {
+        width: 30vw !important
+    }
 }
 </style>

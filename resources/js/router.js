@@ -15,7 +15,9 @@ import BackOffice from "./components/BackOffice"
 import ModifierLieu from "./components/ModifierLieu"
 import ModifierCategorie from "./components/ModifierCategorie"
 import ModifierAvis from "./components/ModifierAvis"
+import ModifierImage from "./components/ModifierImage"
 import UploadImages from "./components/UploadImages"
+import DerniersLieux from "./components/DerniersLieux"
 
 const routes = [
   {
@@ -26,6 +28,10 @@ const routes = [
   {
     path: "/carte",
     component: Carte,
+  },
+  {
+    path: "/dernierslieux",
+    component: DerniersLieux,
   },
   {
     path: "/toplieux",
@@ -82,6 +88,10 @@ const routes = [
   {
     path: "/modifieravis/:id",
     component: ModifierAvis
+  },
+  {
+    path: "/modifierimage/:id",
+    component: ModifierImage
   },
   {
     path: "/uploadimages",

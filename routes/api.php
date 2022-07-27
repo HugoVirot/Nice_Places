@@ -35,12 +35,11 @@ Route::post('lieus/gettopplacesbydep', [App\Http\Controllers\API\LieuController:
 // récupérer les 3 derniers lieux postés du département
 Route::post('lieus/getlastplacesbydep', [App\Http\Controllers\API\LieuController::class, 'getLastPlacesByDep'])->name('getlastplacesbydep');
 
-// ajouter ou retirer une catégorie au lieu
-Route::put('lieus/{lieu}/addcategory', [App\Http\Controllers\API\LieuController::class, 'addCategory'])->name('addcategory');
-Route::put('lieus/{lieu}/removecategory', [App\Http\Controllers\API\LieuController::class, 'removeCategory'])->name('removecategory');
-
 // récupérer les lieux postés par l'utilisateur
 Route::post('lieus/getplacesbyuser', [App\Http\Controllers\API\LieuController::class, 'getPlacesByUser'])->name('getplacesbyuser');
+
+// récupérer le nombre d'images par lieu
+Route::get('lieus/getimagesnumberbyplace/{lieu}', [App\Http\Controllers\API\LieuController::class, 'getImagesNumberByPlace'])->name('getImagesNumberByPlace');
 
 
 // *****************************Les routes "avis.*" de l'API (même principe)*****************************************
@@ -60,4 +59,4 @@ Route::apiResource("favoris", App\Http\Controllers\API\FavoriController::class)-
 
 //************************ */ Les routes "favoris.*" de l'API(même principe)*****************************************
 
-Route::apiResource("images", App\Http\Controllers\API\ImageController::class)->except('show');
+Route::apiResource("images", App\Http\Controllers\API\ImageController::class);

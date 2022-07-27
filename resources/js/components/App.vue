@@ -23,7 +23,7 @@ export default {
 		categories() {
 			return store.state.categories
 		},
-		lieux(){
+		lieux() {
 			return store.state.lieux
 		}
 	},
@@ -123,7 +123,7 @@ export default {
 		if (!this.lieux) {
 			this.getLieux()
 		}
-		
+
 		console.log(store.state.userPosition)
 
 		// ******************* si réponse à la demande de géoloc ************************
@@ -189,12 +189,13 @@ export default {
 					</div>
 				</div>
 
-				<a href="/"><button class="btn btn-lg mt-3 rounded-pill">Je m'inscris</button></a>
+				<router-link to="/inscription"><button class="btn btn-lg mt-3 rounded-pill">Je m'inscris</button>
+				</router-link>
 			</div>
 
 			<div id="presentationBottomStripe" class="mb-3"></div>
 
-			<img class="titleIcon mt-5 mx-auto" src="images/icons/pointer.png" alt="pointeur">
+			<i class="titleIcon mt-5 mx-auto fa-3x fa-solid fa-location-dot"></i>
 			<h2 class="fs-2 m-3"> Carte des lieux autour de chez vous</h2>
 
 
@@ -207,7 +208,7 @@ export default {
 
 			<div v-if="threeTopPlaces && threeTopPlaces.length > 2">
 				<div>
-					<img class="titleIcon mt-5 mx-auto" src="images/icons/star.png" alt="étoile">
+					<i class="titleIcon mt-5 mx-auto fa-3x fa-solid fa-star"></i>
 					<h2 v-if="userData.departement" class="fs-2 m-3">Le top des lieux dans votre département</h2>
 					<h2 v-else class="fs-2 m-3">Le top des lieux (France entière)</h2>
 				</div>
@@ -219,38 +220,42 @@ export default {
 						<!-- ********************** boucle qui affiche les 3 lieux ************************* -->
 
 						<div v-for="(topPlace, index) in threeTopPlaces"
-							class="mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
+							class="mx-auto col-md-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
 							:style="`background-image: url(images/${topPlace.images[0].nom}); background-position: center; background-size: cover;`">
-							<div class="infosTopLieux p-1">
+							<div class="infosTopLieux pt-1 pb-3">
 
 								<div class="rankingAndName row d-flex justify-content-between align-items-center">
 									<div class="col-2">
 										<span class="ranking"> #{{ index + 1 }} </span>
 									</div>
 									<div class="col-10">
-										<h4>{{ topPlace.nom }}</h4>
+										<h5>{{ topPlace.nom }}</h5>
 									</div>
 								</div>
 
 								<div class="row">
-									<div class="col-4 d-flex justify-content-start">
-										<img class="me-1" src="images/icons/star.png" alt="étoile"> {{ topPlace.note }}
+									<div class="col-6">
+										<i class="yellowStar fa-2x fa-solid fa-star me-1"></i> {{ topPlace.note }}
+										<span class="fs-4 rounded-circle border border-white p-2 ms-2"
+											v-html="topPlace.categorie.icone"></span>
 									</div>
-									<div class="col-8 d-flex justify-content-end">
-										<img class="me-1" src="images/icons/pointer.png" alt="pointeur">
-										<p>{{ topPlace.ville }} ({{ topPlace.code_postal.substr(0, 2) }})</p>
+									<div class="col-6 d-flex">
+										<i class="titleIcon fa-2x fa-solid fa-location-dot me-2"></i>
+										<p class="my-auto">{{ topPlace.ville }} ({{ topPlace.code_postal.substr(0, 2) }})</p>
 									</div>
 								</div>
 
 							</div>
 
-							<button class="btn btn-lg rounded-pill">découvrir</button>
+							<router-link :to="`/lieu/${topPlace.id}`"><button
+									class="btn btn-lg rounded-pill">découvrir</button></router-link>
 
 						</div>
 
 					</div>
 
-					<a href="/"><button class="btn btn-lg mt-3 rounded-pill">Classement complet</button></a>
+					<router-link to="/toplieux"><button class="btn btn-lg mt-3 rounded-pill">Classement complet</button>
+					</router-link>
 
 				</div>
 			</div>
@@ -260,7 +265,7 @@ export default {
 
 			<div v-if="threeTopPlaces && threeTopPlaces.length > 2">
 
-				<img class="titleIcon mt-5 mx-auto" src="images/icons/clock.png" alt="pointeur">
+				<i class="titleIcon mt-5 mx-auto fa-3x fa-solid fa-clock"></i>
 				<h2 v-if="userData.departement" class="fs-2 m-3"> Derniers lieux ajoutés dans votre département</h2>
 				<h2 v-else class="fs-2 m-3"> Derniers lieux ajoutés (France entière)</h2>
 
@@ -268,23 +273,29 @@ export default {
 
 					<div class="row m-1 p-1" id="dernierslieux">
 
-						<!-- ********************** boucle qui affiche les 3 lieux ************************* -->
+						<!-- ********************** boucle qui affiche les 3 derniers lieux ************************* -->
 
 						<div v-for="lastPlace in threeLastPlaces"
-							class="mx-auto col-sm-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
+							class="mx-auto col-md-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
 							:style="`background-image: url(images/${lastPlace.images[0].nom}); background-position: center; background-size: cover;`">
 
 							<div class="infosDerniersLieux pt-2 px-1">
 
-								<div class="row d-flex justify-content-between">
-									<h4>{{ lastPlace.nom }}</h4>
+								<div class="row">
+									<div class="col-2">
+										<span class="fs-4 rounded-circle border border-white p-1 ms-2"
+											v-html="lastPlace.categorie.icone"></span>
+									</div>
+									<div class="col-10">
+										<h5>{{ lastPlace.nom }}</h5>
+									</div>
 								</div>
 
 								<div class="row">
-									<div class="row col-lg-6">
+									<div class="row col">
 
 										<div class="col-3">
-											<img src="images/icons/pointer.png" alt="pointeur">
+											<i class="titleIcon fa-2x fa-solid fa-location-dot"></i>
 										</div>
 
 										<div class="col-9">
@@ -293,10 +304,10 @@ export default {
 
 									</div>
 
-									<div class="row col-lg-6">
+									<div class="row col-md-8" v-if="lastPlace.ville.length < 15">
 
 										<div class="col-3">
-											<img src="images/icons/user.png" alt="user">
+											<i class="titleIcon fa-2x fa-solid fa-user"></i>
 										</div>
 
 										<div class="col-9">
@@ -308,14 +319,16 @@ export default {
 
 							</div>
 
-							<button class="btn btn-lg rounded-pill">découvrir</button>
+							<router-link :to="`/lieu/${lastPlace.id}`"><button
+									class="btn btn-lg rounded-pill">découvrir</button></router-link>
 
 						</div>
 
 					</div>
 				</div>
 
-				<a href="/"><button class="btn btn-lg mt-3 rounded-pill">Proposer un lieu</button></a>
+				<router-link to="/proposerlieu"><button class="btn btn-lg mt-3 rounded-pill">Proposer un lieu</button>
+				</router-link>
 
 			</div>
 
@@ -323,7 +336,7 @@ export default {
 
 			<section id="inscrivezVous">
 
-				<img class="titleIcon mt-5 mx-auto" src="images/icons/user.png" alt="user">
+				<i class="titleIcon mt-5 mx-auto fa-3x fa-solid fa-user"></i>
 				<h2 class="fs-2 m-3">Inscrivez-vous gratuitement !</h2>
 
 				<div class="container-fluid px-5">
@@ -345,8 +358,8 @@ export default {
 					</div>
 				</div>
 
-				<a href="/"><button class="btn btn-lg mt-3 rounded-pill">Je m'inscris</button></a>
-
+				<router-link to="/inscription"><button class="btn btn-lg mt-3 rounded-pill">Je m'inscris</button>
+				</router-link>
 			</section>
 
 		</div>
@@ -364,7 +377,7 @@ img {
 }
 
 .titleIcon {
-	height: 8vh
+	color: #94D1BE
 }
 
 h2 {
@@ -406,7 +419,7 @@ h2 {
 .infosTopLieux,
 .infosDerniersLieux {
 	background-color: rgba(50, 61, 158, 0.5);
-	height: 30%
+	height: 34%
 }
 
 .ranking {
@@ -415,6 +428,10 @@ h2 {
 
 .rankingAndName {
 	height: 70%
+}
+
+.yellowStar {
+	color: yellow
 }
 
 .categoryicon {
@@ -433,6 +450,12 @@ h2 {
 #pointer {
 	width: 7vw;
 	height: 10vw
+}
+
+@media screen and (max-width: 380px){
+	#toplieux .rounded-circle {
+		display: none;
+	}
 }
 
 @media screen and (max-width: 580px) {
@@ -461,11 +484,19 @@ h2 {
 
 	#toplieux,
 	#dernierslieux {
-		height: 70vh;
+		height: 85vh;
 	}
 
 	#presentation {
 		height: 57vh
+	}
+	
+	.infosTopLieux {
+		height: 55%
+	}
+
+	.infosDerniersLieux {
+		height: 60%
 	}
 }
 
@@ -492,11 +523,17 @@ h2 {
 @media screen and (max-width: 992px) {
 
 	.infosTopLieux {
-		height: 35%
+		height: 40%
 	}
 
 	.infosDerniersLieux {
 		height: 45%
+	}
+}
+
+@media screen and (min-width: 993px){
+	.infosDerniersLieux {
+		height: 35%
 	}
 }
 </style>

@@ -19,7 +19,7 @@ export default {
             description: "",
             latitude: "",
             longitude: "",
-            categorie: "",
+            categorie_id: "",
             categories: store.state.categories,
             note: "",
             temps: "",
@@ -46,7 +46,7 @@ export default {
             this.latitude = lieu.latitude
             this.longitude = lieu.longitude
             this.note = lieu.note
-            this.categorie = lieu.categorie
+            this.categorie_id = lieu.categorie.id
             this.temps = lieu.temps
             this.difficulte = lieu.difficulte
             this.kilometres = lieu.kilometres
@@ -63,7 +63,7 @@ export default {
                 description: this.description,
                 latitude: this.latitude,
                 longitude: this.longitude,
-                categorie_id: this.categorie,
+                categorie_id: this.categorie_id,
                 note: this.note,
                 temps: this.temps,
                 difficulte: this.difficulte,
@@ -130,8 +130,10 @@ export default {
         <h1 class="mt-2">Modifier {{ lieu.nom }}</h1>
     </div>
 
-    <div v-if="lieu.valide" class="text-white mx-auto bg-success w-25 mb-3">validé</div>
-    <div v-else class="text-white mx-auto bg-danger w-25 mb-3">en attente de validation</div>
+    <div v-if="lieu">
+        <div v-if="lieu.valide" class="text-white mx-auto bg-success w-25 mb-3">validé</div>
+        <div v-else class="text-white mx-auto bg-danger w-25 mb-3">en attente de validation</div>
+    </div>
 
     <div class="container-fluid p-3 p-lg-5">
 
@@ -162,8 +164,8 @@ export default {
                                 <label for="nom" class="col-md-4 col-form-label text-md-right">nom</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="nom" id="nom" type="text" class="form-control" name="nom" required
-                                        autocomplete="nom" autofocus>
+                                    <input :value="nom" v-model="nom" id="nom" type="text" class="form-control"
+                                        name="nom" required autocomplete="nom" autofocus>
                                 </div>
                             </div>
 
@@ -172,8 +174,9 @@ export default {
                                     class="col-md-4 col-form-label text-md-right">description</label>
 
                                 <div class="col-md-6">
-                                    <textarea v-model="description" id="description" class="form-control"
-                                        name="description" required autocomplete="description"></textarea>
+                                    <textarea :value="description" v-model="description" id="description"
+                                        class="form-control" name="description" required
+                                        autocomplete="description"></textarea>
                                 </div>
                             </div>
 
@@ -181,8 +184,8 @@ export default {
                                 <label for="latitude" class="col-md-4 col-form-label text-md-right">latitude</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="latitude" id="latitude" type="text" class="form-control"
-                                        name="latitude" required autocomplete="latitude">
+                                    <input :value="latitude" v-model="latitude" id="latitude" type="text"
+                                        class="form-control" name="latitude" required autocomplete="latitude">
                                 </div>
                             </div>
                             <div class="form-text">entre -90 et 90. Partie décimale : maximum 7 chiffres.</div>
@@ -191,32 +194,35 @@ export default {
                                 <label for="longitude" class="col-md-4 col-form-label text-md-right">longitude</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="longitude" id="longitude" type="text" class="form-control"
-                                        name="longitude" required autocomplete="longitude">
+                                    <input :value="longitude" v-model="longitude" id="longitude" type="text"
+                                        class="form-control" name="longitude" required autocomplete="longitude">
                                 </div>
                             </div>
                             <div class="form-text mb-2">entre -180 et 180. Partie décimale : maximum 7 chiffres.</div>
 
-                            <p>Catégorie actuelle : {{ categorie.nom }}</p>
-                            
+                            <!-- <p>Catégorie actuelle : {{ categorie.nom }}</p> -->
+
                             <div class="form-group row m-2">
-                                <label for="categorie" class="col-md-4 col-form-label text-md-right">catégorie</label>
+                                <label for="categorie_id"
+                                    class="col-md-4 col-form-label text-md-right">catégorie</label>
 
                                 <div class="col-md-6">
-                                    <select v-model="categorie" class="form-select" aria-label="categorie">
+                                    <select v-model="categorie_id" class="form-select" aria-label="categorie_id">
                                         <option v-for="categorie in categories" :key="categorie.id"
-                                            :value="categorie.id">{{ categorie.nom }}</option>
+                                            :value="categorie.id"
+                                            :selected="categorie.id == categorie_id ? selected : ''">{{ categorie.nom }}
+                                        </option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="form-group row m-2">
+                            <div v-if="userData.role == 'admin'" class="form-group row m-2">
                                 <label for="note" class="col-md-4 col-form-label text-md-right">votre note sur
                                     10</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="note" id="note" min="0" max="10" type="number" class="form-control"
-                                        name="note" required autocomplete="note">
+                                    <input :value="note" v-model="note" id="note" min="0" max="10" type="number"
+                                        class="form-control" name="note" required autocomplete="note">
                                 </div>
                             </div>
 
@@ -225,7 +231,7 @@ export default {
                                     heures</label>
 
                                 <div class="col-md-6">
-                                    <input min="1" max="24" v-model="temps" id="temps" type="number"
+                                    <input :value="temps" min="1" max="24" v-model="temps" id="temps" type="number"
                                         class="form-control" name="temps" required autocomplete="temps">
                                 </div>
                             </div>
@@ -236,9 +242,12 @@ export default {
 
                                 <div class="col-md-6">
                                     <select required v-model="difficulte" class="form-select" aria-label="difficulte">
-                                        <option selected value="famille">famille</option>
-                                        <option value="amateur">amateur</option>
-                                        <option value="sportif">sportif</option>
+                                        <option :selected="difficulte == 'famille' ? selected : ''" value="famille">
+                                            famille</option>
+                                        <option :selected="difficulte == 'amateur' ? selected : ''" value="amateur">
+                                            amateur</option>
+                                        <option :selected="difficulte == 'sportif' ? selected : ''" value="sportif">
+                                            sportif</option>
                                     </select>
                                 </div>
                             </div>
@@ -248,8 +257,8 @@ export default {
                                     km (facultatif)</label>
 
                                 <div class="col-md-6">
-                                    <input min="1" max="150" v-model="kilometres" id="kilometres" type="number"
-                                        class="form-control" name="kilometres" autocomplete="kilometres">
+                                    <input :value="distance" min="1" max="150" v-model="kilometres" id="kilometres"
+                                        type="number" class="form-control" name="kilometres" autocomplete="kilometres">
                                 </div>
                             </div>
 
@@ -257,8 +266,8 @@ export default {
                                 <label for="adresse" class="col-md-4 col-form-label text-md-right">adresse</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="adresse" id="adresse" type="text" class="form-control"
-                                        name="adresse" required autocomplete="adresse">
+                                    <input :value="adresse" v-model="adresse" id="adresse" type="text"
+                                        class="form-control" name="adresse" required autocomplete="adresse">
                                 </div>
                             </div>
 
@@ -267,8 +276,8 @@ export default {
                                     postal</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="code_postal" id="code_postal" type="text" class="form-control"
-                                        name="code_postal" required autocomplete="code_postal">
+                                    <input :value="code_postal" v-model="code_postal" id="code_postal" type="text"
+                                        class="form-control" name="code_postal" required autocomplete="code_postal">
                                 </div>
                             </div>
 
@@ -276,8 +285,8 @@ export default {
                                 <label for="ville" class="col-md-4 col-form-label text-md-right">ville</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="ville" id="ville" type="text" class="form-control" name="ville"
-                                        required autocomplete="ville">
+                                    <input :value="ville" v-model="ville" id="ville" type="text" class="form-control"
+                                        name="ville" required autocomplete="ville">
                                 </div>
                             </div>
 

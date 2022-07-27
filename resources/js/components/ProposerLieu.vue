@@ -141,7 +141,10 @@ export default {
                                 <div class="form-text mb-3 col-md-8 offset-md-4">
                                     <ul class="text-start ms-5 ms-md-0">
                                         <li>
-                                            Maximum 5 photos.
+                                            Maximum 5 photos et 2 Mo par photo.
+                                        </li>
+                                        <li>
+                                            Uniquement en format paysage svp.
                                         </li>
                                         <li>
                                             La première choisie sera la photo de couverture. </li>

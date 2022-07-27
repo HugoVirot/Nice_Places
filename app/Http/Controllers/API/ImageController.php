@@ -14,10 +14,11 @@ class ImageController extends BaseController
     public function __construct()
     {
         // middleware sanctum appliqué sur index / store / update / destroy
-        $this->middleware('auth:sanctum');
+        // $this->middleware('auth:sanctum');
 
         //middleware admin à ajouter pour index (en supplément)
     }
+
 
     /**
      * Display a listing of all the images for the administrator.
@@ -27,8 +28,9 @@ class ImageController extends BaseController
     public function index()
     {
         $images = Image::all();
-        return response()->json($images);  
+        return response()->json($images);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -44,13 +46,13 @@ class ImageController extends BaseController
             'profil' => 'required|boolean',
             'lieu_id' => 'required'
         ]);
-        
+
         if ($validator->fails()) {
             return $this->sendError('Error validation', $validator->errors());
         }
 
         $imageName = time() . '.' . $request->nom->extension();
-    
+
         $request->nom->move(public_path('images'), $imageName);
 
         // on crée un nouveau lieu
@@ -65,6 +67,19 @@ class ImageController extends BaseController
         return response()->json($image, 201);
     }
 
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Avis  $avis
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Image $image)
+    {
+        return response()->json($image);
+    }
+
+
     /**
      * Update the specified resource in storage.
      *
@@ -77,18 +92,28 @@ class ImageController extends BaseController
         // ici, l'update ne concerne que "profil" => l'utilisateur la choisit en tant qu'image
         // de profil ou la déselectionne
         $validator = Validator::make($request->all(), [
-            'profil' => 'required|boolean',
+            'nom' => 'required|string',
+            'mise_en_avant' => 'required|boolean',
         ]);
-        
+
         if ($validator->fails()) {
             return $this->sendError('Error validation', $validator->errors());
         }
 
         $image->update($request->except('_token'));
 
+        // si l'image est mise en avant, on désactive la mise en avant sur l'autre image mise en avant pour le lieu en question
+        if ($request->mise_en_avant) {
+            $samePlaceCoverImage = Image::where(['lieu_id' => $image->lieu_id, 'mise_en_avant' => true])->get();
+            $samePlaceCoverImage = $samePlaceCoverImage[0];
+            $samePlaceCoverImage->mise_en_avant = false;
+            $samePlaceCoverImage->save();
+        }
+
         // On retourne la réponse en JSON
         return response()->json($image, 200);
     }
+
 
     /**
      * Remove the specified resource from storage.
