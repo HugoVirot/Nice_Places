@@ -1,5 +1,5 @@
 <template>
-    <div class="container-fluid p-3 p-lg-5">
+    <div class="container-fluid p-3 p-lg-4">
 
         <div class="m-3">
             <i class="mx-auto fa-solid fa-pen fa-3x"></i>
@@ -7,7 +7,7 @@
         </div>
 
         <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
-        <div class="row justify-content-center p-2 p-lg-5">
+        <div class="row justify-content-center p-2 p-lg-4">
             <div class="col-md-8">
 
                 <div class="card">

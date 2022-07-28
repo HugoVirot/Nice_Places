@@ -78,7 +78,7 @@ export default {
                 <div v-if="userPlace.valide" class="mx-auto bg-success w-25">validé</div>
                 <div v-else class="mx-auto bg-danger w-25">en attente de validation</div>
                 <div class="card-body">
-                    <router-link :to="`/lieu/${userPlace.id}`"><button class="btn btn-primary">Détails du lieu</button>
+                    <router-link :to="`/lieu/${userPlace.id}`"><button class="btn">Détails du lieu</button>
                     </router-link>
                 </div>
             </div>
@@ -102,5 +102,15 @@ i {
 
 .card {
     height: 35vh
+}
+
+button {
+    background-color: #94DEB1;
+    color: white
+}
+
+button:hover {
+    background-color: #1C6E8C;
+    color: white
 }
 </style>

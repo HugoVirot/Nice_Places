@@ -54,8 +54,9 @@ Route::apiResource("categories", App\Http\Controllers\API\CategorieController::c
 
 // ******************************Les routes "favoris.*" de l'API(même principe)**************************************
 
-Route::apiResource("favoris", App\Http\Controllers\API\FavoriController::class)->except('update', 'show');
-
+Route::apiResource("favoris", App\Http\Controllers\API\FavoriController::class)->except('index', 'update', 'show', 'delete');
+Route::get('favoris/{user}', [App\Http\Controllers\API\FavoriController::class, 'index'])->name('index');
+Route::delete('favoris/{user}/{lieu}', [App\Http\Controllers\API\FavoriController::class, 'destroy'])->name('destroy');
 
 //************************ */ Les routes "favoris.*" de l'API(même principe)*****************************************
 

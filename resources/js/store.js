@@ -30,7 +30,8 @@ const defaultState = {
     userPlaces: "",
     avis: "",
     users: "",
-    images: ""
+    images: "",
+    favoris: ""
 }
 
 export const store = createStore({
@@ -99,6 +100,10 @@ export const store = createStore({
 
         storeImages(state, payload) {
             state.images = payload
+        },
+
+        storeFavoris(state, payload) {
+            state.favoris = payload
         },
 
         // réinitialiser le state

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Lieu;
 use Illuminate\Support\Facades\Validator;
 
 class FavoriController extends BaseController
@@ -12,7 +13,7 @@ class FavoriController extends BaseController
     public function __construct()
     {
         // middleware sanctum appliqué sur toutes les méthodes
-        $this->middleware('auth:sanctum');
+        // $this->middleware('auth:sanctum');
     }
 
     /**
@@ -20,14 +21,11 @@ class FavoriController extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(User $user)
     {
-        // on récupère le user connecté
-        $user = User::find(auth()->user()->id);
-
-        // on charge ses lieux favoris
+        // on charge les lieux favoris de l'utilisateur
         $user->load('favoris');
-
+        // on les renvoie en format json
         return response()->json($user->favoris);
     }
 
@@ -39,23 +37,16 @@ class FavoriController extends BaseController
      */
     public function store(Request $request)
     {
-        // on valide l'id du lieu reçu
-        $validator = Validator::make($request->all(), [
-            'lieu_id' => 'required'  // à transmettre en hidden via le formulaire
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError('Error validation', $validator->errors());
-        }
         // on récupère le user connecté
-        $user = User::find(auth()->user()->id);
+        $user = User::find($request->user_id);
 
         // on ajoute le lieu sélectionné à ses favoris via la syntaxe favoris()->attach
         // qui cible la table intermédiaire favoris (via relation favoris dans le modèle User)
         $user->favoris()->attach($request->lieu_id);
 
         // on renvoie la réponse avec un message de confirmation en json
-        return response()->json("Lieu ajouté aux favoris");
+        $message = "Lieu ajouté aux favoris";
+        return $this->sendResponse($request->lieu_id, $message, 201);
     }
 
 
@@ -65,73 +56,14 @@ class FavoriController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user, Lieu $lieu)
     {
-        // // on valide l'id du lieu reçu
-        // $validator = Validator::make($request->all(), [
-        //     'lieu_id' => 'required'  // à transmettre en hidden via le formulaire
-        // ]);
-
-        // if ($validator->fails()) {
-        //     return $this->sendError('Error validation', $validator->errors());
-        // }
-        // on récupère le user connecté
-        $user = User::find(auth()->user()->id);
-
-        // on ajoute le lieu sélectionné à ses favoris via la syntaxe favoris()->attach
+        // on retire le lieu sélectionné à ses favoris via la syntaxe favoris()->detach
         // qui cible la table intermédiaire favoris (via relation favoris dans le modèle User)
-        $user->favoris()->detach($id);
+        $user->favoris()->detach($lieu->id);
 
         // on renvoie la réponse avec un message de confirmation en json
-        return response()->json("Lieu retiré des favoris");
+        $message = "Lieu retiré des favoris";
+        return $this->sendResponse($lieu->id, $message, 204);
     }
-
-    //    /**
-    //  * Add a new category to the place.
-    //  *
-    //  * @param  \Illuminate\Http\Request  $request
-    //  * @param  \App\Models\Lieu  $lieu
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // public function addCategory(Lieu $lieu, Request $request)
-    // {
-
-    //     $validator = Validator::make($request->all(), [
-    //         'categorie_id' => 'required|integer',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return $this->sendError('Error validation', $validator->errors());
-    //     }
-
-    //     // on ajoute la catégorie à la table intermédiaire avec attach
-    //     $lieu->categories()->attach($request['categorie_id']);
-
-    //     return response()->json("Categorie ajoutée au lieu avec succès");
-    // }
-
-    // /**
-    //  * Add a new category to the place.
-    //  *
-    //  * @param  \Illuminate\Http\Request  $request
-    //  * @param  \App\Models\Lieu  $lieu
-    //  * @return \Illuminate\Http\Response
-    //  */
-
-    // public function removeCategory(Lieu $lieu, Request $request)
-    // {
-
-    //     $validator = Validator::make($request->all(), [
-    //         'categorie_id' => 'required|integer',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return $this->sendError('Error validation', $validator->errors());
-    //     }
-
-    //     // on ajoute la catégorie à la table intermédiaire avec attach
-    //     $lieu->categories()->detach($request['categorie_id']);
-
-    //     return response()->json("Categorie retirée du lieu avec succès");
-    // }
 }
