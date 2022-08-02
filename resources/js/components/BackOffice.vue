@@ -11,8 +11,7 @@
                 <i class="bigIcon fa-3x fa-solid fa-map-location-dot"></i>
                 <h2>Lieux</h2>
             </div>
-            <div @click="showCategories = !showCategories"
-                class="col-6 col-lg-4 py-5 border border-secondary">
+            <div @click="showCategories = !showCategories" class="col-6 col-lg-4 py-5 border border-secondary">
                 <i class="bigIcon fa-solid fa-3x fa-rectangle-list"></i>
                 <h2>Catégories</h2>
             </div>
@@ -78,8 +77,14 @@
                     <td>{{ lieu.code_postal }}</td>
                     <td>{{ lieu.ville }}</td>
                     <td>{{ lieu.user.pseudo }}</td>
-                    <td v-if="lieu.valide" class="bg-success text-white">validé</td>
-                    <td v-else class="bg-danger text-white">en attente de validation</td>
+
+                    <td v-if="lieu.statut == 'validé'" class="bg-success text-white">validé</td>
+                    <td v-else-if="lieu.statut == 'en attente'" class="mx-auto bg-info w-25">en attente de validation
+                    </td>
+                    <td v-else-if="lieu.statut == 'à modifier'" class="mx-auto bg-warning w-25">à modifier pour être validé
+                    </td>
+                    <td v-else class="mx-auto bg-danger w-25">refusé</td>
+
                     <td>{{ moment(lieu.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
                     <td> {{ lieu.created_at == lieu.updated_at ? "jamais modifié" :
                             moment(avis.updated_at).format("ddd DD MMM YYYY [à] HH:mm")
@@ -338,7 +343,7 @@ export default {
         },
         // lieuxNonValidés()[
         //     return store.state.lieux.filter( lieu => lieu.valide)
-            
+
         // ]
     },
 

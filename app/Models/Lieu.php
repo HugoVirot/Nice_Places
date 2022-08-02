@@ -62,6 +62,7 @@ class Lieu extends Model
         'code_postal',
         'ville',
         'user_id',
-        'valide'
+        'statut',
+        'commentaire'
     ];
 }

@@ -30,7 +30,7 @@ class LieuSeeder extends Seeder
             'code_postal' => '85200',
             'ville' => 'Mervent',
             'user_id' => 1,
-            'valide' => true,
+            'statut' => "validé",
             'categorie_id' => 2
         ]);
 
@@ -47,7 +47,7 @@ class LieuSeeder extends Seeder
             'code_postal' => '79210',
             'ville' => 'Saint-Hilaire-la-Palud',
             'user_id' => 1,
-            'valide' => true,
+            'statut' => "validé",
             'categorie_id' => 8
         ]);
 
@@ -70,7 +70,7 @@ class LieuSeeder extends Seeder
             'code_postal' => '44000',
             'ville' => 'Nantes',
             'user_id' => 1,
-            'valide' => true,
+            'statut' => "validé",
             'categorie_id' => 6
         ]);
 
@@ -94,7 +94,7 @@ class LieuSeeder extends Seeder
             'code_postal' => '17570',
             'ville' => 'Les Mathes',
             'user_id' => 1,
-            'valide' => true,
+            'statut' => "validé",
             'categorie_id' => 8
         ]);
 
@@ -114,7 +114,7 @@ class LieuSeeder extends Seeder
             'code_postal' => '44710',
             'ville' => 'Port-Saint-Père',
             'user_id' => 1,
-            'valide' => true,
+            'statut' => "validé",
             'categorie_id' => 8
         ]);
 
@@ -133,7 +133,7 @@ class LieuSeeder extends Seeder
             'code_postal' => '79510',
             'ville' => 'Coulon',
             'user_id' => 1,
-            'valide' => true,
+            'statut' => "validé",
             'categorie_id' => 5
         ]);
 
@@ -149,7 +149,7 @@ class LieuSeeder extends Seeder
             'code_postal' => '85460',
             'ville' => ' 85460 L\'AIGUILLON-LA-PRESQU\'ILE',
             'user_id' => 1,
-            'valide' => true,
+            'statut' => "validé",
             'categorie_id' => 1
         ]);
 
@@ -172,7 +172,7 @@ class LieuSeeder extends Seeder
             'code_postal' => '85560',
             'ville' => 'Longeville-sur-Mer',
             'user_id' => 1,
-            'valide' => true,
+            'statut' => "validé",
             'categorie_id' => 1
         ]);
 
@@ -190,7 +190,7 @@ class LieuSeeder extends Seeder
             'code_postal' => '79000',
             'ville' => 'Niort',
             'user_id' => 1,
-            'valide' => true,
+            'statut' => "validé",
             'categorie_id' => 6
         ]);
 
@@ -209,7 +209,7 @@ class LieuSeeder extends Seeder
             'code_postal' => '86700',
             'ville' => 'Romagne', 
             'user_id' => 1,
-            'valide' => true,
+            'statut' => "validé",
             'categorie_id' => 8
         ]);
 

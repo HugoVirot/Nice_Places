@@ -26,7 +26,8 @@ return new class extends Migration
             $table->string('adresse', 75);
             $table->char('code_postal', 5);
             $table->string('ville', 50);
-            $table->boolean('valide');
+            $table->enum('statut', ['validé', 'en attente', 'à modifier', 'refusé']);
+            $table->text('commentaire', 1000)->nullable();
             $table->timestamps();
 
             $table->unsignedBigInteger('user_id')->nullable();

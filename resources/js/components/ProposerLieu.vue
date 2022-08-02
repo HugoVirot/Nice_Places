@@ -49,7 +49,6 @@ export default {
 
         },
         // poste le nouveau lieu pour le sauvegarder en base de données
-
         sendData() {
 
             this.formData.append("nom", this.nom); // this should be your image
@@ -70,7 +69,15 @@ export default {
                 .then((response) => {
 
                     // on stocke le message de succès dans le store ("création de lieu réussie")
-                    store.commit('storeMessage', response.data.message);
+                    store.commit('storeMessage', response.data.message)
+
+
+                    let lieuId = response.data.data.id
+
+                    // si utilisateur normal, on sauvegarde une notification en base de données
+                    if (store.state.userData.role !== "admin") {
+                        this.createNotification(lieuId)
+                    }
 
                     // on récupère la nouvelle liste des lieux (avec le nouveau lieu en +)
                     axios.get('/api/lieus').then(response => {
@@ -89,6 +96,21 @@ export default {
                     this.validationErrors = error.response.data.data;
                 })
         },
+
+        // on sauvegarde une notification en base de données pour indiquer à l'utilisateur
+        // que son lieu a bien été proposé et est mis en attente
+        createNotification(lieuId) {
+            let titre = `Votre lieu ${this.nom} a bien été proposé !`;
+            let message = `Merci ${store.state.userData.pseudo} !<br> 
+            Votre lieu ${this.nom} a bien été proposé.<br>
+            Il a été mis en attente et va être vérifié par l'administrateur.<br>
+            Ce dernier reviendra alors vers vous.<br>
+            A très bientôt.`
+
+            axios.post('/api/notifications', { titre: titre, message: message, user_id: store.state.userData.id, lieu_id: lieuId },)
+                .then(response => console.log(response.data.message))
+                .catch(response => console.log(response.data.message))
+        }
     }
 }
 </script>

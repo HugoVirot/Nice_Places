@@ -6,6 +6,7 @@ use App\Models\Notification;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Controllers\API\BaseController;
+use Illuminate\Support\Facades\Validator;
 
 class NotificationController extends BaseController
 {
@@ -16,7 +17,7 @@ class NotificationController extends BaseController
      */
     public function getNotificationsByUser(User $user)
     {
-        $user->load(['notifications' => function($query){
+        $user->load(['notifications' => function ($query) {
             $query->latest()->get();
         }]);
         return response()->json($user->notifications);
@@ -30,16 +31,6 @@ class NotificationController extends BaseController
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -47,7 +38,8 @@ class NotificationController extends BaseController
      */
     public function store(Request $request)
     {
-        //
+        $notification = Notification::create($request->all());
+        $this->sendResponse($notification, "Notification sauvegardée", 201);
     }
 
     /**
@@ -81,7 +73,10 @@ class NotificationController extends BaseController
      */
     public function update(Request $request, Notification $notification)
     {
-        //
+        $notification->lue = true;
+        $notification->save();
+        $this->sendResponse($notification, "Notification marquée comme lue", 201);
+
     }
 
     /**

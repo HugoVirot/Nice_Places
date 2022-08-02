@@ -85,7 +85,8 @@ class UserController extends BaseController
         $success['token'] =  $user->createToken('RegistrationUser' . $user->id)->plainTextToken;
         $success['pseudo'] =  $user->pseudo;
         $success["email"] = $user->email;
-
+        $success['id'] = $user->id;
+        
         return $this->sendResponse($success, 'Inscription réussie.');
     }
 

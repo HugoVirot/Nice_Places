@@ -25,15 +25,34 @@ export default {
     methods: {
         sendData() {
             axios.post('/api/register', { pseudo: this.pseudo, email: this.email, password: this.password, password_confirmation: this.password_confirmation })
-                .then((response) => {
+                .then(response => {
                     // on stocke le message de succès dans le store ("inscription réussie")
                     store.commit('storeMessage', response.data.message);
                     console.log(store.state.message)
+                    console.log("test du user id : " + response.data.data.id)
+                    // on enregistre une notification de confirmation à destination de l'utilisateur
+                    this.createNotification(response.data.data.id)
+
                     this.$router.push('/successmessage');
                 })
                 .catch((error) => {
                     this.validationErrors = error.response.data.data;
                 })
+        },
+
+        createNotification(userId) {
+            console.log("createNotification") // S'AFFICHE => on passe dedans mais plus rien ensuite
+
+            let titre = `Bienvenue sur Nice Places ${this.pseudo} !`;
+            let message = `Bonjour ${this.pseudo} et bienvenue sur Nice Places !
+            Votre inscription est réussie.<br> 
+            Venez découvrir la France et partager vos lieux préférés avec nous !<br>
+            A très bientôt.<br>
+            L'administrateur.`
+
+            axios.post('/api/notifications', { titre: titre, message: message, user_id: userId, lieu_id: null })
+                .then(response => console.log(response.data.message))
+                .catch(response => console.log(response.data.message))
         },
 
         checkPassword(password) {

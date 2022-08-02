@@ -39,9 +39,6 @@ class LieuController extends BaseController
      */
     public function store(Request $request)
     {
-
-        // dd($request->images);
-
         $validator = Validator::make($request->all(), [
             'images.*' => 'required|image|mimes:jpg,jpeg,png,gif,svg|max:2048',
             'latitude' => 'required',
@@ -69,6 +66,7 @@ class LieuController extends BaseController
             // il n'est donc pas encore affiché sur la carte
         } else {
             $message = "Le lieu a bien été proposé (en attente de validation par l'administrateur).";
+
         }
 
         $lieu = Lieu::create([
@@ -84,8 +82,8 @@ class LieuController extends BaseController
             'code_postal' =>  $request->code_postal,
             'ville' =>  $request->ville,
             'user_id' => $request->user_id,
-            // selon le statut de l'utilisateur (id 1 = admin), on valide ou non le lieu
-            'valide' => $request->user_id == 1 ? true : false,
+            // selon le statut de l'utilisateur (id 1 = admin), on valide ou on met en attente le lieu
+            'statut' => $request->user_id == 1 ? "validé" : "en attente",
             'categorie_id' => $request->categorie
         ]);
 
@@ -211,13 +209,14 @@ class LieuController extends BaseController
             'longitude' => 'required',
             'note' => 'required',
             'temps' => 'required',
-            'categorie' => 'nullable',
+            'categorie_id' => 'nullable',
             'difficulte' => 'required',
             'kilometres' => 'nullable|integer',
             'adresse' => 'required|max:75',
             'code_postal' => 'required',
             'ville' => 'required',
-            'valide' => 'required'
+            'statut' => 'required',
+            'commentaire' => 'nullable|max:1000'
         ]);
 
         if ($validator->fails()) {

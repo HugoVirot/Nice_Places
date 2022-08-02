@@ -118,8 +118,9 @@ export const store = createStore({
     },
 
     getters: {
+        // on récupère les lieux validés uniquement
         getValidatedPlaces(state) {
-            return state.lieux.filter(lieu => lieu.valide)
+            return state.lieux.filter(lieu => lieu.statut == "validé")
         }
     },
 

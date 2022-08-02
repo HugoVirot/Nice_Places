@@ -73,5 +73,5 @@ Route::apiResource("images", App\Http\Controllers\API\ImageController::class);
 //****************************************Les routes "notifications.*" de l'API*************************************************
 
 Route::apiResource("notifications", App\Http\Controllers\API\NotificationController::class)->except('index');
-Route::get('notifications/{user}', [App\Http\Controllers\API\NotificationController::class, 'getNotificationsByUser'])->name('getNotificationsByUser');
+Route::get('getnotificationsbyuser/{user}', [App\Http\Controllers\API\NotificationController::class, 'getNotificationsByUser'])->name('getNotificationsByUser');
 Route::put('notifications/{notification}', [App\Http\Controllers\API\NotificationController::class, 'markNotificationAsRead'])->name('markNotificationAsRead');
