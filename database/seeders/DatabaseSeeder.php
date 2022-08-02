@@ -20,7 +20,8 @@ class DatabaseSeeder extends Seeder
             LieuSeeder::class,
             AvisSeeder::class,
             FavoriSeeder::class,
-            ImageSeeder::class
+            ImageSeeder::class,
+            NotificationSeeder::class
         ]);
     }
 }

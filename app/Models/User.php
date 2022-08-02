@@ -36,6 +36,11 @@ class User extends Authenticatable
         return $this->hasMany(Lieu::class);
     }
 
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
     protected $with = ['role'];
     
     /**

@@ -31,7 +31,8 @@ const defaultState = {
     avis: "",
     users: "",
     images: "",
-    favoris: ""
+    favoris: "",
+    notifications: ""
 }
 
 export const store = createStore({
@@ -104,6 +105,10 @@ export const store = createStore({
 
         storeFavoris(state, payload) {
             state.favoris = payload
+        },
+
+        storeNotifications(state, payload) {
+            state.notifications = payload
         },
 
         // réinitialiser le state

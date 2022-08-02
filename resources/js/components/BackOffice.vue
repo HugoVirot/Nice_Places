@@ -335,7 +335,11 @@ export default {
         },
         images() {
             return store.state.images
-        }
+        },
+        // lieuxNonValidés()[
+        //     return store.state.lieux.filter( lieu => lieu.valide)
+            
+        // ]
     },
 
     data() {

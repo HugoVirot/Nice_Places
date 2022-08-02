@@ -25,13 +25,19 @@ export default {
 		},
 		lieux() {
 			return store.state.lieux
+		},
+		favoris() {
+			return store.state.favoris
 		}
 	},
 
+	// on surveille userData. Si changement => user connecté => on récupère  :
+	// ses trois top lieux + 3 derniers lieux / ses favoris
 	watch: {
 		userData: {
 			handler() {
 				this.getThreeTopAndLastPlaces()
+				this.getFavoris()
 			}, deep: true
 		},
 	},
@@ -57,6 +63,18 @@ export default {
 				.then(response => {
 					store.commit('storeLieux', response.data)
 					console.log(this.lieux)
+				}
+				)
+				.catch(error => {
+					console.log(error.response)
+				})
+		},
+
+		getFavoris() {
+			axios.get("http://localhost:8000/api/favoris/" + this.userData.id)
+				.then(response => {
+					store.commit('storeFavoris', response.data)
+					console.log(this.favoris)
 				}
 				)
 				.catch(error => {
@@ -241,7 +259,8 @@ export default {
 									</div>
 									<div class="col-6 d-flex">
 										<i class="titleIcon fa-2x fa-solid fa-location-dot me-2"></i>
-										<p class="my-auto">{{ topPlace.ville }} ({{ topPlace.code_postal.substr(0, 2) }})</p>
+										<p class="my-auto">{{ topPlace.ville }} ({{ topPlace.code_postal.substr(0, 2)
+										}})</p>
 									</div>
 								</div>
 
@@ -452,7 +471,7 @@ h2 {
 	height: 10vw
 }
 
-@media screen and (max-width: 380px){
+@media screen and (max-width: 380px) {
 	#toplieux .rounded-circle {
 		display: none;
 	}
@@ -490,7 +509,7 @@ h2 {
 	#presentation {
 		height: 57vh
 	}
-	
+
 	.infosTopLieux {
 		height: 55%
 	}
@@ -531,7 +550,7 @@ h2 {
 	}
 }
 
-@media screen and (min-width: 993px){
+@media screen and (min-width: 993px) {
 	.infosDerniersLieux {
 		height: 35%
 	}

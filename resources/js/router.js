@@ -18,6 +18,7 @@ import ModifierAvis from "./components/ModifierAvis"
 import ModifierImage from "./components/ModifierImage"
 import UploadImages from "./components/UploadImages"
 import DerniersLieux from "./components/DerniersLieux"
+import MesNotifications from "./components/MesNotifications"
 
 const routes = [
   {
@@ -96,6 +97,10 @@ const routes = [
   {
     path: "/uploadimages",
     component: UploadImages
+  },
+  {
+    path : "/mesnotifications",
+    component: MesNotifications
   }
 ];
 

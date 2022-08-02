@@ -226,10 +226,15 @@ import { store } from "../store"
 export default {
 
     computed: {
+        // on vérifie si le user est connecté (si oui, présence d'un token)
+        userLoggedIn(){
+            return store.state.userData.token
+        },
         isInFavorites() {
+            // si les favoris 
             // on retourne true si le lieu fait partie des favoris de l'utilisateur
             // la fonction some permet de vérifier cela (on cherche un favori avec le nom du lieu)
-            return store.state.favoris.some(favori => favori.nom === this.lieu.nom)
+           return store.state.favoris ? store.state.favoris.some(favori => favori.nom === this.lieu.nom) : null
         }
     },
 
@@ -285,10 +290,12 @@ export default {
     },
 
     created() {
+        // on initialise moment pour formater les dates
         this.moment = moment
+
+        // on récupère les infos du lieu (voir pour les passer en props)
         axios.get("/api/lieus/" + this.lieuId)
             .then((response) => {
-                // on stocke le message de succès dans le store ("inscription réussie")
                 console.log(response.data);
                 this.lieu = response.data;
             })

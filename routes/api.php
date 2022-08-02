@@ -16,16 +16,19 @@ use Illuminate\Support\Facades\Route;
 // inscription 
 Route::post('register', [App\Http\Controllers\API\UserController::class, 'store'])->name('register');
 
-// connexion utilisateur
+// connexion 
 Route::post('login', [App\Http\Controllers\API\LoginController::class, 'login'])->name('login');
 
 
-// *******************Les routes "users.*" de l'API (mode ressource version API, sans create et edit)****************
+// *******************Pour toutes les routes : apiResource = mode ressource version API, sans create et edit****************
+
+// ****************************************Les routes "users.*" de l'API ***************************************************
 
 Route::apiResource("users", App\Http\Controllers\API\UserController::class)->except('store');
 
 
-// *******************************Les routes "lieux.*" de l'API (même principe)**************************************
+
+// ****************************************Les routes "lieux.*" de l'API ***************************************************
 
 Route::apiResource("lieus", App\Http\Controllers\API\LieuController::class);
 
@@ -42,22 +45,33 @@ Route::post('lieus/getplacesbyuser', [App\Http\Controllers\API\LieuController::c
 Route::get('lieus/getimagesnumberbyplace/{lieu}', [App\Http\Controllers\API\LieuController::class, 'getImagesNumberByPlace'])->name('getImagesNumberByPlace');
 
 
-// *****************************Les routes "avis.*" de l'API (même principe)*****************************************
+
+// ***********************************************Les routes "avis.*" de l'API *********************************************
 
 Route::apiResource("avis", App\Http\Controllers\API\AvisController::class);
 
 
-// ************************Les routes "categories.*" de l'API (même principe)****************************************
+
+// **************************************Les routes "categories.*" de l'API*************************************************
 
 Route::apiResource("categories", App\Http\Controllers\API\CategorieController::class);
 
 
-// ******************************Les routes "favoris.*" de l'API(même principe)**************************************
+
+// *********************************************Les routes "favoris.*" de l'API********************************************
 
 Route::apiResource("favoris", App\Http\Controllers\API\FavoriController::class)->except('index', 'update', 'show', 'delete');
 Route::get('favoris/{user}', [App\Http\Controllers\API\FavoriController::class, 'index'])->name('index');
 Route::delete('favoris/{user}/{lieu}', [App\Http\Controllers\API\FavoriController::class, 'destroy'])->name('destroy');
 
-//************************ */ Les routes "favoris.*" de l'API(même principe)*****************************************
+
+//*********************************************les routes "images*" de l'API***********************************************
 
 Route::apiResource("images", App\Http\Controllers\API\ImageController::class);
+
+
+//****************************************Les routes "notifications.*" de l'API*************************************************
+
+Route::apiResource("notifications", App\Http\Controllers\API\NotificationController::class)->except('index');
+Route::get('notifications/{user}', [App\Http\Controllers\API\NotificationController::class, 'getNotificationsByUser'])->name('getNotificationsByUser');
+Route::put('notifications/{notification}', [App\Http\Controllers\API\NotificationController::class, 'markNotificationAsRead'])->name('markNotificationAsRead');

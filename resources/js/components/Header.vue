@@ -93,6 +93,10 @@ export default {
                                         <router-link to="/moncompte" class="nav-link">mon compte</router-link>
                                     </li>
                                     <li>
+                                        <router-link to="/mesnotifications" class="nav-link">mes notifications
+                                        </router-link>
+                                    </li>
+                                    <li>
                                         <router-link to="/meslieuxpostes" class="nav-link">mes lieux postés
                                         </router-link>
                                     </li>
