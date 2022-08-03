@@ -1,0 +1,410 @@
+<script>
+import axios from 'axios'
+import ValidationErrors from "./ValidationErrors.vue"
+import { store } from "../store.js";
+
+export default {
+
+    computed: {
+        userData() {
+            return store.state.userData
+        }
+    },
+
+    data() {
+        return {
+            lieuId: this.$route.params.id,
+            lieu: "",
+            nom: "",
+            description: "",
+            latitude: "",
+            longitude: "",
+            categorie_id: "",
+            categories: store.state.categories,
+            note: "",
+            temps: "",
+            difficulte: "",
+            kilometres: "",
+            adresse: "",
+            code_postal: "",
+            ville: "",
+            statut: "",
+            commentaire: "",
+            validationErrors: ""
+        }
+    },
+
+    components: { ValidationErrors },
+
+    methods: {
+        // cette fonction permet de mettre à jour les données locales du composant
+        // une fois que l'appel API a récupéré le lieu
+        updateLocalData(lieu) {
+            console.log(lieu)
+            this.lieu = lieu
+            this.nom = lieu.nom
+            this.description = lieu.description
+            this.latitude = lieu.latitude
+            this.longitude = lieu.longitude
+            this.note = lieu.note
+            this.categorie_id = lieu.categorie.id
+            this.temps = lieu.temps
+            this.difficulte = lieu.difficulte
+            this.kilometres = lieu.kilometres
+            this.adresse = lieu.adresse
+            this.code_postal = lieu.code_postal
+            this.ville = lieu.ville
+            this.statut = lieu.statut
+            this.commentaire = lieu.commentaire
+        },
+
+        saveChanges() {
+            // on sauvegarde les changements dans la base de données
+            axios.put('/api/lieus/' + this.lieu.id, {
+                nom: this.nom,
+                description: this.description,
+                latitude: this.latitude,
+                longitude: this.longitude,
+                categorie_id: this.categorie_id,
+                note: this.note,
+                temps: this.temps,
+                difficulte: this.difficulte,
+                kilometres: this.kilometres,
+                adresse: this.adresse,
+                code_postal: this.code_postal,
+                ville: this.ville,
+                statut: this.statut,
+                commentaire: this.commentaire
+            })
+                .then(response => {
+                    // on stocke le message de succès dans le store 
+                    store.commit('storeMessage', response.data.message);
+                    console.log(store.state.message)
+
+                    console.log(".then de savechanges")
+                    // on envoie une notification en cas de changement de statut
+                    // seulement si l'auteur n'est pas administrateur
+                    if (this.lieu.user.role !== "admin") {
+                        this.createNotification()
+                    }
+
+                    axios.get('/api/lieus')
+                        .then(response => {
+                            store.commit("storeLieux", response.data)
+                            console.log("lieux actualisés")
+                            this.$router.push('/successmessage');
+                        }).catch((response) => {
+                            console.log(response.error);
+                        })
+                })
+
+                .catch((error) => {
+                    this.validationErrors = error.data.data;
+                })
+
+
+            // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
+            // ici, response.data.data est le payload transmis au store
+            store.commit('storeUserData', response.data.data)
+
+            // // on teste le résultat
+            console.log(store.state.userData)
+
+            // //idem pour le message de succès
+            store.commit('storeMessage', response.data.message)
+            console.log(store.state.message)
+
+            // on redirige vers l'accueil
+            this.$router.push('/SuccessMessage')
+        },
+
+        createNotification() {
+            console.log("createNotification")
+
+            let titre = ""
+            let message = ""
+
+            switch (this.statut) {
+
+                case ("validé"):
+                    titre = `Félicitations ${this.lieu.user.pseudo} , votre lieu ${this.nom} a été validé !`;
+                    message = `Après vérification, j'ai décidé de valider votre lieu : ${this.nom}.<br> 
+            Merci pour ce partage, Nice Places est maintenant plus complet grâce à vous !.<br>
+            A très bientôt.<br>
+            L'administrateur.`
+                    break
+
+                case ("à modifier"):
+                    titre = `${this.lieu.user.pseudo} , votre lieu ${this.nom} a besoin de modifications pour être validé !`;
+                    message = `Après vérification, votre lieu ${this.nom} a besoin des modifications suivantes : <br> 
+                    ${this.commentaire}<br>
+            Merci de faire le nécessaire pour qu'il soit validé.<br>
+            A très bientôt.<br>
+            L'administrateur.`
+                    break
+                    
+                case ("refusé"):
+                    titre = `${this.lieu.user.pseudo}, votre lieu ${this.nom} a été refusé.`;
+                    message = `Après vérification, j'ai décidé de refuser votre lieu : ${this.nom}, pour la ou les raison(s) suivante(s) : <br> 
+                                ${this.commentaire}<br>
+            Merci de votre compréhension.<br>
+            A très bientôt.<br>
+            L'administrateur.`
+                    break
+            }
+
+            axios.post('/api/notifications', { titre: titre, message: message, user_id: this.lieu.user.id, lieu_id: this.lieu.id },)
+                .then(response => console.log(response.data.message))
+                .catch(response => console.log(response.data.message))
+        }
+    },
+
+    created() {
+
+        axios.get("/api/lieus/" + this.lieuId)
+            .then(response => {
+                this.updateLocalData(response.data)
+            })
+            .catch((error) => {
+                console.log(error)
+                this.validationErrors = error.response.data.data;
+            });
+    },
+}
+</script>
+
+<template>
+
+    <div class="p-3">
+        <i class="fa-3x fa-solid fa-pen-to-square"></i>
+        <h1 class="mt-2">Modifier {{ lieu.nom }}</h1>
+        <h2 v-if="userData.role == 'admin' && lieu">Posté par {{ lieu.user.pseudo }}</h2>
+        <div v-if="lieu">
+            <div v-if="statut == 'validé'" class="mx-auto bg-success w-25">validé</div>
+            <div v-else-if="statut == 'en attente'" class="mx-auto bg-info w-25">en attente de validation
+            </div>
+            <div v-else-if="statut == 'à modifier'" class="mx-auto bg-warning w-25">à modifier pour être validé
+            </div>
+            <div v-else class="mx-auto bg-danger w-25">refusé
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid p-3 p-lg-5">
+
+        <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
+
+        <div v-if="lieu !== ''" class="row justify-content-center p-2 p-lg-5">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header text-white mb-3">Entrez les nouvelles informations</div>
+
+                    <div class="card-body">
+
+                        <form @submit.prevent="saveChanges">
+
+                            <div v-if="userData.role == 'admin'" class="form-group row m-2">
+                                <label for="statut" class="col-md-4 col-form-label text-md-right">modifier le
+                                    statut</label>
+
+                                <div class="col-md-6">
+                                    <select required v-model="statut" class="form-select" aria-label="statut">
+                                        <option value="validé">validé</option>
+                                        <option value="en attente">en attente</option>
+                                        <option value="à modifier">à modifier</option>
+                                        <option value="refusé">refusé</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div v-if="statut == 'à modifier' || statut == 'refusé'" class="form-group row m-2">
+                                <label for="commentaire" class="col-md-4 col-form-label text-md-right">changements à
+                                    effectuer ou raison du refus</label>
+
+                                <div class="col-md-6">
+                                    <input v-model="commentaire" id="commentaire" type="text" class="form-control"
+                                        name="commentaire" required autocomplete="commentaire" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="form-group row m-2">
+                                <label for="nom" class="col-md-4 col-form-label text-md-right">nom</label>
+
+                                <div class="col-md-6">
+                                    <input :value="nom" v-model="nom" id="nom" type="text" class="form-control"
+                                        name="nom" required autocomplete="nom" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="form-group row m-2">
+                                <label for="description"
+                                    class="col-md-4 col-form-label text-md-right">description</label>
+
+                                <div class="col-md-6">
+                                    <textarea :value="description" v-model="description" id="description"
+                                        class="form-control" name="description" required
+                                        autocomplete="description"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group row m-2">
+                                <label for="latitude" class="col-md-4 col-form-label text-md-right">latitude</label>
+
+                                <div class="col-md-6">
+                                    <input :value="latitude" v-model="latitude" id="latitude" type="text"
+                                        class="form-control" name="latitude" required autocomplete="latitude">
+                                </div>
+                            </div>
+                            <div class="form-text">entre -90 et 90. Partie décimale : maximum 7 chiffres.</div>
+
+                            <div class="form-group row m-2">
+                                <label for="longitude" class="col-md-4 col-form-label text-md-right">longitude</label>
+
+                                <div class="col-md-6">
+                                    <input :value="longitude" v-model="longitude" id="longitude" type="text"
+                                        class="form-control" name="longitude" required autocomplete="longitude">
+                                </div>
+                            </div>
+                            <div class="form-text mb-2">entre -180 et 180. Partie décimale : maximum 7 chiffres.</div>
+
+                            <!-- <p>Catégorie actuelle : {{ categorie.nom }}</p> -->
+
+                            <div class="form-group row m-2">
+                                <label for="categorie_id"
+                                    class="col-md-4 col-form-label text-md-right">catégorie</label>
+
+                                <div class="col-md-6">
+                                    <select v-model="categorie_id" class="form-select" aria-label="categorie_id">
+                                        <option v-for="categorie in categories" :key="categorie.id"
+                                            :value="categorie.id"
+                                            :selected="categorie.id == categorie_id ? selected : ''">{{ categorie.nom }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div v-if="userData.role == 'admin'" class="form-group row m-2">
+                                <label for="note" class="col-md-4 col-form-label text-md-right">votre note sur
+                                    10</label>
+
+                                <div class="col-md-6">
+                                    <input :value="note" v-model="note" id="note" min="0" max="10" type="number"
+                                        class="form-control" name="note" required autocomplete="note">
+                                </div>
+                            </div>
+
+                            <div class="form-group row m-2">
+                                <label for="temps" class="col-md-4 col-form-label text-md-right">temps moyen en
+                                    heures</label>
+
+                                <div class="col-md-6">
+                                    <input :value="temps" min="1" max="24" v-model="temps" id="temps" type="number"
+                                        class="form-control" name="temps" required autocomplete="temps">
+                                </div>
+                            </div>
+
+                            <div class="form-group row m-2">
+                                <label for="temps" class="col-md-4 col-form-label text-md-right">niveau de
+                                    difficulté</label>
+
+                                <div class="col-md-6">
+                                    <select required v-model="difficulte" class="form-select" aria-label="difficulte">
+                                        <option :selected="difficulte == 'famille' ? selected : ''" value="famille">
+                                            famille</option>
+                                        <option :selected="difficulte == 'amateur' ? selected : ''" value="amateur">
+                                            amateur</option>
+                                        <option :selected="difficulte == 'sportif' ? selected : ''" value="sportif">
+                                            sportif</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row m-2">
+                                <label for="temps" class="col-md-4 col-form-label text-md-right">distance moyenne en
+                                    km (facultatif)</label>
+
+                                <div class="col-md-6">
+                                    <input min="1" max="150" v-model="kilometres" id="kilometres" type="number"
+                                        class="form-control" name="kilometres" autocomplete="kilometres">
+                                </div>
+                            </div>
+
+                            <div class="form-group row m-2">
+                                <label for="adresse" class="col-md-4 col-form-label text-md-right">adresse</label>
+
+                                <div class="col-md-6">
+                                    <input :value="adresse" v-model="adresse" id="adresse" type="text"
+                                        class="form-control" name="adresse" required autocomplete="adresse">
+                                </div>
+                            </div>
+
+                            <div class="form-group row m-2">
+                                <label for="code_postal" class="col-md-4 col-form-label text-md-right">code
+                                    postal</label>
+
+                                <div class="col-md-6">
+                                    <input :value="code_postal" v-model="code_postal" id="code_postal" type="text"
+                                        class="form-control" name="code_postal" required autocomplete="code_postal">
+                                </div>
+                            </div>
+
+                            <div class="form-group row m-2">
+                                <label for="ville" class="col-md-4 col-form-label text-md-right">ville</label>
+
+                                <div class="col-md-6">
+                                    <input :value="ville" v-model="ville" id="ville" type="text" class="form-control"
+                                        name="ville" required autocomplete="ville">
+                                </div>
+                            </div>
+
+                            <div class="form-group row mt-3 text-center">
+                                <div class="col-md-6 offset-md-3">
+                                    <button type="submit" class="btn btn-lg rounded-pill text-light btn-info">
+                                        Valider
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+h1 {
+    color: #1C6E8C
+}
+
+img {
+    width: 6vw
+}
+
+.card {
+    color: #1C6E8C;
+    background: rgba(254, 254, 254, 0.73)
+}
+
+.card-header {
+    background-color: #94D1BE
+}
+
+.container-fluid {
+    background-image: url(../../../public/images/plage.jpg);
+    background-position: center;
+    background-size: cover;
+}
+
+.btn {
+    background-color: #94D1BE !important;
+    color: white;
+}
+
+@media screen and (max-width: 768px) {
+    img {
+        width: 10vw
+    }
+}
+</style>
