@@ -102,7 +102,7 @@ export default {
         createNotification(lieuId) {
             let titre = `Votre lieu ${this.nom} a bien été proposé !`;
             let message = `Merci ${store.state.userData.pseudo} !<br> 
-            Votre lieu ${this.nom} a bien été proposé.<br>
+            Votre lieu, ${this.nom}, a bien été proposé.<br>
             Il a été mis en attente et va être vérifié par l'administrateur.<br>
             Ce dernier reviendra alors vers vous.<br>
             A très bientôt.`

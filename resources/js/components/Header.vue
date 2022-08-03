@@ -6,6 +6,9 @@ export default {
     computed: {
         userData() {
             return store.state.userData
+        },
+        countUnreadNotifications() {
+            return store.state.notifications.filter(n => !n.lue).length
         }
     },
 
@@ -77,7 +80,7 @@ export default {
                     <div class="navbar-nav container d-md-flex justify-content-around text-center">
 
                         <router-link to="/" class="navbar-brand">accueil</router-link>
-                        <router-link to="/carte" class="nav-link active" aria-current="page">carte</router-link>
+                        <router-link to="/carte" class="nav-link">carte</router-link>
                         <router-link to="/toplieux" class="nav-link">top des lieux</router-link>
                         <router-link to="/proposerlieu" class="nav-link">proposer un lieu</router-link>
 
@@ -87,12 +90,22 @@ export default {
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false">
                                     {{ userData.pseudo }}
+                                    <span v-show="countUnreadNotifications > 0">
+                                        <i class="text-danger fa-solid fa-bell"></i>
+                                    </span>
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                     <li>
                                         <router-link to="/moncompte" class="nav-link">mon compte</router-link>
                                     </li>
-                                    <li>
+                                    <li v-if="countUnreadNotifications > 0">
+                                        <router-link to="/mesnotifications" class="nav-link">
+                                            mes notifications <i class="text-danger fa-solid fa-bell m-1"></i>
+                                            <span class="text-danger p-1">{{ countUnreadNotifications }} non
+                                                lue(s)</span>
+                                        </router-link>
+                                    </li>
+                                    <li v-else>
                                         <router-link to="/mesnotifications" class="nav-link">mes notifications
                                         </router-link>
                                     </li>
@@ -196,7 +209,7 @@ body {
 
 .navbar-brand,
 .nav-link {
-    color: #1C6E8C !important
+    color: #1C6E8C
 }
 
 .navbar-toggler {
