@@ -65,7 +65,7 @@ export default {
                 :key="favori.id" :style="coverPictures[index] ? `background-image: url(images/${coverPictures[index].nom}); background-position: center; background-size: cover;` :
                     `background-image: url(images/${favori.images[0].nom}); background-position: center; background-size: cover;`
                 ">
-                <div class="p-3 fs-3 placeName"> {{ favori.nom }} </div>
+                <div class="p-3 fs-3 textWithShadow"> {{ favori.nom }} </div>
                 <div class="card-body">
                     <router-link :to="`/lieu/${favori.id}`"><button class="btn greenButton">Détails du lieu</button>
                     </router-link>
@@ -94,7 +94,7 @@ p {
     color: grey
 }
 
-.placeName {
+.textWithShadow {
     text-shadow: 2px 2px 4px #1C6E8C;
 }
 

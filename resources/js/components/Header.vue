@@ -8,7 +8,13 @@ export default {
             return store.state.userData
         },
         countUnreadNotifications() {
-            return store.state.notifications.filter(n => !n.lue).length
+
+            if (store.state.notifications) {
+                return store.state.notifications.filter(n => !n.lue).length
+            }
+            else {
+                return null
+            }
         }
     },
 
@@ -81,6 +87,7 @@ export default {
 
                         <router-link to="/" class="navbar-brand">accueil</router-link>
                         <router-link to="/carte" class="nav-link">carte</router-link>
+                        <router-link to="/categories" class="nav-link">catégories</router-link>
                         <router-link to="/toplieux" class="nav-link">top des lieux</router-link>
                         <router-link to="/proposerlieu" class="nav-link">proposer un lieu</router-link>
 
@@ -98,7 +105,7 @@ export default {
                                     <li>
                                         <router-link to="/moncompte" class="nav-link">mon compte</router-link>
                                     </li>
-                                    <li v-if="countUnreadNotifications > 0">
+                                    <li v-if="countUnreadNotifications && countUnreadNotifications > 0">
                                         <router-link to="/mesnotifications" class="nav-link">
                                             mes notifications <i class="text-danger fa-solid fa-bell m-1"></i>
                                             <span class="text-danger p-1">{{ countUnreadNotifications }} non

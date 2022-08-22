@@ -1,6 +1,8 @@
 import { createWebHistory, createRouter } from "vue-router";
 import App from "./components/App";
 import Carte from "./components/Carte"
+import Categories from "./components/Categories"
+import DetailCategorie from "./components/DetailCategorie"
 import TopLieux from "./components/TopLieux"
 import Lieu from "./components/Lieu"
 import ProposerLieu from "./components/ProposerLieu"
@@ -29,6 +31,14 @@ const routes = [
   {
     path: "/carte",
     component: Carte,
+  },
+  {
+    path: "/categories",
+    component: Categories,
+  },
+  {
+    path: "/categories/:id",
+    component: DetailCategorie,
   },
   {
     path: "/dernierslieux",

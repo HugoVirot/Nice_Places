@@ -222,6 +222,39 @@ export default {
 			<Map />
 
 
+			<!-- *********************************************** CATEGORIES ************************************************** -->
+
+			<div class="container-fluid">
+
+				<div>
+					<i class="titleIcon mt-5 mx-auto fa-3x fa-solid fa-book-atlas"></i>
+					<h2 class="fs-2 m-3">Catégories</h2>
+				</div>
+
+				<div class="row m-1 p-1" id="categories">
+
+					<!-- ********************** boucle qui affiche les 3 catégories avec le + de lieux ************************* -->
+
+					<div v-for="(categorie, index) in categories.slice(0, 3)"
+						class="mx-auto col-md-6 col-lg-4 p-5 border border-white"
+						:style="`background-image: url(/images/categorie${categorie.id}.jpg); background-position: center; background-size: cover;`">
+
+						<p class="fs-2 m-auto text-white textWithShadow p-5">{{ categorie.nom }}</p>
+
+						<router-link :to="`/categories/${categorie.id}`"><button
+								class="btn btn-lg rounded-pill mt-2">voir les lieux</button>
+						</router-link>
+
+					</div>
+
+				</div>
+
+				<router-link to="/categories"><button class="btn btn-lg mt-3 rounded-pill">Toutes les catégories</button>
+				</router-link>
+
+			</div>
+
+
 			<!-- ******************************************* TOP DES LIEUX *********************************************** -->
 
 			<div v-if="threeTopPlaces && threeTopPlaces.length > 2">
@@ -447,6 +480,9 @@ h2 {
 
 .rankingAndName {
 	height: 70%
+}
+.textWithShadow {
+    text-shadow: 2px 2px 4px #1C6E8C;
 }
 
 .yellowStar {

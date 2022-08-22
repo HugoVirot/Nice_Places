@@ -63,6 +63,7 @@ class CategorieController extends BaseController
      */
     public function show(Categorie $category)
     {
+        $category->load("lieux");
         return response()->json($category);
     }
 

@@ -22,7 +22,8 @@
                         <p><i class="greenIcon fa-solid fa-user ms-2 me-3"></i>Posté par {{ lieu.user.pseudo }}</p>
                     </div>
                     <div class="col-3">
-                        <i v-if="isInFavorites" @click="removeToFavorites" class="greenIcon fa-solid fa-heart fa-2x"></i>
+                        <i v-if="isInFavorites" @click="removeToFavorites"
+                            class="greenIcon fa-solid fa-heart fa-2x"></i>
                         <i v-else @click="addToFavorites" class="greenIcon fa-regular fa-heart fa-2x"></i>
                     </div>
                 </div>
@@ -227,14 +228,14 @@ export default {
 
     computed: {
         // on vérifie si le user est connecté (si oui, présence d'un token)
-        userLoggedIn(){
+        userLoggedIn() {
             return store.state.userData.token
         },
         isInFavorites() {
             // si les favoris 
             // on retourne true si le lieu fait partie des favoris de l'utilisateur
             // la fonction some permet de vérifier cela (on cherche un favori avec le nom du lieu)
-           return store.state.favoris ? store.state.favoris.some(favori => favori.nom === this.lieu.nom) : null
+            return store.state.favoris ? store.state.favoris.some(favori => favori.nom === this.lieu.nom) : null
         }
     },
 
@@ -299,11 +300,12 @@ export default {
                 console.log(response.data);
                 this.lieu = response.data;
             })
-            .catch((error) => {
-                this.validationErrors = error.response.data.data;
-            });
+            .catch((response) => {
+                console.log(response.error);
+            })
     }
-}</script>
+}
+</script>
 
 <style scoped>
 .greenIcon {

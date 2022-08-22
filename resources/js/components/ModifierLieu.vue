@@ -231,7 +231,7 @@ export default {
                                 <label for="nom" class="col-md-4 col-form-label text-md-right">nom</label>
 
                                 <div class="col-md-6">
-                                    <input :value="nom" v-model="nom" id="nom" type="text" class="form-control"
+                                    <input v-model="nom" id="nom" type="text" class="form-control"
                                         name="nom" required autocomplete="nom" autofocus>
                                 </div>
                             </div>
@@ -241,7 +241,7 @@ export default {
                                     class="col-md-4 col-form-label text-md-right">description</label>
 
                                 <div class="col-md-6">
-                                    <textarea :value="description" v-model="description" id="description"
+                                    <textarea v-model="description" id="description"
                                         class="form-control" name="description" required
                                         autocomplete="description"></textarea>
                                 </div>
@@ -251,7 +251,7 @@ export default {
                                 <label for="latitude" class="col-md-4 col-form-label text-md-right">latitude</label>
 
                                 <div class="col-md-6">
-                                    <input :value="latitude" v-model="latitude" id="latitude" type="text"
+                                    <input v-model="latitude" id="latitude" type="text"
                                         class="form-control" name="latitude" required autocomplete="latitude">
                                 </div>
                             </div>
@@ -261,7 +261,7 @@ export default {
                                 <label for="longitude" class="col-md-4 col-form-label text-md-right">longitude</label>
 
                                 <div class="col-md-6">
-                                    <input :value="longitude" v-model="longitude" id="longitude" type="text"
+                                    <input v-model="longitude" id="longitude" type="text"
                                         class="form-control" name="longitude" required autocomplete="longitude">
                                 </div>
                             </div>
@@ -284,11 +284,11 @@ export default {
                             </div>
 
                             <div v-if="userData.role == 'admin'" class="form-group row m-2">
-                                <label for="note" class="col-md-4 col-form-label text-md-right">votre note sur
+                                <label for="note" class="col-md-4 col-form-label text-md-right">note sur
                                     10</label>
 
                                 <div class="col-md-6">
-                                    <input :value="note" v-model="note" id="note" min="0" max="10" type="number"
+                                    <input v-model="note" id="note" min="0" max="10" type="number"
                                         class="form-control" name="note" required autocomplete="note">
                                 </div>
                             </div>
@@ -298,7 +298,7 @@ export default {
                                     heures</label>
 
                                 <div class="col-md-6">
-                                    <input :value="temps" min="1" max="24" v-model="temps" id="temps" type="number"
+                                    <input min="1" max="24" v-model="temps" id="temps" type="number"
                                         class="form-control" name="temps" required autocomplete="temps">
                                 </div>
                             </div>
@@ -333,7 +333,7 @@ export default {
                                 <label for="adresse" class="col-md-4 col-form-label text-md-right">adresse</label>
 
                                 <div class="col-md-6">
-                                    <input :value="adresse" v-model="adresse" id="adresse" type="text"
+                                    <input v-model="adresse" id="adresse" type="text"
                                         class="form-control" name="adresse" required autocomplete="adresse">
                                 </div>
                             </div>
@@ -343,7 +343,7 @@ export default {
                                     postal</label>
 
                                 <div class="col-md-6">
-                                    <input :value="code_postal" v-model="code_postal" id="code_postal" type="text"
+                                    <input v-model="code_postal" id="code_postal" type="text"
                                         class="form-control" name="code_postal" required autocomplete="code_postal">
                                 </div>
                             </div>
@@ -352,7 +352,7 @@ export default {
                                 <label for="ville" class="col-md-4 col-form-label text-md-right">ville</label>
 
                                 <div class="col-md-6">
-                                    <input :value="ville" v-model="ville" id="ville" type="text" class="form-control"
+                                    <input v-model="ville" id="ville" type="text" class="form-control"
                                         name="ville" required autocomplete="ville">
                                 </div>
                             </div>

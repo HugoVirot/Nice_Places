@@ -55,7 +55,7 @@ class CategorieSeeder extends Seeder
         ]);
 
         Categorie::create([  //9
-            'nom' => 'parcs de loisirs / accrobranches',
+            'nom' => 'parcs de loisirs et accrobranches',
             'icone' => '<i class="fa-solid fa-squirrel"></i>'
         ]);
     }

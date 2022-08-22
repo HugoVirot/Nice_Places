@@ -73,7 +73,7 @@ export default {
                 :key="userPlace.id" :style="coverPictures[index] ? `background-image: url(images/${coverPictures[index].nom}); background-position: center; background-size: cover;` :
                     `background-image: url(images/${userPlace.images[0].nom}); background-position: center; background-size: cover;`
                 ">
-                <div class="p-3 fs-3 placeName"> {{ userPlace.nom }} </div>
+                <div class="p-3 fs-3 textWithShadow"> {{ userPlace.nom }} </div>
                 <div v-if="userPlace.statut == 'validé'" class="mx-auto bg-success w-25">validé</div>
                 <div v-else-if="userPlace.statut == 'en attente'" class="mx-auto bg-info w-25">en attente de validation
                 </div>
@@ -100,7 +100,7 @@ i {
     color: #94D1BE
 }
 
-.placeName {
+.textWithShadow {
     text-shadow: 2px 2px 4px #1C6E8C;
 }
 

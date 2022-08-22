@@ -121,6 +121,15 @@ export const store = createStore({
         // on récupère les lieux validés uniquement
         getValidatedPlaces(state) {
             return state.lieux.filter(lieu => lieu.statut == "validé")
+        },
+
+        // on récupère les lieux triés par note
+        getTopRatedPlaces(state){
+            console.log("on passe dans gettop");
+            return state.lieux.sort((a, b) => {
+                if (a.note > b.note) return -1;
+                return a.note < b.note ? 1 : 0;
+              });
         }
     },
 
