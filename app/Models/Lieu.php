@@ -8,14 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class Lieu extends Model
 {
     use HasFactory;
+
     // chargement automatique des catégories / images / user associés lorsque l'on récupère le lieu
     // les avis ne sont pas inclus car tri par date de publication (le dernier en 1er) nécessaire 
     // => récupération et tri réalisés dans le contrôleur
-    protected $with = ['categorie', 'images', 'user'];
+    protected $with = ['categorie', 'user', 'image_mise_en_avant', 'departement'];
 
     public function categorie()
     {
         return $this->belongsTo(Categorie::class);
+    }
+
+    public function departement()
+    {
+        return $this->belongsTo(Departement::class);
     }
 
     public function users()
@@ -36,6 +42,11 @@ class Lieu extends Model
     public function images()
     {
         return $this->hasMany(Image::class);
+    }
+
+    public function image_mise_en_avant()
+    {
+        return $this->hasOne(Image::class)->where('mise_en_avant', '=', true);
     }
 
     public function notifications()

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Lieu;
-use Illuminate\Support\Facades\Validator;
 
 class FavoriController extends BaseController
 {

@@ -5,7 +5,8 @@ import { createStore } from 'vuex'
 import VuexPersist from 'vuex-persist'
 
 // vuex-persist permet de stocker le state dans le local storage
-// => en cas d'actualisation de la page, on garde la connexion utilisateur
+// => en cas d'actualisation de la page, on garde la connexion utilisateur et toutes
+// les informations contenues dans le state
 const vuexPersist = new VuexPersist({
     key: 'Nice_Places',
     storage: window.localStorage
@@ -24,6 +25,8 @@ const defaultState = {
     geolocationAnswered: false,
     userPosition: "",
     lieux: "",
+    departements: "",
+    regions: "",
     threeTopPlaces: "",
     threeLastPlaces: "",
     categories: "",
@@ -75,6 +78,14 @@ export const store = createStore({
             state.lieux = payload
         },
 
+        storeDepartements(state, payload) {
+            state.departements = payload
+        },
+
+        storeRegions(state, payload) {
+            state.regions = payload
+        },
+
         storeUsers(state, payload) {
             state.users = payload
         },
@@ -102,7 +113,7 @@ export const store = createStore({
         storeImages(state, payload) {
             state.images = payload
         },
-
+ 
         storeFavoris(state, payload) {
             state.favoris = payload
         },
@@ -123,13 +134,16 @@ export const store = createStore({
             return state.lieux.filter(lieu => lieu.statut == "validé")
         },
 
-        // on récupère les lieux triés par note
-        getTopRatedPlaces(state){
-            console.log("on passe dans gettop");
-            return state.lieux.sort((a, b) => {
+        // on récupère les 100 meilleurs lieux (triés par note)
+        getTopRatedPlaces(state) {
+            return state.lieux.slice(0, 100).sort((a, b) => {
                 if (a.note > b.note) return -1;
                 return a.note < b.note ? 1 : 0;
-              });
+            });
+        },
+
+        getPlacesByDepartment(state) {
+            return state.lieux.filter(lieu => lieu.departement.code == state.userData.departement)
         }
     },
 

@@ -2,42 +2,45 @@
 import { store } from '../store'
 
 export default {
-    // récupérer les lieux
-    // computed: {
-    //     topLieux() {
-    //         return store.state.lieux
-    //     },
-    // },
 
     data() {
         return {
             topLieux: store.getters.getTopRatedPlaces,
-            coverPictures: [],
-            filtre: "departement"
+            departementUtilisateur: store.state.userData.departement,
+            departementFiltre: '',
+            filtre: "france",
+            departements: store.state.departements
         }
     },
 
-    methods: {
-        getCoverPictures() {
-            this.topLieux.forEach(topLieu => {
 
-                topLieu.images.forEach(image => {
+    // on surveille le filtre. Si changement => 
+    // 1) choix du département de l'utilisateur : on filtre les lieux par département de l'utilisateur
+    // 2) choix de toute la France ou d'un autre département : on récupère tous les lieux (selon le filtre choisi)
+    watch: {
+        filtre(newFilter) {
 
-                    if (image.mise_en_avant) {
-                        this.coverPictures.push(image)
-                    }
-                })
-            })
-            console.log(this.coverPictures)
+            if (newFilter == "departementUtilisateur") {
+                this.topLieux = store.getters.getPlacesByDepartment
+            } else {
+                this.topLieux = store.getters.getTopRatedPlaces
+            }
+        },
+
+        // en cas de choix d'un autre département parmi la liste, on surveille cet évènement ici
+        // on déclenche le filtrage de tous les lieux (qu'on récupère dans le store) selon ce département
+        // la récupération permet de bien repartir de la liste de tous les lieux au cas où on changerait de département
+        // sans changer de filtre (on ne repasserait donc pas par la fonction filtre ci-dessus)
+        departementFiltre(newDepartement) {
+
+            console.log(newDepartement)
+            let allPlaces = store.getters.getTopRatedPlaces
+            this.topLieux = allPlaces.filter(lieu => lieu.departement.code == newDepartement)
         }
     },
 
     created() {
         console.log(this.topLieux);
-
-        if (this.topLieux) {
-            this.getCoverPictures()
-        }
     }
 }
 </script>
@@ -46,25 +49,35 @@ export default {
     <section id="topLieux" class="p-2">
         <div class="p-3">
             <i class="greenIcon mx-auto fa-3x fa-solid fa-message"></i>
-            <h1 class="mt-2">Top des lieux</h1>
+            <h1 class="mt-2">Top 100 des lieux</h1>
         </div>
 
         <h2>Afficher les lieux : </h2>
 
-        <select required v-model="filtre" class="form-select" aria-label="filtre">
+        <select required v-model="filtre" class="form-select w-50 mx-auto" aria-label="filtre">
             <option value="france">de la France entière</option>
-            <option value="departement">de votre département</option>
+            <!-- disponible uniquement si le département de l'utilisateur a déjà été renseigné -->
+            <option v-if="departementUtilisateur" value="departementUtilisateur">de votre département</option>
             <option value="autreDepartement">d'un autre département</option>
         </select>
+
+        <div v-if="filtre == 'autreDepartement'">
+            <label class="m-2" for="departmentSelect">Choisissez un département</label>
+            <select id="departmentSelect" required v-model="departementFiltre" class="form-select w-50 mx-auto"
+                aria-label="filtre">
+                <option v-for="(departement, index) in departements" :selected="index == 0" :value="departement.code">{{
+                        departement.code
+                }} - {{ departement.nom }}</option>
+            </select>
+        </div>
 
         <div class="container-fluid p-3 p-lg-5">
 
             <div v-if="topLieux" class="row">
 
-                <div class="col-lg-6 border border-3 border-white card text-white textWithShadow" v-for="(topLieu, index) in topLieux"
-                    :key="topLieu.id" :style="coverPictures[index] ? `background-image: url(images/${coverPictures[index].nom}); background-position: center; background-size: cover;` :
-                        `background-image: url(images/${topLieu.images[0].nom}); background-position: center; background-size: cover;`
-                    ">
+                <div v-if="topLieux.length > 0" class="col-lg-6 border border-3 border-white card text-white textWithShadow"
+                    v-for="(topLieu, index) in topLieux" :key="topLieu.id"
+                    :style="`background-image: url(images/${topLieu.image_mise_en_avant.nom}); background-position: center; background-size: cover;`">
                     <div class="row">
                         <div class="col-6 d-flex justify-content-center align-items-center">
                             <span class="ranking">#{{ index + 1 }}</span>
@@ -83,6 +96,11 @@ export default {
                         </router-link>
                     </div>
                 </div>
+
+                <div v-else>
+                    <p>Aucun lieu de ce département dans le top 100.</p>
+                </div>
+
             </div>
 
             <div v-else>
@@ -97,6 +115,7 @@ export default {
 .textWithShadow {
     text-shadow: 2px 2px 4px #1C6E8C;
 }
+
 .greenIcon {
     color: #94DEB1
 }

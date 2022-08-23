@@ -41,7 +41,7 @@ class NotificationSeeder extends Seeder
             'titre' => 'Ton lieu n\'a pas été accepté',
             'message' => 'Bonjour,<br>
             Ton lieu n\'a pas été validé pour la raison suivante : <br>
-            Lieu déjà existant
+            Lieu déjà existant <br>
             Merci quand même et à très vite.<br>
             L\'administrateur',
             'user_id' => 1,

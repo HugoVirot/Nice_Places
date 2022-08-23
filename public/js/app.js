@@ -341,40 +341,47 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _instanceOf_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./instanceOf.js */ "./node_modules/@popperjs/core/lib/dom-utils/instanceOf.js");
 /* harmony import */ var _utils_math_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/math.js */ "./node_modules/@popperjs/core/lib/utils/math.js");
+/* harmony import */ var _getWindow_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./getWindow.js */ "./node_modules/@popperjs/core/lib/dom-utils/getWindow.js");
+/* harmony import */ var _isLayoutViewport_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./isLayoutViewport.js */ "./node_modules/@popperjs/core/lib/dom-utils/isLayoutViewport.js");
 
 
-function getBoundingClientRect(element, includeScale) {
+
+
+function getBoundingClientRect(element, includeScale, isFixedStrategy) {
   if (includeScale === void 0) {
     includeScale = false;
   }
 
-  var rect = element.getBoundingClientRect();
+  if (isFixedStrategy === void 0) {
+    isFixedStrategy = false;
+  }
+
+  var clientRect = element.getBoundingClientRect();
   var scaleX = 1;
   var scaleY = 1;
 
-  if ((0,_instanceOf_js__WEBPACK_IMPORTED_MODULE_0__.isHTMLElement)(element) && includeScale) {
-    var offsetHeight = element.offsetHeight;
-    var offsetWidth = element.offsetWidth; // Do not attempt to divide by 0, otherwise we get `Infinity` as scale
-    // Fallback to 1 in case both values are `0`
-
-    if (offsetWidth > 0) {
-      scaleX = (0,_utils_math_js__WEBPACK_IMPORTED_MODULE_1__.round)(rect.width) / offsetWidth || 1;
-    }
-
-    if (offsetHeight > 0) {
-      scaleY = (0,_utils_math_js__WEBPACK_IMPORTED_MODULE_1__.round)(rect.height) / offsetHeight || 1;
-    }
+  if (includeScale && (0,_instanceOf_js__WEBPACK_IMPORTED_MODULE_0__.isHTMLElement)(element)) {
+    scaleX = element.offsetWidth > 0 ? (0,_utils_math_js__WEBPACK_IMPORTED_MODULE_1__.round)(clientRect.width) / element.offsetWidth || 1 : 1;
+    scaleY = element.offsetHeight > 0 ? (0,_utils_math_js__WEBPACK_IMPORTED_MODULE_1__.round)(clientRect.height) / element.offsetHeight || 1 : 1;
   }
 
+  var _ref = (0,_instanceOf_js__WEBPACK_IMPORTED_MODULE_0__.isElement)(element) ? (0,_getWindow_js__WEBPACK_IMPORTED_MODULE_2__["default"])(element) : window,
+      visualViewport = _ref.visualViewport;
+
+  var addVisualOffsets = !(0,_isLayoutViewport_js__WEBPACK_IMPORTED_MODULE_3__["default"])() && isFixedStrategy;
+  var x = (clientRect.left + (addVisualOffsets && visualViewport ? visualViewport.offsetLeft : 0)) / scaleX;
+  var y = (clientRect.top + (addVisualOffsets && visualViewport ? visualViewport.offsetTop : 0)) / scaleY;
+  var width = clientRect.width / scaleX;
+  var height = clientRect.height / scaleY;
   return {
-    width: rect.width / scaleX,
-    height: rect.height / scaleY,
-    top: rect.top / scaleY,
-    right: rect.right / scaleX,
-    bottom: rect.bottom / scaleY,
-    left: rect.left / scaleX,
-    x: rect.left / scaleX,
-    y: rect.top / scaleY
+    width: width,
+    height: height,
+    top: y,
+    right: x + width,
+    bottom: y + height,
+    left: x,
+    x: x,
+    y: y
   };
 }
 
@@ -420,8 +427,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function getInnerBoundingClientRect(element) {
-  var rect = (0,_getBoundingClientRect_js__WEBPACK_IMPORTED_MODULE_0__["default"])(element);
+function getInnerBoundingClientRect(element, strategy) {
+  var rect = (0,_getBoundingClientRect_js__WEBPACK_IMPORTED_MODULE_0__["default"])(element, false, strategy === 'fixed');
   rect.top = rect.top + element.clientTop;
   rect.left = rect.left + element.clientLeft;
   rect.bottom = rect.top + element.clientHeight;
@@ -433,8 +440,8 @@ function getInnerBoundingClientRect(element) {
   return rect;
 }
 
-function getClientRectFromMixedType(element, clippingParent) {
-  return clippingParent === _enums_js__WEBPACK_IMPORTED_MODULE_1__.viewport ? (0,_utils_rectToClientRect_js__WEBPACK_IMPORTED_MODULE_2__["default"])((0,_getViewportRect_js__WEBPACK_IMPORTED_MODULE_3__["default"])(element)) : (0,_instanceOf_js__WEBPACK_IMPORTED_MODULE_4__.isElement)(clippingParent) ? getInnerBoundingClientRect(clippingParent) : (0,_utils_rectToClientRect_js__WEBPACK_IMPORTED_MODULE_2__["default"])((0,_getDocumentRect_js__WEBPACK_IMPORTED_MODULE_5__["default"])((0,_getDocumentElement_js__WEBPACK_IMPORTED_MODULE_6__["default"])(element)));
+function getClientRectFromMixedType(element, clippingParent, strategy) {
+  return clippingParent === _enums_js__WEBPACK_IMPORTED_MODULE_1__.viewport ? (0,_utils_rectToClientRect_js__WEBPACK_IMPORTED_MODULE_2__["default"])((0,_getViewportRect_js__WEBPACK_IMPORTED_MODULE_3__["default"])(element, strategy)) : (0,_instanceOf_js__WEBPACK_IMPORTED_MODULE_4__.isElement)(clippingParent) ? getInnerBoundingClientRect(clippingParent, strategy) : (0,_utils_rectToClientRect_js__WEBPACK_IMPORTED_MODULE_2__["default"])((0,_getDocumentRect_js__WEBPACK_IMPORTED_MODULE_5__["default"])((0,_getDocumentElement_js__WEBPACK_IMPORTED_MODULE_6__["default"])(element)));
 } // A "clipping parent" is an overflowable container with the characteristic of
 // clipping (or hiding) overflowing elements with a position different from
 // `initial`
@@ -457,18 +464,18 @@ function getClippingParents(element) {
 // clipping parents
 
 
-function getClippingRect(element, boundary, rootBoundary) {
+function getClippingRect(element, boundary, rootBoundary, strategy) {
   var mainClippingParents = boundary === 'clippingParents' ? getClippingParents(element) : [].concat(boundary);
   var clippingParents = [].concat(mainClippingParents, [rootBoundary]);
   var firstClippingParent = clippingParents[0];
   var clippingRect = clippingParents.reduce(function (accRect, clippingParent) {
-    var rect = getClientRectFromMixedType(element, clippingParent);
+    var rect = getClientRectFromMixedType(element, clippingParent, strategy);
     accRect.top = (0,_utils_math_js__WEBPACK_IMPORTED_MODULE_13__.max)(rect.top, accRect.top);
     accRect.right = (0,_utils_math_js__WEBPACK_IMPORTED_MODULE_13__.min)(rect.right, accRect.right);
     accRect.bottom = (0,_utils_math_js__WEBPACK_IMPORTED_MODULE_13__.min)(rect.bottom, accRect.bottom);
     accRect.left = (0,_utils_math_js__WEBPACK_IMPORTED_MODULE_13__.max)(rect.left, accRect.left);
     return accRect;
-  }, getClientRectFromMixedType(element, firstClippingParent));
+  }, getClientRectFromMixedType(element, firstClippingParent, strategy));
   clippingRect.width = clippingRect.right - clippingRect.left;
   clippingRect.height = clippingRect.bottom - clippingRect.top;
   clippingRect.x = clippingRect.left;
@@ -523,7 +530,7 @@ function getCompositeRect(elementOrVirtualElement, offsetParent, isFixed) {
   var isOffsetParentAnElement = (0,_instanceOf_js__WEBPACK_IMPORTED_MODULE_1__.isHTMLElement)(offsetParent);
   var offsetParentIsScaled = (0,_instanceOf_js__WEBPACK_IMPORTED_MODULE_1__.isHTMLElement)(offsetParent) && isElementScaled(offsetParent);
   var documentElement = (0,_getDocumentElement_js__WEBPACK_IMPORTED_MODULE_2__["default"])(offsetParent);
-  var rect = (0,_getBoundingClientRect_js__WEBPACK_IMPORTED_MODULE_3__["default"])(elementOrVirtualElement, offsetParentIsScaled);
+  var rect = (0,_getBoundingClientRect_js__WEBPACK_IMPORTED_MODULE_3__["default"])(elementOrVirtualElement, offsetParentIsScaled, isFixed);
   var scroll = {
     scrollLeft: 0,
     scrollTop: 0
@@ -763,12 +770,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ getOffsetParent)
 /* harmony export */ });
-/* harmony import */ var _getWindow_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./getWindow.js */ "./node_modules/@popperjs/core/lib/dom-utils/getWindow.js");
-/* harmony import */ var _getNodeName_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./getNodeName.js */ "./node_modules/@popperjs/core/lib/dom-utils/getNodeName.js");
+/* harmony import */ var _getWindow_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./getWindow.js */ "./node_modules/@popperjs/core/lib/dom-utils/getWindow.js");
+/* harmony import */ var _getNodeName_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./getNodeName.js */ "./node_modules/@popperjs/core/lib/dom-utils/getNodeName.js");
 /* harmony import */ var _getComputedStyle_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./getComputedStyle.js */ "./node_modules/@popperjs/core/lib/dom-utils/getComputedStyle.js");
 /* harmony import */ var _instanceOf_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./instanceOf.js */ "./node_modules/@popperjs/core/lib/dom-utils/instanceOf.js");
-/* harmony import */ var _isTableElement_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./isTableElement.js */ "./node_modules/@popperjs/core/lib/dom-utils/isTableElement.js");
-/* harmony import */ var _getParentNode_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./getParentNode.js */ "./node_modules/@popperjs/core/lib/dom-utils/getParentNode.js");
+/* harmony import */ var _isTableElement_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./isTableElement.js */ "./node_modules/@popperjs/core/lib/dom-utils/isTableElement.js");
+/* harmony import */ var _getParentNode_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./getParentNode.js */ "./node_modules/@popperjs/core/lib/dom-utils/getParentNode.js");
+/* harmony import */ var _utils_userAgent_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/userAgent.js */ "./node_modules/@popperjs/core/lib/utils/userAgent.js");
+
 
 
 
@@ -788,8 +797,8 @@ function getTrueOffsetParent(element) {
 
 
 function getContainingBlock(element) {
-  var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') !== -1;
-  var isIE = navigator.userAgent.indexOf('Trident') !== -1;
+  var isFirefox = /firefox/i.test((0,_utils_userAgent_js__WEBPACK_IMPORTED_MODULE_2__["default"])());
+  var isIE = /Trident/i.test((0,_utils_userAgent_js__WEBPACK_IMPORTED_MODULE_2__["default"])());
 
   if (isIE && (0,_instanceOf_js__WEBPACK_IMPORTED_MODULE_0__.isHTMLElement)(element)) {
     // In IE 9, 10 and 11 fixed elements containing block is always established by the viewport
@@ -800,13 +809,13 @@ function getContainingBlock(element) {
     }
   }
 
-  var currentNode = (0,_getParentNode_js__WEBPACK_IMPORTED_MODULE_2__["default"])(element);
+  var currentNode = (0,_getParentNode_js__WEBPACK_IMPORTED_MODULE_3__["default"])(element);
 
   if ((0,_instanceOf_js__WEBPACK_IMPORTED_MODULE_0__.isShadowRoot)(currentNode)) {
     currentNode = currentNode.host;
   }
 
-  while ((0,_instanceOf_js__WEBPACK_IMPORTED_MODULE_0__.isHTMLElement)(currentNode) && ['html', 'body'].indexOf((0,_getNodeName_js__WEBPACK_IMPORTED_MODULE_3__["default"])(currentNode)) < 0) {
+  while ((0,_instanceOf_js__WEBPACK_IMPORTED_MODULE_0__.isHTMLElement)(currentNode) && ['html', 'body'].indexOf((0,_getNodeName_js__WEBPACK_IMPORTED_MODULE_4__["default"])(currentNode)) < 0) {
     var css = (0,_getComputedStyle_js__WEBPACK_IMPORTED_MODULE_1__["default"])(currentNode); // This is non-exhaustive but covers the most common CSS properties that
     // create a containing block.
     // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block
@@ -824,14 +833,14 @@ function getContainingBlock(element) {
 
 
 function getOffsetParent(element) {
-  var window = (0,_getWindow_js__WEBPACK_IMPORTED_MODULE_4__["default"])(element);
+  var window = (0,_getWindow_js__WEBPACK_IMPORTED_MODULE_5__["default"])(element);
   var offsetParent = getTrueOffsetParent(element);
 
-  while (offsetParent && (0,_isTableElement_js__WEBPACK_IMPORTED_MODULE_5__["default"])(offsetParent) && (0,_getComputedStyle_js__WEBPACK_IMPORTED_MODULE_1__["default"])(offsetParent).position === 'static') {
+  while (offsetParent && (0,_isTableElement_js__WEBPACK_IMPORTED_MODULE_6__["default"])(offsetParent) && (0,_getComputedStyle_js__WEBPACK_IMPORTED_MODULE_1__["default"])(offsetParent).position === 'static') {
     offsetParent = getTrueOffsetParent(offsetParent);
   }
 
-  if (offsetParent && ((0,_getNodeName_js__WEBPACK_IMPORTED_MODULE_3__["default"])(offsetParent) === 'html' || (0,_getNodeName_js__WEBPACK_IMPORTED_MODULE_3__["default"])(offsetParent) === 'body' && (0,_getComputedStyle_js__WEBPACK_IMPORTED_MODULE_1__["default"])(offsetParent).position === 'static')) {
+  if (offsetParent && ((0,_getNodeName_js__WEBPACK_IMPORTED_MODULE_4__["default"])(offsetParent) === 'html' || (0,_getNodeName_js__WEBPACK_IMPORTED_MODULE_4__["default"])(offsetParent) === 'body' && (0,_getComputedStyle_js__WEBPACK_IMPORTED_MODULE_1__["default"])(offsetParent).position === 'static')) {
     return window;
   }
 
@@ -923,35 +932,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _getWindow_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./getWindow.js */ "./node_modules/@popperjs/core/lib/dom-utils/getWindow.js");
 /* harmony import */ var _getDocumentElement_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./getDocumentElement.js */ "./node_modules/@popperjs/core/lib/dom-utils/getDocumentElement.js");
-/* harmony import */ var _getWindowScrollBarX_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./getWindowScrollBarX.js */ "./node_modules/@popperjs/core/lib/dom-utils/getWindowScrollBarX.js");
+/* harmony import */ var _getWindowScrollBarX_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./getWindowScrollBarX.js */ "./node_modules/@popperjs/core/lib/dom-utils/getWindowScrollBarX.js");
+/* harmony import */ var _isLayoutViewport_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./isLayoutViewport.js */ "./node_modules/@popperjs/core/lib/dom-utils/isLayoutViewport.js");
 
 
 
-function getViewportRect(element) {
+
+function getViewportRect(element, strategy) {
   var win = (0,_getWindow_js__WEBPACK_IMPORTED_MODULE_0__["default"])(element);
   var html = (0,_getDocumentElement_js__WEBPACK_IMPORTED_MODULE_1__["default"])(element);
   var visualViewport = win.visualViewport;
   var width = html.clientWidth;
   var height = html.clientHeight;
   var x = 0;
-  var y = 0; // NB: This isn't supported on iOS <= 12. If the keyboard is open, the popper
-  // can be obscured underneath it.
-  // Also, `html.clientHeight` adds the bottom bar height in Safari iOS, even
-  // if it isn't open, so if this isn't available, the popper will be detected
-  // to overflow the bottom of the screen too early.
+  var y = 0;
 
   if (visualViewport) {
     width = visualViewport.width;
-    height = visualViewport.height; // Uses Layout Viewport (like Chrome; Safari does not currently)
-    // In Chrome, it returns a value very close to 0 (+/-) but contains rounding
-    // errors due to floating point numbers, so we need to check precision.
-    // Safari returns a number <= 0, usually < -1 when pinch-zoomed
-    // Feature detection fails in mobile emulation mode in Chrome.
-    // Math.abs(win.innerWidth / visualViewport.scale - visualViewport.width) <
-    // 0.001
-    // Fallback here: "Not Safari" userAgent
+    height = visualViewport.height;
+    var layoutViewport = (0,_isLayoutViewport_js__WEBPACK_IMPORTED_MODULE_2__["default"])();
 
-    if (!/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+    if (layoutViewport || !layoutViewport && strategy === 'fixed') {
       x = visualViewport.offsetLeft;
       y = visualViewport.offsetTop;
     }
@@ -960,7 +961,7 @@ function getViewportRect(element) {
   return {
     width: width,
     height: height,
-    x: x + (0,_getWindowScrollBarX_js__WEBPACK_IMPORTED_MODULE_2__["default"])(element),
+    x: x + (0,_getWindowScrollBarX_js__WEBPACK_IMPORTED_MODULE_3__["default"])(element),
     y: y
   };
 }
@@ -1085,6 +1086,25 @@ function isShadowRoot(node) {
 }
 
 
+
+/***/ }),
+
+/***/ "./node_modules/@popperjs/core/lib/dom-utils/isLayoutViewport.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/@popperjs/core/lib/dom-utils/isLayoutViewport.js ***!
+  \***********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ isLayoutViewport)
+/* harmony export */ });
+/* harmony import */ var _utils_userAgent_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/userAgent.js */ "./node_modules/@popperjs/core/lib/utils/userAgent.js");
+
+function isLayoutViewport() {
+  return !/^((?!chrome|android).)*safari/i.test((0,_utils_userAgent_js__WEBPACK_IMPORTED_MODULE_0__["default"])());
+}
 
 /***/ }),
 
@@ -2679,6 +2699,8 @@ function detectOverflow(state, options) {
   var _options = options,
       _options$placement = _options.placement,
       placement = _options$placement === void 0 ? state.placement : _options$placement,
+      _options$strategy = _options.strategy,
+      strategy = _options$strategy === void 0 ? state.strategy : _options$strategy,
       _options$boundary = _options.boundary,
       boundary = _options$boundary === void 0 ? _enums_js__WEBPACK_IMPORTED_MODULE_0__.clippingParents : _options$boundary,
       _options$rootBoundary = _options.rootBoundary,
@@ -2693,7 +2715,7 @@ function detectOverflow(state, options) {
   var altContext = elementContext === _enums_js__WEBPACK_IMPORTED_MODULE_0__.popper ? _enums_js__WEBPACK_IMPORTED_MODULE_0__.reference : _enums_js__WEBPACK_IMPORTED_MODULE_0__.popper;
   var popperRect = state.rects.popper;
   var element = state.elements[altBoundary ? altContext : elementContext];
-  var clippingClientRect = (0,_dom_utils_getClippingRect_js__WEBPACK_IMPORTED_MODULE_3__["default"])((0,_dom_utils_instanceOf_js__WEBPACK_IMPORTED_MODULE_4__.isElement)(element) ? element : element.contextElement || (0,_dom_utils_getDocumentElement_js__WEBPACK_IMPORTED_MODULE_5__["default"])(state.elements.popper), boundary, rootBoundary);
+  var clippingClientRect = (0,_dom_utils_getClippingRect_js__WEBPACK_IMPORTED_MODULE_3__["default"])((0,_dom_utils_instanceOf_js__WEBPACK_IMPORTED_MODULE_4__.isElement)(element) ? element : element.contextElement || (0,_dom_utils_getDocumentElement_js__WEBPACK_IMPORTED_MODULE_5__["default"])(state.elements.popper), boundary, rootBoundary, strategy);
   var referenceClientRect = (0,_dom_utils_getBoundingClientRect_js__WEBPACK_IMPORTED_MODULE_6__["default"])(state.elements.reference);
   var popperOffsets = (0,_computeOffsets_js__WEBPACK_IMPORTED_MODULE_7__["default"])({
     reference: referenceClientRect,
@@ -3077,6 +3099,31 @@ function uniqueBy(arr, fn) {
       return true;
     }
   });
+}
+
+/***/ }),
+
+/***/ "./node_modules/@popperjs/core/lib/utils/userAgent.js":
+/*!************************************************************!*\
+  !*** ./node_modules/@popperjs/core/lib/utils/userAgent.js ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ getUAString)
+/* harmony export */ });
+function getUAString() {
+  var uaData = navigator.userAgentData;
+
+  if (uaData != null && uaData.brands) {
+    return uaData.brands.map(function (item) {
+      return item.brand + "/" + item.version;
+    }).join(' ');
+  }
+
+  return navigator.userAgent;
 }
 
 /***/ }),
@@ -23077,6 +23124,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     favoris: function favoris() {
       return _store__WEBPACK_IMPORTED_MODULE_4__.store.state.favoris;
+    },
+    departements: function departements() {
+      return _store__WEBPACK_IMPORTED_MODULE_4__.store.state.departements;
+    },
+    regions: function regions() {
+      return _store__WEBPACK_IMPORTED_MODULE_4__.store.state.regions;
     }
   },
   // on surveille userData. Si changement => user connecté => on récupère  :
@@ -23091,7 +23144,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    // on récupère les catégories et on les stocke dans le store
+    // on récupère les catégories et on les stocke dans le store, idem ensuite pour lieux/départements/régions/favoris
     getCategories: function getCategories() {
       var _this = this;
 
@@ -23112,19 +23165,39 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error.response);
       });
     },
-    getFavoris: function getFavoris() {
+    getDepartements: function getDepartements() {
       var _this3 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_5___default().get("http://localhost:8000/api/departements").then(function (response) {
+        _store__WEBPACK_IMPORTED_MODULE_4__.store.commit('storeDepartements', response.data);
+        console.log(_this3.departements);
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
+    },
+    getRegions: function getRegions() {
+      var _this4 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_5___default().get("http://localhost:8000/api/regions").then(function (response) {
+        _store__WEBPACK_IMPORTED_MODULE_4__.store.commit('storeRegions', response.data);
+        console.log(_this4.regions);
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
+    },
+    getFavoris: function getFavoris() {
+      var _this5 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_5___default().get("http://localhost:8000/api/favoris/" + this.userData.id).then(function (response) {
         _store__WEBPACK_IMPORTED_MODULE_4__.store.commit('storeFavoris', response.data);
-        console.log(_this3.favoris);
+        console.log(_this5.favoris);
       })["catch"](function (error) {
         console.log(error.response);
       });
     },
     // on récupère les 3 endroits les mieux notés + les 3 derniers
     getThreeTopAndLastPlaces: function getThreeTopAndLastPlaces() {
-      var _this4 = this;
+      var _this6 = this;
 
       var department; // si l'utilisateur a choisi un département
 
@@ -23142,7 +23215,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         _store__WEBPACK_IMPORTED_MODULE_4__.store.commit('storeThreeTopPlaces', response.data);
-        console.log(_this4.threeTopPlaces);
+        console.log(_this6.threeTopPlaces);
       })["catch"](function (error) {
         console.log(error.response);
       }); // on récupère les 3 derniers lieux ajoutés du dép. / de la France entière
@@ -23154,7 +23227,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         _store__WEBPACK_IMPORTED_MODULE_4__.store.commit('storeThreeLastPlaces', response.data);
-        console.log(_this4.threeLastPlaces);
+        console.log(_this6.threeLastPlaces);
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -23168,6 +23241,14 @@ __webpack_require__.r(__webpack_exports__);
 
     if (!this.lieux) {
       this.getLieux();
+    }
+
+    if (!this.departements) {
+      this.getDepartements();
+    }
+
+    if (!this.regions) {
+      this.getRegions();
     }
 
     console.log(_store__WEBPACK_IMPORTED_MODULE_4__.store.state.userPosition); // ******************* si réponse à la demande de géoloc ************************
@@ -23984,7 +24065,7 @@ __webpack_require__.r(__webpack_exports__);
             // }
             var popupContent = "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom + "<i class=\"fa-solid fa-star ms-3 me-2 mt-1\" style=\"color: yellow\"></i>" + lieu.note + "</h5>" + // lieu.categories.forEach(category => { console.log(category.icone) }) + // impossible d'afficher les icônes des catégories
             // tests : document.write, concaténation
-            "<img class=\"mx-auto\" src=\"images/" + lieu.images[0].nom + "\" style=\"width: 30vw\">" + "<p style=\"font-family:'Cooper'\" class=\"text-center\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p>"; // `<router-link to="/lieu/${lieu.id}">` + 
+            "<img class=\"mx-auto\" src=\"images/" + lieu.image_mise_en_avant.nom + "\" style=\"width: 30vw\">" + "<p style=\"font-family:'Cooper'\" class=\"text-center\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p>"; // `<router-link to="/lieu/${lieu.id}">` + 
             // "<button class=\"btn moreInfoButton mx-auto\" id=\"" + lieu.id + "\" style=\"color:white; background-color: #94D1BE\">plus d'infos</button>" +
             // "</router-link>"
             // ne marche pas (component (ou $router) in undefined)
@@ -25069,39 +25150,40 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../store */ "./resources/js/store.js");
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  // récupérer les lieux
-  // computed: {
-  //     topLieux() {
-  //         return store.state.lieux
-  //     },
-  // },
   data: function data() {
     return {
       topLieux: _store__WEBPACK_IMPORTED_MODULE_0__.store.getters.getTopRatedPlaces,
-      coverPictures: [],
-      filtre: "departement"
+      departementUtilisateur: _store__WEBPACK_IMPORTED_MODULE_0__.store.state.userData.departement,
+      departementFiltre: '',
+      filtre: "france",
+      departements: _store__WEBPACK_IMPORTED_MODULE_0__.store.state.departements
     };
   },
-  methods: {
-    getCoverPictures: function getCoverPictures() {
-      var _this = this;
-
-      this.topLieux.forEach(function (topLieu) {
-        topLieu.images.forEach(function (image) {
-          if (image.mise_en_avant) {
-            _this.coverPictures.push(image);
-          }
-        });
+  // on surveille le filtre. Si changement => 
+  // 1) choix du département de l'utilisateur : on filtre les lieux par département de l'utilisateur
+  // 2) choix de toute la France ou d'un autre département : on récupère tous les lieux (selon le filtre choisi)
+  watch: {
+    filtre: function filtre(newFilter) {
+      if (newFilter == "departementUtilisateur") {
+        this.topLieux = _store__WEBPACK_IMPORTED_MODULE_0__.store.getters.getPlacesByDepartment;
+      } else {
+        this.topLieux = _store__WEBPACK_IMPORTED_MODULE_0__.store.getters.getTopRatedPlaces;
+      }
+    },
+    // en cas de choix d'un autre département parmi la liste, on surveille cet évènement ici
+    // on déclenche le filtrage de tous les lieux (qu'on récupère dans le store) selon ce département
+    // la récupération permet de bien repartir de la liste de tous les lieux au cas où on changerait de département
+    // sans changer de filtre (on ne repasserait donc pas par la fonction filtre ci-dessus)
+    departementFiltre: function departementFiltre(newDepartement) {
+      console.log(newDepartement);
+      var allPlaces = _store__WEBPACK_IMPORTED_MODULE_0__.store.getters.getTopRatedPlaces;
+      this.topLieux = allPlaces.filter(function (lieu) {
+        return lieu.departement.code == newDepartement;
       });
-      console.log(this.coverPictures);
     }
   },
   created: function created() {
     console.log(this.topLieux);
-
-    if (this.topLieux) {
-      this.getCoverPictures();
-    }
   }
 });
 
@@ -25522,7 +25604,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ******************************************* TOP DES LIEUX *********************************************** "), $options.threeTopPlaces && $options.threeTopPlaces.length > 2 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [_hoisted_18, $options.userData.departement ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h2", _hoisted_19, "Le top des lieux dans votre département")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h2", _hoisted_20, "Le top des lieux (France entière)"))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ********************** boucle qui affiche les 3 lieux ************************* "), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.threeTopPlaces, function (topPlace, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "mx-auto col-md-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between",
-      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)("background-image: url(images/".concat(topPlace.images[0].nom, "); background-position: center; background-size: cover;"))
+      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)("background-image: url(images/".concat(topPlace.image_mise_en_avant.nom, "); background-position: center; background-size: cover;"))
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_26, " #" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(index + 1), 1
     /* TEXT */
     )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h5", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(topPlace.nom), 1
@@ -25564,7 +25646,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   })])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ********************************* DERNIERS LIEUX AJOUTES *************************************** "), $options.threeTopPlaces && $options.threeTopPlaces.length > 2 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_37, [_hoisted_38, $options.userData.departement ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h2", _hoisted_39, " Derniers lieux ajoutés dans votre département")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h2", _hoisted_40, " Derniers lieux ajoutés (France entière)")), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_41, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_42, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ********************** boucle qui affiche les 3 derniers lieux ************************* "), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.threeLastPlaces, function (lastPlace) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "mx-auto col-md-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between",
-      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)("background-image: url(images/".concat(lastPlace.images[0].nom, "); background-position: center; background-size: cover;"))
+      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)("background-image: url(images/".concat(lastPlace.image_mise_en_avant.nom, "); background-position: center; background-size: cover;"))
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_43, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_44, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_45, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
       "class": "fs-4 rounded-circle border border-white p-1 ms-2",
       innerHTML: lastPlace.categorie.icone
@@ -30871,7 +30953,7 @@ var _hoisted_2 = /*#__PURE__*/_withScopeId(function () {
     "class": "greenIcon mx-auto fa-3x fa-solid fa-message"
   }), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", {
     "class": "mt-2"
-  }, "Top des lieux")], -1
+  }, "Top 100 des lieux")], -1
   /* HOISTED */
   );
 });
@@ -30890,13 +30972,10 @@ var _hoisted_4 = /*#__PURE__*/_withScopeId(function () {
   );
 });
 
-var _hoisted_5 = /*#__PURE__*/_withScopeId(function () {
-  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
-    value: "departement"
-  }, "de votre département", -1
-  /* HOISTED */
-  );
-});
+var _hoisted_5 = {
+  key: 0,
+  value: "departementUtilisateur"
+};
 
 var _hoisted_6 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
@@ -30906,28 +30985,41 @@ var _hoisted_6 = /*#__PURE__*/_withScopeId(function () {
   );
 });
 
-var _hoisted_7 = [_hoisted_4, _hoisted_5, _hoisted_6];
-var _hoisted_8 = {
+var _hoisted_7 = {
+  key: 0
+};
+
+var _hoisted_8 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+    "class": "m-2",
+    "for": "departmentSelect"
+  }, "Choisissez un département", -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_9 = ["selected", "value"];
+var _hoisted_10 = {
   "class": "container-fluid p-3 p-lg-5"
 };
-var _hoisted_9 = {
+var _hoisted_11 = {
   key: 0,
   "class": "row"
 };
-var _hoisted_10 = {
-  "class": "row"
-};
-var _hoisted_11 = {
-  "class": "col-6 d-flex justify-content-center align-items-center"
-};
 var _hoisted_12 = {
-  "class": "ranking"
+  "class": "row"
 };
 var _hoisted_13 = {
   "class": "col-6 d-flex justify-content-center align-items-center"
 };
+var _hoisted_14 = {
+  "class": "ranking"
+};
+var _hoisted_15 = {
+  "class": "col-6 d-flex justify-content-center align-items-center"
+};
 
-var _hoisted_14 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_16 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "yellowStar fa-2x fa-solid fa-star ms-2 me-1"
   }, null, -1
@@ -30935,17 +31027,17 @@ var _hoisted_14 = /*#__PURE__*/_withScopeId(function () {
   );
 });
 
-var _hoisted_15 = {
+var _hoisted_17 = {
   "class": "fs-2"
 };
-var _hoisted_16 = {
+var _hoisted_18 = {
   "class": "p-3 fs-3"
 };
-var _hoisted_17 = {
+var _hoisted_19 = {
   "class": "card-body"
 };
 
-var _hoisted_18 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_20 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "btn greenButton"
   }, "Détails du lieu", -1
@@ -30953,17 +31045,28 @@ var _hoisted_18 = /*#__PURE__*/_withScopeId(function () {
   );
 });
 
-var _hoisted_19 = {
+var _hoisted_21 = {
   key: 1
 };
 
-var _hoisted_20 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_22 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, "Aucun lieu de ce département dans le top 100.", -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_23 = [_hoisted_22];
+var _hoisted_24 = {
+  key: 1
+};
+
+var _hoisted_25 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, "chargement en cours...", -1
   /* HOISTED */
   );
 });
 
-var _hoisted_21 = [_hoisted_20];
+var _hoisted_26 = [_hoisted_25];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
 
@@ -30972,26 +31075,47 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return $data.filtre = $event;
     }),
-    "class": "form-select",
+    "class": "form-select w-50 mx-auto",
     "aria-label": "filtre"
-  }, _hoisted_7, 512
+  }, [_hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" disponible uniquement si le département de l'utilisateur a déjà été renseigné "), $data.departementUtilisateur ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", _hoisted_5, "de votre département")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _hoisted_6], 512
   /* NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.filtre]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [$data.topLieux ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_9, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.topLieux, function (topLieu, index) {
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.filtre]]), $data.filtre == 'autreDepartement' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, [_hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
+    id: "departmentSelect",
+    required: "",
+    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+      return $data.departementFiltre = $event;
+    }),
+    "class": "form-select w-50 mx-auto",
+    "aria-label": "filtre"
+  }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.departements, function (departement, index) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
+      selected: index == 0,
+      value: departement.code
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(departement.code) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(departement.nom), 9
+    /* TEXT, PROPS */
+    , _hoisted_9);
+  }), 256
+  /* UNKEYED_FRAGMENT */
+  ))], 512
+  /* NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.departementFiltre]])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [$data.topLieux ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_11, [$data.topLieux.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    key: 0
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.topLieux, function (topLieu, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "col-lg-6 border border-3 border-white card text-white textWithShadow",
       key: topLieu.id,
-      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)($data.coverPictures[index] ? "background-image: url(images/".concat($data.coverPictures[index].nom, "); background-position: center; background-size: cover;") : "background-image: url(images/".concat(topLieu.images[0].nom, "); background-position: center; background-size: cover;"))
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_12, "#" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(index + 1), 1
+      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)("background-image: url(images/".concat(topLieu.image_mise_en_avant.nom, "); background-position: center; background-size: cover;"))
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_14, "#" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(index + 1), 1
     /* TEXT */
-    )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(topLieu.note), 1
+    )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_17, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(topLieu.note), 1
     /* TEXT */
-    )])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(topLieu.nom), 1
+    )])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(topLieu.nom), 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
       to: "/lieu/".concat(topLieu.id)
     }, {
       "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-        return [_hoisted_18];
+        return [_hoisted_20];
       }),
       _: 2
       /* DYNAMIC */
@@ -31003,7 +31127,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     );
   }), 128
   /* KEYED_FRAGMENT */
-  ))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_19, _hoisted_21))])]);
+  )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_21, _hoisted_23))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_24, _hoisted_26))])]);
 }
 
 /***/ }),
@@ -31296,7 +31420,8 @@ __webpack_require__.r(__webpack_exports__);
 // // on importe createStore et on initialise le store
 
  // vuex-persist permet de stocker le state dans le local storage
-// => en cas d'actualisation de la page, on garde la connexion utilisateur
+// => en cas d'actualisation de la page, on garde la connexion utilisateur et toutes
+// les informations contenues dans le state
 
 var vuexPersist = new vuex_persist__WEBPACK_IMPORTED_MODULE_0__["default"]({
   key: 'Nice_Places',
@@ -31315,6 +31440,8 @@ var defaultState = {
   geolocationAnswered: false,
   userPosition: "",
   lieux: "",
+  departements: "",
+  regions: "",
   threeTopPlaces: "",
   threeLastPlaces: "",
   categories: "",
@@ -31358,6 +31485,12 @@ var store = (0,vuex__WEBPACK_IMPORTED_MODULE_1__.createStore)({
     storeLieux: function storeLieux(state, payload) {
       state.lieux = payload;
     },
+    storeDepartements: function storeDepartements(state, payload) {
+      state.departements = payload;
+    },
+    storeRegions: function storeRegions(state, payload) {
+      state.regions = payload;
+    },
     storeUsers: function storeUsers(state, payload) {
       state.users = payload;
     },
@@ -31397,12 +31530,16 @@ var store = (0,vuex__WEBPACK_IMPORTED_MODULE_1__.createStore)({
         return lieu.statut == "validé";
       });
     },
-    // on récupère les lieux triés par note
+    // on récupère les 100 meilleurs lieux (triés par note)
     getTopRatedPlaces: function getTopRatedPlaces(state) {
-      console.log("on passe dans gettop");
-      return state.lieux.sort(function (a, b) {
+      return state.lieux.slice(0, 100).sort(function (a, b) {
         if (a.note > b.note) return -1;
         return a.note < b.note ? 1 : 0;
+      });
+    },
+    getPlacesByDepartment: function getPlacesByDepartment(state) {
+      return state.lieux.filter(function (lieu) {
+        return lieu.departement.code == state.userData.departement;
       });
     }
   },
@@ -36689,7 +36826,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nimg[data-v-332fccf4] {\r\n\theight: 1.7em\n}\n.titleIcon[data-v-332fccf4] {\r\n\tcolor: #94D1BE\n}\nh2[data-v-332fccf4] {\r\n\tcolor: #1c6e8c\n}\n.btn[data-v-332fccf4] {\r\n\tbackground-color: #94D1BE !important;\r\n\tcolor: white;\n}\n#presentation[data-v-332fccf4] {\r\n\tbackground-position: center;\r\n\tbackground-size: cover;\r\n\theight: 55vh\n}\n#presentationTopStripe[data-v-332fccf4] {\r\n\tbackground-color: #94D1BE;\r\n\theight: 2vh;\n}\n#presentationBottomStripe[data-v-332fccf4] {\r\n\tbackground-color: #1C6E8C;\r\n\theight: 2vh;\n}\n#toplieux[data-v-332fccf4],\r\n#dernierslieux[data-v-332fccf4] {\r\n\theight: 50vh;\r\n\tcolor: white\n}\n#toplieux button[data-v-332fccf4],\r\n#dernierslieux button[data-v-332fccf4] {\r\n\tbackground-color: #1c6e8c !important;\n}\n.infosTopLieux[data-v-332fccf4],\r\n.infosDerniersLieux[data-v-332fccf4] {\r\n\tbackground-color: rgba(50, 61, 158, 0.5);\r\n\theight: 34%\n}\n.ranking[data-v-332fccf4] {\r\n\tfont-size: 2em;\n}\n.rankingAndName[data-v-332fccf4] {\r\n\theight: 70%\n}\n.textWithShadow[data-v-332fccf4] {\r\n    text-shadow: 2px 2px 4px #1C6E8C;\n}\n.yellowStar[data-v-332fccf4] {\r\n\tcolor: yellow\n}\n.categoryicon[data-v-332fccf4] {\r\n\tbackground-color: white;\n}\n#inscrivezVous[data-v-332fccf4] {\r\n\tcolor: #1c6e8c;\n}\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\twidth: 10vw;\r\n\theight: 10vw\n}\n#pointer[data-v-332fccf4] {\r\n\twidth: 7vw;\r\n\theight: 10vw\n}\n@media screen and (max-width: 380px) {\n#toplieux .rounded-circle[data-v-332fccf4] {\r\n\t\tdisplay: none;\n}\n}\n@media screen and (max-width: 580px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 120vh;\n}\n#presentation[data-v-332fccf4] {\r\n\t\theight: 62vh\n}\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\t\twidth: 30vw;\r\n\t\theight: 30vw\n}\n#pointer[data-v-332fccf4] {\r\n\t\twidth: 20vw;\r\n\t\theight: 30vw\n}\n}\n@media screen and (min-width: 581px) and (max-width: 768px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 85vh;\n}\n#presentation[data-v-332fccf4] {\r\n\t\theight: 57vh\n}\n.infosTopLieux[data-v-332fccf4] {\r\n\t\theight: 55%\n}\n.infosDerniersLieux[data-v-332fccf4] {\r\n\t\theight: 60%\n}\n}\n@media screen and (min-width: 769px) and (max-width: 992px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 60vh;\n}\n}\n@media screen and (min-width: 581px) and (max-width: 992px) {\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\t\twidth: 17vw;\r\n\t\theight: 17vw\n}\n#pointer[data-v-332fccf4] {\r\n\t\twidth: 11vw;\r\n\t\theight: 17vw\n}\n}\n@media screen and (max-width: 992px) {\n.infosTopLieux[data-v-332fccf4] {\r\n\t\theight: 40%\n}\n.infosDerniersLieux[data-v-332fccf4] {\r\n\t\theight: 45%\n}\n}\n@media screen and (min-width: 993px) {\n.infosDerniersLieux[data-v-332fccf4] {\r\n\t\theight: 35%\n}\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nimg[data-v-332fccf4] {\r\n\theight: 1.7em\n}\n.titleIcon[data-v-332fccf4] {\r\n\tcolor: #94D1BE\n}\nh2[data-v-332fccf4] {\r\n\tcolor: #1c6e8c\n}\n.btn[data-v-332fccf4] {\r\n\tbackground-color: #94D1BE !important;\r\n\tcolor: white;\n}\n#presentation[data-v-332fccf4] {\r\n\tbackground-position: center;\r\n\tbackground-size: cover;\r\n\theight: 55vh\n}\n#presentationTopStripe[data-v-332fccf4] {\r\n\tbackground-color: #94D1BE;\r\n\theight: 2vh;\n}\n#presentationBottomStripe[data-v-332fccf4] {\r\n\tbackground-color: #1C6E8C;\r\n\theight: 2vh;\n}\n#toplieux[data-v-332fccf4],\r\n#dernierslieux[data-v-332fccf4] {\r\n\theight: 50vh;\r\n\tcolor: white\n}\n#toplieux button[data-v-332fccf4],\r\n#dernierslieux button[data-v-332fccf4] {\r\n\tbackground-color: #1c6e8c !important;\n}\n.infosTopLieux[data-v-332fccf4],\r\n.infosDerniersLieux[data-v-332fccf4] {\r\n\tbackground-color: rgba(50, 61, 158, 0.5);\r\n\theight: 34%\n}\n.ranking[data-v-332fccf4] {\r\n\tfont-size: 2em;\n}\n.rankingAndName[data-v-332fccf4] {\r\n\theight: 70%\n}\n.textWithShadow[data-v-332fccf4] {\r\n\ttext-shadow: 2px 2px 4px #1C6E8C;\n}\n.yellowStar[data-v-332fccf4] {\r\n\tcolor: yellow\n}\n.categoryicon[data-v-332fccf4] {\r\n\tbackground-color: white;\n}\n#inscrivezVous[data-v-332fccf4] {\r\n\tcolor: #1c6e8c;\n}\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\twidth: 10vw;\r\n\theight: 10vw\n}\n#pointer[data-v-332fccf4] {\r\n\twidth: 7vw;\r\n\theight: 10vw\n}\n@media screen and (max-width: 380px) {\n#toplieux .rounded-circle[data-v-332fccf4] {\r\n\t\tdisplay: none;\n}\n}\n@media screen and (max-width: 580px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 120vh;\n}\n#presentation[data-v-332fccf4] {\r\n\t\theight: 62vh\n}\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\t\twidth: 30vw;\r\n\t\theight: 30vw\n}\n#pointer[data-v-332fccf4] {\r\n\t\twidth: 20vw;\r\n\t\theight: 30vw\n}\n}\n@media screen and (min-width: 581px) and (max-width: 768px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 85vh;\n}\n#presentation[data-v-332fccf4] {\r\n\t\theight: 57vh\n}\n.infosTopLieux[data-v-332fccf4] {\r\n\t\theight: 55%\n}\n.infosDerniersLieux[data-v-332fccf4] {\r\n\t\theight: 60%\n}\n}\n@media screen and (min-width: 769px) and (max-width: 992px) {\n#toplieux[data-v-332fccf4],\r\n\t#dernierslieux[data-v-332fccf4] {\r\n\t\theight: 60vh;\n}\n}\n@media screen and (min-width: 581px) and (max-width: 992px) {\n.inscrivezVousIcones[data-v-332fccf4] {\r\n\t\twidth: 17vw;\r\n\t\theight: 17vw\n}\n#pointer[data-v-332fccf4] {\r\n\t\twidth: 11vw;\r\n\t\theight: 17vw\n}\n}\n@media screen and (max-width: 992px) {\n.infosTopLieux[data-v-332fccf4] {\r\n\t\theight: 40%\n}\n.infosDerniersLieux[data-v-332fccf4] {\r\n\t\theight: 45%\n}\n}\n@media screen and (min-width: 993px) {\n.infosDerniersLieux[data-v-332fccf4] {\r\n\t\theight: 35%\n}\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -81819,7 +81956,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 /* harmony import */ var _vue_devtools_api__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @vue/devtools-api */ "./node_modules/@vue/devtools-api/lib/esm/index.js");
 /*!
-  * vue-router v4.1.2
+  * vue-router v4.1.4
   * (c) 2022 Eduardo San Martin Morote
   * @license MIT
   */
@@ -81858,7 +81995,7 @@ function warn(msg) {
 const TRAILING_SLASH_RE = /\/$/;
 const removeTrailingSlash = (path) => path.replace(TRAILING_SLASH_RE, '');
 /**
- * Transforms an URI into a normalized history location
+ * Transforms a URI into a normalized history location
  *
  * @param parseQuery
  * @param location - URI to normalize
@@ -81907,8 +82044,7 @@ function stringifyURL(stringifyQuery, location) {
     return location.path + (query && '?') + query + (location.hash || '');
 }
 /**
- * Strips off the base from the beginning of a location.pathname in a non
- * case-sensitive way.
+ * Strips off the base from the beginning of a location.pathname in a non-case-sensitive way.
  *
  * @param pathname - location.pathname
  * @param base - base to strip off
@@ -82005,12 +82141,12 @@ function resolveRelativePath(to, from) {
             continue;
         // go up in the from array
         if (segment === '..') {
-            // we can't go below zero but we still need to increment toPosition
+            // we can't go below zero, but we still need to increment toPosition
             if (position > 1)
                 position--;
             // continue
         }
-        // we reached a non relative path, we stop here
+        // we reached a non-relative path, we stop here
         else
             break;
     }
@@ -82247,7 +82383,7 @@ function useHistoryListeners(base, historyState, currentLocation, replace) {
         pauseState = currentLocation.value;
     }
     function listen(callback) {
-        // setup the listener and prepare teardown callbacks
+        // set up the listener and prepare teardown callbacks
         listeners.push(callback);
         const teardown = () => {
             const index = listeners.indexOf(callback);
@@ -82270,7 +82406,7 @@ function useHistoryListeners(base, historyState, currentLocation, replace) {
         window.removeEventListener('popstate', popStateHandler);
         window.removeEventListener('beforeunload', beforeUnloadListener);
     }
-    // setup the listeners and prepare teardown callbacks
+    // set up the listeners and prepare teardown callbacks
     window.addEventListener('popstate', popStateHandler);
     window.addEventListener('beforeunload', beforeUnloadListener);
     return {
@@ -82308,14 +82444,14 @@ function useHistoryStateNavigation(base) {
             // the length is off by one, we need to decrease it
             position: history.length - 1,
             replaced: true,
-            // don't add a scroll as the user may have an anchor and we want
+            // don't add a scroll as the user may have an anchor, and we want
             // scrollBehavior to be triggered without a saved position
             scroll: null,
         }, true);
     }
     function changeLocation(to, state, replace) {
         /**
-         * if a base tag is provided and we are on a normal domain, we have to
+         * if a base tag is provided, and we are on a normal domain, we have to
          * respect the provided `base` attribute because pushState() will use it and
          * potentially erase anything before the `#` like at
          * https://github.com/vuejs/router/issues/685 where a base of
@@ -82412,7 +82548,7 @@ function createWebHistory(base) {
 }
 
 /**
- * Creates a in-memory based history. The main purpose of this history is to handle SSR. It starts in a special location that is nowhere.
+ * Creates an in-memory based history. The main purpose of this history is to handle SSR. It starts in a special location that is nowhere.
  * It's up to the user to replace that location with the starter location by either calling `router.push` or `router.replace`.
  *
  * @param base - Base applied to all urls, defaults to '/'
@@ -82640,7 +82776,7 @@ function stringifyRoute(to) {
     return JSON.stringify(location, null, 2);
 }
 
-// default pattern for a param: non greedy everything but /
+// default pattern for a param: non-greedy everything but /
 const BASE_PARAM_PATTERN = '[^/]+?';
 const BASE_PATH_PARSER_OPTIONS = {
     sensitive: false,
@@ -82673,7 +82809,7 @@ function tokensToParser(segments, extraOptions) {
             pattern += '/';
         for (let tokenIndex = 0; tokenIndex < segment.length; tokenIndex++) {
             const token = segment[tokenIndex];
-            // resets the score if we are inside a sub segment /:a-other-:b
+            // resets the score if we are inside a sub-segment /:a-other-:b
             let subSegmentScore = 40 /* PathScore.Segment */ +
                 (options.sensitive ? 0.25 /* PathScore.BonusCaseSensitive */ : 0);
             if (token.type === 0 /* TokenType.Static */) {
@@ -82779,9 +82915,8 @@ function tokensToParser(segments, extraOptions) {
                         : param;
                     if (!text) {
                         if (optional) {
-                            // if we have more than one optional param like /:a?-static and there are more segments, we don't need to
-                            // care about the optional param
-                            if (segment.length < 2 && segments.length > 1) {
+                            // if we have more than one optional param like /:a?-static we don't need to care about the optional param
+                            if (segment.length < 2) {
                                 // remove the last slash as we could be at the end
                                 if (path.endsWith('/'))
                                     path = path.slice(0, -1);
@@ -82797,7 +82932,8 @@ function tokensToParser(segments, extraOptions) {
                 }
             }
         }
-        return path;
+        // avoid empty path when we have multiple optional params
+        return path || '/';
     }
     return {
         re,
@@ -83128,11 +83264,11 @@ function createRouterMatcher(routes, globalOptions) {
                 throw new Error('Catch all routes ("*") must now be defined using a param with a custom regexp.\n' +
                     'See more at https://next.router.vuejs.org/guide/migration/#removed-star-or-catch-all-routes.');
             }
-            // create the object before hand so it can be passed to children
+            // create the object beforehand, so it can be passed to children
             matcher = createRouteRecordMatcher(normalizedRecord, parent, options);
             if (( true) && parent && path[0] === '/')
                 checkMissingParamsInAbsolutePath(matcher, parent);
-            // if we are an alias we must tell the original record that we exist
+            // if we are an alias we must tell the original record that we exist,
             // so we can be removed
             if (originalRecord) {
                 originalRecord.alias.push(matcher);
@@ -83157,7 +83293,7 @@ function createRouterMatcher(routes, globalOptions) {
                 }
             }
             // if there was no original record, then the first one was not an alias and all
-            // other alias (if any) need to reference this record when adding children
+            // other aliases (if any) need to reference this record when adding children
             originalRecord = originalRecord || matcher;
             // TODO: add normalized records for more flexibility
             // if (parent && isAliasRecord(originalRecord)) {
@@ -83227,7 +83363,11 @@ function createRouterMatcher(routes, globalOptions) {
             paramsFromLocation(currentLocation.params, 
             // only keep params that exist in the resolved location
             // TODO: only keep optional params coming from a parent record
-            matcher.keys.filter(k => !k.optional).map(k => k.name)), location.params);
+            matcher.keys.filter(k => !k.optional).map(k => k.name)), 
+            // discard any existing params in the current location that do not exist here
+            // #1497 this ensures better active/exact matching
+            location.params &&
+                paramsFromLocation(location.params, matcher.keys.map(k => k.name)));
             // throws if cannot be stringified
             path = matcher.stringify(params);
         }
@@ -83241,7 +83381,6 @@ function createRouterMatcher(routes, globalOptions) {
             matcher = matchers.find(m => m.re.test(path));
             // matcher should have a value after the loop
             if (matcher) {
-                // TODO: dev warning of unused params if provided
                 // we know the matcher works because we tested the regexp
                 params = matcher.parse(path);
                 name = matcher.record.name;
@@ -83323,7 +83462,7 @@ function normalizeRouteRecord(record) {
  */
 function normalizeRecordProps(record) {
     const propsObject = {};
-    // props does not exist on redirect records but we can set false directly
+    // props does not exist on redirect records, but we can set false directly
     const props = record.props || false;
     if ('component' in record) {
         propsObject.default = props;
@@ -83415,7 +83554,7 @@ function isRecordChildOf(record, parent) {
  * On top of that, the RFC3986 (https://tools.ietf.org/html/rfc3986#section-2.2)
  * defines some extra characters to be encoded. Most browsers do not encode them
  * in encodeURI https://github.com/whatwg/url/issues/369, so it may be safer to
- * also encode `!'()*`. Leaving unencoded only ASCII alphanumeric(`a-zA-Z0-9`)
+ * also encode `!'()*`. Leaving un-encoded only ASCII alphanumeric(`a-zA-Z0-9`)
  * plus `-._~`. This extra safety should be applied to query by patching the
  * string returned by encodeURIComponent encodeURI also encodes `[\]^`. `\`
  * should be encoded to avoid ambiguity. Browsers (IE, FF, C) transform a `\`
@@ -83439,7 +83578,7 @@ const PLUS_RE = /\+/g; // %2B
  * application/x-www-form-urlencoded
  * (https://url.spec.whatwg.org/#urlencoded-parsing) and most browsers seems lo
  * leave the plus character as is in queries. To be more flexible, we allow the
- * plus character on the query but it can also be manually encoded by the user.
+ * plus character on the query, but it can also be manually encoded by the user.
  *
  * Resources:
  * - https://url.spec.whatwg.org/#urlencoded-parsing
@@ -83731,7 +83870,7 @@ function onBeforeRouteLeave(leaveGuard) {
     {}).value;
     if (!activeRecord) {
         ( true) &&
-            warn('No active route record was found when calling `onBeforeRouteLeave()`. Make sure you call this function inside of a component child of <router-view>. Maybe you called it inside of App.vue?');
+            warn('No active route record was found when calling `onBeforeRouteLeave()`. Make sure you call this function inside a component child of <router-view>. Maybe you called it inside of App.vue?');
         return;
     }
     registerGuard(activeRecord, 'leaveGuards', leaveGuard);
@@ -83753,7 +83892,7 @@ function onBeforeRouteUpdate(updateGuard) {
     {}).value;
     if (!activeRecord) {
         ( true) &&
-            warn('No active route record was found when calling `onBeforeRouteUpdate()`. Make sure you call this function inside of a component child of <router-view>. Maybe you called it inside of App.vue?');
+            warn('No active route record was found when calling `onBeforeRouteUpdate()`. Make sure you call this function inside a component child of <router-view>. Maybe you called it inside of App.vue?');
         return;
     }
     registerGuard(activeRecord, 'updateGuards', updateGuard);
@@ -83765,11 +83904,12 @@ function guardToPromiseFn(guard, to, from, record, name) {
         (record.enterCallbacks[name] = record.enterCallbacks[name] || []);
     return () => new Promise((resolve, reject) => {
         const next = (valid) => {
-            if (valid === false)
+            if (valid === false) {
                 reject(createRouterError(4 /* ErrorTypes.NAVIGATION_ABORTED */, {
                     from,
                     to,
                 }));
+            }
             else if (valid instanceof Error) {
                 reject(valid);
             }
@@ -83783,8 +83923,9 @@ function guardToPromiseFn(guard, to, from, record, name) {
                 if (enterCallbackArray &&
                     // since enterCallbackArray is truthy, both record and name also are
                     record.enterCallbacks[name] === enterCallbackArray &&
-                    typeof valid === 'function')
+                    typeof valid === 'function') {
                     enterCallbackArray.push(valid);
+                }
                 resolve();
             }
         };
@@ -83916,7 +84057,7 @@ function isRouteComponent(component) {
         '__vccOpts' in component);
 }
 /**
- * Ensures a route is loaded so it can be passed as o prop to `<RouterView>`.
+ * Ensures a route is loaded, so it can be passed as o prop to `<RouterView>`.
  *
  * @param route - resolved route to load
  */
@@ -84056,7 +84197,7 @@ const RouterLinkImpl = /*#__PURE__*/ (0,vue__WEBPACK_IMPORTED_MODULE_0__.defineC
                         : null,
                     href: link.href,
                     // this would override user added attrs but Vue will still add
-                    // the listener so we end up triggering both
+                    // the listener, so we end up triggering both
                     onClick: link.navigate,
                     class: elClass.value,
                 }, children);
@@ -84172,7 +84313,7 @@ const RouterViewImpl = /*#__PURE__*/ (0,vue__WEBPACK_IMPORTED_MODULE_0__.defineC
                 // this will update the instance for new instances as well as reused
                 // instances when navigating to a new route
                 to.instances[name] = instance;
-                // the component instance is reused for a different route or name so
+                // the component instance is reused for a different route or name, so
                 // we copy any saved update or leave guards. With async setup, the
                 // mounting component will mount before the matchedRoute changes,
                 // making instance === oldInstance, so we check if guards have been
@@ -84198,16 +84339,16 @@ const RouterViewImpl = /*#__PURE__*/ (0,vue__WEBPACK_IMPORTED_MODULE_0__.defineC
         }, { flush: 'post' });
         return () => {
             const route = routeToDisplay.value;
-            const matchedRoute = matchedRouteRef.value;
-            const ViewComponent = matchedRoute && matchedRoute.components[props.name];
             // we need the value at the time we render because when we unmount, we
             // navigated to a different location so the value is different
             const currentName = props.name;
+            const matchedRoute = matchedRouteRef.value;
+            const ViewComponent = matchedRoute && matchedRoute.components[currentName];
             if (!ViewComponent) {
                 return normalizeSlot(slots.default, { Component: ViewComponent, route });
             }
             // props from route configuration
-            const routePropsOption = matchedRoute.props[props.name];
+            const routePropsOption = matchedRoute.props[currentName];
             const routeProps = routePropsOption
                 ? routePropsOption === true
                     ? route.params
@@ -84826,7 +84967,7 @@ function createRouter(options) {
                     delete targetParams[key];
                 }
             }
-            // pass encoded values to the matcher so it can produce encoded path and fullPath
+            // pass encoded values to the matcher, so it can produce encoded path and fullPath
             matcherLocation = assign({}, rawLocation, {
                 params: encodeParams(rawLocation.params),
             });
@@ -84839,7 +84980,7 @@ function createRouter(options) {
         if (( true) && hash && !hash.startsWith('#')) {
             warn(`A \`hash\` should always start with the character "#". Replace "${hash}" with "#${hash}".`);
         }
-        // decoding them) the matcher might have merged current location params so
+        // the matcher might have merged current location params, so
         // we need to run the decoding again
         matchedRoute.params = normalizeParams(decodeParams(matchedRoute.params));
         const fullPath = stringifyURL(stringifyQuery$1, assign({}, rawLocation, {
@@ -84932,7 +85073,9 @@ function createRouter(options) {
         const shouldRedirect = handleRedirectRecord(targetLocation);
         if (shouldRedirect)
             return pushWithRedirect(assign(locationAsObject(shouldRedirect), {
-                state: data,
+                state: typeof shouldRedirect === 'object'
+                    ? assign({}, data, shouldRedirect.state)
+                    : data,
                 force,
                 replace,
             }), 
@@ -84979,10 +85122,14 @@ function createRouter(options) {
                     }
                     return pushWithRedirect(
                     // keep options
-                    assign(locationAsObject(failure.to), {
-                        state: data,
-                        force,
+                    assign({
+                        // preserve an existing replacement but allow the redirect to override it
                         replace,
+                    }, locationAsObject(failure.to), {
+                        state: typeof failure.to === 'object'
+                            ? assign({}, data, failure.to.state)
+                            : data,
+                        force,
                     }), 
                     // preserve the original redirectedFrom if any
                     redirectedFrom || toLocation);
@@ -85155,8 +85302,8 @@ function createRouter(options) {
                     // Here we could call if (info.delta) routerHistory.go(-info.delta,
                     // false) but this is bug prone as we have no way to wait the
                     // navigation to be finished before calling pushWithRedirect. Using
-                    // a setTimeout of 16ms seems to work but there is not guarantee for
-                    // it to work on every browser. So Instead we do not restore the
+                    // a setTimeout of 16ms seems to work but there is no guarantee for
+                    // it to work on every browser. So instead we do not restore the
                     // history entry and trigger a new navigation as requested by the
                     // navigation guard.
                     // the error is already handled by router.push we just want to avoid
@@ -85166,7 +85313,7 @@ function createRouter(options) {
                     )
                         .then(failure => {
                         // manual change in hash history #916 ending up in the URL not
-                        // changing but it was changed by the manual url change, so we
+                        // changing, but it was changed by the manual url change, so we
                         // need to manually change it ourselves
                         if (isNavigationFailure(failure, 4 /* ErrorTypes.NAVIGATION_ABORTED */ |
                             16 /* ErrorTypes.NAVIGATION_DUPLICATED */) &&
@@ -85180,8 +85327,9 @@ function createRouter(options) {
                     return Promise.reject();
                 }
                 // do not restore history on unknown direction
-                if (info.delta)
+                if (info.delta) {
                     routerHistory.go(-info.delta, false);
+                }
                 // unrecognized error, transfer to the global handler
                 return triggerError(error, toLocation, from);
             })
@@ -85193,7 +85341,10 @@ function createRouter(options) {
                         toLocation, from, false);
                 // revert the navigation
                 if (failure) {
-                    if (info.delta) {
+                    if (info.delta &&
+                        // a new navigation has been triggered, so we do not want to revert, that will change the current history
+                        // entry while a different route is displayed
+                        !isNavigationFailure(failure, 8 /* ErrorTypes.NAVIGATION_CANCELLED */)) {
                         routerHistory.go(-info.delta, false);
                     }
                     else if (info.type === NavigationType.pop &&
@@ -85338,6 +85489,7 @@ function createRouter(options) {
                 }
                 unmountApp();
             };
+            // TODO: this probably needs to be updated so it can be used by vue-termui
             if (( true) && isBrowser) {
                 addDevtools(app, router, matcher);
             }

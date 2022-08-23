@@ -31,7 +31,8 @@ class LieuSeeder extends Seeder
             'ville' => 'Mervent',
             'user_id' => 1,
             'statut' => "validé",
-            'categorie_id' => 2
+            'categorie_id' => 2,
+            'departement_id' => 86
         ]);
 
         Lieu::create([
@@ -48,7 +49,8 @@ class LieuSeeder extends Seeder
             'ville' => 'Saint-Hilaire-la-Palud',
             'user_id' => 1,
             'statut' => "validé",
-            'categorie_id' => 8
+            'categorie_id' => 8,
+            'departement_id' => 80
         ]);
 
         Lieu::create([
@@ -71,7 +73,8 @@ class LieuSeeder extends Seeder
             'ville' => 'Nantes',
             'user_id' => 1,
             'statut' => "validé",
-            'categorie_id' => 6
+            'categorie_id' => 6,
+            'departement_id' => 45
         ]);
 
         Lieu::create([
@@ -95,7 +98,8 @@ class LieuSeeder extends Seeder
             'ville' => 'Les Mathes',
             'user_id' => 1,
             'statut' => "validé",
-            'categorie_id' => 8
+            'categorie_id' => 8,
+            'departement_id' => 17
         ]);
 
         Lieu::create([
@@ -115,7 +119,8 @@ class LieuSeeder extends Seeder
             'ville' => 'Port-Saint-Père',
             'user_id' => 1,
             'statut' => "validé",
-            'categorie_id' => 8
+            'categorie_id' => 8,
+            'departement_id' => 45
         ]);
 
         Lieu::create([
@@ -134,7 +139,8 @@ class LieuSeeder extends Seeder
             'ville' => 'Coulon',
             'user_id' => 1,
             'statut' => "validé",
-            'categorie_id' => 5
+            'categorie_id' => 5,
+            'departement_id' => 80
         ]);
 
         Lieu::create([
@@ -150,7 +156,8 @@ class LieuSeeder extends Seeder
             'ville' => ' 85460 L\'AIGUILLON-LA-PRESQU\'ILE',
             'user_id' => 1,
             'statut' => "validé",
-            'categorie_id' => 1
+            'categorie_id' => 1,
+            'departement_id' => 86
         ]);
 
         Lieu::create([
@@ -173,7 +180,8 @@ class LieuSeeder extends Seeder
             'ville' => 'Longeville-sur-Mer',
             'user_id' => 1,
             'statut' => "validé",
-            'categorie_id' => 1
+            'categorie_id' => 1,
+            'departement_id' => 86
         ]);
 
         Lieu::create([
@@ -191,7 +199,8 @@ class LieuSeeder extends Seeder
             'ville' => 'Niort',
             'user_id' => 1,
             'statut' => "validé",
-            'categorie_id' => 6
+            'categorie_id' => 6,
+            'departement_id' => 80
         ]);
 
         Lieu::create([
@@ -210,10 +219,11 @@ class LieuSeeder extends Seeder
             'ville' => 'Romagne', 
             'user_id' => 1,
             'statut' => "validé",
-            'categorie_id' => 8
+            'categorie_id' => 8,
+            'departement_id' => 87
         ]);
 
-        // insertion de 10 lieux aléatoires via la LieuFactory (ids 11 à 20)
-        // \App\Models\Lieu::factory(10)->create();
+        // insertion de 10 lieux aléatoires via la LieuFactory (ids 11 à 110)
+        \App\Models\Lieu::factory(100)->create();
     }
 }

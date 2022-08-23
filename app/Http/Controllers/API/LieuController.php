@@ -133,6 +133,7 @@ class LieuController extends BaseController
         $lieu->load(['avis' => function ($query) {
             $query->latest()->get();
         }]);
+        $lieu->load('images');
         return response()->json($lieu);
     }
 
@@ -180,7 +181,6 @@ class LieuController extends BaseController
     public function getPlacesByUser(Request $request)
     {
         $userPlaces = Lieu::where('user_id', intval($request->user_id))->get();
-
         return response()->json($userPlaces);
     }
 
@@ -193,6 +193,7 @@ class LieuController extends BaseController
         return response()->json($imagesNumber);
     }
 
+    
     /**
      * Update the specified resource in storage.
      *

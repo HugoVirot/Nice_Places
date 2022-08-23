@@ -75,3 +75,13 @@ Route::apiResource("images", App\Http\Controllers\API\ImageController::class);
 Route::apiResource("notifications", App\Http\Controllers\API\NotificationController::class)->except('index');
 Route::get('getnotificationsbyuser/{user}', [App\Http\Controllers\API\NotificationController::class, 'getNotificationsByUser'])->name('getNotificationsByUser');
 Route::put('notifications/{notification}', [App\Http\Controllers\API\NotificationController::class, 'markNotificationAsRead'])->name('markNotificationAsRead');
+
+
+//****************************************Les routes "departements.*" de l'API*************************************************
+
+Route::apiResource("departements", App\Http\Controllers\API\DepartementController::class);
+
+
+//****************************************Les routes "regions.*" de l'API*************************************************
+
+Route::apiResource("regions", App\Http\Controllers\API\RegionController::class);

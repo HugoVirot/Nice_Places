@@ -28,6 +28,12 @@ export default {
 		},
 		favoris() {
 			return store.state.favoris
+		},
+		departements() {
+			return store.state.departements
+		},
+		regions() {
+			return store.state.regions
 		}
 	},
 
@@ -44,8 +50,7 @@ export default {
 
 	methods: {
 
-		// on récupère les catégories et on les stocke dans le store
-
+		// on récupère les catégories et on les stocke dans le store, idem ensuite pour lieux/départements/régions/favoris
 		getCategories() {
 			axios.get("http://localhost:8000/api/categories")
 				.then(response => {
@@ -63,6 +68,30 @@ export default {
 				.then(response => {
 					store.commit('storeLieux', response.data)
 					console.log(this.lieux)
+				}
+				)
+				.catch(error => {
+					console.log(error.response)
+				})
+		},
+
+		getDepartements() {
+			axios.get("http://localhost:8000/api/departements")
+				.then(response => {
+					store.commit('storeDepartements', response.data)
+					console.log(this.departements)
+				}
+				)
+				.catch(error => {
+					console.log(error.response)
+				})
+		},
+
+		getRegions() {
+			axios.get("http://localhost:8000/api/regions")
+				.then(response => {
+					store.commit('storeRegions', response.data)
+					console.log(this.regions)
 				}
 				)
 				.catch(error => {
@@ -140,6 +169,14 @@ export default {
 
 		if (!this.lieux) {
 			this.getLieux()
+		}
+
+		if (!this.departements) {
+			this.getDepartements()
+		}
+
+		if (!this.regions) {
+			this.getRegions()
 		}
 
 		console.log(store.state.userPosition)
@@ -249,7 +286,8 @@ export default {
 
 				</div>
 
-				<router-link to="/categories"><button class="btn btn-lg mt-3 rounded-pill">Toutes les catégories</button>
+				<router-link to="/categories"><button class="btn btn-lg mt-3 rounded-pill">Toutes les
+						catégories</button>
 				</router-link>
 
 			</div>
@@ -272,7 +310,7 @@ export default {
 
 						<div v-for="(topPlace, index) in threeTopPlaces"
 							class="mx-auto col-md-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
-							:style="`background-image: url(images/${topPlace.images[0].nom}); background-position: center; background-size: cover;`">
+							:style="`background-image: url(images/${topPlace.image_mise_en_avant.nom}); background-position: center; background-size: cover;`">
 							<div class="infosTopLieux pt-1 pb-3">
 
 								<div class="rankingAndName row d-flex justify-content-between align-items-center">
@@ -329,7 +367,7 @@ export default {
 
 						<div v-for="lastPlace in threeLastPlaces"
 							class="mx-auto col-md-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
-							:style="`background-image: url(images/${lastPlace.images[0].nom}); background-position: center; background-size: cover;`">
+							:style="`background-image: url(images/${lastPlace.image_mise_en_avant.nom}); background-position: center; background-size: cover;`">
 
 							<div class="infosDerniersLieux pt-2 px-1">
 
@@ -481,8 +519,9 @@ h2 {
 .rankingAndName {
 	height: 70%
 }
+
 .textWithShadow {
-    text-shadow: 2px 2px 4px #1C6E8C;
+	text-shadow: 2px 2px 4px #1C6E8C;
 }
 
 .yellowStar {

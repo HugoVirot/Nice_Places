@@ -85,8 +85,20 @@ class ImageSeeder extends Seeder
             'lieu_id' => 10
         ]);
 
+        // images pour les lieux aléatoires
+
+        for ($i = 11; $i < 111; $i++) {
+
+            Image::create([
+                'nom' => 'random.jpg',
+                'mise_en_avant' => true,
+                'user_id' => 1,
+                'lieu_id' => $i
+            ]);
+        }
+
         // images des catégories
-        
+
         Image::create([
             'nom' => 'plages.jpg',
             'mise_en_avant' => true,
@@ -94,7 +106,7 @@ class ImageSeeder extends Seeder
             'lieu_id' => null
         ]);
 
-                
+
         Image::create([
             'nom' => 'forêts et bois.jpg',
             'mise_en_avant' => true,
@@ -102,7 +114,7 @@ class ImageSeeder extends Seeder
             'lieu_id' => null
         ]);
 
-                
+
         Image::create([
             'nom' => 'lacs et étangs.jpg',
             'mise_en_avant' => true,
@@ -110,7 +122,7 @@ class ImageSeeder extends Seeder
             'lieu_id' => null
         ]);
 
-                
+
         Image::create([
             'nom' => 'fleuves, rivières et cours d\'eau.jpg',
             'mise_en_avant' => true,
@@ -118,7 +130,7 @@ class ImageSeeder extends Seeder
             'lieu_id' => null
         ]);
 
-                
+
         Image::create([
             'nom' => 'parcs naturels régionaux.jpg',
             'mise_en_avant' => true,
@@ -126,7 +138,7 @@ class ImageSeeder extends Seeder
             'lieu_id' => null
         ]);
 
-                
+
         Image::create([
             'nom' => 'parcs urbains.jpg',
             'mise_en_avant' => true,
@@ -134,7 +146,7 @@ class ImageSeeder extends Seeder
             'lieu_id' => null
         ]);
 
-                
+
         Image::create([
             'nom' => 'randonnées en montagne.jpg',
             'mise_en_avant' => true,
@@ -142,7 +154,7 @@ class ImageSeeder extends Seeder
             'lieu_id' => null
         ]);
 
-                
+
         Image::create([
             'nom' => 'zoos et réserves naturelles.jpg',
             'mise_en_avant' => true,
@@ -156,7 +168,5 @@ class ImageSeeder extends Seeder
             'user_id' => 1,
             'lieu_id' => null
         ]);
-
-
     }
 }
