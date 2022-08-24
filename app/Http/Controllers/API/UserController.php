@@ -59,9 +59,7 @@ class UserController extends BaseController
                         ->symbols() // au moins un caractère spécial     
                 ],
                 'departement' => [
-                    'nullable',
-                    'max:3',
-                    Rule::in(departmentsList())
+                    'nullable'
                 ]
             ],
             // messages d'erreur personnalisés
@@ -78,7 +76,7 @@ class UserController extends BaseController
             'pseudo' => $request->pseudo,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'departement' => $request->departement
+            'departement_id' => $request->departement
         ]);
 
         // création d'un token pour le user
@@ -86,7 +84,7 @@ class UserController extends BaseController
         $success['pseudo'] =  $user->pseudo;
         $success["email"] = $user->email;
         $success['id'] = $user->id;
-        
+
         return $this->sendResponse($success, 'Inscription réussie.');
     }
 
@@ -137,9 +135,7 @@ class UserController extends BaseController
                     ->symbols() // au moins un caractère spécial     
             ],
             'departement' => [
-                'nullable',
-                'max:3',
-                Rule::in(departmentsList())  // on vérifie si le département est bien dans la liste (sinon => erreur)
+                'nullable'
             ]
         ]);
 
@@ -151,7 +147,7 @@ class UserController extends BaseController
         $user->update([
             'pseudo' => $request->pseudo,
             'email' => $request->email,
-            'departement' => $request->departement
+            'departement_id' => $request->departement
         ]);
 
         // si nouveau mdp choisi
@@ -161,11 +157,14 @@ class UserController extends BaseController
                 $user->update([
                     'password' => Hash::make($request->password)
                 ]);
-            // sinon => on renvoie une erreur
+                // sinon => on renvoie une erreur
             } else {
                 return $this->sendError('Error validation', ['mot de passe actuel non renseigné ou incorrect']);
             }
         }
+
+        // on charge le département associé (permet de le mettre à jour en cas de changement)
+        $user->load('departement');
 
         // On retourne la réponse JSON
         return $this->sendResponse($user, 'Modifications validées.');

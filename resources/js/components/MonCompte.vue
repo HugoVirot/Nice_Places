@@ -9,6 +9,7 @@ export default {
             pseudo: store.state.userData.pseudo,
             email: store.state.userData.email,
             id: store.state.userData.id,
+            departements: store.state.departements,
             departement: store.state.userData.departement,
             oldPassword: "",
             password: "",
@@ -74,7 +75,7 @@ export default {
 
         sendData() {
             axios.put('/api/users/' + this.id, {
-                pseudo: this.pseudo, email: this.email, departement: this.departement, oldPassword: this.oldPassword,
+                pseudo: this.pseudo, email: this.email, departement: this.departement.id, region: this.departement.region, oldPassword: this.oldPassword,
                 password: this.password, password_confirmation: this.password_confirmation
             })
                 .then((response) => {
@@ -170,12 +171,16 @@ export default {
                             </div>
 
                             <div class="form-group row m-2">
-                                <label for="email" class="col-md-4 col-form-label text-md-right">département (facultatif)</label>
+                                <label for="departement" class="col-md-4 col-form-label text-md-right">département
+                                    (facultatif)</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="departement" id="departement" type="text" class="form-control"
-                                        name="departement" autocomplete="departement">
+                                    <select id="departement" required v-model="departement"
+                                        class="form-select mx-auto" aria-label="filtre" autocomplete="departement">
+                                        <option v-for="departement in departements" :value="departement">{{ departement.code}} - {{ departement.nom }}</option>
+                                    </select>
                                 </div>
+
                             </div>
 
                         </div>

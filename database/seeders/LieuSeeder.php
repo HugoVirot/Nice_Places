@@ -80,10 +80,7 @@ class LieuSeeder extends Seeder
         Lieu::create([
             'nom' => 'Zoo de la Palmyre',
             'description' => 'Le zoo de La Palmyre est un parc zoologique français situé sur la côte atlantique de la Nouvelle-Aquitaine, en Charente-Maritime, 
-            dans la presqu\'île d\'Arvert, entre Royan et l\'Île d\'Oléron. Créé en 1966 par Claude Caillé, le 
-            parc est toujours la propriété de sa famille. Il est actuellement présidé 
-            par son fils, Patrick Caillé, et dirigé par son petit-fils Pierre Caillé.
-            Il s\'étend sur 18 hectares au sein de la station balnéaire de La Palmyre, 
+            dans la presqu\'île d\'Arvert, entre Royan et l\'Île d\'Oléron. Créé en 1966, il s\'étend sur 18 hectares au sein de la station balnéaire de La Palmyre, 
             enclavée entre la forêt domaniale de la Coubre et la forêt des Combots 
             d\'Ansoine. Le parc, aménagé en jardin paysager, offre au visiteur 
             l\'occasion d\'observer plus de 1 500 animaux de 115 espèces, tout au 
@@ -125,12 +122,12 @@ class LieuSeeder extends Seeder
 
         Lieu::create([
             'nom' => 'Parc naturel régional du Marais poitevin',
-            'description' => 'Le marais poitevin s\'étend sur 3 départements et 100 000 hectares. Il est composé d\'une myriade de petits canaux sur lesquels on peut 
+            'description' => 'Le marais poitevin s\'étend sur 3 départements (Vendée, Deux-Sèvres et Charente-Maritime) et 100 000 hectares ! Il est composé d\'une myriade de petits canaux sur lesquels on peut 
              naviguer en barque. On lui attribue d\'ailleurs le surnom de "Venise Verte" à cause des lentilles qui recouvrent l\'eau.
              Il est également possible de s\'y promener à pied ou à vélo. Les plus jolis villages sont Arçais et Coulon, tous deux dotés d\'embarcadères.
              NB :l\'adresse ci-dessous est celle du siège administratif du Parc.',
-             'latitude' => '46.3220216',
-             'longitude' => '-0.5859276',
+            'latitude' => '46.3220216',
+            'longitude' => '-0.5859276',
             'note' => '9.3',
             'temps' => '4',
             'difficulte' => 'famille',
@@ -145,7 +142,8 @@ class LieuSeeder extends Seeder
 
         Lieu::create([
             'nom' => 'Plage des Chardons',
-            'description' => 'Grande plage de sable fin surveillée en Juillet et Août. Accès à pied par une pinède qui comporte des tables de pique-nique.',
+            'description' => 'Grande plage de sable fin surveillée en Juillet et Août. Accès à pied par une pinède qui comporte des tables de pique-nique.
+            Un endroit très sympathique pour une sortie plage en famille ou entre amis.',
             'latitude' => '46.323139',
             'longitude' => '-1.3229756',
             'note' => '8.5',
@@ -205,8 +203,7 @@ class LieuSeeder extends Seeder
 
         Lieu::create([
             'nom' => 'La Vallée Des Singes',
-            'description' => 'La Vallée des Singes est un parc zoologique français situé à Romagne, dans la Vienne. Fondé par le 
-            Néerlandais Wim Mager en 1998, vingt-sept ans après avoir fondé le parc Apenheul, le parc présente aujourd\'hui une 
+            'description' => 'La Vallée des Singes est un parc zoologique français situé à Romagne, dans la Vienne. Fondé en 1998, il présente une 
             grande diversité de primates sur des îles végétalisées que le visiteur traverse en circulant au milieu des singes 
             et autres lémuriens. (source : Wikipédia)',
             'latitude' => '46.2702',
@@ -216,7 +213,7 @@ class LieuSeeder extends Seeder
             'difficulte' => 'famille',
             'adresse' => 'Le Gureau',
             'code_postal' => '86700',
-            'ville' => 'Romagne', 
+            'ville' => 'Romagne',
             'user_id' => 1,
             'statut' => "validé",
             'categorie_id' => 8,

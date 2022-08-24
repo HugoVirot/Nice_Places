@@ -9,6 +9,8 @@ export default {
         return {
             pseudo: "",
             email: "",
+            departements: store.state.departements,
+            departement: "",
             password: "",
             password_confirmation: "",
             validationErrors: "",
@@ -24,7 +26,7 @@ export default {
 
     methods: {
         sendData() {
-            axios.post('/api/register', { pseudo: this.pseudo, email: this.email, password: this.password, password_confirmation: this.password_confirmation })
+            axios.post('/api/register', { pseudo: this.pseudo, email: this.email, departement: this.departement, password: this.password, password_confirmation: this.password_confirmation })
                 .then(response => {
                     // on stocke le message de succès dans le store ("inscription réussie")
                     store.commit('storeMessage', response.data.message);
@@ -184,6 +186,21 @@ i {
                                     <input v-model="email" id="email" type="email" class="form-control" name="email"
                                         required autocomplete="email">
                                 </div>
+                            </div>
+
+                            <div class="form-group row m-2">
+                                <label for="departement" class="col-md-4 col-form-label text-md-right">département
+                                    (facultatif)</label>
+
+                                <div class="col-md-6">
+                                    <select id="departement" required v-model="departement" class="form-select mx-auto"
+                                        aria-label="filtre" autocomplete="departement">
+                                        <option v-for="departement in departements" :value="departement.id">{{
+                                                departement.code
+                                        }} - {{ departement.nom }}</option>
+                                    </select>
+                                </div>
+
                             </div>
 
                             <div id="infosMdp" class="form-group row my-2">

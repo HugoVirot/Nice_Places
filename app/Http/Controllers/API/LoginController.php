@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Controllers\API\BaseController;
+use App\Models\Departement;
 
 class LoginController extends BaseController
 {
@@ -28,9 +29,9 @@ class LoginController extends BaseController
             $success['token'] =  $authUser->createToken('LoginUser' . $authUser->id)->plainTextToken;
             $success['pseudo'] =  $authUser->pseudo;
             $success["email"] = $authUser->email;
-            $success["departement"] = $authUser->departement;
             $success['id'] = $authUser->id;
             $success['role'] = $authUser->role->role;
+            $success['departement'] = Departement::find($authUser->departement_id);
 
             // on renvoie la réponse 
             return $this->sendResponse($success, 'Vous êtes connecté');

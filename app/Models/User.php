@@ -21,6 +21,11 @@ class User extends Authenticatable
         return $this->hasMany(Avis::class);
     }
 
+    public function departement()
+    {
+        return $this->belongsTo(Departement::class);
+    }
+
     public function images()
     {
         return $this->hasMany(Image::class);
@@ -52,7 +57,7 @@ class User extends Authenticatable
         'pseudo',
         'password',
         'email',
-        'departement'
+        'departement_id'
     ];
 
     /**

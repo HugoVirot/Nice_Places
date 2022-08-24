@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('Azerty88@'),
             'email' => 'admin@niceplaces.fr',
             'email_verified_at' => now(),
-            'departement' => '79',
+            'departement_id' => '80',
             'remember_token' => Str::random(10),
             'role_id' => 2
         ]);
@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('Azerty88@'),
             'email' => 'utilisateur@test.fr',
             'email_verified_at' => now(),
-            'departement' => '85',
+            'departement_id' => '86',
             'remember_token' => Str::random(10),
             'role_id' => 1
         ]);

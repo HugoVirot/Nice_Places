@@ -55,6 +55,7 @@ export const store = createStore({
             state.userData.email = payload.email
             state.userData.id = payload.id
             state.userData.departement = payload.departement
+            state.userData.region = payload.region
             state.userData.role = payload.role
             state.userData.token = payload.token
         },

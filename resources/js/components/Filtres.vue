@@ -53,10 +53,18 @@ export default {
         // on surveille le filtre. Si changement, on exécute le code suivant
         filtre(newFilter) {
 
-            // si choix du département de l'utilisateur : on filtre les lieux par département de l'utilisateur
+            // si choix du département de l'utilisateur : on filtre les lieux ainsi
             if (newFilter == "departementUtilisateur") {
                 // on filtre les lieux non filtrés et on stocke le résultat dans une variable (impossible de modifier directement les props)
-                let lieuxFiltres = this.lieuxNonFiltres.filter(lieu => lieu.departement.code == this.departementUtilisateur)
+                let lieuxFiltres = this.lieuxNonFiltres.filter(lieu => lieu.departement.code == this.departementUtilisateur.code)
+                // on fait remonter les lieux filtrés vers le parent 
+                this.$emit("filtre_applique", lieuxFiltres)
+            }
+
+            // si choix de la région de l'utilisateur : on filtre les lieux ainsi
+            else if (newFilter == "regionUtilisateur") {
+                // on filtre les lieux non filtrés et on stocke le résultat dans une variable (impossible de modifier directement les props)
+                let lieuxFiltres = this.lieuxNonFiltres.filter(lieu => lieu.departement.region.nom == this.departementUtilisateur.region.nom)
                 // on fait remonter les lieux filtrés vers le parent 
                 this.$emit("filtre_applique", lieuxFiltres)
 
