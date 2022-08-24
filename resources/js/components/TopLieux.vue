@@ -46,13 +46,13 @@ export default {
 </script>
 
 <template>
-    <section id="topLieux" class="p-2">
+    <section id="topLieux" class="p-2 text-secondary">
         <div class="p-3">
             <i class="greenIcon mx-auto fa-3x fa-solid fa-message"></i>
             <h1 class="mt-2">Top 100 des lieux</h1>
         </div>
 
-        <h2>Afficher les lieux : </h2>
+        <p>Afficher les lieux : </p>
 
         <select required v-model="filtre" class="form-select w-50 mx-auto" aria-label="filtre">
             <option value="france">de la France entière</option>
@@ -62,7 +62,7 @@ export default {
         </select>
 
         <div v-if="filtre == 'autreDepartement'">
-            <label class="m-2" for="departmentSelect">Choisissez un département</label>
+            <label class="m-3" for="departmentSelect">Choisissez un département</label>
             <select id="departmentSelect" required v-model="departementFiltre" class="form-select w-50 mx-auto"
                 aria-label="filtre">
                 <option v-for="(departement, index) in departements" :selected="index == 0" :value="departement.code">{{

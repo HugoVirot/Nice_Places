@@ -23640,51 +23640,113 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Filtres_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Filtres.vue */ "./resources/js/components/Filtres.vue");
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       categorie: '',
-      coverPictures: [],
-      loading: true
+      loading: true,
+      lieuxNonFiltres: ''
     };
   },
+  components: {
+    Filtres: _Filtres_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
   methods: {
+    updateLieux: function updateLieux(lieuxTries) {
+      // déclenchée si filtre appliqué via composant enfant Filtres
+      this.categorie.lieux = lieuxTries; // on remplace les lieux de la catégorie par les lieux filtrés 
+    },
     // filtre les lieux en ne gardant que ceux validés
     getValidatedPlaces: function getValidatedPlaces() {
       this.categorie.lieux = this.categorie.lieux.filter(function (lieu) {
         return lieu.statut == "validé";
       });
-    },
-    getCoverPictures: function getCoverPictures() {
-      var _this = this;
-
-      this.categorie.lieux.forEach(function (place) {
-        place.images.forEach(function (image) {
-          if (image.mise_en_avant) {
-            _this.coverPictures.push(image);
-          }
-        });
-      });
-      console.log(this.coverPictures);
     }
   },
   // on récupère la catégorie en fonction de l'id passé en paramètre de la route
   created: function created() {
-    var _this2 = this;
+    var _this = this;
 
     axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/categories/" + this.$route.params.id).then(function (response) {
-      _this2.categorie = response.data;
-      console.log(_this2.categorie);
+      _this.categorie = response.data;
+      console.log(_this.categorie);
 
-      _this2.getValidatedPlaces();
+      _this.getValidatedPlaces();
 
-      _this2.getCoverPictures();
-
-      _this2.loading = false;
+      _this.loading = false;
+      _this.lieuxNonFiltres = _this.categorie.lieux;
+      console.log(_this.lieuxNonFiltres);
     })["catch"](function (response) {
       console.log(response.error);
     });
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/Filtres.vue?vue&type=script&lang=js":
+/*!*************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/Filtres.vue?vue&type=script&lang=js ***!
+  \*************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../store.js */ "./resources/js/store.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      departementUtilisateur: _store_js__WEBPACK_IMPORTED_MODULE_0__.store.state.userData.departement,
+      departementFiltre: '',
+      regionFiltre: '',
+      filtre: "france",
+      departements: _store_js__WEBPACK_IMPORTED_MODULE_0__.store.state.departements,
+      regions: _store_js__WEBPACK_IMPORTED_MODULE_0__.store.state.regions
+    };
+  },
+  props: ["lieux", "lieuxNonFiltres"],
+  emits: ['filtre_applique'],
+  watch: {
+    // on surveille le filtre. Si changement, on exécute le code suivant
+    filtre: function filtre(newFilter) {
+      var _this = this;
+
+      // si choix du département de l'utilisateur : on filtre les lieux par département de l'utilisateur
+      if (newFilter == "departementUtilisateur") {
+        // on filtre les lieux non filtrés et on stocke le résultat dans une variable (impossible de modifier directement les props)
+        var lieuxFiltres = this.lieuxNonFiltres.filter(function (lieu) {
+          return lieu.departement.code == _this.departementUtilisateur;
+        }); // on fait remonter les lieux filtrés vers le parent 
+
+        this.$emit("filtre_applique", lieuxFiltres);
+      } else if (newFilter == "france") {
+        // si choix France entière = on remet les lieux du parent à l'état initial
+        this.$emit("filtre_applique", this.lieuxNonFiltres);
+      }
+    },
+    // on surveille le choix du filtre par département (et donc le choix d'un département à cet effet)
+    departementFiltre: function departementFiltre(newDepartement) {
+      // on filtre les lieux non filtrés et on stocke le résultat dans une variable (impossible de modifier directement les props)
+      var lieuxFiltres = this.lieuxNonFiltres.filter(function (lieu) {
+        return lieu.departement.code == newDepartement;
+      }); // on fait remonter les lieux filtrés vers le parent 
+
+      this.$emit("filtre_applique", lieuxFiltres);
+    },
+    // même principe avec les régions
+    regionFiltre: function regionFiltre(newRegion) {
+      var lieuxFiltres = this.lieuxNonFiltres.filter(function (lieu) {
+        return lieu.departement.region.nom == newRegion;
+      });
+      this.$emit("filtre_applique", lieuxFiltres);
+    }
   }
 });
 
@@ -24180,11 +24242,6 @@ __webpack_require__.r(__webpack_exports__);
       return _store__WEBPACK_IMPORTED_MODULE_0__.store.state.favoris;
     }
   },
-  data: function data() {
-    return {
-      coverPictures: []
-    };
-  },
   methods: {
     getFavoris: function getFavoris() {
       axios.get('/api/favoris/' + _store__WEBPACK_IMPORTED_MODULE_0__.store.state.userData.id).then(function (response) {
@@ -24193,27 +24250,11 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (response) {
         console.log(response.error);
       });
-    },
-    getCoverPictures: function getCoverPictures() {
-      var _this = this;
-
-      this.favoris.forEach(function (place) {
-        place.images.forEach(function (image) {
-          if (image.mise_en_avant) {
-            _this.coverPictures.push(image);
-          }
-        });
-      });
-      console.log(this.coverPictures);
     }
   },
   created: function created() {
     // on récupère les lieux postés par l'utilisateur
-    this.getFavoris(); // une fois que les lieux sont disponibles, on récupère la liste des images de couverture de ces lieux
-
-    if (this.favoris) {
-      this.getCoverPictures();
-    }
+    this.getFavoris();
   }
 });
 
@@ -24238,11 +24279,6 @@ __webpack_require__.r(__webpack_exports__);
       return _store__WEBPACK_IMPORTED_MODULE_0__.store.state.userPlaces;
     }
   },
-  data: function data() {
-    return {
-      coverPictures: []
-    };
-  },
   methods: {
     // on récupère les lieux postes par le user
     getLieuxPostes: function getLieuxPostes() {
@@ -24258,27 +24294,11 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         console.log(error.response);
       });
-    },
-    getCoverPictures: function getCoverPictures() {
-      var _this2 = this;
-
-      this.userPlaces.forEach(function (place) {
-        place.images.forEach(function (image) {
-          if (image.mise_en_avant) {
-            _this2.coverPictures.push(image);
-          }
-        });
-      });
-      console.log(this.coverPictures);
     }
   },
   created: function created() {
     // on récupère les lieux postés par l'utilisateur
-    this.getLieuxPostes(); // une fois que les lieux sont disponibles, on récupère la liste des images de couverture de ces lieux
-
-    if (this.userPlaces) {
-      this.getCoverPictures();
-    }
+    this.getLieuxPostes();
   }
 });
 
@@ -26813,6 +26833,8 @@ var _hoisted_11 = /*#__PURE__*/_withScopeId(function () {
 });
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_Filtres = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Filtres");
+
   var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
@@ -26827,13 +26849,19 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* TEXT */
   )])], 4
   /* STYLE */
-  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [!this.loading ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_5, [$data.categorie.lieux.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.categorie.lieux.length) + " lieu(x) trouvé(s)", 1
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Filtres, {
+    lieux: $data.categorie.lieux,
+    lieuxNonFiltres: $data.lieuxNonFiltres,
+    onFiltre_applique: $options.updateLieux
+  }, null, 8
+  /* PROPS */
+  , ["lieux", "lieuxNonFiltres", "onFiltre_applique"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [!this.loading ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_5, [$data.categorie.lieux.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.categorie.lieux.length) + " lieu(x) trouvé(s)", 1
   /* TEXT */
-  )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_7, "aucun lieu trouvé"))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" composant qui affiche les lieux (le créer et lui passer en props)"), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.categorie.lieux, function (lieu, index) {
+  )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_7, "aucun lieu trouvé"))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" composant qui affiche les lieux (le créer et lui passer les lieux en props)"), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.categorie.lieux, function (lieu, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "col-lg-6 border border-3 border-white card text-white",
       key: lieu.id,
-      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)($data.coverPictures[index] ? "background-image: url(/images/".concat($data.coverPictures[index].nom, "); background-position: center; background-size: cover;") : "background-image: url(/images/".concat(lieu.images[0].nom, "); background-position: center; background-size: cover;"))
+      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)("background-image: url(/images/".concat(lieu.image_mise_en_avant.nom, "); background-position: center; background-size: cover;"))
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(lieu.nom), 1
     /* TEXT */
     ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
@@ -26852,7 +26880,133 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     );
   }), 128
   /* KEYED_FRAGMENT */
-  ))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" </div> ")], 64
+  ))])])], 64
+  /* STABLE_FRAGMENT */
+  );
+}
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/Filtres.vue?vue&type=template&id=3cff5a1a":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/Filtres.vue?vue&type=template&id=3cff5a1a ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+
+var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
+  "class": "text-secondary mt-3"
+}, "Afficher les lieux : ", -1
+/* HOISTED */
+);
+
+var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+  value: "france"
+}, "de la France entière", -1
+/* HOISTED */
+);
+
+var _hoisted_3 = {
+  key: 0,
+  value: "departementUtilisateur"
+};
+var _hoisted_4 = {
+  key: 1,
+  value: "regionUtilisateur"
+};
+
+var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+  value: "autreDepartement"
+}, "d'un autre département", -1
+/* HOISTED */
+);
+
+var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+  value: "autreRegion"
+}, "d'une autre région", -1
+/* HOISTED */
+);
+
+var _hoisted_7 = {
+  key: 0
+};
+
+var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+  "class": "m-3 text-secondary",
+  "for": "departmentSelect"
+}, "Choisissez un département", -1
+/* HOISTED */
+);
+
+var _hoisted_9 = ["selected", "value"];
+var _hoisted_10 = {
+  key: 1
+};
+
+var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+  "class": "m-3 text-secondary",
+  "for": "regionSelect"
+}, "Choisissez une région", -1
+/* HOISTED */
+);
+
+var _hoisted_12 = ["selected", "value"];
+function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
+    required: "",
+    "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
+      return $data.filtre = $event;
+    }),
+    "class": "form-select w-50 mx-auto",
+    "aria-label": "filtre"
+  }, [_hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" disponible uniquement si le département de l'utilisateur a déjà été renseigné "), $data.departementUtilisateur ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", _hoisted_3, "de votre département")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.departementUtilisateur ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", _hoisted_4, "de votre région")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _hoisted_5, _hoisted_6], 512
+  /* NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.filtre]]), $data.filtre == 'autreDepartement' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, [_hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
+    id: "departmentSelect",
+    required: "",
+    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+      return $data.departementFiltre = $event;
+    }),
+    "class": "form-select w-50 mx-auto",
+    "aria-label": "filtre"
+  }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.departements, function (departement, index) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
+      selected: index == 0,
+      value: departement.code
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(departement.code) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(departement.nom), 9
+    /* TEXT, PROPS */
+    , _hoisted_9);
+  }), 256
+  /* UNKEYED_FRAGMENT */
+  ))], 512
+  /* NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.departementFiltre]])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.filtre == 'autreRegion' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_10, [_hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
+    id: "regionSelect",
+    required: "",
+    "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
+      return $data.regionFiltre = $event;
+    }),
+    "class": "form-select w-50 mx-auto",
+    "aria-label": "filtre"
+  }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.regions, function (region, index) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
+      selected: index == 0,
+      value: region.nom
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(region.nom), 9
+    /* TEXT, PROPS */
+    , _hoisted_12);
+  }), 256
+  /* UNKEYED_FRAGMENT */
+  ))], 512
+  /* NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.regionFiltre]])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 64
   /* STABLE_FRAGMENT */
   );
 }
@@ -27008,7 +27162,7 @@ var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNo
 
 var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("catégories");
 
-var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("top des lieux");
+var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("top 100 des lieux");
 
 var _hoisted_18 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("proposer un lieu");
 
@@ -28210,7 +28364,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "col-lg-6 border border-3 border-white card text-white",
       key: favori.id,
-      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)($data.coverPictures[index] ? "background-image: url(images/".concat($data.coverPictures[index].nom, "); background-position: center; background-size: cover;") : "background-image: url(images/".concat(favori.images[0].nom, "); background-position: center; background-size: cover;"))
+      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)("background-image: url(images/".concat(favori.image_mise_en_avant.nom, "); background-position: center; background-size: cover;"))
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(favori.nom), 1
     /* TEXT */
     ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
@@ -28310,7 +28464,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "col-lg-6 border border-3 border-white card text-white",
       key: userPlace.id,
-      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)($data.coverPictures[index] ? "background-image: url(images/".concat($data.coverPictures[index].nom, "); background-position: center; background-size: cover;") : "background-image: url(images/".concat(userPlace.images[0].nom, "); background-position: center; background-size: cover;"))
+      style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)("background-image: url(images/".concat(userPlace.image_mise_en_avant.nom, "); background-position: center; background-size: cover;"))
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(userPlace.nom), 1
     /* TEXT */
     ), userPlace.statut == 'validé' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_5, "validé")) : userPlace.statut == 'en attente' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_6, "en attente de validation ")) : userPlace.statut == 'à modifier' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, "à modifier pour être validé ")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_8, "refusé ")), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
@@ -30943,7 +31097,7 @@ var _withScopeId = function _withScopeId(n) {
 
 var _hoisted_1 = {
   id: "topLieux",
-  "class": "p-2"
+  "class": "p-2 text-secondary"
 };
 
 var _hoisted_2 = /*#__PURE__*/_withScopeId(function () {
@@ -30959,7 +31113,7 @@ var _hoisted_2 = /*#__PURE__*/_withScopeId(function () {
 });
 
 var _hoisted_3 = /*#__PURE__*/_withScopeId(function () {
-  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", null, "Afficher les lieux : ", -1
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, "Afficher les lieux : ", -1
   /* HOISTED */
   );
 });
@@ -30991,7 +31145,7 @@ var _hoisted_7 = {
 
 var _hoisted_8 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
-    "class": "m-2",
+    "class": "m-3",
     "for": "departmentSelect"
   }, "Choisissez un département", -1
   /* HOISTED */
@@ -36874,7 +37028,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.greenIcon[data-v-8ceef672] {\r\n    color: #94D1BE\n}\nh1[data-v-8ceef672],\r\nh2[data-v-8ceef672] {\r\n    color: #1C6E8C\n}\n.textWithShadow[data-v-8ceef672] {\r\n    text-shadow: 2px 2px 4px #1C6E8C;\n}\n.bigFontSize[data-v-8ceef672] {\r\n    font-size: 4em;\n}\n.card[data-v-8ceef672] {\r\n    height: 35vh\n}\nbutton[data-v-8ceef672] {\r\n    background-color: #94DEB1;\r\n    color: white\n}\nbutton[data-v-8ceef672]:hover {\r\n    background-color: #1C6E8C;\r\n    color: white\n}\n@media screen and (max-width: 568px) {\n.bigFontSize[data-v-8ceef672] {\r\n        font-size: 3em;\n}\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.greenIcon[data-v-8ceef672] {\r\n    color: #94D1BE\n}\nh1[data-v-8ceef672],\r\nh2[data-v-8ceef672] {\r\n    color: #1C6E8C\n}\n.textWithShadow[data-v-8ceef672] {\r\n    text-shadow: 2px 2px 4px #1C6E8C;\n}\n.bigFontSize[data-v-8ceef672] {\r\n    font-size: 3.5em;\n}\n.card[data-v-8ceef672] {\r\n    height: 35vh\n}\nbutton[data-v-8ceef672] {\r\n    background-color: #94DEB1;\r\n    color: white\n}\nbutton[data-v-8ceef672]:hover {\r\n    background-color: #1C6E8C;\r\n    color: white\n}\n@media screen and (max-width: 568px) {\n.bigFontSize[data-v-8ceef672] {\r\n        font-size: 2.5em;\n}\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -77968,6 +78122,34 @@ if (false) {}
 
 /***/ }),
 
+/***/ "./resources/js/components/Filtres.vue":
+/*!*********************************************!*\
+  !*** ./resources/js/components/Filtres.vue ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _Filtres_vue_vue_type_template_id_3cff5a1a__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Filtres.vue?vue&type=template&id=3cff5a1a */ "./resources/js/components/Filtres.vue?vue&type=template&id=3cff5a1a");
+/* harmony import */ var _Filtres_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Filtres.vue?vue&type=script&lang=js */ "./resources/js/components/Filtres.vue?vue&type=script&lang=js");
+/* harmony import */ var C_wamp64_www_Nice_Places_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+
+
+
+
+;
+const __exports__ = /*#__PURE__*/(0,C_wamp64_www_Nice_Places_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_Filtres_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_Filtres_vue_vue_type_template_id_3cff5a1a__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/components/Filtres.vue"]])
+/* hot reload */
+if (false) {}
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__exports__);
+
+/***/ }),
+
 /***/ "./resources/js/components/Footer.vue":
 /*!********************************************!*\
   !*** ./resources/js/components/Footer.vue ***!
@@ -78722,6 +78904,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/Filtres.vue?vue&type=script&lang=js":
+/*!*********************************************************************!*\
+  !*** ./resources/js/components/Filtres.vue?vue&type=script&lang=js ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Filtres_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"])
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Filtres_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Filtres.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/Filtres.vue?vue&type=script&lang=js");
+ 
+
+/***/ }),
+
 /***/ "./resources/js/components/Footer.vue?vue&type=script&lang=js":
 /*!********************************************************************!*\
   !*** ./resources/js/components/Footer.vue?vue&type=script&lang=js ***!
@@ -79166,6 +79364,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_DetailCategorie_vue_vue_type_template_id_33af456a_scoped_true__WEBPACK_IMPORTED_MODULE_0__.render)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_DetailCategorie_vue_vue_type_template_id_33af456a_scoped_true__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./DetailCategorie.vue?vue&type=template&id=33af456a&scoped=true */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/DetailCategorie.vue?vue&type=template&id=33af456a&scoped=true");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/Filtres.vue?vue&type=template&id=3cff5a1a":
+/*!***************************************************************************!*\
+  !*** ./resources/js/components/Filtres.vue?vue&type=template&id=3cff5a1a ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Filtres_vue_vue_type_template_id_3cff5a1a__WEBPACK_IMPORTED_MODULE_0__.render)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Filtres_vue_vue_type_template_id_3cff5a1a__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Filtres.vue?vue&type=template&id=3cff5a1a */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/Filtres.vue?vue&type=template&id=3cff5a1a");
 
 
 /***/ }),

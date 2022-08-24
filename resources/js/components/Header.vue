@@ -88,7 +88,7 @@ export default {
                         <router-link to="/" class="navbar-brand">accueil</router-link>
                         <router-link to="/carte" class="nav-link">carte</router-link>
                         <router-link to="/categories" class="nav-link">catégories</router-link>
-                        <router-link to="/toplieux" class="nav-link">top des lieux</router-link>
+                        <router-link to="/toplieux" class="nav-link">top 100 des lieux</router-link>
                         <router-link to="/proposerlieu" class="nav-link">proposer un lieu</router-link>
 
                         <!-- si utilisateur connecté : mon compte / mes lieux, si pas connecté : inscription/connexion -->

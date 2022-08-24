@@ -51,7 +51,7 @@ h2 {
 }
 
 .bigFontSize {
-    font-size: 4em;
+    font-size: 3.5em;
 }
 
 .card {
@@ -70,7 +70,7 @@ button:hover {
 
 @media screen and (max-width: 568px) {
     .bigFontSize {
-        font-size: 3em;
+        font-size: 2.5em;
     }
 }
 </style>

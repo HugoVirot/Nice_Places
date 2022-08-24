@@ -10,6 +10,8 @@
 
     </div>
 
+    <Filtres :lieux="categorie.lieux" :lieuxNonFiltres="lieuxNonFiltres" @filtre_applique="updateLieux" />
+
     <div class="container-fluid p-3 p-lg-5 mt-3">
 
         <div v-if="!this.loading">
@@ -18,53 +20,44 @@
         </div>
 
         <div class="row">
-            <!-- composant qui affiche les lieux (le créer et lui passer en props)-->
+            <!-- composant qui affiche les lieux (le créer et lui passer les lieux en props)-->
             <div class="col-lg-6 border border-3 border-white card text-white" v-for="(lieu, index) in categorie.lieux"
-                :key="lieu.id" :style="coverPictures[index] ? `background-image: url(/images/${coverPictures[index].nom}); background-position: center; background-size: cover;` :
-                    `background-image: url(/images/${lieu.images[0].nom}); background-position: center; background-size: cover;`
-                ">
+                :key="lieu.id"
+                :style="`background-image: url(/images/${lieu.image_mise_en_avant.nom}); background-position: center; background-size: cover;`">
                 <span class="m-auto">
                     <div class="p-3 fs-1 textWithShadow"> {{ lieu.nom }} </div>
                     <router-link :to="`/lieu/${lieu.id}`"><button class="btn btn-lg">Détails du lieu</button>
                     </router-link>
                 </span>
-
             </div>
         </div>
-
     </div>
-    <!-- </div> -->
+
 </template>
 
 <script>
 import axios from "axios";
+import Filtres from "./Filtres.vue"
 
 export default {
     data() {
         return {
             categorie: '',
-            coverPictures: [],
-            loading: true
+            loading: true,
+            lieuxNonFiltres: ''
         }
     },
 
+    components: { Filtres },
+
     methods: {
+        updateLieux(lieuxTries) {  // déclenchée si filtre appliqué via composant enfant Filtres
+            this.categorie.lieux = lieuxTries // on remplace les lieux de la catégorie par les lieux filtrés 
+        },
+
         // filtre les lieux en ne gardant que ceux validés
         getValidatedPlaces() {
             this.categorie.lieux = this.categorie.lieux.filter(lieu => lieu.statut == "validé")
-        },
-
-        getCoverPictures() {
-            this.categorie.lieux.forEach(place => {
-
-                place.images.forEach(image => {
-
-                    if (image.mise_en_avant) {
-                        this.coverPictures.push(image)
-                    }
-                })
-            })
-            console.log(this.coverPictures)
         }
     },
 
@@ -75,8 +68,9 @@ export default {
                 this.categorie = response.data
                 console.log(this.categorie)
                 this.getValidatedPlaces()
-                this.getCoverPictures()
                 this.loading = false
+                this.lieuxNonFiltres = this.categorie.lieux
+                console.log(this.lieuxNonFiltres)
             })
             .catch((response) => {
                 console.log(response.error);

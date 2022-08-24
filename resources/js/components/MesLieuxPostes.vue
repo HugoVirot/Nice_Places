@@ -9,12 +9,6 @@ export default {
         }
     },
 
-    data() {
-        return {
-            coverPictures: []
-        }
-    },
-
     methods: {
         // on récupère les lieux postes par le user
 
@@ -33,29 +27,11 @@ export default {
                     console.log(error.response)
                 })
         },
-
-        getCoverPictures() {
-            this.userPlaces.forEach(place => {
-
-                place.images.forEach(image => {
-
-                    if (image.mise_en_avant) {
-                        this.coverPictures.push(image)
-                    }
-                })
-            })
-            console.log(this.coverPictures)
-        }
     },
 
     created() {
         // on récupère les lieux postés par l'utilisateur
         this.getLieuxPostes()
-
-        // une fois que les lieux sont disponibles, on récupère la liste des images de couverture de ces lieux
-        if (this.userPlaces) {
-            this.getCoverPictures()
-        }
     }
 }
 </script>
@@ -70,9 +46,7 @@ export default {
     <div class="container-fluid p-3 p-lg-5">
         <div class="row">
             <div class="col-lg-6 border border-3 border-white card text-white" v-for="(userPlace, index) in userPlaces"
-                :key="userPlace.id" :style="coverPictures[index] ? `background-image: url(images/${coverPictures[index].nom}); background-position: center; background-size: cover;` :
-                    `background-image: url(images/${userPlace.images[0].nom}); background-position: center; background-size: cover;`
-                ">
+                :key="userPlace.id" :style="`background-image: url(images/${userPlace.image_mise_en_avant.nom}); background-position: center; background-size: cover;`">
                 <div class="p-3 fs-3 textWithShadow"> {{ userPlace.nom }} </div>
                 <div v-if="userPlace.statut == 'validé'" class="mx-auto bg-success w-25">validé</div>
                 <div v-else-if="userPlace.statut == 'en attente'" class="mx-auto bg-info w-25">en attente de validation
