@@ -151,7 +151,7 @@ class LieuSeeder extends Seeder
             'difficulte' => 'famille',
             'adresse' => 'Accès 12 - Boulevard de la Forêt',
             'code_postal' => '85460',
-            'ville' => ' 85460 L\'AIGUILLON-LA-PRESQU\'ILE',
+            'ville' => 'L\'AIGUILLON-LA-PRESQU\'ILE',
             'user_id' => 1,
             'statut' => "validé",
             'categorie_id' => 1,

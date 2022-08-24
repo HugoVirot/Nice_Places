@@ -10,6 +10,8 @@
 
     </div>
 
+    <Tris :lieux="categorie.lieux" @lieux_tries="updateLieux" />
+
     <Filtres :lieux="categorie.lieux" :lieuxNonFiltres="lieuxNonFiltres" @filtre_applique="updateLieux" />
 
     <div class="container-fluid p-3 p-lg-5 mt-3">
@@ -25,7 +27,16 @@
                 :key="lieu.id"
                 :style="`background-image: url(/images/${lieu.image_mise_en_avant.nom}); background-position: center; background-size: cover;`">
                 <span class="m-auto">
-                    <div class="p-3 fs-1 textWithShadow"> {{ lieu.nom }} </div>
+                    <div class="p-2 textWithShadow">
+                        <p class="fs-1 text-white">{{ lieu.nom }}</p>
+                        <p class="text-white fs-4">
+                            <i class="yellowStar fa-solid fa-star ms-2 me-1"></i>{{ lieu.note }}
+                            <i class="greenIcon fa-solid fa-hourglass-half ms-2 me-1"></i>
+                            {{ lieu.temps }} heure(s)
+                            <i class="greenIcon fa-solid fa-gauge-simple-high ms-2 me-1"></i>
+                        {{ lieu.difficulte }}
+                        </p>
+                    </div>
                     <router-link :to="`/lieu/${lieu.id}`"><button class="btn btn-lg">Détails du lieu</button>
                     </router-link>
                 </span>
@@ -38,6 +49,7 @@
 <script>
 import axios from "axios";
 import Filtres from "./Filtres.vue"
+import Tris from "./Tris.vue"
 
 export default {
     data() {
@@ -48,11 +60,12 @@ export default {
         }
     },
 
-    components: { Filtres },
+    components: { Filtres, Tris },
 
     methods: {
-        updateLieux(lieuxTries) {  // déclenchée si filtre appliqué via composant enfant Filtres
-            this.categorie.lieux = lieuxTries // on remplace les lieux de la catégorie par les lieux filtrés 
+        updateLieux(lieuxTriesOuFiltres) {  // déclenchée si tri ou filtre appliqué via composant enfant Tris ou  Filtres
+            console.log("updateLieux")
+            this.categorie.lieux = lieuxTriesOuFiltres // on remplace les lieux de la catégorie par les lieux triés ou filtrés 
         },
 
         // filtre les lieux en ne gardant que ceux validés
@@ -87,6 +100,10 @@ export default {
 h1,
 h2 {
     color: #1C6E8C
+}
+
+.yellowStar {
+    color: yellow
 }
 
 p {

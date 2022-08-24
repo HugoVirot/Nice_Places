@@ -45,7 +45,8 @@ export default {
 
     <div class="container-fluid p-3 p-lg-5">
         <div class="row">
-            <div class="col-lg-6 border border-3 border-white card text-white" v-for="(userPlace, index) in userPlaces"
+            <div v-if="userPlaces.length == 0"><i class="greenIcon fa-solid fa-xmark fa-5x"></i><p class="fs-4">Vous n'avez posté aucun lieu</p></div>
+            <div v-else class="col-lg-6 border border-3 border-white card text-white" v-for="(userPlace, index) in userPlaces"
                 :key="userPlace.id" :style="`background-image: url(images/${userPlace.image_mise_en_avant.nom}); background-position: center; background-size: cover;`">
                 <div class="p-3 fs-3 textWithShadow"> {{ userPlace.nom }} </div>
                 <div v-if="userPlace.statut == 'validé'" class="mx-auto bg-success w-25">validé</div>
@@ -68,6 +69,9 @@ export default {
 <style scoped>
 h1 {
     color: #1C6E8C
+}
+.greenIcon {
+    color: #94DEB1
 }
 
 i {

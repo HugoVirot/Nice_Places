@@ -73,7 +73,7 @@
                         {{ lieu.adresse }}</p>
                     <p> <i class="fa-2x fa-solid fa-location-dot me-3"></i>
                         {{ lieu.code_postal + " " + lieu.ville.toUpperCase() }}</p>
-                    <p> <i class="fa-2x fa-solid fa-hourglass me-3"></i>
+                    <p> <i class="fa-2x fa-solid fa-hourglass-half me-3"></i>
                         {{ lieu.temps }} heure(s)
                     </p>
                     <p><i class="fa-2x fa-solid fa-gauge-simple-high me-3"></i>
