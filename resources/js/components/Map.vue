@@ -92,48 +92,46 @@ export default {
                 if (component.lieux) {
                     component.lieux.forEach(lieu => {
 
-                        // function redirectOnPlace() {
-                        //     component.$router.push('/inscription')
-                        // }
-
-                        var popupContent = "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom +
+                        let popupContent = "<span style=\"display:none\">" + lieu.id + "</span>" +
+                            "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom +
                             "<i class=\"fa-solid fa-star ms-3 me-2 mt-1\" style=\"color: yellow\"></i>" + lieu.note + "</h5>" +
-
-                            // lieu.categories.forEach(category => { console.log(category.icone) }) + // impossible d'afficher les icônes des catégories
-                            // tests : document.write, concaténation
-
                             "<img class=\"mx-auto\" src=\"images/" + lieu.image_mise_en_avant.nom + "\" style=\"width: 30vw\">" +
-
                             "<p style=\"font-family:'Cooper'\" class=\"text-center\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p>"
 
-                        // `<router-link to="/lieu/${lieu.id}">` + 
-                        // "<button class=\"btn moreInfoButton mx-auto\" id=\"" + lieu.id + "\" style=\"color:white; background-color: #94D1BE\">plus d'infos</button>" +
-                        // "</router-link>"
-
-                        // ne marche pas (component (ou $router) in undefined)
-                        // "<a target=\"_self\" onclick=\"component.$router.push(`/lieu/${lieu.id}`)\">plus d'infos</a>"
-                        // `<a id=\""${lieu.id}"\" href =\"/lieu/${lieu.id}\" target = \"_self\" onclick = \"event.preventDefault(); Vue.router.push('/lieu/${lieu.id}')\"> Plus d'infos</a>`
-
-                        // "<a target=\"_self\" class=\"popupLink\" onclick=\"component.redirectOnPlace()\">plus d'infos</a>"
-
-
-                        var popupOptions =
+                        let popupOptions =
                         {
                             'maxWidth': '30vw',
                             'className': 'popupLieu'
                         }
 
-                        //ne marche pas
-                        let marker = L.marker([lieu.latitude, lieu.longitude]).addTo(component.map)
+                        L.marker([lieu.latitude, lieu.longitude]).addTo(component.map)
                             .bindPopup(popupContent, popupOptions)
 
-                        // marker.on('popupopen', function (e) {
-
-                        //     e.popup.on("click", () => alert("hello"))
-                        // });
-
-                        // marker._icon.classList.add("huechange"); //  + img.huechange { filter: hue-rotate(120deg); } => ne marchent pas
                     })
+
+                    // ajoute un bouton sur le popup. Au clic => redirection vers la page "Détails du lieu"
+
+                    component.map.on('popupopen', function () {
+
+                        // on cible le popup ouvert
+                        let popup = document.getElementsByClassName('leaflet-popup-content')[0];
+
+                        // on récupère l'id du lieu présent dans un span invisible au début du popup
+                        let lieuId = popup.firstChild.innerHTML
+
+                        // on crée le bouton avec des classes pour le styliser
+                        let btn = document.createElement('button')
+                        btn.textContent = 'Plus d\'infos';
+                        btn.classList.add('btn', 'btn-lg', 'greenButton');
+
+                        // on met en placve un évènement pour déclencher la redirection vers la page du lieu en cas de clic sur le bouton
+                        btn.addEventListener("click", function () {
+                            component.$router.push('/lieu/' + lieuId)
+                        });
+
+                        // on n'oublie pas d'ajouter le bouton au popup !
+                        popup.appendChild(btn)
+                    });
                 }
             }
         }
@@ -155,6 +153,9 @@ export default {
     },
 
     mounted: function () {
+
+        // ESSAI 6 : Uncaught TypeError: this.$refs.bouton1 is undefined (même chose sans id dynamique)
+        // console.log(this.$refs.bouton.outerHTML)
 
         // *************ne marche pas******************
 

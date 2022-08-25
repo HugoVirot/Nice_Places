@@ -23202,7 +23202,7 @@ __webpack_require__.r(__webpack_exports__);
       var department; // si l'utilisateur a choisi un département
 
       if (_store__WEBPACK_IMPORTED_MODULE_4__.store.state.userData.departement) {
-        department = _store__WEBPACK_IMPORTED_MODULE_4__.store.state.userData.departement; //sinon => on cible la France entière
+        department = _store__WEBPACK_IMPORTED_MODULE_4__.store.state.userData.departement.code; //sinon => on cible la France entière
       } else {
         department = "all";
       } // on récupère les 3 lieux les mieux notés du dép. / de la France entière
@@ -24138,28 +24138,29 @@ __webpack_require__.r(__webpack_exports__);
 
         if (component.lieux) {
           component.lieux.forEach(function (lieu) {
-            // function redirectOnPlace() {
-            //     component.$router.push('/inscription')
-            // }
-            var popupContent = "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom + "<i class=\"fa-solid fa-star ms-3 me-2 mt-1\" style=\"color: yellow\"></i>" + lieu.note + "</h5>" + // lieu.categories.forEach(category => { console.log(category.icone) }) + // impossible d'afficher les icônes des catégories
-            // tests : document.write, concaténation
-            "<img class=\"mx-auto\" src=\"images/" + lieu.image_mise_en_avant.nom + "\" style=\"width: 30vw\">" + "<p style=\"font-family:'Cooper'\" class=\"text-center\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p>"; // `<router-link to="/lieu/${lieu.id}">` + 
-            // "<button class=\"btn moreInfoButton mx-auto\" id=\"" + lieu.id + "\" style=\"color:white; background-color: #94D1BE\">plus d'infos</button>" +
-            // "</router-link>"
-            // ne marche pas (component (ou $router) in undefined)
-            // "<a target=\"_self\" onclick=\"component.$router.push(`/lieu/${lieu.id}`)\">plus d'infos</a>"
-            // `<a id=\""${lieu.id}"\" href =\"/lieu/${lieu.id}\" target = \"_self\" onclick = \"event.preventDefault(); Vue.router.push('/lieu/${lieu.id}')\"> Plus d'infos</a>`
-            // "<a target=\"_self\" class=\"popupLink\" onclick=\"component.redirectOnPlace()\">plus d'infos</a>"
-
+            var popupContent = "<span style=\"display:none\">" + lieu.id + "</span>" + "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom + "<i class=\"fa-solid fa-star ms-3 me-2 mt-1\" style=\"color: yellow\"></i>" + lieu.note + "</h5>" + "<img class=\"mx-auto\" src=\"images/" + lieu.image_mise_en_avant.nom + "\" style=\"width: 30vw\">" + "<p style=\"font-family:'Cooper'\" class=\"text-center\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p>";
             var popupOptions = {
               'maxWidth': '30vw',
               'className': 'popupLieu'
-            }; //ne marche pas
+            };
+            L.marker([lieu.latitude, lieu.longitude]).addTo(component.map).bindPopup(popupContent, popupOptions);
+          }); // ajoute un bouton sur le popup. Au clic => redirection vers la page "Détails du lieu"
 
-            var marker = L.marker([lieu.latitude, lieu.longitude]).addTo(component.map).bindPopup(popupContent, popupOptions); // marker.on('popupopen', function (e) {
-            //     e.popup.on("click", () => alert("hello"))
-            // });
-            // marker._icon.classList.add("huechange"); //  + img.huechange { filter: hue-rotate(120deg); } => ne marchent pas
+          component.map.on('popupopen', function () {
+            // on cible le popup ouvert
+            var popup = document.getElementsByClassName('leaflet-popup-content')[0]; // on récupère l'id du lieu présent dans un span invisible au début du popup
+
+            var lieuId = popup.firstChild.innerHTML; // on crée le bouton avec des classes pour le styliser
+
+            var btn = document.createElement('button');
+            btn.textContent = 'Plus d\'infos';
+            btn.classList.add('btn', 'btn-lg', 'greenButton'); // on met en placve un évènement pour déclencher la redirection vers la page du lieu en cas de clic sur le bouton
+
+            btn.addEventListener("click", function () {
+              component.$router.push('/lieu/' + lieuId);
+            }); // on n'oublie pas d'ajouter le bouton au popup !
+
+            popup.appendChild(btn);
           });
         }
       }
@@ -24180,6 +24181,8 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
+    // ESSAI 6 : Uncaught TypeError: this.$refs.bouton1 is undefined (même chose sans id dynamique)
+    // console.log(this.$refs.bouton.outerHTML)
     // *************ne marche pas******************
     // let moreInfosButtons = document.getElementsByClassName("popupLieu")
     // console.log(moreInfosButtons)

@@ -118,7 +118,7 @@ export default {
 
 			// si l'utilisateur a choisi un département
 			if (store.state.userData.departement) {
-				department = store.state.userData.departement
+				department = store.state.userData.departement.code
 				//sinon => on cible la France entière
 			} else {
 				department = "all"
