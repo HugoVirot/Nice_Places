@@ -24092,6 +24092,9 @@ __webpack_require__.r(__webpack_exports__);
       if (_store_js__WEBPACK_IMPORTED_MODULE_1__.store.state.lieux) {
         return _store_js__WEBPACK_IMPORTED_MODULE_1__.store.getters.getValidatedPlaces;
       }
+    },
+    categories: function categories() {
+      return _store_js__WEBPACK_IMPORTED_MODULE_1__.store.state.categories;
     }
   },
   data: function data() {
@@ -24114,6 +24117,24 @@ __webpack_require__.r(__webpack_exports__);
         }).addTo(component.map);
         L.marker([latitude, longitude]).addTo(component.map);
       } else {
+        var handleCommand = function handleCommand() {
+          var selectedCategory;
+
+          for (var i = 0; i < categories.length; i++) {
+            if (categories[i].id == this.id) {
+              selectedCategory = categories[i];
+              break;
+            }
+          }
+
+          if (this.checked) {
+            selectedCategory.groupe.addTo(component.map);
+          } else {
+            component.map.removeLayer(selectedCategory.groupe);
+          }
+        }; // ************************************on ajoute un pointeur par lieu à la map***********************************************
+
+
         // **************** si le user a accepté la géoloc => on crée une map avec son emplacement *****************
         if (this.userPosition) {
           console.log("géoloc déjà acceptée, coordonnées déjà stockées dans le state");
@@ -24132,19 +24153,66 @@ __webpack_require__.r(__webpack_exports__);
             maxZoom: 19,
             attribution: '© OpenStreetMap'
           }).addTo(component.map);
-        } // *************************** ajouter les pointeurs des lieux à la map *******************************
-        // on ajoute un pointeur par lieu à la map
+        } // *****************************************  panneau de contrôle  ******************************************************
 
 
-        if (component.lieux) {
-          component.lieux.forEach(function (lieu) {
-            var popupContent = "<span style=\"display:none\">" + lieu.id + "</span>" + "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom + "<i class=\"fa-solid fa-star ms-3 me-2 mt-1\" style=\"color: yellow\"></i>" + lieu.note + "</h5>" + "<img class=\"mx-auto\" src=\"images/" + lieu.image_mise_en_avant.nom + "\" style=\"width: 30vw\">" + "<p style=\"font-family:'Cooper'\" class=\"text-center\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p>";
-            var popupOptions = {
-              'maxWidth': '30vw',
-              'className': 'popupLieu'
-            };
-            L.marker([lieu.latitude, lieu.longitude]).addTo(component.map).bindPopup(popupContent, popupOptions);
-          }); // ajoute un bouton sur le popup. Au clic => redirection vers la page "Détails du lieu"
+        var command = L.control({
+          position: 'topright'
+        });
+        var categories = component.categories; // onAdd = Should contain code that creates DOM elements for the layer, adds them to map panes where they should belong and puts 
+        // listeners on relevant map events. Called on map.addLayer(layer).
+
+        command.onAdd = function () {
+          // création de la div qui va contenir le panneau de contrôle
+          var div = L.DomUtil.create('div', 'p-3'); //ajout de style avec des classes Bootstrap
+
+          L.DomUtil.addClass(div, 'bg-white');
+          L.DomUtil.addClass(div, 'text-left');
+          L.DomUtil.addClass(div, 'border');
+          L.DomUtil.addClass(div, 'border-secondary');
+          L.DomUtil.addClass(div, 'rounded');
+          L.DomUtil.addClass(div, 'd-flex');
+          L.DomUtil.addClass(div, 'flex-column');
+          L.DomUtil.addClass(div, 'align-items-start'); // ajout du titre
+
+          div.innerHTML += '<div style="text-align:center;"><span style="font-size:18px; font-family:cooper; color: #1c6e8c" class="mb-2">Filtrer par catégorie</span></div>'; // création d'une checkbox par catégorie
+
+          for (var _i = 0; _i < categories.length; _i++) {
+            div.innerHTML += '<form><input id="' + categories[_i].id + '" type="checkbox" checked class=\"me-2\"/>' + categories[_i].nom + '</form>';
+          }
+
+          return div;
+        };
+
+        command.addTo(component.map); // *****************************************  listener sur cochage / décochage checkbox  ******************************************************
+
+        for (var i = 0; i < categories.length; i++) {
+          document.getElementById(categories[i].id).addEventListener("click", handleCommand, false);
+        }
+
+        if (categories) {
+          categories.forEach(function (categorie) {
+            // on boucle sur les catégories 
+            var groupeCatégorie = L.featureGroup(); // on crée un groupe pour la catégorie
+
+            component.lieux.forEach(function (lieu) {
+              // on boucle sur les lieux et on crée un marqueur pour chaque avec son popup
+              if (lieu.categorie.id == categorie.id) {
+                // si la catégorie du lieu est bien la catégorie concernée, on crée le marqueur et son pointeur
+                var popupContent = "<span style=\"display:none\">" + lieu.id + "</span>" + "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom + "<i class=\"fa-solid fa-star ms-3 me-2 mt-1\" style=\"color: yellow\"></i>" + lieu.note + "</h5>" + "<img class=\"mx-auto\" src=\"images/" + lieu.image_mise_en_avant.nom + "\" style=\"width: 30vw\">" + "<p style=\"font-family:'Cooper'\" class=\"text-center\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p>";
+                var popupOptions = {
+                  'maxWidth': '30vw',
+                  'className': 'popupLieu'
+                };
+                L.marker([lieu.latitude, lieu.longitude]).addTo(groupeCatégorie) // on ajoute le marqueur au groupe
+                .bindPopup(popupContent, popupOptions); // on lui associe son popup
+              }
+            }); // on ajoute le groupe à la catégorie (pour afficher / masquer via panneau de contrôle)
+
+            categorie.groupe = groupeCatégorie; // on ajoute le groupe à la map
+
+            component.map.addLayer(groupeCatégorie);
+          }); // ******* on ajoute un bouton sur le popup quand il s'ouvre. Au clic => redirection vers la page "Détails du lieu" *********
 
           component.map.on('popupopen', function () {
             // on cible le popup ouvert
@@ -24154,7 +24222,7 @@ __webpack_require__.r(__webpack_exports__);
 
             var btn = document.createElement('button');
             btn.textContent = 'Plus d\'infos';
-            btn.classList.add('btn', 'btn-lg', 'greenButton'); // on met en placve un évènement pour déclencher la redirection vers la page du lieu en cas de clic sur le bouton
+            btn.classList.add('btn', 'btn-lg', 'greenButton'); // on met en place un évènement pour déclencher la redirection vers la page du lieu en cas de clic sur le bouton
 
             btn.addEventListener("click", function () {
               component.$router.push('/lieu/' + lieuId);
@@ -24181,14 +24249,6 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     var _this = this;
 
-    // ESSAI 6 : Uncaught TypeError: this.$refs.bouton1 is undefined (même chose sans id dynamique)
-    // console.log(this.$refs.bouton.outerHTML)
-    // *************ne marche pas******************
-    // let moreInfosButtons = document.getElementsByClassName("popupLieu")
-    // console.log(moreInfosButtons)
-    // for (let i = 0; i < moreInfosButtons.length; i++) {
-    //     moreInfosButtons[i].addEventListener('click', (button) => console.log(button.id));
-    // }
     // *********************si géolocalisation pas déjà demandée***********************
     if (!this.geolocationAnswered) {
       // ************************ on la demande ************************
@@ -37482,7 +37542,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#map[data-v-479a2f41] {\r\n    height: 75vh;\r\n    margin: auto;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#map[data-v-479a2f41] {\r\n    height: 75vh;\r\n    margin: auto;\n}\n.command[data-v-479a2f41] {\r\n    padding: 4px 6px;\r\n    background: white;\r\n    font: 14px/16px Arial, Helvetica, sans-serif;\r\n    background: rgba(255, 255, 255, 0.8);\r\n    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);\r\n    border-radius: 5px;\r\n    min-width: 200px;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

@@ -25,6 +25,9 @@ export default {
             if (store.state.lieux) {
                 return store.getters.getValidatedPlaces
             }
+        },
+        categories() {
+            return store.state.categories
         }
     },
 
@@ -85,31 +88,108 @@ export default {
                     }).addTo(component.map);
                 }
 
-                // *************************** ajouter les pointeurs des lieux à la map *******************************
+
+                // *****************************************  panneau de contrôle  ******************************************************
+
+                let command = L.control({ position: 'topright' });
+                let categories = component.categories
+
+                // onAdd = Should contain code that creates DOM elements for the layer, adds them to map panes where they should belong and puts 
+                // listeners on relevant map events. Called on map.addLayer(layer).
+                command.onAdd = function () {
+
+                    // création de la div qui va contenir le panneau de contrôle
+                    let div = L.DomUtil.create('div', 'p-3');
+
+                    //ajout de style avec des classes Bootstrap
+                    L.DomUtil.addClass(div, 'bg-white')
+                    L.DomUtil.addClass(div, 'text-left')
+                    L.DomUtil.addClass(div, 'border')
+                    L.DomUtil.addClass(div, 'border-secondary')
+                    L.DomUtil.addClass(div, 'rounded')
+                    L.DomUtil.addClass(div, 'd-flex')
+                    L.DomUtil.addClass(div, 'flex-column')
+                    L.DomUtil.addClass(div, 'align-items-start')
+
+                    // ajout du titre
+                    div.innerHTML += '<div style="text-align:center;"><span style="font-size:18px; font-family:cooper; color: #1c6e8c" class="mb-2">Filtrer par catégorie</span></div>';
+
+                    // création d'une checkbox par catégorie
+                    for (let i = 0; i < categories.length; i++) {
+                        div.innerHTML += '<form><input id="' + categories[i].id + '" type="checkbox" checked class=\"me-2\"/>' + categories[i].nom + '</form>';
+                    }
+
+                    return div;
+                };
+
+                command.addTo(component.map);
 
 
-                // on ajoute un pointeur par lieu à la map
-                if (component.lieux) {
-                    component.lieux.forEach(lieu => {
+                // *****************************************  listener sur cochage / décochage checkbox  ******************************************************
 
-                        let popupContent = "<span style=\"display:none\">" + lieu.id + "</span>" +
-                            "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom +
-                            "<i class=\"fa-solid fa-star ms-3 me-2 mt-1\" style=\"color: yellow\"></i>" + lieu.note + "</h5>" +
-                            "<img class=\"mx-auto\" src=\"images/" + lieu.image_mise_en_avant.nom + "\" style=\"width: 30vw\">" +
-                            "<p style=\"font-family:'Cooper'\" class=\"text-center\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p>"
+                for (var i = 0; i < categories.length; i++) {
+                    document.getElementById(categories[i].id).addEventListener("click", handleCommand, false);
+                }
 
-                        let popupOptions =
-                        {
-                            'maxWidth': '30vw',
-                            'className': 'popupLieu'
+                function handleCommand() {
+
+                    let selectedCategory;
+
+                    for (var i = 0; i < categories.length; i++) {
+                        if (categories[i].id == this.id) {
+                            selectedCategory = categories[i];
+                            break;
                         }
+                    }
 
-                        L.marker([lieu.latitude, lieu.longitude]).addTo(component.map)
-                            .bindPopup(popupContent, popupOptions)
+                    if (this.checked) {
 
+                        selectedCategory.groupe.addTo(component.map);
+                    } else {
+                        component.map.removeLayer(selectedCategory.groupe);
+                    }
+                }
+
+
+                // ************************************on ajoute un pointeur par lieu à la map***********************************************
+
+                if (categories) {
+
+                    categories.forEach(categorie => { // on boucle sur les catégories 
+
+                        let groupeCatégorie = L.featureGroup(); // on crée un groupe pour la catégorie
+
+                        component.lieux.forEach(lieu => {  // on boucle sur les lieux et on crée un marqueur pour chaque avec son popup
+
+                            if (lieu.categorie.id == categorie.id) { // si la catégorie du lieu est bien la catégorie concernée, on crée le marqueur et son pointeur
+
+                                let popupContent = "<span style=\"display:none\">" + lieu.id + "</span>" +
+                                    "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom +
+                                    "<i class=\"fa-solid fa-star ms-3 me-2 mt-1\" style=\"color: yellow\"></i>" + lieu.note + "</h5>" +
+                                    "<img class=\"mx-auto\" src=\"images/" + lieu.image_mise_en_avant.nom + "\" style=\"width: 30vw\">" +
+                                    "<p style=\"font-family:'Cooper'\" class=\"text-center\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p>"
+
+                                let popupOptions =
+                                {
+                                    'maxWidth': '30vw',
+                                    'className': 'popupLieu'
+                                }
+
+                                L.marker([lieu.latitude, lieu.longitude])
+                                    .addTo(groupeCatégorie)   // on ajoute le marqueur au groupe
+                                    .bindPopup(popupContent, popupOptions) // on lui associe son popup
+                            }
+                        })
+
+                        // on ajoute le groupe à la catégorie (pour afficher / masquer via panneau de contrôle)
+                        categorie.groupe = groupeCatégorie
+
+                        // on ajoute le groupe à la map
+                        component.map.addLayer(groupeCatégorie);
                     })
 
-                    // ajoute un bouton sur le popup. Au clic => redirection vers la page "Détails du lieu"
+
+                    // ******* on ajoute un bouton sur le popup quand il s'ouvre. Au clic => redirection vers la page "Détails du lieu" *********
 
                     component.map.on('popupopen', function () {
 
@@ -124,14 +204,16 @@ export default {
                         btn.textContent = 'Plus d\'infos';
                         btn.classList.add('btn', 'btn-lg', 'greenButton');
 
-                        // on met en placve un évènement pour déclencher la redirection vers la page du lieu en cas de clic sur le bouton
+                        // on met en place un évènement pour déclencher la redirection vers la page du lieu en cas de clic sur le bouton
                         btn.addEventListener("click", function () {
                             component.$router.push('/lieu/' + lieuId)
                         });
 
                         // on n'oublie pas d'ajouter le bouton au popup !
                         popup.appendChild(btn)
-                    });
+                    }
+
+                    )
                 }
             }
         }
@@ -153,20 +235,6 @@ export default {
     },
 
     mounted: function () {
-
-        // ESSAI 6 : Uncaught TypeError: this.$refs.bouton1 is undefined (même chose sans id dynamique)
-        // console.log(this.$refs.bouton.outerHTML)
-
-        // *************ne marche pas******************
-
-        // let moreInfosButtons = document.getElementsByClassName("popupLieu")
-
-        // console.log(moreInfosButtons)
-
-        // for (let i = 0; i < moreInfosButtons.length; i++) {
-        //     moreInfosButtons[i].addEventListener('click', (button) => console.log(button.id));
-        // }
-
 
         // *********************si géolocalisation pas déjà demandée***********************
         if (!this.geolocationAnswered) {
@@ -211,6 +279,16 @@ export default {
 #map {
     height: 75vh;
     margin: auto;
+}
+
+.command {
+    padding: 4px 6px;
+    background: white;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    min-width: 200px;
 }
 </style>
 
