@@ -20,8 +20,8 @@ class LieuFactory extends Factory
         return [
             'nom' => Str::random(),
             'description' => $this->faker->sentence(),
-            'latitude' => rand(0, 100),
-            'longitude' => rand(0, 100),
+            'latitude' => rand(44, 49),
+            'longitude' => rand(-1, 6.9),
             'note' => rand(6, 10),
             'temps' => rand(0, 5),
             'difficulte' => $this->faker->randomElement(['famille' ,'amateur', 'sportif']),

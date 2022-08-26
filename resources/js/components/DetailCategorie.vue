@@ -4,7 +4,7 @@
         :style="`background-image: url(/images/categorie${categorie.id}.jpg); background-position: center; background-size: cover;`">
 
         <div class="m-auto">
-            <span class="greenIcon fa-5x" v-html="categorie.icone"></span>
+            <span class="fa-5x iconWithShadow" v-html="categorie.icone" :style="{color: categorie.couleur}"></span>
             <h1 class="textWithShadow bigFontSize text-white">{{ categorie.nom }}</h1>
         </div>
 
@@ -113,6 +113,10 @@ p {
 .bigFontSize {
     margin-top: -4vh;
     font-size: 4em;
+}
+
+.iconWithShadow {
+    text-shadow: 2px 2px 4px #fff;
 }
 
 .textWithShadow {

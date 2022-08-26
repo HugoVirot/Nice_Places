@@ -24109,7 +24109,12 @@ __webpack_require__.r(__webpack_exports__);
       if (component.lieuSeul) {
         var latitude = component.lieuSeul.latitude;
         var longitude = component.lieuSeul.longitude;
-        component.map = L.map('map').setView([latitude, longitude], 13); // pour pouvoir ajouter des tuiles
+        component.map = new L.map('map', {
+          fullscreenControl: true,
+          fullscreenControlOptions: {
+            position: 'bottomright'
+          }
+        }).setView([latitude, longitude], 13); // pour pouvoir ajouter des tuiles
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: 19,
@@ -24175,10 +24180,10 @@ __webpack_require__.r(__webpack_exports__);
           L.DomUtil.addClass(div, 'flex-column');
           L.DomUtil.addClass(div, 'align-items-start'); // ajout du titre
 
-          div.innerHTML += '<div style="text-align:center;"><span style="font-size:18px; font-family:cooper; color: #1c6e8c" class="mb-2">Filtrer par catégorie</span></div>'; // création d'une checkbox par catégorie
+          div.innerHTML += '<div class="mb-2 mx-auto"><span style="font-size:18px; font-family:cooper; color: #1c6e8c">Filtrer par catégorie</span></div>'; // création d'une checkbox par catégorie
 
           for (var _i = 0; _i < categories.length; _i++) {
-            div.innerHTML += '<form><input id="' + categories[_i].id + '" type="checkbox" checked class=\"me-2\"/>' + categories[_i].nom + '</form>';
+            div.innerHTML += '<form style="font-size: 14px"><input id="' + categories[_i].id + '" class="categoriesForm" type="checkbox" checked class=\"me-2\"/>' + ' ' + categories[_i].nom + ' <span style="color:' + categories[_i].couleur + '">' + categories[_i].icone + '</span></form>';
           }
 
           return div;
@@ -24204,7 +24209,14 @@ __webpack_require__.r(__webpack_exports__);
                   'maxWidth': '30vw',
                   'className': 'popupLieu'
                 };
-                L.marker([lieu.latitude, lieu.longitude]).addTo(groupeCatégorie) // on ajoute le marqueur au groupe
+                var fontAwesomeIcon = L.divIcon({
+                  html: "<span style=\"text-shadow: 2px 2px 4px #fff; color: ".concat(categorie.couleur, "\">").concat(categorie.icone, "</span>"),
+                  iconSize: [40, 40],
+                  className: 'fa-2x ' + categorie.nom
+                });
+                L.marker([lieu.latitude, lieu.longitude], {
+                  icon: fontAwesomeIcon
+                }).addTo(groupeCatégorie) // on ajoute le marqueur au groupe
                 .bindPopup(popupContent, popupOptions); // on lui associe son popup
               }
             }); // on ajoute le groupe à la catégorie (pour afficher / masquer via panneau de contrôle)
@@ -27065,10 +27077,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": "container-fluid p-5",
     style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)("background-image: url(/images/categorie".concat($data.categorie.id, ".jpg); background-position: center; background-size: cover;"))
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
-    "class": "greenIcon fa-5x",
-    innerHTML: $data.categorie.icone
-  }, null, 8
-  /* PROPS */
+    "class": "fa-5x iconWithShadow",
+    innerHTML: $data.categorie.icone,
+    style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)({
+      color: $data.categorie.couleur
+    })
+  }, null, 12
+  /* STYLE, PROPS */
   , _hoisted_2), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.categorie.nom), 1
   /* TEXT */
   )])], 4
@@ -37416,7 +37431,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.greenIcon[data-v-33af456a] {\r\n    color: #94D1BE\n}\nh1[data-v-33af456a],\r\nh2[data-v-33af456a] {\r\n    color: #1C6E8C\n}\n.yellowStar[data-v-33af456a] {\r\n    color: yellow\n}\np[data-v-33af456a] {\r\n    color: grey\n}\n.bigFontSize[data-v-33af456a] {\r\n    margin-top: -4vh;\r\n    font-size: 4em;\n}\n.textWithShadow[data-v-33af456a] {\r\n    text-shadow: 2px 2px 4px #1C6E8C;\n}\n.card[data-v-33af456a] {\r\n    height: 35vh\n}\nbutton[data-v-33af456a] {\r\n    background-color: #94DEB1;\r\n    color: white\n}\nbutton[data-v-33af456a]:hover {\r\n    background-color: #1C6E8C;\r\n    color: white\n}\n@media screen and (max-width: 568px) {\n.bigFontSize[data-v-33af456a] {\r\n        margin-top: -3vh;\r\n        font-size: 3em;\n}\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.greenIcon[data-v-33af456a] {\r\n    color: #94D1BE\n}\nh1[data-v-33af456a],\r\nh2[data-v-33af456a] {\r\n    color: #1C6E8C\n}\n.yellowStar[data-v-33af456a] {\r\n    color: yellow\n}\np[data-v-33af456a] {\r\n    color: grey\n}\n.bigFontSize[data-v-33af456a] {\r\n    margin-top: -4vh;\r\n    font-size: 4em;\n}\n.iconWithShadow[data-v-33af456a] {\r\n    text-shadow: 2px 2px 4px #fff;\n}\n.textWithShadow[data-v-33af456a] {\r\n    text-shadow: 2px 2px 4px #1C6E8C;\n}\n.card[data-v-33af456a] {\r\n    height: 35vh\n}\nbutton[data-v-33af456a] {\r\n    background-color: #94DEB1;\r\n    color: white\n}\nbutton[data-v-33af456a]:hover {\r\n    background-color: #1C6E8C;\r\n    color: white\n}\n@media screen and (max-width: 568px) {\n.bigFontSize[data-v-33af456a] {\r\n        margin-top: -3vh;\r\n        font-size: 3em;\n}\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -37542,7 +37557,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#map[data-v-479a2f41] {\r\n    height: 75vh;\r\n    margin: auto;\n}\n.command[data-v-479a2f41] {\r\n    padding: 4px 6px;\r\n    background: white;\r\n    font: 14px/16px Arial, Helvetica, sans-serif;\r\n    background: rgba(255, 255, 255, 0.8);\r\n    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);\r\n    border-radius: 5px;\r\n    min-width: 200px;\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#map[data-v-479a2f41] {\r\n    height: 75vh;\r\n    margin: auto;\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

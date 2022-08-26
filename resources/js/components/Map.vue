@@ -48,7 +48,12 @@ export default {
                 const latitude = component.lieuSeul.latitude
                 const longitude = component.lieuSeul.longitude
 
-                component.map = L.map('map').setView([latitude, longitude], 13);
+                component.map = new L.map('map', {
+                    fullscreenControl: true,
+                    fullscreenControlOptions: {
+                        position: 'bottomright'
+                    }
+                }).setView([latitude, longitude], 13);
 
                 // pour pouvoir ajouter des tuiles
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -112,11 +117,12 @@ export default {
                     L.DomUtil.addClass(div, 'align-items-start')
 
                     // ajout du titre
-                    div.innerHTML += '<div style="text-align:center;"><span style="font-size:18px; font-family:cooper; color: #1c6e8c" class="mb-2">Filtrer par catégorie</span></div>';
+                    div.innerHTML += '<div class="mb-2 mx-auto"><span style="font-size:18px; font-family:cooper; color: #1c6e8c">Filtrer par catégorie</span></div>';
 
                     // création d'une checkbox par catégorie
                     for (let i = 0; i < categories.length; i++) {
-                        div.innerHTML += '<form><input id="' + categories[i].id + '" type="checkbox" checked class=\"me-2\"/>' + categories[i].nom + '</form>';
+                        div.innerHTML += '<form style="font-size: 14px"><input id="' + categories[i].id + '" class="categoriesForm" type="checkbox" checked class=\"me-2\"/>' + ' '
+                            + categories[i].nom + ' <span style="color:' + categories[i].couleur + '">' + categories[i].icone + '</span></form>';
                     }
 
                     return div;
@@ -175,9 +181,16 @@ export default {
                                     'className': 'popupLieu'
                                 }
 
-                                L.marker([lieu.latitude, lieu.longitude])
+                                const fontAwesomeIcon = L.divIcon({
+                                    html: `<span style="text-shadow: 2px 2px 4px #fff; color: ${categorie.couleur}">${categorie.icone}</span>`,
+                                    iconSize: [40, 40],
+                                    className: 'fa-2x ' + categorie.nom,
+                                });
+
+                                L.marker([lieu.latitude, lieu.longitude], { icon: fontAwesomeIcon })
                                     .addTo(groupeCatégorie)   // on ajoute le marqueur au groupe
                                     .bindPopup(popupContent, popupOptions) // on lui associe son popup
+
                             }
                         })
 
@@ -279,16 +292,6 @@ export default {
 #map {
     height: 75vh;
     margin: auto;
-}
-
-.command {
-    padding: 4px 6px;
-    background: white;
-    font: 14px/16px Arial, Helvetica, sans-serif;
-    background: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    min-width: 200px;
 }
 </style>
 

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('nom', 50);
             $table->string('icone', 50);
+            $table->char('couleur', 7);
             $table->timestamps();
         });
     }
