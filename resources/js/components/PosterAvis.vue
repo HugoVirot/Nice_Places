@@ -7,7 +7,8 @@
         </div>
 
         <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
-        <div class="row justify-content-center p-2 p-lg-4">
+
+        <div v-if="userData" class="row justify-content-center p-2 p-lg-4">
             <div class="col-md-8">
 
                 <div class="card">
@@ -50,6 +51,8 @@
                 </div>
             </div>
         </div>
+
+        <div v-else><p class="text-secondary">Vous devez être connecté pour poster un avis.</p></div>
     </div>
 </template>
 

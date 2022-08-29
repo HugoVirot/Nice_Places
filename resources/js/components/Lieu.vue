@@ -3,29 +3,39 @@
     <div v-if="lieu">
 
         <div class="pt-5 pb-2">
-            <i class="greenIcon mx-auto fa-3x fa-solid fa-map-location-dot"></i>
+            <!-- <i class="greenIcon mx-auto fa-3x fa-solid fa-map-location-dot"></i> -->
+            <p class="fs-5">catégorie :<span class="greenIcon p-2 ms-2 fa-2x" :style="{ color: lieu.categorie.couleur }"
+                    v-html="lieu.categorie.icone"></span>{{
+                            lieu.categorie.nom
+                    }}</p>
             <h1 class="mt-2">{{ lieu.nom }}</h1>
 
             <div class="container">
 
                 <div class="row fs-4 mt-4">
-                    <div class="col-3">
-                        <p>catégorie :<span class="greenIcon p-2 ms-2" v-html="lieu.categorie.icone"></span>{{
-                                lieu.categorie.nom
-                        }}</p>
-                    </div>
-                    <div class="col-3">
+
+                    <div class="col-md-2">
                         <p><i class="yellowStar fa-solid fa-star ms-2 me-1"></i>
                             {{ lieu.note }}</p>
                     </div>
-                    <div class="col-3">
-                        <p><i class="greenIcon fa-solid fa-user ms-2 me-3"></i>Posté par {{ lieu.user.pseudo }}</p>
+
+                    <div class="col-md-6">
+                        <p><i class="greenIcon fa-solid fa-user ms-2 me-3"></i><span class="fs-5">Posté par {{
+                                lieu.user.pseudo
+                        }}</span></p>
                     </div>
-                    <div class="col-3">
+
+                    <div v-if="userData" class="col-md-4">
                         <i v-if="isInFavorites" @click="removeToFavorites"
                             class="greenIcon fa-solid fa-heart fa-2x"></i>
                         <i v-else @click="addToFavorites" class="greenIcon fa-regular fa-heart fa-2x"></i>
                     </div>
+
+                    <div v-else class="col-md-4">
+                        <p><i class="greenIcon fa-solid fa-heart me-2"></i>
+                        <span id="texteFavoris">connectez-vous pour ajouter aux favoris</span></p>
+                    </div>
+                    
                 </div>
 
             </div>
@@ -319,6 +329,11 @@ h2 {
 
 .singlePicture {
     width: 90vw
+}
+
+#texteFavoris
+{
+    font-size: small;
 }
 
 p {

@@ -48,12 +48,7 @@ export default {
                 const latitude = component.lieuSeul.latitude
                 const longitude = component.lieuSeul.longitude
 
-                component.map = new L.map('map', {
-                    fullscreenControl: true,
-                    fullscreenControlOptions: {
-                        position: 'bottomright'
-                    }
-                }).setView([latitude, longitude], 13);
+                component.map = new L.map('map').setView([latitude, longitude], 13);
 
                 // pour pouvoir ajouter des tuiles
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -169,19 +164,21 @@ export default {
 
                             if (lieu.categorie.id == categorie.id) { // si la catégorie du lieu est bien la catégorie concernée, on crée le marqueur et son pointeur
 
-                                let popupContent = "<span style=\"display:none\">" + lieu.id + "</span>" +
-                                    "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom +
-                                    "<i class=\"fa-solid fa-star ms-3 me-2 mt-1\" style=\"color: yellow\"></i>" + lieu.note + "</h5>" +
-                                    "<img class=\"mx-auto\" src=\"images/" + lieu.image_mise_en_avant.nom + "\" style=\"width: 30vw\">" +
-                                    "<p style=\"font-family:'Cooper'\" class=\"text-center\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p>"
+                                let popupContent = "<div class=\"text-center\"><span style=\"display:none\">" + lieu.id + "</span>" +
+                                    "<div><span class=\"mx-auto fa-2x\" style=\"color:" + lieu.categorie.couleur + "\">" + lieu.categorie.icone + "</span>" +
+                                    "<i class=\"fa-solid fa-star ms-3 me-2\" style=\"color: yellow\"></i>" + 
+                                    "<span class=\"fs-5 text-secondary\" style=\"font-family:'Cooper'\">" + lieu.note + "</span></div>" +
+                                     "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom + "</h5>" + 
+                                    "<img class=\"mx-auto\" src=\"images/" + lieu.image_mise_en_avant.nom + "\" style=\"width:35vw\">" +
+                                    "<p style=\"font-family:'Cooper'\" class=\"text-center text-secondary\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p></div>"
 
-                                let popupOptions =
+                                let popupOptions =  // on choisit les options du popup
                                 {
-                                    'maxWidth': '30vw',
+                                    'maxWidth': '35vw',
                                     'className': 'popupLieu'
                                 }
 
-                                const fontAwesomeIcon = L.divIcon({
+                                const fontAwesomeIcon = L.divIcon({   // on 
                                     html: `<span style="text-shadow: 2px 2px 4px #fff; color: ${categorie.couleur}">${categorie.icone}</span>`,
                                     iconSize: [40, 40],
                                     className: 'fa-2x ' + categorie.nom,
@@ -209,8 +206,8 @@ export default {
                         // on cible le popup ouvert
                         let popup = document.getElementsByClassName('leaflet-popup-content')[0];
 
-                        // on récupère l'id du lieu présent dans un span invisible au début du popup
-                        let lieuId = popup.firstChild.innerHTML
+                        // on récupère l'id du lieu présent dans un span invisible au début du popup (1er enfant de la div qui englobe le contenu)
+                        let lieuId = popup.firstChild.firstChild.innerHTML
 
                         // on crée le bouton avec des classes pour le styliser
                         let btn = document.createElement('button')
@@ -222,8 +219,13 @@ export default {
                             component.$router.push('/lieu/' + lieuId)
                         });
 
-                        // on n'oublie pas d'ajouter le bouton au popup !
-                        popup.appendChild(btn)
+                        // on crée une div qui contiendra le bouton (pour qu'il soit centré)
+                        let div = document.createElement('div')
+                        div.classList.add('text-center')
+
+                        // on ajoute le bouton à la div et la div au popup
+                        div.appendChild(btn)
+                        popup.appendChild(div)
                     }
 
                     )
