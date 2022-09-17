@@ -16,7 +16,8 @@ class Departement extends Model
         return $this->belongsTo(Region::class);
     }
 
-    public function lieu(){
+    public function lieu()
+    {
         return $this->hasMany(Lieu::class);
     }
 }

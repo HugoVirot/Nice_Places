@@ -1,7 +1,7 @@
 <script>
 import axios from "axios";
-import { store } from "../store";
-import ValidationErrors from "./ValidationErrors.vue"
+import { store } from "../../store";
+import ValidationErrors from "../utilities/ValidationErrors.vue"
 
 // const dropzone = new Dropzone("div#uploadImages", { url: "/api/images"})
 
@@ -14,6 +14,7 @@ export default {
 
     data() {
         return {
+            departements: store.state.departements,
             nom: "",
             description: "",
             images: [],
@@ -24,6 +25,7 @@ export default {
             temps: "",
             difficulte: "",
             kilometres: "",
+            departement: "",
             adresse: "",
             code_postal: "",
             ville: "",
@@ -35,11 +37,12 @@ export default {
     components: { ValidationErrors },
 
     methods: {
+        // dès qu'une ou plusieurs images sont choisies, on les ajoute à formData
         onChange(e) {
 
             let imagesChoisies = e.target.files;
 
-            console.log(imagesChoisies)  // OK
+            console.log(imagesChoisies)
 
             for (let i = 0; i < imagesChoisies.length; i++) {
                 this.formData.append('images[' + i + ']', imagesChoisies[i]);
@@ -48,30 +51,29 @@ export default {
             console.log(this.formData)
 
         },
+
         // poste le nouveau lieu pour le sauvegarder en base de données
         sendData() {
 
-            this.formData.append("nom", this.nom); // this should be your image
-            this.formData.append("description", this.description); // this should be your image
-            this.formData.append("latitude", this.latitude); // this should be your image
-            this.formData.append("longitude", this.longitude); // this should be your image
-            this.formData.append("categorie", this.categorie); // this should be your image
-            this.formData.append("note", this.note); // this should be your image
-            this.formData.append("temps", this.temps); // this should be your image
-            this.formData.append("difficulte", this.difficulte); // this should be your image
-            this.formData.append("kilometres", this.kilometres); // this should be your image
-            this.formData.append("adresse", this.adresse); // this should be your image
-            this.formData.append("code_postal", this.code_postal); // this should be your image
-            this.formData.append("ville", this.ville); // this should be your image
-            this.formData.append("user_id", store.state.userData.id); // this should be your image
+            this.formData.append("nom", this.nom);
+            this.formData.append("description", this.description);
+            this.formData.append("latitude", this.latitude);
+            this.formData.append("longitude", this.longitude);
+            this.formData.append("categorie", this.categorie);
+            this.formData.append("note", this.note);
+            this.formData.append("temps", this.temps);
+            this.formData.append("difficulte", this.difficulte);
+            this.formData.append("kilometres", this.kilometres);
+            this.formData.append("departement", this.departement);
+            this.formData.append("adresse", this.adresse);
+            this.formData.append("code_postal", this.code_postal);
+            this.formData.append("ville", this.ville);
+            this.formData.append("user_id", store.state.userData.id);
 
             axios.post('/api/lieus', this.formData, { 'content-type': 'multipart/form-data' })
                 .then((response) => {
 
-                    // on stocke le message de succès dans le store ("création de lieu réussie")
-                    store.commit('storeMessage', response.data.message)
-
-
+                    let message = response.data.message
                     let lieuId = response.data.data.id
 
                     // si utilisateur normal, on sauvegarde une notification en base de données
@@ -87,7 +89,7 @@ export default {
                         console.log(store.state.lieux)
 
                         // on redirige vers l'accueil
-                        this.$router.push('/SuccessMessage')
+                        this.$router.push('/SuccessMessage/home/' + message)
 
                     }).catch(response => console.log(response.error))
 
@@ -246,8 +248,20 @@ export default {
 
                                 <div class="col-md-6">
                                     <input min="1" max="150" v-model="kilometres" id="kilometres" type="number"
-                                        class="form-control" name="kilometres" required autocomplete="kilometres">
+                                        class="form-control" name="kilometres" autocomplete="kilometres">
                                 </div>
+                            </div>
+
+                            <div class="form-group row m-2">
+                                <label class="col-md-4 col-form-label text-md-right"
+                                    for="departement">département</label>
+                                <select id="departement" required v-model="departement" class="form-select w-50 mx-auto"
+                                    aria-label="filtre">
+                                    <option v-for="(departement, index) in departements" :selected="index == 0"
+                                        :value="departement.id">{{
+                                        departement.code
+                                        }} - {{ departement.nom }}</option>
+                                </select>
                             </div>
 
                             <div class="form-group row m-2">
@@ -337,7 +351,7 @@ img {
 }
 
 .container-fluid {
-    background-image: url(../../../public/images/riviere.jpg);
+    background-image: url(../../../../public/images/riviere.jpg);
     background-position: center;
     background-size: cover;
 }

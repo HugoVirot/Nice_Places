@@ -1,137 +1,3 @@
-<script>
-import axios from 'axios'
-import ValidationErrors from "./ValidationErrors.vue"
-import { store } from '../store'
-export default {
-
-    data() {
-        return {
-            pseudo: store.state.userData.pseudo,
-            email: store.state.userData.email,
-            id: store.state.userData.id,
-            departements: store.state.departements,
-            departement: store.state.userData.departement,
-            oldPassword: "",
-            password: "",
-            password_confirmation: "",
-            validationErrors: "",
-            passwordTyped: false,
-            eightCharacters: false,
-            oneLetter: false,
-            oneUppercaseOneLowercase: false,
-            oneDigit: false,
-            oneSpecialCharacter: false
-        }
-    },
-
-    components: { ValidationErrors },
-
-    methods: {
-        checkPassword(password) {
-
-            this.passwordTyped = true
-
-            let correctCriterias = 0;
-
-            if (password.length >= 8) {
-                this.eightCharacters = true
-                correctCriterias++
-            } else {
-                this.eightCharacters = false
-            }
-
-            if (password.match(/[a-z]/)) {
-                this.oneLetter = true
-                correctCriterias++
-            } else {
-                this.oneLetter = false
-            }
-
-            if (password.match(/(?=.*[a-z])(?=.*[A-Z])/)) {
-                this.oneUppercaseOneLowercase = true
-                correctCriterias++
-            } else {
-                this.oneUppercaseOneLowercase = false
-            }
-
-            if (password.match(/\d/)) {
-                this.oneDigit = true
-                correctCriterias++
-            } else {
-                this.oneDigit = false;
-            }
-
-            if (password.match(/[!@#$%^&*?]/)) {
-                this.oneSpecialCharacter = true
-                correctCriterias++
-            } else {
-                this.oneSpecialCharacter = false;
-            }
-
-            if (correctCriterias == 7) {
-                this.passwordTyped = false
-            }
-        },
-
-        sendData() {
-            axios.put('/api/users/' + this.id, {
-                pseudo: this.pseudo, email: this.email, departement: this.departement.id, region: this.departement.region, oldPassword: this.oldPassword,
-                password: this.password, password_confirmation: this.password_confirmation
-            })
-                .then((response) => {
-                    this.editDataSuccess(response)
-                })
-                .catch((error) => {
-                    this.validationErrors = error.response.data.data;
-                })
-        },
-
-        deleteAccount() {
-            axios.delete('/api/users/' + this.id)
-                .then((response) => {
-                    this.deleteAccountSuccess(response)
-                })
-                .catch((error) => {
-                    this.validationErrors = error.response.data.data;
-                })
-        },
-
-        editDataSuccess(response) {
-
-            console.log(response)
-
-            // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
-            // ici, response.data.data est le payload transmis au store
-            store.commit('storeUserData', response.data.data)
-
-            // // on teste le résultat
-            console.log(store.state.userData)
-
-            // //idem pour le message de succès
-            store.commit('storeMessage', response.data.message)
-
-            this.$router.push('/SuccessMessage')
-        },
-
-        deleteAccountSuccess(response) {
-
-            store.commit('storeMessage', response.data.message)
-
-            // la suppression fonctionne, le message de succès aussi
-            //ajouter ici la déconnexion
-
-            this.$router.push('/SuccessMessage')
-        }
-
-    },
-
-    mounted() {
-        console.log(store.state.userData)
-    }
-}
-</script>
-
-
 <template>
     <div class="p-5">
         <i class="fa-solid fa-3x fa-user-check"></i>
@@ -175,9 +41,10 @@ export default {
                                     (facultatif)</label>
 
                                 <div class="col-md-6">
-                                    <select id="departement" required v-model="departement"
-                                        class="form-select mx-auto" aria-label="filtre" autocomplete="departement">
-                                        <option v-for="departement in departements" :value="departement">{{ departement.code}} - {{ departement.nom }}</option>
+                                    <select id="departement" required v-model="departement" class="form-select mx-auto"
+                                        aria-label="filtre" autocomplete="departement">
+                                        <option v-for="departement in departements" :value="departement">{{
+                                             departement.code  }} - {{  departement.nom  }}</option>
                                     </select>
                                 </div>
 
@@ -310,10 +177,117 @@ export default {
 
 </template>
 
+<script>
+import axios from 'axios'
+import ValidationErrors from "../utilities/ValidationErrors.vue"
+import { store } from '../../store'
+export default {
+
+    data() {
+        return {
+            pseudo: store.state.userData.pseudo,
+            email: store.state.userData.email,
+            id: store.state.userData.id,
+            departements: store.state.departements,
+            departement: store.state.userData.departement,
+            passwordTyped: false,
+            oldPassword: "",
+            password: "",
+            password_confirmation: "",
+            validationErrors: "",
+            eightCharacters: false,
+            oneLetter: false,
+            oneUppercaseOneLowercase: false,
+            oneDigit: false,
+            oneSpecialCharacter: false
+        }
+    },
+
+    components: { ValidationErrors },
+
+    methods: {
+        checkPassword(password) {
+
+            this.passwordTyped = true
+
+            if (password.length >= 8) {
+                this.eightCharacters = true
+            } else {
+                this.eightCharacters = false
+            }
+
+            if (password.match(/[a-z]/)) {
+                this.oneLetter = true
+            } else {
+                this.oneLetter = false
+            }
+
+            if (password.match(/(?=.*[a-z])(?=.*[A-Z])/)) {
+                this.oneUppercaseOneLowercase = true
+            } else {
+                this.oneUppercaseOneLowercase = false
+            }
+
+            if (password.match(/\d/)) {
+                this.oneDigit = true
+            } else {
+                this.oneDigit = false;
+            }
+
+            if (password.match(/[!@#$%^&*?]/)) {
+                this.oneSpecialCharacter = true
+            } else {
+                this.oneSpecialCharacter = false;
+            }
+        },
+
+        sendData() {
+            axios.put('/api/users/' + this.id, {
+                pseudo: this.pseudo, email: this.email, departement_id: this.departement.id, region: this.departement.region, oldPassword: this.oldPassword,
+                password: this.password, password_confirmation: this.password_confirmation
+            })
+                .then((response) => this.editDataSuccess(response))
+                .catch((error) => {
+                    this.validationErrors = error.response.data.data;
+                })
+        },
+
+        deleteAccount() {
+            axios.delete('/api/users/' + this.id)
+                .then((response) => {
+                    this.deleteAccountSuccess(response)
+                })
+                .catch((error) => {
+                    this.validationErrors = error.response.data.data;
+                })
+        },
+
+        editDataSuccess(response) {
+            console.log("on passe dans editdatasuccess")
+            console.log(response)
+
+            // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
+            // ici, response.data.data est le payload transmis au store
+            store.commit('storeUserData', response.data.data)
+            //store.dispatch('saveUserData', response.data.data)
+            // store.state.userData = response.data.data
+
+            this.$router.push('/successmessage/lastpage/' + response.data.message)
+        },
+
+        deleteAccountSuccess(response) {
+            // suppression compte réussie => déconnexion + retour accueil
+            store.commit('resetState')
+            this.$router.push('/SuccessMessage/home/' + response.data.message)
+        }
+
+    }
+}
+</script>
 
 <style scoped>
 .container-fluid {
-    background-image: url(../../../public/images/rochers.jpg);
+    background-image: url(../../../../public/images/rochers.jpg);
     background-position: center;
     background-size: cover;
 }

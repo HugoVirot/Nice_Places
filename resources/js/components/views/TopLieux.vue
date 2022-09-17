@@ -1,6 +1,6 @@
 <script>
-import { store } from '../store'
-import Filtres from "./Filtres.vue"
+import { store } from '../../store'
+import Filtres from "../utilities/Filtres.vue"
 
 export default {
 
@@ -20,7 +20,6 @@ export default {
     },
 
     created() {
-        console.log(this.topLieux);
         this.topLieuxNonFiltres = this.topLieux
     }
 }
@@ -42,7 +41,7 @@ export default {
                 <div v-if="topLieux.length > 0"
                     class="col-lg-6 border border-3 border-white card text-white textWithShadow"
                     v-for="(topLieu, index) in topLieux" :key="topLieu.id"
-                    :style="`background-image: url(images/${topLieu.image_mise_en_avant.nom}); background-position: center; background-size: cover;`">
+                    :style="`background-image: url(images/${topLieu.image_mise_en_avant[0].nom}); background-position: center; background-size: cover;`">
                     <div class="row">
                         <div class="col-6 d-flex justify-content-center align-items-center">
                             <span class="ranking">#{{ index + 1 }}</span>

@@ -1,157 +1,3 @@
-<script>
-import axios from 'axios'
-import ValidationErrors from "./ValidationErrors.vue"
-import { store } from "../store.js";
-
-export default {
-
-    data() {
-        return {
-            pseudo: "",
-            email: "",
-            departements: store.state.departements,
-            departement: "",
-            password: "",
-            password_confirmation: "",
-            validationErrors: "",
-            passwordTyped: false,
-            eightCharacters: false,
-            oneLetter: false,
-            oneUppercaseOneLowercase: false,
-            oneDigit: false,
-            oneSpecialCharacter: false
-        }
-    },
-    components: { ValidationErrors },
-
-    methods: {
-        sendData() {
-            axios.post('/api/register', { pseudo: this.pseudo, email: this.email, departement: this.departement, password: this.password, password_confirmation: this.password_confirmation })
-                .then(response => {
-                    // on stocke le message de succès dans le store ("inscription réussie")
-                    store.commit('storeMessage', response.data.message);
-                    console.log(store.state.message)
-                    console.log("test du user id : " + response.data.data.id)
-                    // on enregistre une notification de confirmation à destination de l'utilisateur
-                    this.createNotification(response.data.data.id)
-
-                    this.$router.push('/successmessage');
-                })
-                .catch((error) => {
-                    this.validationErrors = error.response.data.data;
-                })
-        },
-
-        createNotification(userId) {
-            console.log("createNotification") // S'AFFICHE => on passe dedans mais plus rien ensuite
-
-            let titre = `Bienvenue sur Nice Places ${this.pseudo} !`;
-            let message = `Bonjour ${this.pseudo} et bienvenue sur Nice Places !
-            Votre inscription est réussie.<br> 
-            Venez découvrir la France et partager vos lieux préférés avec nous !<br>
-            A très bientôt.<br>
-            L'administrateur.`
-
-            axios.post('/api/notifications', { titre: titre, message: message, user_id: userId, lieu_id: null })
-                .then(response => console.log(response.data.message))
-                .catch(response => console.log(response.data.message))
-        },
-
-        checkPassword(password) {
-
-            this.passwordTyped = true
-
-            let correctCriterias = 0;
-
-            if (password.length >= 8) {
-                this.eightCharacters = true
-                correctCriterias++
-            } else {
-                this.eightCharacters = false
-            }
-
-            if (password.match(/[a-z]/)) {
-                this.oneLetter = true
-                correctCriterias++
-            } else {
-                this.oneLetter = false
-            }
-
-            if (password.match(/(?=.*[a-z])(?=.*[A-Z])/)) {
-                this.oneUppercaseOneLowercase = true
-                correctCriterias++
-            } else {
-                this.oneUppercaseOneLowercase = false
-            }
-
-            if (password.match(/\d/)) {
-                this.oneDigit = true
-                correctCriterias++
-            } else {
-                this.oneDigit = false;
-            }
-
-            if (password.match(/[!@#$%^&*?]/)) {
-                this.oneSpecialCharacter = true
-                correctCriterias++
-            } else {
-                this.oneSpecialCharacter = false;
-            }
-
-            if (correctCriterias == 7) {
-                this.passwordTyped = false
-            }
-        }
-    }
-}
-</script>
-
-<style scoped>
-/*#94D1BE*/
-
-img {
-    width: 6vw
-}
-
-.container-fluid {
-    background-image: linear-gradient(rgba(132, 247, 192, 0.4),
-            rgba(7, 117, 230, 0.3)), url(../../../public/images/foret.jpg);
-    background-position: center;
-    background-size: cover;
-}
-
-h1 {
-    color: #1C6E8C
-}
-
-.card {
-    color: #1C6E8C;
-    background: rgba(254, 254, 254, 0.73)
-}
-
-.card-header {
-    background-color: #94D1BE
-}
-
-#passwordHelpBlock {
-    max-width: 600px;
-}
-
-i {
-    color: #94D1BE
-}
-
-.fa-xmark {
-    color: red
-}
-
-@media screen and (max-width: 768px) {
-    img {
-        width: 10vw
-    }
-}
-</style>
-
 <template>
     <div class="p-5">
         <img class="mx-auto" src="images/icons/user.png" alt="user">
@@ -304,6 +150,144 @@ i {
             </div>
         </div>
     </div>
-
-
 </template>
+
+<script>
+import axios from 'axios'
+import ValidationErrors from "../utilities/ValidationErrors.vue"
+import { store } from "../../store.js";
+
+export default {
+
+    data() {
+        return {
+            pseudo: "",
+            email: "",
+            departements: store.state.departements,
+            departement: "",
+            password: "",
+            password_confirmation: "",
+            validationErrors: "",
+            eightCharacters: false,
+            oneLetter: false,
+            oneUppercaseOneLowercase: false,
+            oneDigit: false,
+            oneSpecialCharacter: false
+        }
+    },
+    components: { ValidationErrors },
+
+    methods: {
+        sendData() {
+            axios.post('/api/register', { pseudo: this.pseudo, email: this.email, departement: this.departement, password: this.password, password_confirmation: this.password_confirmation })
+                .then(response => {
+                    // on stocke le message de succès dans le store ("inscription réussie")
+                    let message = response.data.message
+                    // on enregistre une notification de confirmation à destination de l'utilisateur
+                    this.createNotification(response.data.data.id)
+
+                    this.$router.push('/successmessage/connexion/' + response.data.message);
+                })
+                .catch((error) => {
+                    this.validationErrors = error.response.data.data;
+                })
+        },
+
+        createNotification(userId) {
+
+            let titre = `Bienvenue sur Nice Places ${this.pseudo} !`;
+            let message = `Bonjour ${this.pseudo} et bienvenue sur Nice Places !
+            Votre inscription est réussie.<br> 
+            Venez découvrir la France et partager vos lieux préférés avec nous !<br>
+            A très bientôt.<br>
+            L'administrateur.`
+
+            axios.post('/api/notifications', { titre: titre, message: message, user_id: userId, lieu_id: null })
+                .then(response => console.log(response.data.message))
+                .catch(response => console.log(response.data.message))
+        },
+
+        checkPassword(password) {
+
+            this.passwordTyped = true
+
+            if (password.length >= 8) {
+                this.eightCharacters = true
+            } else {
+                this.eightCharacters = false
+            }
+
+            if (password.match(/[a-z]/)) {
+                this.oneLetter = true
+            } else {
+                this.oneLetter = false
+            }
+
+            if (password.match(/(?=.*[a-z])(?=.*[A-Z])/)) {
+                this.oneUppercaseOneLowercase = true
+            } else {
+                this.oneUppercaseOneLowercase = false
+            }
+
+            if (password.match(/\d/)) {
+                this.oneDigit = true
+            } else {
+                this.oneDigit = false;
+            }
+
+            if (password.match(/[!@#$%^&*?]/)) {
+                this.oneSpecialCharacter = true
+            } else {
+                this.oneSpecialCharacter = false;
+            }
+        }
+    }
+}
+</script>
+
+<style scoped>
+/*#94D1BE*/
+
+img {
+    width: 6vw
+}
+
+.container-fluid {
+    background-image: linear-gradient(rgba(132, 247, 192, 0.4),
+            rgba(7, 117, 230, 0.3)), url(../../../../public/images/foret.jpg);
+    background-position: center;
+    background-size: cover;
+}
+
+h1 {
+    color: #1C6E8C
+}
+
+.card {
+    color: #1C6E8C;
+    background: rgba(254, 254, 254, 0.73)
+}
+
+.card-header {
+    background-color: #94D1BE
+}
+
+#passwordHelpBlock {
+    max-width: 600px;
+}
+
+i {
+    color: #94D1BE
+}
+
+.fa-xmark {
+    color: red
+}
+
+@media screen and (max-width: 768px) {
+    img {
+        width: 10vw
+    }
+}
+</style>
+

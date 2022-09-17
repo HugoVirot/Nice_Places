@@ -58,7 +58,7 @@
 
 <script>
 
-import { store } from "../store";
+import { store } from "../../store";
 import ValidationErrors from "./ValidationErrors.vue"
 
 export default {
@@ -79,9 +79,7 @@ export default {
         sendData() {
             axios.post('/api/avis', { note: this.note, commentaire: this.commentaire, lieu_id : this.lieu_id, user_id: store.state.userData.id })
                 .then((response) => {
-                    // on stocke le message de succès dans le store ("inscription réussie")
-                    store.commit('storeMessage', response.data.message);
-                    this.$router.push('/successmessage');
+                    this.$router.push('/successmessage/lastpage/' + response.data.message);
                 })
                 .catch((error) => {
                     this.validationErrors = error.response.data.data;

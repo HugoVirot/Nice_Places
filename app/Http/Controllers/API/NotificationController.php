@@ -27,7 +27,7 @@ class NotificationController extends BaseController
     {
         $notification->vue = true;
         $notification->save();
-        return $this->sendResponse('', "Notification marquée comme lue", 204);
+        return $this->sendResponse('', "Notification marquée comme lue");
     }
 
     /**

@@ -81,13 +81,15 @@
                     <td v-if="lieu.statut == 'validé'" class="bg-success text-white">validé</td>
                     <td v-else-if="lieu.statut == 'en attente'" class="mx-auto bg-info w-25">en attente de validation
                     </td>
-                    <td v-else-if="lieu.statut == 'à modifier'" class="mx-auto bg-warning w-25">à modifier pour être validé
+                    <td v-else-if="lieu.statut == 'à modifier'" class="mx-auto bg-warning w-25">à modifier pour être
+                        validé
                     </td>
                     <td v-else class="mx-auto bg-danger w-25">refusé</td>
 
                     <td>{{ moment(lieu.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
                     <td> {{ lieu.created_at == lieu.updated_at ? "jamais modifié" :
-                            moment(avis.updated_at).format("ddd DD MMM YYYY [à] HH:mm")
+                    moment(avis.updated_at).format("ddd DD MMM YYYY [à] HH:mm")
+                    
                     }}</td>
                 </tr>
 
@@ -119,7 +121,8 @@
                         <td>{{ categorie.icone }}</td>
                         <td>{{ moment(categorie.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
                         <td> {{ categorie.created_at == categorie.updated_at ? "jamais modifié" :
-                                moment(categorie.updated_at).format("ddd DD MMM YYYY [à] HH:mm")
+                        moment(categorie.updated_at).format("ddd DD MMM YYYY [à] HH:mm")
+                        
                         }}</td>
                         <td>
                             <router-link :to="`/modifiercategorie/${categorie.id}`"><i
@@ -207,7 +210,8 @@
                         <td v-else>aucun</td>
                         <td>{{ moment(avis.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
                         <td> {{ avis.created_at == avis.updated_at ? "jamais modifié" :
-                                moment(avis.updated_at).format("ddd DD MMM YYYY [à] HH:mm")
+                        moment(avis.updated_at).format("ddd DD MMM YYYY [à] HH:mm")
+                        
                         }}</td>
                         <td>
                             <router-link :to="`/modifieravis/${avis.id}`"><i class="fa-solid fa-pen-to-square"></i>
@@ -247,7 +251,8 @@
                         <td>{{ user.role.role }}</td>
                         <td>{{ moment(user.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
                         <td> {{ user.created_at == user.updated_at ? "jamais modifié" :
-                                moment(user.updated_at).format("ddd DD MMM YYYY [à] HH:mm")
+                        moment(user.updated_at).format("ddd DD MMM YYYY [à] HH:mm")
+                        
                         }}</td>
                         <td><i class="fa-solid fa-eraser" @click="deleteUser(user.id)"></i></td>
                     </tr>
@@ -282,7 +287,8 @@
                     <th>
                         <button class="m-3" data-bs-toggle="modal" :data-bs-target="`.imageZoom${image.id}`"
                             style="border: none; outline:none">
-                            <img class="w-75" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
+                            <img v-if="image.lieu_id !== null" class="w-75" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
+                            <img v-else class="w-75" :src="`/images/categorie${image.id}.jpg`" :alt="`${image.nom}`">
                         </button>
                     </th>
                     <th>{{ image.id }}</th>
@@ -304,7 +310,8 @@
                         aria-labelledby="myLargeModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-xl">
                             <div class="modal-body w-100">
-                                <img class="w-100" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
+                                <img v-if="image.lieu_id" class="w-100" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
+                                <img v-else class="w-100" :src="`/images/categorie${image.id}.jpg`" :alt="`${image.nom}`">
                             </div>
                         </div>
                     </div>
@@ -316,7 +323,7 @@
 </template>
 
 <script>
-import { store } from "../store";
+import { store } from "../../store";
 import moment from 'moment';
 import axios from "axios";
 moment.locale('fr');
@@ -366,17 +373,16 @@ export default {
             axios.delete("/api/avis/" + id)
 
                 .then(response => {
-                    console.log(response)
-                    store.commit('storeMessage', response.data.message)
-                    console.log(store.state.message)
+
+                    let message = response.data.message
 
                     // on va récupérer la nouvelle liste des avis
                     axios.get('/api/avis')
 
                         .then(response => {
-                            store.commit("storeAvis", response.data)
+                            //store.commit("storeAvis", response.data)
                             // on redirige vers l'accueil en affichant le message de succès
-                            this.$router.push('/SuccessMessage')
+                            this.$router.push('/successmessage/backoffice/' + message)
                         })
 
                         .catch(error => {
@@ -388,27 +394,21 @@ export default {
                 .catch(error => {
                     console.log(error.response)
                 })
-        },
-
-        editLieu(id) {
-            console.log("modification lieu d'id " + id)
         },
 
         deleteLieu(id) {
 
             axios.delete("/api/lieus/" + id)
                 .then(response => {
-                    // on stocke le message de succès dans le store pour l'afficher juste après
-                    store.commit('storeMessage', response.data.message)
-                    console.log(store.state.message)
+
+                    let message = response.data.message
 
                     // on va récupérer la nouvelle liste des lieux
                     axios.get('/api/lieus')
                         .then(response => {
                             store.commit("storeLieux", response.data)
-                            console.log(this.lieux)
                             // on redirige vers l'accueil en affichant le message de succès
-                            this.$router.push('/SuccessMessage')
+                            this.$router.push('/SuccessMessage/backoffice/' + message)
                         })
                         .catch(error => {
                             console.log(error.response)
@@ -420,28 +420,21 @@ export default {
                 })
         },
 
-        editCategory(id) {
-            console.log("modification lieu d'id " + id)
-        },
-
         deleteCategory(id) {
 
-            console.log("suppression categorie d'id " + id)
             axios.delete("/api/categories/" + id)
 
                 .then(response => {
-                    // on stocke le message de succès dans le store pour l'afficher juste après
-                    store.commit('storeMessage', response.data.message)
-                    console.log(store.state.message)
+
+                    let message = response.data.message
 
                     // on va récupérer la nouvelle liste des lieux
                     axios.get('/api/categories')
 
                         .then(response => {
                             store.commit("storeCategories", response.data)
-                            console.log(this.categories)
                             // on redirige vers l'accueil en affichant le message de succès
-                            this.$router.push('/SuccessMessage')
+                            this.$router.push('/SuccessMessage/backoffice/' + message)
                         })
 
                         .catch(error => {
@@ -458,18 +451,16 @@ export default {
         storeCategory() {
             axios.post('/api/categories', { nom: this.nom, icone: this.icone })
                 .then(response => {
-                    // on stocke le message de succès dans le store pour l'afficher juste après
-                    store.commit('storeMessage', response.data.message)
-                    console.log(store.state.message)
+
+                    let message = response.data.message
 
                     // on va récupérer la nouvelle liste des lieux
                     axios.get('/api/categories')
 
                         .then(response => {
                             store.commit("storeCategories", response.data)
-                            console.log(this.categories)
                             // on redirige vers l'accueil en affichant le message de succès
-                            this.$router.push('/SuccessMessage')
+                            this.$router.push('/SuccessMessage/backoffice/' + message)
                         })
 
                         .catch(error => {
@@ -485,22 +476,19 @@ export default {
 
         deleteUser(id) {
 
-            console.log("suppression user d'id " + id)
             axios.delete("/api/users/" + id)
 
                 .then(response => {
-                    // on stocke le message de succès dans le store pour l'afficher juste après
-                    store.commit('storeMessage', response.data.message)
-                    console.log(store.state.message)
+
+                    let message = response.data.message
 
                     // on va récupérer la nouvelle liste des lieux
                     axios.get('/api/users')
 
                         .then(response => {
                             store.commit("storeUsers", response.data)
-                            console.log(this.users)
                             // on redirige vers l'accueil en affichant le message de succès
-                            this.$router.push('/SuccessMessage')
+                            this.$router.push('/SuccessMessage/backoffice/' + message)
                         })
 
                         .catch(error => {
@@ -516,22 +504,19 @@ export default {
 
         deleteImage(id) {
 
-            console.log("suppression image d'id " + id)
             axios.delete("/api/images/" + id)
 
                 .then(response => {
-                    // on stocke le message de succès dans le store pour l'afficher juste après
-                    store.commit('storeMessage', response.data.message)
-                    console.log(store.state.message)
+
+                    let message = response.data.message
 
                     // on va récupérer la nouvelle liste des lieux
                     axios.get('/api/images')
 
                         .then(response => {
                             store.commit("storeImages", response.data)
-                            console.log(this.images)
                             // on redirige vers l'accueil en affichant le message de succès
-                            this.$router.push('/SuccessMessage')
+                            this.$router.push('/SuccessMessage/backoffice/' + message)
                         })
 
                         .catch(error => {
@@ -543,68 +528,49 @@ export default {
                 .catch(error => {
                     console.log(error.response)
                 })
-        },
+        }
     },
 
     created() {
         this.moment = moment
 
+        // axios.get("http://localhost:8000/api/lieux")
+        //     .then(response => {
+        //         store.commit('storeLieux', response.data)
+        //     }
+        //     )
+        //     .catch(error => {
+        //         console.log(JSON.stringify(error))
+        //     })
+
         axios.get("http://localhost:8000/api/avis")
             .then(response => {
                 store.commit('storeAvis', response.data)
-                console.log(this.avis)
             }
             )
             .catch(error => {
-                console.log(error.response)
+                console.log(JSON.stringify(error))
             })
 
 
         axios.get("http://localhost:8000/api/users")
             .then(response => {
                 store.commit('storeUsers', response.data)
-                console.log(this.users)
             }
             )
             .catch(error => {
-                console.log(error.response)
+                console.log(JSON.stringify(error))
             })
 
 
         axios.get("http://localhost:8000/api/images")
             .then(response => {
                 store.commit('storeImages', response.data)
-                console.log(this.images)
             }
             )
             .catch(error => {
-                console.log(error.response)
+                console.log(JSON.stringify(error))
             })
-
-
-        // let models = ['users', 'avis', 'categories', 'lieux']
-
-        // models.forEach(model => {
-
-        //     if (!this.model) {
-
-        //         if (model === 'lieux') {
-        //             model = 'lieus'
-        //         }
-
-        //         axios.get('/api/' + model)
-        //             .then(response => {
-        //                 let model = model.charAt(0).toUpperCase() + model.slice(1);
-        //                 let mutatorName = "store" + model
-        //                 console.log(mutatorName)
-        //                 store.commit(mutatorName, response.data)
-        //                 console.log(model + " récupéré")
-        //             })
-        //             .catch(error => {
-        //                 console.log(error.response)
-        //             })
-        //     }
-        // })
     }
 }
 </script>

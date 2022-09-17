@@ -25,7 +25,7 @@
             <!-- composant qui affiche les lieux (le créer et lui passer les lieux en props)-->
             <div class="col-lg-6 border border-3 border-white card text-white" v-for="(lieu, index) in categorie.lieux"
                 :key="lieu.id"
-                :style="`background-image: url(/images/${lieu.image_mise_en_avant.nom}); background-position: center; background-size: cover;`">
+                :style="`background-image: url(/images/${lieu.image_mise_en_avant[0].nom}); background-position: center; background-size: cover;`">
                 <span class="m-auto">
                     <div class="p-2 textWithShadow">
                         <p class="fs-1 text-white">{{ lieu.nom }}</p>
@@ -48,8 +48,8 @@
 
 <script>
 import axios from "axios";
-import Filtres from "./Filtres.vue"
-import Tris from "./Tris.vue"
+import Filtres from "../utilities/Filtres.vue"
+import Tris from "../utilities/Tris.vue"
 
 export default {
     data() {
@@ -79,11 +79,9 @@ export default {
         axios.get("/api/categories/" + this.$route.params.id)
             .then(response => {
                 this.categorie = response.data
-                console.log(this.categorie)
                 this.getValidatedPlaces()
                 this.loading = false
                 this.lieuxNonFiltres = this.categorie.lieux
-                console.log(this.lieuxNonFiltres)
             })
             .catch((response) => {
                 console.log(response.error);

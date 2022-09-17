@@ -1,5 +1,3 @@
-//import Vuex from "vuex";
-
 // // on importe createStore et on initialise le store
 import { createStore } from 'vuex'
 import VuexPersist from 'vuex-persist'
@@ -21,7 +19,6 @@ const defaultState = {
         token: "",
         role: ""
     },
-    message: "",
     geolocationAnswered: false,
     userPosition: "",
     lieux: "",
@@ -51,18 +48,14 @@ export const store = createStore({
     mutations: {
         // stocker les infos utilisateur dans le state
         storeUserData(state, payload) {
+            console.log("storeuserdata")
             state.userData.pseudo = payload.pseudo
             state.userData.email = payload.email
             state.userData.id = payload.id
             state.userData.departement = payload.departement
-            state.userData.region = payload.region
+            state.userData.region = payload.departement.region
             state.userData.role = payload.role
             state.userData.token = payload.token
-        },
-
-        // stocker un message de succès dans le state
-        storeMessage(state, payload) {
-            state.message = payload
         },
 
         // mémoriser le fait qu'un choix a été fait par rapport à la géoloc
@@ -141,16 +134,12 @@ export const store = createStore({
                 if (a.note > b.note) return -1;
                 return a.note < b.note ? 1 : 0;
             });
-        },
-
-        getPlacesByDepartment(state) {
-            return state.lieux.filter(lieu => lieu.departement.code == state.userData.departement)
         }
     },
 
     actions: {
-        logOut() {
-            store.commit("resetState")
+        saveUserData({commit}, payload){
+            commit('storeUserData', payload)
         }
     },
 

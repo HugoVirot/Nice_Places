@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('nom', 100);
             $table->text('description', 3000);
-            $table->decimal('latitude', 10, 7);  // 1er chiffre = nombre total de chiffres, 2ème = longueur partie décimale
+            $table->decimal('latitude', 10, 7);  // 10 = nb total chiffres, 7 = nb de décimales
             $table->decimal('longitude', 10, 7);  // idem
             $table->float('note', 3, 1);  // idem
             $table->integer('temps'); // temps en heures

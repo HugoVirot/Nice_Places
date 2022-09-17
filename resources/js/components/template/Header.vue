@@ -1,43 +1,3 @@
-<script>
-import { store } from '../store'
-
-export default {
-
-    computed: {
-        userData() {
-            return store.state.userData
-        },
-        countUnreadNotifications() {
-
-            if (store.state.notifications) {
-                return store.state.notifications.filter(n => !n.lue).length
-            }
-            else {
-                return null
-            }
-        }
-    },
-
-    methods: {
-        logOut() {
-            // on réinitialise le state en appelant l'action "logOut"
-            store.dispatch("logOut");
-
-            // // on teste le résultat
-            console.log(store.state.userData)
-
-            // //idem pour le message de succès
-            store.commit('storeMessage', "Déconnexion réussie")
-            console.log(store.state.message)
-
-            // on redirige vers l'accueil
-            this.$router.push('/SuccessMessage')
-            // rediriger vers SuccessMessage
-        }
-    }
-}
-</script>
-
 <template>
 
     <header class="sticky-top">
@@ -152,6 +112,39 @@ export default {
     </header>
 
 </template>
+
+<script>
+import { store } from '../../store'
+
+export default {
+
+    computed: {
+        userData() {
+            return store.state.userData
+        },
+        
+        countUnreadNotifications() {
+
+            if (store.state.notifications) {
+                return store.state.notifications.filter(n => !n.lue).length
+            }
+            else {
+                return null
+            }
+        }
+    },
+
+    methods: {
+        logOut() {
+            // on réinitialise le state
+            store.commit("resetState");
+
+            // on redirige vers l'accueil
+            this.$router.push('/SuccessMessage/home/Déconnexion réussie')
+        }
+    }
+}
+</script>
 
 <style>
 @font-face {

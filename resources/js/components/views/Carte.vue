@@ -1,5 +1,5 @@
 <script>
-import Map from "./Map.vue"
+import Map from "../utilities/Map.vue"
 
 export default {
     components: { Map }

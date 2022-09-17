@@ -39,6 +39,9 @@ class LieuController extends BaseController
      */
     public function store(Request $request)
     {
+
+        dd($request);
+        
         $validator = Validator::make($request->all(), [
             'images.*' => 'required|image|mimes:jpg,jpeg,png,gif,svg|max:2048',
             'latitude' => 'required',
@@ -48,6 +51,7 @@ class LieuController extends BaseController
             'temps' => 'required|integer',
             'difficulte' => 'required',
             'kilometres' => 'nullable|integer',
+            'departement' => 'required',
             'adresse' => 'required|max:75',
             'code_postal' => 'required',
             'ville' => 'required'
@@ -69,6 +73,8 @@ class LieuController extends BaseController
 
         }
 
+        // ************************************ sauvegarde du lieu *************************************
+
         $lieu = Lieu::create([
             'nom' => $request->nom,
             'description' => $request->description,
@@ -78,20 +84,26 @@ class LieuController extends BaseController
             'temps' => $request->temps,
             'difficulte' => $request->difficulte,
             'kilometres' => $request->kilometres,
+            'departement_id' => $request->departement,
             'adresse' =>  $request->adresse,
             'code_postal' =>  $request->code_postal,
             'ville' =>  $request->ville,
             'user_id' => $request->user_id,
-            // selon le statut de l'utilisateur (id 1 = admin), on valide ou on met en attente le lieu
+            // selon le statut de l'utilisateur (id 1 = admin), 
+            // on valide ou on met en attente le lieu
             'statut' => $request->user_id == 1 ? "validé" : "en attente",
             'categorie_id' => $request->categorie
         ]);
 
+        // ********************************** sauvegarde des images *************************************
+
         // $imagesLastId = Image::max("id"); // on récupère le dernier id de la table images
         $imagesTotalForPlace = Image::where('lieu_id', $lieu->id)->count();
-        $images = $request->file('images'); // on accède au tableau d'images transmises via le formulaire
 
-        foreach ($images as $key => $image) {
+        // on accède au tableau d'images transmises via le formulaire
+        $images = $request->file('images'); 
+
+        foreach ($images as $key => $image) {  // on boucle sur les images uploadées
 
             //nom de l'image = nom du lieu (espaces changés en underscores) + _image_ + le N° de l'image pour ce lieu + l'extension
             $imageName = str_replace(' ', '_', $request->nom) . "_image_" . $imagesTotalForPlace + $key + 1  . '.' . $image->extension();
@@ -210,7 +222,7 @@ class LieuController extends BaseController
             'longitude' => 'required',
             'note' => 'required',
             'temps' => 'required',
-            'categorie_id' => 'nullable',
+            'categorie_id' => 'required',
             'difficulte' => 'required',
             'kilometres' => 'nullable|integer',
             'adresse' => 'required|max:75',
@@ -246,6 +258,6 @@ class LieuController extends BaseController
 
         // on retourne la réponse JSON
         $message = "Lieu supprimé avec succès";
-        return $this->sendResponse($lieu, $message, 204);
+        return $this->sendResponse($lieu, $message);
     }
 }

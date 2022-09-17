@@ -1,8 +1,8 @@
 <script>
-import Header from "./Header.vue"
-import Slider from "./Slider.vue"
-import Map from "./Map.vue"
-import Footer from "./Footer.vue"
+import Header from "./template/Header.vue"
+import Slider from "./utilities/Slider.vue"
+import Map from "./utilities/Map.vue"
+import Footer from "./template/Footer.vue"
 import { store } from '../store'
 import axios from "axios"
 
@@ -43,7 +43,7 @@ export default {
 		userData: {
 			handler() {
 				this.getThreeTopAndLastPlaces()
-				this.getFavoris()
+				// this.getFavoris()
 			}, deep: true
 		},
 	},
@@ -55,7 +55,7 @@ export default {
 			axios.get("http://localhost:8000/api/categories")
 				.then(response => {
 					store.commit('storeCategories', response.data)
-					console.log(this.categories)
+					console.log("catégories récupérées")
 				}
 				)
 				.catch(error => {
@@ -67,7 +67,6 @@ export default {
 			axios.get("http://localhost:8000/api/lieus")
 				.then(response => {
 					store.commit('storeLieux', response.data)
-					console.log(this.lieux)
 				}
 				)
 				.catch(error => {
@@ -79,7 +78,6 @@ export default {
 			axios.get("http://localhost:8000/api/departements")
 				.then(response => {
 					store.commit('storeDepartements', response.data)
-					console.log(this.departements)
 				}
 				)
 				.catch(error => {
@@ -91,7 +89,6 @@ export default {
 			axios.get("http://localhost:8000/api/regions")
 				.then(response => {
 					store.commit('storeRegions', response.data)
-					console.log(this.regions)
 				}
 				)
 				.catch(error => {
@@ -103,7 +100,6 @@ export default {
 			axios.get("http://localhost:8000/api/favoris/" + this.userData.id)
 				.then(response => {
 					store.commit('storeFavoris', response.data)
-					console.log(this.favoris)
 				}
 				)
 				.catch(error => {
@@ -134,7 +130,6 @@ export default {
 			})
 				.then(response => {
 					store.commit('storeThreeTopPlaces', response.data)
-					console.log(this.threeTopPlaces)
 				}
 				)
 				.catch(error => {
@@ -151,7 +146,6 @@ export default {
 			})
 				.then(response => {
 					store.commit('storeThreeLastPlaces', response.data)
-					console.log(this.threeLastPlaces)
 				}
 				)
 				.catch(error => {
@@ -178,8 +172,6 @@ export default {
 		if (!this.regions) {
 			this.getRegions()
 		}
-
-		console.log(store.state.userPosition)
 
 		// ******************* si réponse à la demande de géoloc ************************
 		if (store.state.geolocationAnswered) {
@@ -310,7 +302,7 @@ export default {
 
 						<div v-for="(topPlace, index) in threeTopPlaces"
 							class="mx-auto col-md-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
-							:style="`background-image: url(images/${topPlace.image_mise_en_avant.nom}); background-position: center; background-size: cover;`">
+							:style="`background-image: url(images/${topPlace.image_mise_en_avant[0].nom}); background-position: center; background-size: cover;`">
 							<div class="infosTopLieux pt-1 pb-3">
 
 								<div class="rankingAndName row d-flex justify-content-between align-items-center">
@@ -367,7 +359,7 @@ export default {
 
 						<div v-for="lastPlace in threeLastPlaces"
 							class="mx-auto col-md-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
-							:style="`background-image: url(images/${lastPlace.image_mise_en_avant.nom}); background-position: center; background-size: cover;`">
+							:style="`background-image: url(images/${lastPlace.image_mise_en_avant[0].nom}); background-position: center; background-size: cover;`">
 
 							<div class="infosDerniersLieux pt-2 px-1">
 
@@ -400,7 +392,7 @@ export default {
 											<i class="titleIcon fa-2x fa-solid fa-user"></i>
 										</div>
 
-										<div class="col-9">
+										<div class="col-9" v-if="lastPlace.user">
 											<p>par {{ lastPlace.user.pseudo }}</p>
 										</div>
 									</div>
@@ -470,7 +462,7 @@ img {
 	color: #94D1BE
 }
 
-h2 {
+h1, h2 {
 	color: #1c6e8c
 }
 

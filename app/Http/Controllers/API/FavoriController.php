@@ -63,6 +63,6 @@ class FavoriController extends BaseController
 
         // on renvoie la réponse avec un message de confirmation en json
         $message = "Lieu retiré des favoris";
-        return $this->sendResponse($lieu->id, $message, 204);
+        return $this->sendResponse($lieu->id, $message);
     }
 }

@@ -111,7 +111,8 @@ class ImageController extends BaseController
         }
 
         // On retourne la réponse en JSON
-        return response()->json($image, 200);
+        $message = "L'image a bien été modifiée";
+        return $this->sendResponse($image, $message, 201);
     }
 
 

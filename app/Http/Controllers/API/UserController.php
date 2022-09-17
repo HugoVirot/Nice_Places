@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\API\BaseController;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class UserController extends BaseController
@@ -22,11 +21,13 @@ class UserController extends BaseController
         //middleware admin à ajouter pour index (en supplément)
     }
 
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
         // On récupère tous les utilisateurs
@@ -37,12 +38,14 @@ class UserController extends BaseController
         return response()->json($users);
     }
 
+
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
         $validator = Validator::make(
@@ -88,12 +91,14 @@ class UserController extends BaseController
         return $this->sendResponse($success, 'Inscription réussie.');
     }
 
+
     /**
      * Display the specified resource.
      *
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
+
     public function show(User $user)
     {
         // 2) on retourne uniquement les infos précisées dans la ressource
@@ -101,17 +106,20 @@ class UserController extends BaseController
         return new UserResource($user);
     }
 
+
     /**
      * Return all the user's informations to be displayed on his profile.
      *
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
+
     public function profile(User $user)
     {
         // 1) On retourne toutes les informations de l'utilisateur en JSON
         return response()->json($user);
     }
+
 
     /**
      * Update the user in storage.
@@ -120,6 +128,7 @@ class UserController extends BaseController
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
+    
     public function update(Request $request, User $user)
     {
         $validator = Validator::make($request->all(), [
@@ -147,17 +156,19 @@ class UserController extends BaseController
         $user->update([
             'pseudo' => $request->pseudo,
             'email' => $request->email,
-            'departement_id' => $request->departement
+            'departement_id' => $request->departement_id
         ]);
 
         // si nouveau mdp choisi
         if (isset($request->password)) {
+
             // si ancien mdp fourni ET valide, modification validée 
             if (isset($request->oldPassword) && Hash::check($request->oldPassword, User::find($user->id)->password)) {
                 $user->update([
                     'password' => Hash::make($request->password)
                 ]);
                 // sinon => on renvoie une erreur
+                
             } else {
                 return $this->sendError('Error validation', ['mot de passe actuel non renseigné ou incorrect']);
             }

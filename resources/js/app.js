@@ -1,18 +1,20 @@
 require('./bootstrap');
 
+// on importe Bootstrap
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
 
-// 1. On importe createApp
+// On importe createApp
 import { createApp } from "vue"
-
-import { store } from "./store";
 
 // On importe le composant principal App
 import App from "./components/App.vue"
 
 // On importe le routeur
 import router from './router'
+
+// on importe le store
+import { store } from "./store";
 
 // On monte l'application Vue sur l'élément #app
 // on inclut le routeur et le store dans l'application

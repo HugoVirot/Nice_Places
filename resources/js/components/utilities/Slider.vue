@@ -1,28 +1,3 @@
-<script>
-export default {
-}
-</script>
-
-<style scoped>
-.captionfondbleu {
-    background-color: rgba(50, 61, 158, 0.5);
-}
-
-p {
-    font-size: larger;
-}
-
-h2 {
-    font-size: 2.6vw;
-    z-index: 1;
-}
-
-.btn {
-    background-color: #94D1BE !important;
-    color: white;
-}
-</style>
-
 <template>
     <div id="carouselAccueil" class="carousel slide carousel-fade container" data-bs-ride="carousel">
 
@@ -85,3 +60,28 @@ h2 {
 
     </div>
 </template>
+
+<script>
+export default {
+}
+</script>
+
+<style scoped>
+.captionfondbleu {
+    background-color: rgba(50, 61, 158, 0.5);
+}
+
+p {
+    font-size: larger;
+}
+
+h2 {
+    font-size: 2.6vw;
+    z-index: 1;
+}
+
+.btn {
+    background-color: #94D1BE !important;
+    color: white;
+}
+</style>

@@ -50,7 +50,7 @@ class CategorieController extends BaseController
             'icone' => $request->icone
         ]);
 
-        // On retourne les informations du nouvel utilisateur en JSON
+        // On retourne les informations en JSON
         $message = "La catégorie a bien été créée";
         return $this->sendResponse($categorie, $message, 201);
     }
@@ -89,7 +89,8 @@ class CategorieController extends BaseController
         $category->update($request->except('_token'));
 
         // On retourne la réponse en JSON
-        return response()->json($category, 200);
+        $message = "La catégorie a bien été modifiée";
+        return $this->sendResponse($category, $message, 201);
     }
 
     /**
@@ -102,6 +103,6 @@ class CategorieController extends BaseController
     {
         $category->delete();
         $message = "Catégorie supprimée avec succès";
-        return $this->sendResponse($category, $message, 204);
+        return $this->sendResponse($category, $message);
     }
 }

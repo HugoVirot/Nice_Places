@@ -19,8 +19,7 @@
 </head>
 
 <body>
-    <div id="app">
-    </div>
+    <div id="app"></div> <!-- le projet Vue JS est injecté ici -->
     <script>
         window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),

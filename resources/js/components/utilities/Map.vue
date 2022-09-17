@@ -1,16 +1,10 @@
-
 <template>
     <div id="map"></div>
 </template>
 
 <script>
 import axios from "axios";
-import { store } from "../store.js";
-
-// import Vue from 'vue';
-// window.Vue = Vue;
-// import router from '../router.js';
-// Vue.router = router;
+import { store } from "../../store.js";
 
 export default {
 
@@ -169,7 +163,7 @@ export default {
                                     "<i class=\"fa-solid fa-star ms-3 me-2\" style=\"color: yellow\"></i>" + 
                                     "<span class=\"fs-5 text-secondary\" style=\"font-family:'Cooper'\">" + lieu.note + "</span></div>" +
                                      "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom + "</h5>" + 
-                                    "<img class=\"mx-auto\" src=\"images/" + lieu.image_mise_en_avant.nom + "\" style=\"width:35vw\">" +
+                                    "<img class=\"mx-auto\" src=\"images/" + lieu.image_mise_en_avant[0].nom + "\" style=\"width:35vw\">" +
                                     "<p style=\"font-family:'Cooper'\" class=\"text-center text-secondary\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p></div>"
 
                                 let popupOptions =  // on choisit les options du popup
@@ -262,7 +256,6 @@ export default {
                 // on demande l'accès à la position via une petite fenêtre 
                 // si accepté, on stocke les coordonnées de l'utilisateur dans le state
                 navigator.geolocation.getCurrentPosition(position => {
-                    console.log(position.coords)
                     store.commit('storeGeolocationAnswered', true)
                     store.commit('storeUserPosition', { latitude: position.coords.latitude, longitude: position.coords.longitude })
                     console.log("accès position accepté, choix et coordonnées stockés dans le state")
@@ -296,8 +289,3 @@ export default {
     margin: auto;
 }
 </style>
-
-
-<!-- document.getElementById('#map').on('popupopen', function() {
-    console.log(testing);    
-}); -->

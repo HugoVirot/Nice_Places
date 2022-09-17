@@ -14,7 +14,19 @@ class ImageSeeder extends Seeder
      */
     public function run()
     {
+        // images des catégories
+
+        for ($i = 1; $i < 10; $i++) {
+            Image::create([
+                'nom' => 'categorie' . $i . '.jpg',
+                'mise_en_avant' => true,
+                'user_id' => 1,
+                'lieu_id' => null
+            ]);
+        }
+
         // images des lieux
+
         Image::create([
             'nom' => 'mervent.jpg',
             'mise_en_avant' => true,
@@ -96,77 +108,5 @@ class ImageSeeder extends Seeder
                 'lieu_id' => $i
             ]);
         }
-
-        // images des catégories
-
-        Image::create([
-            'nom' => 'plages.jpg',
-            'mise_en_avant' => true,
-            'user_id' => 1,
-            'lieu_id' => null
-        ]);
-
-
-        Image::create([
-            'nom' => 'forêts et bois.jpg',
-            'mise_en_avant' => true,
-            'user_id' => 1,
-            'lieu_id' => null
-        ]);
-
-
-        Image::create([
-            'nom' => 'lacs et étangs.jpg',
-            'mise_en_avant' => true,
-            'user_id' => 1,
-            'lieu_id' => null
-        ]);
-
-
-        Image::create([
-            'nom' => 'fleuves, rivières et cours d\'eau.jpg',
-            'mise_en_avant' => true,
-            'user_id' => 1,
-            'lieu_id' => null
-        ]);
-
-
-        Image::create([
-            'nom' => 'parcs naturels régionaux.jpg',
-            'mise_en_avant' => true,
-            'user_id' => 1,
-            'lieu_id' => null
-        ]);
-
-
-        Image::create([
-            'nom' => 'parcs urbains.jpg',
-            'mise_en_avant' => true,
-            'user_id' => 1,
-            'lieu_id' => null
-        ]);
-
-
-        Image::create([
-            'nom' => 'randonnées en montagne.jpg',
-            'mise_en_avant' => true,
-            'user_id' => 1,
-            'lieu_id' => null
-        ]);
-
-
-        Image::create([
-            'nom' => 'zoos et réserves naturelles.jpg',
-            'mise_en_avant' => true,
-            'user_id' => 1,
-            'lieu_id' => null
-        ]);
-
-        Image::create([
-            'nom' => 'parcs de loisirs et accrobranches.jpg',
-            'mise_en_avant' => true,
-            'user_id' => 1,
-            'lieu_id' => null
-        ]);
     }
 }

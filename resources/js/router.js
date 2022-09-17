@@ -1,26 +1,25 @@
 import { createWebHistory, createRouter } from "vue-router";
 import App from "./components/App";
-import Carte from "./components/Carte"
-import Categories from "./components/Categories"
-import DetailCategorie from "./components/DetailCategorie"
-import TopLieux from "./components/TopLieux"
-import Lieu from "./components/Lieu"
-import ProposerLieu from "./components/ProposerLieu"
-import Inscription from "./components/Inscription"
-import Connexion from "./components/Connexion"
-import MonCompte from "./components/MonCompte"
-import SuccessMessage from "./components/SuccessMessage"
-import MesLieuxPostes from "./components/MesLieuxPostes"
-import MesLieuxFavoris from "./components/MesLieuxFavoris"
-import MesAvisPostes from "./components/MesAvisPostes"
-import BackOffice from "./components/BackOffice"
-import ModifierLieu from "./components/ModifierLieu"
-import ModifierCategorie from "./components/ModifierCategorie"
-import ModifierAvis from "./components/ModifierAvis"
-import ModifierImage from "./components/ModifierImage"
-import UploadImages from "./components/UploadImages"
-import DerniersLieux from "./components/DerniersLieux"
-import MesNotifications from "./components/MesNotifications"
+import Carte from "./components/views/Carte"
+import Categories from "./components/views/Categories"
+import DetailCategorie from "./components/views/DetailCategorie"
+import TopLieux from "./components/views/TopLieux"
+import Lieu from "./components/views/Lieu"
+import ProposerLieu from "./components/views/ProposerLieu"
+import Inscription from "./components/user/Inscription"
+import Connexion from "./components/user/Connexion"
+import MonCompte from "./components/user/MonCompte"
+import SuccessMessage from "./components/utilities/SuccessMessage"
+import MesLieuxPostes from "./components/user/MesLieuxPostes"
+import MesLieuxFavoris from "./components/user/MesLieuxFavoris"
+import MesAvisPostes from "./components/user/MesAvisPostes"
+import BackOffice from "./components/backoffice/BackOffice"
+import ModifierLieu from "./components/backoffice/ModifierLieu"
+import ModifierCategorie from "./components/backoffice/ModifierCategorie"
+import ModifierAvis from "./components/backoffice/ModifierAvis"
+import ModifierImage from "./components/backoffice/ModifierImage"
+import DerniersLieux from "./components/views/DerniersLieux"
+import MesNotifications from "./components/user/MesNotifications"
 
 const routes = [
   {
@@ -85,7 +84,7 @@ const routes = [
     component: BackOffice,
   },
   {
-    path: "/successmessage",
+    path: "/successmessage/:nextpage/:message",
     component: SuccessMessage,
   },
   {
@@ -103,10 +102,6 @@ const routes = [
   {
     path: "/modifierimage/:id",
     component: ModifierImage
-  },
-  {
-    path: "/uploadimages",
-    component: UploadImages
   },
   {
     path : "/mesnotifications",

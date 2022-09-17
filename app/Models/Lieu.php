@@ -46,7 +46,7 @@ class Lieu extends Model
 
     public function image_mise_en_avant()
     {
-        return $this->hasOne(Image::class)->where('mise_en_avant', '=', true);
+        return $this->hasMany(Image::class)->where('mise_en_avant', true);
     }
 
     public function notifications()
@@ -69,6 +69,7 @@ class Lieu extends Model
         'difficulte',
         'categorie_id',
         'kilometres',
+        'departement_id',
         'adresse',
         'code_postal',
         'ville',

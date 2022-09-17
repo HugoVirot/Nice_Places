@@ -122,6 +122,6 @@ class AvisController extends BaseController
     {
         $avi->delete();
         $message = "Avis supprimé avec succès";
-        return $this->sendResponse($avi, $message, 204);
+        return $this->sendResponse($avi, $message);
     }
 }

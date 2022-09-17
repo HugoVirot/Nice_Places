@@ -1,180 +1,4 @@
-<script>
-import axios from 'axios'
-import ValidationErrors from "./ValidationErrors.vue"
-import { store } from "../store.js";
-
-export default {
-
-    computed: {
-        userData() {
-            return store.state.userData
-        }
-    },
-
-    data() {
-        return {
-            lieuId: this.$route.params.id,
-            lieu: "",
-            nom: "",
-            description: "",
-            latitude: "",
-            longitude: "",
-            categorie_id: "",
-            categories: store.state.categories,
-            note: "",
-            temps: "",
-            difficulte: "",
-            kilometres: "",
-            adresse: "",
-            code_postal: "",
-            ville: "",
-            statut: "",
-            commentaire: "",
-            validationErrors: ""
-        }
-    },
-
-    components: { ValidationErrors },
-
-    methods: {
-        // cette fonction permet de mettre à jour les données locales du composant
-        // une fois que l'appel API a récupéré le lieu
-        updateLocalData(lieu) {
-            console.log(lieu)
-            this.lieu = lieu
-            this.nom = lieu.nom
-            this.description = lieu.description
-            this.latitude = lieu.latitude
-            this.longitude = lieu.longitude
-            this.note = lieu.note
-            this.categorie_id = lieu.categorie.id
-            this.temps = lieu.temps
-            this.difficulte = lieu.difficulte
-            this.kilometres = lieu.kilometres
-            this.adresse = lieu.adresse
-            this.code_postal = lieu.code_postal
-            this.ville = lieu.ville
-            this.statut = lieu.statut
-            this.commentaire = lieu.commentaire
-        },
-
-        saveChanges() {
-            // on sauvegarde les changements dans la base de données
-            axios.put('/api/lieus/' + this.lieu.id, {
-                nom: this.nom,
-                description: this.description,
-                latitude: this.latitude,
-                longitude: this.longitude,
-                categorie_id: this.categorie_id,
-                note: this.note,
-                temps: this.temps,
-                difficulte: this.difficulte,
-                kilometres: this.kilometres,
-                adresse: this.adresse,
-                code_postal: this.code_postal,
-                ville: this.ville,
-                statut: this.statut,
-                commentaire: this.commentaire
-            })
-                .then(response => {
-                    // on stocke le message de succès dans le store 
-                    store.commit('storeMessage', response.data.message);
-                    console.log(store.state.message)
-
-                    console.log(".then de savechanges")
-                    // on envoie une notification en cas de changement de statut
-                    // seulement si l'auteur n'est pas administrateur
-                    if (this.lieu.user.role !== "admin") {
-                        this.createNotification()
-                    }
-
-                    axios.get('/api/lieus')
-                        .then(response => {
-                            store.commit("storeLieux", response.data)
-                            console.log("lieux actualisés")
-                            this.$router.push('/successmessage');
-                        }).catch((response) => {
-                            console.log(response.error);
-                        })
-                })
-
-                .catch((error) => {
-                    this.validationErrors = error.data.data;
-                })
-
-
-            // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
-            // ici, response.data.data est le payload transmis au store
-            store.commit('storeUserData', response.data.data)
-
-            // // on teste le résultat
-            console.log(store.state.userData)
-
-            // //idem pour le message de succès
-            store.commit('storeMessage', response.data.message)
-            console.log(store.state.message)
-
-            // on redirige vers l'accueil
-            this.$router.push('/SuccessMessage')
-        },
-
-        createNotification() {
-            console.log("createNotification")
-
-            let titre = ""
-            let message = ""
-
-            switch (this.statut) {
-
-                case ("validé"):
-                    titre = `Félicitations ${this.lieu.user.pseudo} , votre lieu ${this.nom} a été validé !`;
-                    message = `Après vérification, j'ai décidé de valider votre lieu : ${this.nom}.<br> 
-            Merci pour ce partage, Nice Places est maintenant plus complet grâce à vous !.<br>
-            A très bientôt.<br>
-            L'administrateur.`
-                    break
-
-                case ("à modifier"):
-                    titre = `${this.lieu.user.pseudo} , votre lieu ${this.nom} a besoin de modifications pour être validé !`;
-                    message = `Après vérification, votre lieu ${this.nom} a besoin des modifications suivantes : <br> 
-                    ${this.commentaire}<br>
-            Merci de faire le nécessaire pour qu'il soit validé.<br>
-            A très bientôt.<br>
-            L'administrateur.`
-                    break
-                    
-                case ("refusé"):
-                    titre = `${this.lieu.user.pseudo}, votre lieu ${this.nom} a été refusé.`;
-                    message = `Après vérification, j'ai décidé de refuser votre lieu : ${this.nom}, pour la ou les raison(s) suivante(s) : <br> 
-                                ${this.commentaire}<br>
-            Merci de votre compréhension.<br>
-            A très bientôt.<br>
-            L'administrateur.`
-                    break
-            }
-
-            axios.post('/api/notifications', { titre: titre, message: message, user_id: this.lieu.user.id, lieu_id: this.lieu.id },)
-                .then(response => console.log(response.data.message))
-                .catch(response => console.log(response.data.message))
-        }
-    },
-
-    created() {
-
-        axios.get("/api/lieus/" + this.lieuId)
-            .then(response => {
-                this.updateLocalData(response.data)
-            })
-            .catch((error) => {
-                console.log(error)
-                this.validationErrors = error.response.data.data;
-            });
-    },
-}
-</script>
-
 <template>
-
     <div class="p-3">
         <i class="fa-3x fa-solid fa-pen-to-square"></i>
         <h1 class="mt-2">Modifier {{ lieu.nom }}</h1>
@@ -231,8 +55,8 @@ export default {
                                 <label for="nom" class="col-md-4 col-form-label text-md-right">nom</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="nom" id="nom" type="text" class="form-control"
-                                        name="nom" required autocomplete="nom" autofocus>
+                                    <input v-model="nom" id="nom" type="text" class="form-control" name="nom" required
+                                        autocomplete="nom" autofocus>
                                 </div>
                             </div>
 
@@ -241,9 +65,8 @@ export default {
                                     class="col-md-4 col-form-label text-md-right">description</label>
 
                                 <div class="col-md-6">
-                                    <textarea v-model="description" id="description"
-                                        class="form-control" name="description" required
-                                        autocomplete="description"></textarea>
+                                    <textarea v-model="description" id="description" class="form-control"
+                                        name="description" required autocomplete="description"></textarea>
                                 </div>
                             </div>
 
@@ -251,8 +74,8 @@ export default {
                                 <label for="latitude" class="col-md-4 col-form-label text-md-right">latitude</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="latitude" id="latitude" type="text"
-                                        class="form-control" name="latitude" required autocomplete="latitude">
+                                    <input v-model="latitude" id="latitude" type="text" class="form-control"
+                                        name="latitude" required autocomplete="latitude">
                                 </div>
                             </div>
                             <div class="form-text">entre -90 et 90. Partie décimale : maximum 7 chiffres.</div>
@@ -261,8 +84,8 @@ export default {
                                 <label for="longitude" class="col-md-4 col-form-label text-md-right">longitude</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="longitude" id="longitude" type="text"
-                                        class="form-control" name="longitude" required autocomplete="longitude">
+                                    <input v-model="longitude" id="longitude" type="text" class="form-control"
+                                        name="longitude" required autocomplete="longitude">
                                 </div>
                             </div>
                             <div class="form-text mb-2">entre -180 et 180. Partie décimale : maximum 7 chiffres.</div>
@@ -277,7 +100,8 @@ export default {
                                     <select v-model="categorie_id" class="form-select" aria-label="categorie_id">
                                         <option v-for="categorie in categories" :key="categorie.id"
                                             :value="categorie.id"
-                                            :selected="categorie.id == categorie_id ? selected : ''">{{ categorie.nom }}
+                                            :selected="categorie.id == categorie_id ? 'selected' : ''">{{ categorie.nom
+                                            }}
                                         </option>
                                     </select>
                                 </div>
@@ -288,8 +112,8 @@ export default {
                                     10</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="note" id="note" min="0" max="10" type="number"
-                                        class="form-control" name="note" required autocomplete="note">
+                                    <input v-model="note" id="note" min="0" max="10" type="number" class="form-control"
+                                        name="note" required autocomplete="note">
                                 </div>
                             </div>
 
@@ -309,11 +133,11 @@ export default {
 
                                 <div class="col-md-6">
                                     <select required v-model="difficulte" class="form-select" aria-label="difficulte">
-                                        <option :selected="difficulte == 'famille' ? selected : ''" value="famille">
+                                        <option :selected="difficulte == 'famille' ? 'selected' : ''" value="famille">
                                             famille</option>
-                                        <option :selected="difficulte == 'amateur' ? selected : ''" value="amateur">
+                                        <option :selected="difficulte == 'amateur' ? 'selected' : ''" value="amateur">
                                             amateur</option>
-                                        <option :selected="difficulte == 'sportif' ? selected : ''" value="sportif">
+                                        <option :selected="difficulte == 'sportif' ? 'selected' : ''" value="sportif">
                                             sportif</option>
                                     </select>
                                 </div>
@@ -333,8 +157,8 @@ export default {
                                 <label for="adresse" class="col-md-4 col-form-label text-md-right">adresse</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="adresse" id="adresse" type="text"
-                                        class="form-control" name="adresse" required autocomplete="adresse">
+                                    <input v-model="adresse" id="adresse" type="text" class="form-control"
+                                        name="adresse" required autocomplete="adresse">
                                 </div>
                             </div>
 
@@ -343,8 +167,8 @@ export default {
                                     postal</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="code_postal" id="code_postal" type="text"
-                                        class="form-control" name="code_postal" required autocomplete="code_postal">
+                                    <input v-model="code_postal" id="code_postal" type="text" class="form-control"
+                                        name="code_postal" required autocomplete="code_postal">
                                 </div>
                             </div>
 
@@ -352,8 +176,8 @@ export default {
                                 <label for="ville" class="col-md-4 col-form-label text-md-right">ville</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="ville" id="ville" type="text" class="form-control"
-                                        name="ville" required autocomplete="ville">
+                                    <input v-model="ville" id="ville" type="text" class="form-control" name="ville"
+                                        required autocomplete="ville">
                                 </div>
                             </div>
 
@@ -372,6 +196,172 @@ export default {
         </div>
     </div>
 </template>
+
+<script>
+import axios from 'axios'
+import ValidationErrors from "../utilities/ValidationErrors.vue"
+import { store } from "../../store.js";
+
+export default {
+
+    computed: {
+        userData() {
+            return store.state.userData
+        }
+    },
+
+    data() {
+        return {
+            lieuId: this.$route.params.id,
+            lieu: "",
+            nom: "",
+            description: "",
+            latitude: "",
+            longitude: "",
+            categorie_id: "",
+            categories: store.state.categories,
+            note: "",
+            temps: "",
+            difficulte: "",
+            kilometres: "",
+            adresse: "",
+            code_postal: "",
+            ville: "",
+            statut: "",
+            commentaire: "",
+            validationErrors: ""
+        }
+    },
+
+    components: { ValidationErrors },
+
+    methods: {
+        // cette fonction permet de mettre à jour les données locales du composant
+        // une fois que l'appel API a récupéré le lieu
+        updateLocalData(lieu) {
+            this.lieu = lieu
+            this.nom = lieu.nom
+            this.description = lieu.description
+            this.latitude = lieu.latitude
+            this.longitude = lieu.longitude
+            this.note = lieu.note
+            this.categorie_id = lieu.categorie.id
+            this.temps = lieu.temps
+            this.difficulte = lieu.difficulte
+            this.kilometres = lieu.kilometres
+            this.adresse = lieu.adresse
+            this.code_postal = lieu.code_postal
+            this.ville = lieu.ville
+            this.statut = lieu.statut
+            this.commentaire = lieu.commentaire
+        },
+
+        saveChanges() {
+            // on sauvegarde les changements dans la base de données
+            axios.put('/api/lieus/' + this.lieu.id, {
+                nom: this.nom,
+                description: this.description,
+                latitude: this.latitude,
+                longitude: this.longitude,
+                categorie_id: this.categorie_id,
+                note: this.note,
+                temps: this.temps,
+                difficulte: this.difficulte,
+                kilometres: this.kilometres,
+                adresse: this.adresse,
+                code_postal: this.code_postal,
+                ville: this.ville,
+                statut: this.statut,
+                commentaire: this.commentaire
+            })
+                .then(response => this.handleSuccess(response))
+                // en cas d'erreur sur la modification de lieu, on affiche les erreurs
+                .catch((error) => {
+                    this.validationErrors = error.data.data;
+                })
+        },
+
+        handleSuccess(response) {
+
+            console.log(response) // OK lieu modifié
+
+            let message = response.data.message
+
+            // on envoie une notification en cas de changement de statut
+            // seulement si l'auteur n'est pas administrateur
+            // if (this.lieu.user.role !== "admin") {
+            //     this.createNotification()
+            // }
+
+            // on stocke dans le store la nouvelle liste des lieux 
+            // puis on redirige sur le composant qui affiche le message de succès
+
+            axios.get('/api/lieus')
+
+                .then(response => {
+                    console.log(response);  // ok lieux récupérés
+                    store.commit("storeLieux", response.data) // fait bugger => il ne se passe rien
+                    console.log(" on a passé storelieux");
+                    this.$router.push('/successmessage/lastpage/' + message);
+                })
+                .catch((response) => {
+                    console.log(response.error);
+                })
+        },
+
+        createNotification() {
+
+            let titre = ""
+            let message = ""
+
+            switch (this.statut) {
+
+                case ("validé"):
+                    titre = `Félicitations ${this.lieu.user.pseudo} , votre lieu ${this.nom} a été validé !`;
+                    message = `Après vérification, j'ai décidé de valider votre lieu : ${this.nom}.<br> 
+            Merci pour ce partage, Nice Places est maintenant plus complet grâce à vous !.<br>
+            A très bientôt.<br>
+            L'administrateur.`
+                    break
+
+                case ("à modifier"):
+                    titre = `${this.lieu.user.pseudo} , votre lieu ${this.nom} a besoin de modifications pour être validé !`;
+                    message = `Après vérification, votre lieu ${this.nom} a besoin des modifications suivantes : <br> 
+                    ${this.commentaire}<br>
+            Merci de faire le nécessaire pour qu'il soit validé.<br>
+            A très bientôt.<br>
+            L'administrateur.`
+                    break
+
+                case ("refusé"):
+                    titre = `${this.lieu.user.pseudo}, votre lieu ${this.nom} a été refusé.`;
+                    message = `Après vérification, j'ai décidé de refuser votre lieu : ${this.nom}, pour la ou les raison(s) suivante(s) : <br> 
+                                ${this.commentaire}<br>
+            Merci de votre compréhension.<br>
+            A très bientôt.<br>
+            L'administrateur.`
+                    break
+            }
+
+            axios.post('/api/notifications', { titre: titre, message: message, user_id: this.lieu.user.id, lieu_id: this.lieu.id },)
+                .then(response => console.log(response.data.message))
+                .catch(response => console.log(response.data.message))
+        }
+    },
+
+    created() {
+
+        axios.get("/api/lieus/" + this.lieuId)
+            .then(response => {
+                this.updateLocalData(response.data)
+            })
+            .catch((error) => {
+                console.log(error)
+                this.validationErrors = error.response.data.data;
+            });
+    },
+}
+</script>
 
 <style scoped>
 h1 {
@@ -392,7 +382,7 @@ img {
 }
 
 .container-fluid {
-    background-image: url(../../../public/images/plage.jpg);
+    background-image: url(../../../../public/images/plage.jpg);
     background-position: center;
     background-size: cover;
 }
