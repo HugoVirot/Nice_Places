@@ -1,5 +1,5 @@
 <template>
-
+    
     <div class="pt-5 pb-2">
         <i class="mx-auto fa-3x fa-solid fa-paper-plane"></i>
         <h1 class="mt-2">Mes lieux postés</h1>
@@ -9,7 +9,9 @@
         <div class="row">
             <div v-if="userPlaces.length == 0"><i class="greenIcon fa-solid fa-xmark fa-5x"></i><p class="fs-4">Vous n'avez posté aucun lieu</p></div>
             <div v-else class="col-lg-6 border border-3 border-white card text-white" v-for="(userPlace, index) in userPlaces"
-                :key="userPlace.id" :style="`background-image: url(images/${userPlace.image_mise_en_avant[0].nom}); background-position: center; background-size: cover;`">
+                :key="userPlace.id" :style="`background-image: url(images/${
+                    userPlace.image_mise_en_avant[0] ?  userPlace.image_mise_en_avant[0].nom : 'placeholder.png'
+                    }); background-position: center; background-size: cover;`">
                 <div class="p-3 fs-3 textWithShadow"> {{ userPlace.nom }} </div>
                 <div v-if="userPlace.statut == 'validé'" class="mx-auto bg-success w-25">validé</div>
                 <div v-else-if="userPlace.statut == 'en attente'" class="mx-auto bg-info w-25">en attente de validation

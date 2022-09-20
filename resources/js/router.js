@@ -20,6 +20,7 @@ import ModifierAvis from "./components/backoffice/ModifierAvis"
 import ModifierImage from "./components/backoffice/ModifierImage"
 import DerniersLieux from "./components/views/DerniersLieux"
 import MesNotifications from "./components/user/MesNotifications"
+import UploadImages from "./components/views/UploadImages"
 
 const routes = [
   {
@@ -106,6 +107,10 @@ const routes = [
   {
     path : "/mesnotifications",
     component: MesNotifications
+  },
+  {
+    path : "/uploadimages/:id",
+    component: UploadImages
   }
 ];
 

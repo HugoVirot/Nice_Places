@@ -43,7 +43,7 @@ class LieuController extends BaseController
         // dd($request);
         
         $validator = Validator::make($request->all(), [
-            'images.*' => 'required|image|mimes:jpg,jpeg,png,gif,svg|max:2048',
+            'images.*' => 'required|image|mimes:jpg,jpeg,png,svg|max:2048',
             'latitude' => 'required',
             'longitude' => 'required',
             'categorie' => 'required|integer',
@@ -97,7 +97,7 @@ class LieuController extends BaseController
 
         // ********************************** sauvegarde des images *************************************
 
-        // $imagesLastId = Image::max("id"); // on récupère le dernier id de la table images
+        // on récupère le nombre d'images pour ce lieu
         $imagesTotalForPlace = Image::where('lieu_id', $lieu->id)->count();
 
         // on accède au tableau d'images transmises via le formulaire

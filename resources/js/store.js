@@ -76,6 +76,7 @@ export const store = createStore({
         },
 
         storeLieux(state, payload) {
+            console.log("storeLieux");
             state.lieux = payload
         },
 

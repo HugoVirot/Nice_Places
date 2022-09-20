@@ -54,7 +54,7 @@
 <script>
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
-import { store } from 'vuex'
+import { store } from '../../store'
 
 export default {
 

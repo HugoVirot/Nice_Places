@@ -107,13 +107,14 @@
                                 </div>
                             </div>
 
+                            <!-- seul l'Admin peut changer la note du lieu -->
                             <div v-if="userData.role == 'admin'" class="form-group row m-2">
                                 <label for="note" class="col-md-4 col-form-label text-md-right">note sur
                                     10</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="note" id="note" min="0" max="10" type="number" class="form-control"
-                                        name="note" required autocomplete="note">
+                                    <input v-model="note" id="note" min="0" max="10" type="number" step="0.1"
+                                        class="form-control" name="note" required autocomplete="note">
                                 </div>
                             </div>
 
@@ -293,16 +294,9 @@ export default {
                 this.sendNotification()
             }
 
-            // on stocke dans le store la nouvelle liste des lieux 
-            // puis on redirige sur le composant qui affiche le message de succès
-            axios.get('http://localhost:8000/api/lieus')
-                .then(response => {
-                    // console.log(response.data); // ok   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PROBLEME ICI !!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    // store.dispatch("saveLieux", response.data) // rien ne se passe après le commit (idem dispatch)
-                    // console.log(store.state.lieux); // undefined
-                    this.$router.push('/successmessage/lastpage/' + message)
-                })
-                .catch(response => console.log(response.error))
+            //on redirige sur le message de succès
+            this.$router.push('/successmessage/lastpage/' + message)
+
         },
 
         sendNotification() {
@@ -353,7 +347,6 @@ export default {
             })
             .catch((error) => {
                 console.log(error)
-                this.validationErrors = error.response.data.data;
             });
     },
 }

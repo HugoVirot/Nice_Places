@@ -302,7 +302,8 @@ export default {
 
 						<div v-for="(topPlace, index) in threeTopPlaces"
 							class="mx-auto col-md-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
-							:style="`background-image: url(images/${topPlace.image_mise_en_avant[0].nom}); background-position: center; background-size: cover;`">
+							:style="`background-image: url(images/${topPlace.image_mise_en_avant[0] ? topPlace.image_mise_en_avant[0].nom : 'placeholder.png'
+							}); background-position: center; background-size: cover;`">
 							<div class="infosTopLieux pt-1 pb-3">
 
 								<div class="rankingAndName row d-flex justify-content-between align-items-center">
@@ -359,8 +360,8 @@ export default {
 
 						<div v-for="lastPlace in threeLastPlaces"
 							class="mx-auto col-md-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
-							:style="`background-image: url(images/${lastPlace.image_mise_en_avant[0].nom}); background-position: center; background-size: cover;`">
-
+							:style="`background-image: url(images/${lastPlace.image_mise_en_avant[0] ?  lastPlace.image_mise_en_avant[0].nom : 'placeholder.png'
+							}); background-position: center; background-size: cover;`">
 							<div class="infosDerniersLieux pt-2 px-1">
 
 								<div class="row">
@@ -462,7 +463,8 @@ img {
 	color: #94D1BE
 }
 
-h1, h2 {
+h1,
+h2 {
 	color: #1c6e8c
 }
 

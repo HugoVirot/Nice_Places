@@ -42,9 +42,9 @@
             </div>
 
         </div>
+        <img class="singlePicture" v-if="lieu.images.length == 0" src="/images/placeholder.png">
 
-
-        <img class="singlePicture" v-if="lieu.images.length == 1" :src="`/images/${lieu.images[0].nom}`">
+        <img class="singlePicture" v-else-if="lieu.images.length == 1" :src="`/images/${lieu.images[0].nom}`">
 
         <div v-else id="carouselLieu" class="carousel slide carousel-fade container" data-bs-ride="carousel">
 
@@ -78,7 +78,7 @@
 
             <p class="m-3">{{ lieu.description }}</p>
 
-            <div class="row px-5 py-4 mt-4 border border-primary">
+            <div class="row px-5 py-4 mt-4 border border-secondary">
                 <div class="col-md-6">
                     <p> <i class="fa-2x fa-solid fa-road me-3"></i>
                         {{ lieu.adresse }}</p>
@@ -103,6 +103,9 @@
                     </p>
                     <p v-if="lieu.kilometres"> <i class="fa-2x fa-solid fa-shoe-prints me-3"></i>
                         {{ lieu.kilometres }} kilomètres (en moyenne)</p>
+                        <p>
+                            <router-link :to="`/uploadimages/${lieu.id}`"><button class="btn btn-lg rounded-pill">proposer des images</button></router-link>
+                        </p>
                 </div>
             </div>
         </div>
@@ -327,6 +330,10 @@ export default {
 <style scoped>
 .greenIcon {
     color: #94D1BE
+}
+.btn {
+	background-color: #94D1BE !important;
+	color: white;
 }
 
 h1,

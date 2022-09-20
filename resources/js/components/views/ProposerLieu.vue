@@ -166,6 +166,9 @@ export default {
                                             Maximum 5 photos, 2 Mo par photo et 8 Mo pour l'ensemble.
                                         </li>
                                         <li>
+                                            Formats acceptés : JPG, JPEG, PNG et SVG.
+                                        </li>
+                                        <li>
                                             Uniquement en format paysage svp.
                                         </li>
                                         <li>
