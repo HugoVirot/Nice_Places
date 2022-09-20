@@ -228,6 +228,7 @@ export default {
             code_postal: "",
             ville: "",
             statut: "",
+            statutPrecedent: "",
             commentaire: "",
             validationErrors: ""
         }
@@ -253,6 +254,7 @@ export default {
             this.code_postal = lieu.code_postal
             this.ville = lieu.ville
             this.statut = lieu.statut
+            this.statutPrecedent = lieu.statut
             this.commentaire = lieu.commentaire
         },
 
@@ -283,33 +285,27 @@ export default {
 
         handleSuccess(response) {
 
-            console.log(response) // OK lieu modifié
-
             let message = response.data.message
 
             // on envoie une notification en cas de changement de statut
-            // seulement si l'auteur n'est pas administrateur
-            // if (this.lieu.user.role !== "admin") {
-            //     this.createNotification()
-            // }
+            // ET seulement si l'auteur n'est pas administrateur (sinon, inutile)
+            if (this.statutPrecedent !== this.statut && this.lieu.user.role.role !== "admin") {
+                this.sendNotification()
+            }
 
             // on stocke dans le store la nouvelle liste des lieux 
             // puis on redirige sur le composant qui affiche le message de succès
-
-            axios.get('/api/lieus')
-
+            axios.get('http://localhost:8000/api/lieus')
                 .then(response => {
-                    console.log(response);  // ok lieux récupérés
-                    store.commit("storeLieux", response.data) // fait bugger => il ne se passe rien
-                    console.log(" on a passé storelieux");
-                    this.$router.push('/successmessage/lastpage/' + message);
+                    // console.log(response.data); // ok   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PROBLEME ICI !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    // store.dispatch("saveLieux", response.data) // rien ne se passe après le commit (idem dispatch)
+                    // console.log(store.state.lieux); // undefined
+                    this.$router.push('/successmessage/lastpage/' + message)
                 })
-                .catch((response) => {
-                    console.log(response.error);
-                })
+                .catch(response => console.log(response.error))
         },
 
-        createNotification() {
+        sendNotification() {
 
             let titre = ""
             let message = ""
@@ -319,7 +315,7 @@ export default {
                 case ("validé"):
                     titre = `Félicitations ${this.lieu.user.pseudo} , votre lieu ${this.nom} a été validé !`;
                     message = `Après vérification, j'ai décidé de valider votre lieu : ${this.nom}.<br> 
-            Merci pour ce partage, Nice Places est maintenant plus complet grâce à vous !.<br>
+            Merci pour ce partage, Nice Places est maintenant plus complet grâce à vous !<br>
             A très bientôt.<br>
             L'administrateur.`
                     break

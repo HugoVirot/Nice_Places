@@ -40,7 +40,7 @@ class LieuController extends BaseController
     public function store(Request $request)
     {
 
-        dd($request);
+        // dd($request);
         
         $validator = Validator::make($request->all(), [
             'images.*' => 'required|image|mimes:jpg,jpeg,png,gif,svg|max:2048',

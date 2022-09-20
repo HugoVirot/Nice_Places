@@ -19,6 +19,7 @@ const defaultState = {
         token: "",
         role: ""
     },
+    userLoggedIn: false,
     geolocationAnswered: false,
     userPosition: "",
     lieux: "",
@@ -48,14 +49,20 @@ export const store = createStore({
     mutations: {
         // stocker les infos utilisateur dans le state
         storeUserData(state, payload) {
-            console.log("storeuserdata")
+            console.log("storeuserdata");
             state.userData.pseudo = payload.pseudo
             state.userData.email = payload.email
             state.userData.id = payload.id
             state.userData.departement = payload.departement
-            state.userData.region = payload.departement.region
+            state.userData.region = payload.departement.region.nom
             state.userData.role = payload.role
             state.userData.token = payload.token
+        },
+
+        // mémoriser le fait que l'utilisateur soit connecté
+        storeUserLoggedIn(state) {
+            console.log("userloggedin");
+            state.userLoggedIn = true
         },
 
         // mémoriser le fait qu'un choix a été fait par rapport à la géoloc
@@ -107,7 +114,7 @@ export const store = createStore({
         storeImages(state, payload) {
             state.images = payload
         },
- 
+
         storeFavoris(state, payload) {
             state.favoris = payload
         },
@@ -138,8 +145,11 @@ export const store = createStore({
     },
 
     actions: {
-        saveUserData({commit}, payload){
+        saveUserData({ commit }, payload) {
             commit('storeUserData', payload)
+        },
+        saveLieux({ commit }, payload) {
+            commit('storeLieux', payload)
         }
     },
 

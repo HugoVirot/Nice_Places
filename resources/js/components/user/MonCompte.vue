@@ -181,6 +181,7 @@
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
 import { store } from '../../store'
+
 export default {
 
     data() {
@@ -246,9 +247,13 @@ export default {
                 pseudo: this.pseudo, email: this.email, departement_id: this.departement.id, region: this.departement.region, oldPassword: this.oldPassword,
                 password: this.password, password_confirmation: this.password_confirmation
             })
-                .then((response) => this.editDataSuccess(response))
+                .then(response => {
+                    store.commit('storeUserData', response.data.data)
+                    this.$router.push('/successmessage/lastpage/' + response.data.message) 
+                    // this.editDataSuccess(response)
+                })
                 .catch((error) => {
-                    this.validationErrors = error.response.data.data;
+                    this.validationErrors = error.response.data.data; // on passe ici de façon incompréhensible
                 })
         },
 
@@ -263,15 +268,8 @@ export default {
         },
 
         editDataSuccess(response) {
-            console.log("on passe dans editdatasuccess")
-            console.log(response)
-
-            // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
-            // ici, response.data.data est le payload transmis au store
-            store.commit('storeUserData', response.data.data)
-            //store.dispatch('saveUserData', response.data.data)
-            // store.state.userData = response.data.data
-
+            store.commit('storeUserData', response.data.data)             // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
+            //store.dispatch('saveUserData', response.data.data)             // ici, response.data.data est le payload transmis au store
             this.$router.push('/successmessage/lastpage/' + response.data.message)
         },
 
@@ -279,8 +277,25 @@ export default {
             // suppression compte réussie => déconnexion + retour accueil
             store.commit('resetState')
             this.$router.push('/SuccessMessage/home/' + response.data.message)
-        }
+        },
 
+		getDepartements() {
+			axios.get("http://localhost:8000/api/departements")
+				.then(response => {
+					store.commit('storeDepartements', response.data)
+				}
+				)
+				.catch(error => {
+					console.log(error.response)
+				})
+		},
+
+    },
+    created(){
+        // on récupère les départements si ce n'est pas déjà fait
+        if(this.departements == ''){
+            this.getDepartements
+        }
     }
 }
 </script>

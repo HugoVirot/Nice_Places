@@ -131,6 +131,7 @@ class ImageController extends BaseController
         $image->delete();
 
         // on retourne la réponse en json
-        return response()->json("Image supprimée avec succès");
+        $message = "L'image a bien été supprimée";
+        return $this->sendResponse($image, $message);
     }
 }

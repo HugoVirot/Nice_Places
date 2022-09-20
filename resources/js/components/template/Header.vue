@@ -124,7 +124,6 @@ export default {
         },
         
         countUnreadNotifications() {
-
             if (store.state.notifications) {
                 return store.state.notifications.filter(n => !n.lue).length
             }

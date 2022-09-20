@@ -3,12 +3,13 @@ import axios from "axios";
 import { store } from "../../store";
 import ValidationErrors from "../utilities/ValidationErrors.vue"
 
-// const dropzone = new Dropzone("div#uploadImages", { url: "/api/images"})
-
 export default {
     computed: {
         categories() {
             return store.state.categories
+        },
+        userLoggedIn(){
+            return store.state.userLoggedIn
         }
     },
 
@@ -72,26 +73,23 @@ export default {
 
             axios.post('/api/lieus', this.formData, { 'content-type': 'multipart/form-data' })
                 .then((response) => {
-
                     let message = response.data.message
                     let lieuId = response.data.data.id
 
                     // si utilisateur normal, on sauvegarde une notification en base de données
-                    if (store.state.userData.role !== "admin") {
+                    if (store.state.userData.role.role !== "admin") {
                         this.createNotification(lieuId)
                     }
 
                     // on récupère la nouvelle liste des lieux (avec le nouveau lieu en +)
                     axios.get('/api/lieus').then(response => {
-
-                        // on la stocke dans le store
                         store.commit('storeLieux', response.data)
                         console.log(store.state.lieux)
 
                         // on redirige vers l'accueil
                         this.$router.push('/SuccessMessage/home/' + message)
 
-                    }).catch(response => console.log(response.error))
+                    }).catch(response => console.log(response.error)) // on passe ici si images pas trop lourdes
 
                 })
                 .catch((error) => {
@@ -111,7 +109,7 @@ export default {
 
             axios.post('/api/notifications', { titre: titre, message: message, user_id: store.state.userData.id, lieu_id: lieuId },)
                 .then(response => console.log(response.data.message))
-                .catch(response => console.log(response.data.message))
+                .catch(error => console.log(error))
         }
     }
 }
@@ -124,7 +122,7 @@ export default {
         <h1 class="mt-2">Proposer un lieu</h1>
     </div>
 
-    <div class="container-fluid p-3 p-lg-5">
+    <div v-if="userLoggedIn" class="container-fluid p-3 p-lg-5">
 
         <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
 
@@ -165,7 +163,7 @@ export default {
                                 <div class="form-text mb-3 col-md-8 offset-md-4">
                                     <ul class="text-start ms-5 ms-md-0">
                                         <li>
-                                            Maximum 5 photos et 2 Mo par photo.
+                                            Maximum 5 photos, 2 Mo par photo et 8 Mo pour l'ensemble.
                                         </li>
                                         <li>
                                             Uniquement en format paysage svp.
@@ -306,23 +304,14 @@ export default {
             </div>
         </div>
     </div>
+    <div v-else class="container">
+        <p class="mb-2">Vous devez être connecté pour proposer un lieu.</p>
+        <router-link to="/connexion"><button class="btn btn-lg mb-3 rounded-pill">Se connecter</button>
+        </router-link>
 
-    <div class="modal bg-success" id="successModal" ref="successModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Félicitations !</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Inscription réussie ! </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
+        <p class="mb-2">Pas encore inscrit ?</p>
+        <router-link to="/inscription"><button class="btn btn-lg rounded-pill">Créer un compte</button>
+        </router-link>
     </div>
 
 </template>
@@ -336,6 +325,10 @@ i {
     color: #94D1BE
 }
 
+.btn {
+	background-color: #94D1BE !important;
+	color: white;
+}
 
 img {
     width: 6vw

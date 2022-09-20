@@ -23332,10 +23332,7 @@ moment__WEBPACK_IMPORTED_MODULE_1___default().locale('fr');
     },
     images: function images() {
       return _store__WEBPACK_IMPORTED_MODULE_0__.store.state.images;
-    } // lieuxNonValidés()[
-    //     return store.state.lieux.filter( lieu => lieu.valide)
-    // ]
-
+    }
   },
   data: function data() {
     return {
@@ -23456,29 +23453,28 @@ moment__WEBPACK_IMPORTED_MODULE_1___default().locale('fr');
     }
   },
   created: function created() {
-    this.moment = (moment__WEBPACK_IMPORTED_MODULE_1___default()); // axios.get("http://localhost:8000/api/lieux")
-    //     .then(response => {
-    //         store.commit('storeLieux', response.data)
-    //     }
-    //     )
-    //     .catch(error => {
-    //         console.log(JSON.stringify(error))
-    //     })
-
+    this.moment = (moment__WEBPACK_IMPORTED_MODULE_1___default());
+    axios__WEBPACK_IMPORTED_MODULE_2___default().get("http://localhost:8000/api/lieus").then(function (response) {
+      console.log("getLieux");
+      _store__WEBPACK_IMPORTED_MODULE_0__.store.commit('storeLieux', response.data);
+      console.log(_store__WEBPACK_IMPORTED_MODULE_0__.store.state.lieux);
+    })["catch"](function (error) {
+      return console.log(error.response);
+    });
     axios__WEBPACK_IMPORTED_MODULE_2___default().get("http://localhost:8000/api/avis").then(function (response) {
       _store__WEBPACK_IMPORTED_MODULE_0__.store.commit('storeAvis', response.data);
     })["catch"](function (error) {
-      console.log(JSON.stringify(error));
+      return console.log(error.response);
     });
     axios__WEBPACK_IMPORTED_MODULE_2___default().get("http://localhost:8000/api/users").then(function (response) {
       _store__WEBPACK_IMPORTED_MODULE_0__.store.commit('storeUsers', response.data);
     })["catch"](function (error) {
-      console.log(JSON.stringify(error));
+      return console.log(error.response);
     });
     axios__WEBPACK_IMPORTED_MODULE_2___default().get("http://localhost:8000/api/images").then(function (response) {
       _store__WEBPACK_IMPORTED_MODULE_0__.store.commit('storeImages', response.data);
     })["catch"](function (error) {
-      console.log(JSON.stringify(error));
+      return console.log(error.response);
     });
   }
 });
@@ -23768,6 +23764,7 @@ __webpack_require__.r(__webpack_exports__);
       code_postal: "",
       ville: "",
       statut: "",
+      statutPrecedent: "",
       commentaire: "",
       validationErrors: ""
     };
@@ -23793,6 +23790,7 @@ __webpack_require__.r(__webpack_exports__);
       this.code_postal = lieu.code_postal;
       this.ville = lieu.ville;
       this.statut = lieu.statut;
+      this.statutPrecedent = lieu.statut;
       this.commentaire = lieu.commentaire;
     },
     saveChanges: function saveChanges() {
@@ -23824,36 +23822,32 @@ __webpack_require__.r(__webpack_exports__);
     handleSuccess: function handleSuccess(response) {
       var _this2 = this;
 
-      console.log(response); // OK lieu modifié
-
       var message = response.data.message; // on envoie une notification en cas de changement de statut
-      // seulement si l'auteur n'est pas administrateur
-      // if (this.lieu.user.role !== "admin") {
-      //     this.createNotification()
-      // }
-      // on stocke dans le store la nouvelle liste des lieux 
+      // ET seulement si l'auteur n'est pas administrateur (sinon, inutile)
+
+      if (this.statutPrecedent !== this.statut && this.lieu.user.role.role !== "admin") {
+        this.sendNotification();
+      } // on stocke dans le store la nouvelle liste des lieux 
       // puis on redirige sur le composant qui affiche le message de succès
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/lieus').then(function (response) {
-        console.log(response); // ok lieux récupérés
 
-        _store_js__WEBPACK_IMPORTED_MODULE_2__.store.commit("storeLieux", response.data); // fait bugger => il ne se passe rien
-
-        console.log(" on a passé storelieux");
-
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('http://localhost:8000/api/lieus').then(function (response) {
+        // console.log(response.data); // ok   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PROBLEME ICI !!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // store.dispatch("saveLieux", response.data) // rien ne se passe après le commit (idem dispatch)
+        // console.log(store.state.lieux); // undefined
         _this2.$router.push('/successmessage/lastpage/' + message);
       })["catch"](function (response) {
-        console.log(response.error);
+        return console.log(response.error);
       });
     },
-    createNotification: function createNotification() {
+    sendNotification: function sendNotification() {
       var titre = "";
       var message = "";
 
       switch (this.statut) {
         case "validé":
           titre = "F\xE9licitations ".concat(this.lieu.user.pseudo, " , votre lieu ").concat(this.nom, " a \xE9t\xE9 valid\xE9 !");
-          message = "Apr\xE8s v\xE9rification, j'ai d\xE9cid\xE9 de valider votre lieu : ".concat(this.nom, ".<br> \n            Merci pour ce partage, Nice Places est maintenant plus complet gr\xE2ce \xE0 vous !.<br>\n            A tr\xE8s bient\xF4t.<br>\n            L'administrateur.");
+          message = "Apr\xE8s v\xE9rification, j'ai d\xE9cid\xE9 de valider votre lieu : ".concat(this.nom, ".<br> \n            Merci pour ce partage, Nice Places est maintenant plus complet gr\xE2ce \xE0 vous !<br>\n            A tr\xE8s bient\xF4t.<br>\n            L'administrateur.");
           break;
 
         case "à modifier":
@@ -23962,7 +23956,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _utilities_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utilities/ValidationErrors.vue */ "./resources/js/components/utilities/ValidationErrors.vue");
-/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../store.js */ "./resources/js/store.js");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
 
 
 
@@ -23981,23 +23975,23 @@ __webpack_require__.r(__webpack_exports__);
     logIn: function logIn() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/login', {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('http://localhost:8000/api/login', {
         email: this.email,
         password: this.password
       }).then(function (response) {
-        return _this.loginSuccess(response);
+        _this.loginSuccess(response);
       })["catch"](function (error) {
-        // on stocke les messages d'erreurs dans la variable validationErrors du composant
+        // on stocke les messages d'erreurs dans la variable validationErrors du composant, pour les afficher
         _this.validationErrors = error.response.data.data;
       });
     },
     loginSuccess: function loginSuccess(response) {
-      console.log(response); // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
+      console.log("loginsuccess"); // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
       // ici, response.data.data est le payload transmis au store
-      // les 2 versions fonctionnent (choisir)
 
-      _store_js__WEBPACK_IMPORTED_MODULE_2__.store.dispatch('saveUserData', response.data.data); // store.commit('storeUserData', response.data.data)
-      // on redirige vers l'accueil
+      vuex__WEBPACK_IMPORTED_MODULE_2__.store.commit('storeUserData', response.data.data); // on appelle le mutateur storeUserLoggedIn pour mémoriser le fait que l'utilisateur soit connecté
+
+      vuex__WEBPACK_IMPORTED_MODULE_2__.store.commit('storeUserLoggedIn', true); // on redirige vers l'accueil
 
       this.$router.push('/SuccessMessage/home/' + response.data.message);
     }
@@ -24381,9 +24375,12 @@ __webpack_require__.r(__webpack_exports__);
         password: this.password,
         password_confirmation: this.password_confirmation
       }).then(function (response) {
-        return _this.editDataSuccess(response);
+        _store__WEBPACK_IMPORTED_MODULE_2__.store.commit('storeUserData', response.data.data);
+
+        _this.$router.push('/successmessage/lastpage/' + response.data.message); // this.editDataSuccess(response)
+
       })["catch"](function (error) {
-        _this.validationErrors = error.response.data.data;
+        _this.validationErrors = error.response.data.data; // on passe ici de façon incompréhensible
       });
     },
     deleteAccount: function deleteAccount() {
@@ -24396,12 +24393,8 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     editDataSuccess: function editDataSuccess(response) {
-      console.log("on passe dans editdatasuccess");
-      console.log(response); // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
-      // ici, response.data.data est le payload transmis au store
-
-      _store__WEBPACK_IMPORTED_MODULE_2__.store.commit('storeUserData', response.data.data); //store.dispatch('saveUserData', response.data.data)
-      // store.state.userData = response.data.data
+      _store__WEBPACK_IMPORTED_MODULE_2__.store.commit('storeUserData', response.data.data); // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
+      //store.dispatch('saveUserData', response.data.data)             // ici, response.data.data est le payload transmis au store
 
       this.$router.push('/successmessage/lastpage/' + response.data.message);
     },
@@ -24409,6 +24402,19 @@ __webpack_require__.r(__webpack_exports__);
       // suppression compte réussie => déconnexion + retour accueil
       _store__WEBPACK_IMPORTED_MODULE_2__.store.commit('resetState');
       this.$router.push('/SuccessMessage/home/' + response.data.message);
+    },
+    getDepartements: function getDepartements() {
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("http://localhost:8000/api/departements").then(function (response) {
+        _store__WEBPACK_IMPORTED_MODULE_2__.store.commit('storeDepartements', response.data);
+      })["catch"](function (error) {
+        console.log(error.response);
+      });
+    }
+  },
+  created: function created() {
+    // on récupère les départements si ce n'est pas déjà fait
+    if (this.departements == '') {
+      this.getDepartements;
     }
   }
 });
@@ -25198,12 +25204,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utilities_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utilities/ValidationErrors.vue */ "./resources/js/components/utilities/ValidationErrors.vue");
 
 
- // const dropzone = new Dropzone("div#uploadImages", { url: "/api/images"})
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   computed: {
     categories: function categories() {
       return _store__WEBPACK_IMPORTED_MODULE_1__.store.state.categories;
+    },
+    userLoggedIn: function userLoggedIn() {
+      return _store__WEBPACK_IMPORTED_MODULE_1__.store.state.userLoggedIn;
     }
   },
   data: function data() {
@@ -25266,20 +25274,19 @@ __webpack_require__.r(__webpack_exports__);
         var message = response.data.message;
         var lieuId = response.data.data.id; // si utilisateur normal, on sauvegarde une notification en base de données
 
-        if (_store__WEBPACK_IMPORTED_MODULE_1__.store.state.userData.role !== "admin") {
+        if (_store__WEBPACK_IMPORTED_MODULE_1__.store.state.userData.role.role !== "admin") {
           _this.createNotification(lieuId);
         } // on récupère la nouvelle liste des lieux (avec le nouveau lieu en +)
 
 
         axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/lieus').then(function (response) {
-          // on la stocke dans le store
           _store__WEBPACK_IMPORTED_MODULE_1__.store.commit('storeLieux', response.data);
           console.log(_store__WEBPACK_IMPORTED_MODULE_1__.store.state.lieux); // on redirige vers l'accueil
 
           _this.$router.push('/SuccessMessage/home/' + message);
         })["catch"](function (response) {
           return console.log(response.error);
-        });
+        }); // on passe ici si images pas trop lourdes
       })["catch"](function (error) {
         _this.validationErrors = error.response.data.data;
       });
@@ -25296,8 +25303,8 @@ __webpack_require__.r(__webpack_exports__);
         lieu_id: lieuId
       }).then(function (response) {
         return console.log(response.data.message);
-      })["catch"](function (response) {
-        return console.log(response.data.message);
+      })["catch"](function (error) {
+        return console.log(error);
       });
     }
   }
@@ -26389,7 +26396,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     /* TEXT */
     ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(lieu.ville), 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(lieu.user.pseudo), 1
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(lieu.user ? lieu.user.pseudo : 'compte supprimé'), 1
     /* TEXT */
     ), lieu.statut == 'validé' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_26, "validé")) : lieu.statut == 'en attente' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_27, "en attente de validation ")) : lieu.statut == 'à modifier' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_28, "à modifier pour être validé ")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_29, "refusé")), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.moment(lieu.created_at).format("ddd DD MMM YYYY [à] HH:mm")), 1
     /* TEXT */
@@ -30983,6 +30990,7 @@ var _hoisted_1 = /*#__PURE__*/_withScopeId(function () {
 });
 
 var _hoisted_2 = {
+  key: 0,
   "class": "container-fluid p-3 p-lg-5"
 };
 var _hoisted_3 = {
@@ -31058,7 +31066,7 @@ var _hoisted_16 = /*#__PURE__*/_withScopeId(function () {
     "class": "form-text mb-3 col-md-8 offset-md-4"
   }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", {
     "class": "text-start ms-5 ms-md-0"
-  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, " Maximum 5 photos et 2 Mo par photo. "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, " Uniquement en format paysage svp. "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, " La première choisie sera la photo de couverture. "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, " Sur PC, maintenez la touche CTRL pour sélectionner plusieurs photos. "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, " Sur mobile, explication à venir. ")])])], -1
+  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, " Maximum 5 photos, 2 Mo par photo et 8 Mo pour l'ensemble. "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, " Uniquement en format paysage svp. "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, " La première choisie sera la photo de couverture. "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, " Sur PC, maintenez la touche CTRL pour sélectionner plusieurs photos. "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, " Sur mobile, explication à venir. ")])])], -1
   /* HOISTED */
   );
 });
@@ -31298,19 +31306,48 @@ var _hoisted_57 = /*#__PURE__*/_withScopeId(function () {
 });
 
 var _hoisted_58 = {
-  "class": "modal bg-success",
-  id: "successModal",
-  ref: "successModal",
-  tabindex: "-1"
+  key: 1,
+  "class": "container"
 };
 
-var _hoisted_59 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"modal-dialog\" data-v-4c311f2d><div class=\"modal-content\" data-v-4c311f2d><div class=\"modal-header\" data-v-4c311f2d><h5 class=\"modal-title\" data-v-4c311f2d>Félicitations !</h5><button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\" data-v-4c311f2d></button></div><div class=\"modal-body\" data-v-4c311f2d><p data-v-4c311f2d>Inscription réussie ! </p></div><div class=\"modal-footer\" data-v-4c311f2d><button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\" data-v-4c311f2d>Close</button><button type=\"button\" class=\"btn btn-primary\" data-v-4c311f2d>Save changes</button></div></div></div>", 1);
+var _hoisted_59 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
+    "class": "mb-2"
+  }, "Vous devez être connecté pour proposer un lieu.", -1
+  /* HOISTED */
+  );
+});
 
-var _hoisted_60 = [_hoisted_59];
+var _hoisted_60 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    "class": "btn btn-lg mb-3 rounded-pill"
+  }, "Se connecter", -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_61 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
+    "class": "mb-2"
+  }, "Pas encore inscrit ?", -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_62 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    "class": "btn btn-lg rounded-pill"
+  }, "Créer un compte", -1
+  /* HOISTED */
+  );
+});
+
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_ValidationErrors = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ValidationErrors");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [$data.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
+  var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
+
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, $options.userLoggedIn ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [$data.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
     key: 0,
     errors: $data.validationErrors
   }, null, 8
@@ -31502,9 +31539,25 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* NEED_PATCH */
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.ville]])])]), _hoisted_57], 32
   /* HYDRATE_EVENTS */
-  )])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_58, _hoisted_60, 512
-  /* NEED_PATCH */
-  )], 64
+  )])])])])])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_58, [_hoisted_59, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
+    to: "/connexion"
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [_hoisted_60];
+    }),
+    _: 1
+    /* STABLE */
+
+  }), _hoisted_61, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
+    to: "/inscription"
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [_hoisted_62];
+    }),
+    _: 1
+    /* STABLE */
+
+  })]))], 64
   /* STABLE_FRAGMENT */
   );
 }
@@ -31872,6 +31925,7 @@ var defaultState = {
     token: "",
     role: ""
   },
+  userLoggedIn: false,
   geolocationAnswered: false,
   userPosition: "",
   lieux: "",
@@ -31903,9 +31957,14 @@ var store = (0,vuex__WEBPACK_IMPORTED_MODULE_1__.createStore)({
       state.userData.email = payload.email;
       state.userData.id = payload.id;
       state.userData.departement = payload.departement;
-      state.userData.region = payload.departement.region;
+      state.userData.region = payload.departement.region.nom;
       state.userData.role = payload.role;
       state.userData.token = payload.token;
+    },
+    // mémoriser le fait que l'utilisateur soit connecté
+    storeUserLoggedIn: function storeUserLoggedIn(state) {
+      console.log("userloggedin");
+      state.userLoggedIn = true;
     },
     // mémoriser le fait qu'un choix a été fait par rapport à la géoloc
     storeGeolocationAnswered: function storeGeolocationAnswered(state, payload) {
@@ -31975,6 +32034,10 @@ var store = (0,vuex__WEBPACK_IMPORTED_MODULE_1__.createStore)({
     saveUserData: function saveUserData(_ref, payload) {
       var commit = _ref.commit;
       commit('storeUserData', payload);
+    },
+    saveLieux: function saveLieux(_ref2, payload) {
+      var commit = _ref2.commit;
+      commit('storeLieux', payload);
     }
   },
   plugins: [vuexPersist.plugin]
@@ -37825,7 +37888,7 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 var ___CSS_LOADER_URL_REPLACEMENT_0___ = _node_modules_css_loader_dist_runtime_getUrl_js__WEBPACK_IMPORTED_MODULE_1___default()(_public_images_riviere_jpg__WEBPACK_IMPORTED_MODULE_2__["default"]);
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\nh1[data-v-4c311f2d] {\r\n    color: #1C6E8C\n}\ni[data-v-4c311f2d] {\r\n    color: #94D1BE\n}\nimg[data-v-4c311f2d] {\r\n    width: 6vw\n}\n.card[data-v-4c311f2d] {\r\n    color: #1C6E8C;\r\n    background: rgba(254, 254, 254, 0.73)\n}\n.card-header[data-v-4c311f2d] {\r\n    background-color: #94D1BE\n}\n.container-fluid[data-v-4c311f2d] {\r\n    background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\r\n    background-position: center;\r\n    background-size: cover;\n}\n.btn[data-v-4c311f2d] {\r\n    background-color: #94D1BE !important;\r\n    color: white;\n}\n@media screen and (max-width: 768px) {\nimg[data-v-4c311f2d] {\r\n        width: 10vw\n}\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nh1[data-v-4c311f2d] {\r\n    color: #1C6E8C\n}\ni[data-v-4c311f2d] {\r\n    color: #94D1BE\n}\n.btn[data-v-4c311f2d] {\r\n\tbackground-color: #94D1BE !important;\r\n\tcolor: white;\n}\nimg[data-v-4c311f2d] {\r\n    width: 6vw\n}\n.card[data-v-4c311f2d] {\r\n    color: #1C6E8C;\r\n    background: rgba(254, 254, 254, 0.73)\n}\n.card-header[data-v-4c311f2d] {\r\n    background-color: #94D1BE\n}\n.container-fluid[data-v-4c311f2d] {\r\n    background-image: url(" + ___CSS_LOADER_URL_REPLACEMENT_0___ + ");\r\n    background-position: center;\r\n    background-size: cover;\n}\n.btn[data-v-4c311f2d] {\r\n    background-color: #94D1BE !important;\r\n    color: white;\n}\n@media screen and (max-width: 768px) {\nimg[data-v-4c311f2d] {\r\n        width: 10vw\n}\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

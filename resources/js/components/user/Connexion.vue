@@ -54,7 +54,7 @@
 <script>
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
-import { store } from "../../store.js";
+import { store } from 'vuex'
 
 export default {
 
@@ -71,28 +71,23 @@ export default {
     methods: {
 
         logIn() {
-
-            axios.post('/api/login', { email: this.email, password: this.password })
-
-                .then(response => this.loginSuccess(response))
-
+            axios.post('http://localhost:8000/api/login', { email: this.email, password: this.password })
+                .then(response => {
+                    this.loginSuccess(response)
+                })
                 .catch(error => {
-
-                    // on stocke les messages d'erreurs dans la variable validationErrors du composant
+                    // on stocke les messages d'erreurs dans la variable validationErrors du composant, pour les afficher
                     this.validationErrors = error.response.data.data;
                 })
         },
 
         loginSuccess(response) {
-
-            console.log(response)
-
+            console.log("loginsuccess");
             // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
             // ici, response.data.data est le payload transmis au store
-
-            // les 2 versions fonctionnent (choisir)
-            store.dispatch('saveUserData', response.data.data)
-            // store.commit('storeUserData', response.data.data)
+            store.commit('storeUserData', response.data.data)
+            // on appelle le mutateur storeUserLoggedIn pour mémoriser le fait que l'utilisateur soit connecté
+            store.commit('storeUserLoggedIn', true)
             // on redirige vers l'accueil
             this.$router.push('/SuccessMessage/home/' + response.data.message)
         }

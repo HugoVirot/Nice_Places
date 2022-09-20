@@ -132,8 +132,8 @@ class UserController extends BaseController
     public function update(Request $request, User $user)
     {
         $validator = Validator::make($request->all(), [
-            'pseudo' => 'required|max:50',
-            'email' => 'required|email',
+            'pseudo' => 'required|max:20',
+            'email' => 'required|email|max:20',
             'oldPassword' => 'nullable',
             'password' => [
                 'nullable', 'confirmed',
@@ -143,7 +143,7 @@ class UserController extends BaseController
                     ->numbers() // au moins un chiffre
                     ->symbols() // au moins un caractère spécial     
             ],
-            'departement' => [
+            'departement_id' => [
                 'nullable'
             ]
         ]);

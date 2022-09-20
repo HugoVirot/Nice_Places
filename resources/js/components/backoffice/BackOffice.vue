@@ -76,7 +76,7 @@
                     <td>{{ lieu.adresse }}</td>
                     <td>{{ lieu.code_postal }}</td>
                     <td>{{ lieu.ville }}</td>
-                    <td>{{ lieu.user.pseudo }}</td>
+                    <td>{{ lieu.user ? lieu.user.pseudo : 'compte supprimé'}}</td>
 
                     <td v-if="lieu.statut == 'validé'" class="bg-success text-white">validé</td>
                     <td v-else-if="lieu.statut == 'en attente'" class="mx-auto bg-info w-25">en attente de validation
@@ -287,7 +287,8 @@
                     <th>
                         <button class="m-3" data-bs-toggle="modal" :data-bs-target="`.imageZoom${image.id}`"
                             style="border: none; outline:none">
-                            <img v-if="image.lieu_id !== null" class="w-75" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
+                            <img v-if="image.lieu_id !== null" class="w-75" :src="`/images/${image.nom}`"
+                                :alt="`${image.nom}`">
                             <img v-else class="w-75" :src="`/images/categorie${image.id}.jpg`" :alt="`${image.nom}`">
                         </button>
                     </th>
@@ -310,8 +311,10 @@
                         aria-labelledby="myLargeModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-xl">
                             <div class="modal-body w-100">
-                                <img v-if="image.lieu_id" class="w-100" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
-                                <img v-else class="w-100" :src="`/images/categorie${image.id}.jpg`" :alt="`${image.nom}`">
+                                <img v-if="image.lieu_id" class="w-100" :src="`/images/${image.nom}`"
+                                    :alt="`${image.nom}`">
+                                <img v-else class="w-100" :src="`/images/categorie${image.id}.jpg`"
+                                    :alt="`${image.nom}`">
                             </div>
                         </div>
                     </div>
@@ -347,11 +350,7 @@ export default {
         },
         images() {
             return store.state.images
-        },
-        // lieuxNonValidés()[
-        //     return store.state.lieux.filter( lieu => lieu.valide)
-
-        // ]
+        }
     },
 
     data() {
@@ -534,43 +533,35 @@ export default {
     created() {
         this.moment = moment
 
-        // axios.get("http://localhost:8000/api/lieux")
-        //     .then(response => {
-        //         store.commit('storeLieux', response.data)
-        //     }
-        //     )
-        //     .catch(error => {
-        //         console.log(JSON.stringify(error))
-        //     })
+        axios.get("http://localhost:8000/api/lieus")
+            .then(response => {
+                console.log("getLieux");
+                store.commit('storeLieux', response.data)
+                console.log(store.state.lieux);
+            }
+            )
+            .catch(error => console.log(error.response))
 
         axios.get("http://localhost:8000/api/avis")
             .then(response => {
                 store.commit('storeAvis', response.data)
             }
             )
-            .catch(error => {
-                console.log(JSON.stringify(error))
-            })
-
+            .catch(error => console.log(error.response))
 
         axios.get("http://localhost:8000/api/users")
             .then(response => {
                 store.commit('storeUsers', response.data)
             }
             )
-            .catch(error => {
-                console.log(JSON.stringify(error))
-            })
-
+            .catch(error => console.log(error.response))
 
         axios.get("http://localhost:8000/api/images")
             .then(response => {
                 store.commit('storeImages', response.data)
             }
             )
-            .catch(error => {
-                console.log(JSON.stringify(error))
-            })
+            .catch(error => console.log(error.response))
     }
 }
 </script>
