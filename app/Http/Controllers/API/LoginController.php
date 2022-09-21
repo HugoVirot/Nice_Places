@@ -21,11 +21,12 @@ class LoginController extends BaseController
         // Laravel tente de connecter le user si l'email existe et si le mdp en clair correspond à celui hashé 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
 
-             // on récupère l'utilisateur 
+             // on récupère l'utilisateur et on charge son rôle
             $authUser = User::find(Auth::user()->id);
             $authUser->load('role'); 
 
             // on lui crée un token (enregistré dans la table personnal_access_tokens)
+            // on le stocke dans $success ainsi que ses autres infos
             $success['token'] =  $authUser->createToken('LoginUser' . $authUser->id)->plainTextToken;
             $success['pseudo'] =  $authUser->pseudo;
             $success["email"] = $authUser->email;

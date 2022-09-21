@@ -158,12 +158,14 @@ export default {
 
                             if (lieu.categorie.id == categorie.id) { // si la catégorie du lieu est bien la catégorie concernée, on crée le marqueur et son pointeur
 
+                                let imageCouvertureLieu = lieu.image_mise_en_avant[0] ? lieu.image_mise_en_avant[0].nom : 'placeholder.png'
+
                                 let popupContent = "<div class=\"text-center\"><span style=\"display:none\">" + lieu.id + "</span>" +
                                     "<div><span class=\"mx-auto fa-2x\" style=\"color:" + lieu.categorie.couleur + "\">" + lieu.categorie.icone + "</span>" +
                                     "<i class=\"fa-solid fa-star ms-3 me-2\" style=\"color: yellow\"></i>" + 
                                     "<span class=\"fs-5 text-secondary\" style=\"font-family:'Cooper'\">" + lieu.note + "</span></div>" +
                                      "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom + "</h5>" + 
-                                    "<img class=\"mx-auto\" src=\"images/" + lieu.image_mise_en_avant[0].nom + "\" style=\"width:35vw\">" +
+                                    "<img class=\"mx-auto\" src=\"images/" + imageCouvertureLieu + "\" style=\"width:35vw\">" +
                                     "<p style=\"font-family:'Cooper'\" class=\"text-center text-secondary\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p></div>"
 
                                 let popupOptions =  // on choisit les options du popup

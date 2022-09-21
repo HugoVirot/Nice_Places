@@ -85,7 +85,7 @@ const routes = [
     component: BackOffice,
   },
   {
-    path: "/successmessage/:nextpage/:message",
+    path: "/successmessage/:nextpage/:message/:lieuid?",
     component: SuccessMessage,
   },
   {

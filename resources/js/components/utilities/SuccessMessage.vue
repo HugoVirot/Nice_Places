@@ -14,7 +14,8 @@ export default {
     data() {
         return {
             nextPage: "/" + this.$route.params.nextpage,
-            message: this.$route.params.message
+            message: this.$route.params.message,
+            lieuId: this.$route.params.lieuid
         }
     },
     mounted() {
@@ -25,6 +26,10 @@ export default {
             }
             else if (this.nextPage == "/home") {
                 this.$router.push('/')
+            }
+            else if (this.nextPage == '/uploadimages') {
+                let route = '/uploadimages/' + lieuId
+                this.$router.push(route)
             } else {
                 this.$router.push(this.nextPage)
             }

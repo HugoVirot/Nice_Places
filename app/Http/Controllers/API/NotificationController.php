@@ -39,7 +39,7 @@ class NotificationController extends BaseController
     public function store(Request $request)
     {
         $notification = Notification::create($request->all());
-        $this->sendResponse($notification, "Notification sauvegardée", 201);
+        $this->sendResponse($notification, "Notification sauvegardée");
     }
 
     /**

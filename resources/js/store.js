@@ -75,6 +75,11 @@ export const store = createStore({
             state.userPosition = payload
         },
 
+        storeNewLieu(state, payload) {
+            console.log("storeNewLieu");
+            state.lieux.push(payload)
+        },
+
         storeLieux(state, payload) {
             console.log("storeLieux");
             state.lieux = payload

@@ -71,7 +71,7 @@ export default {
     methods: {
 
         logIn() {
-            axios.post('http://localhost:8000/api/login', { email: this.email, password: this.password })
+            axios.post('/api/login', { email: this.email, password: this.password })
                 .then(response => {
                     this.loginSuccess(response)
                 })
@@ -89,7 +89,7 @@ export default {
             // on appelle le mutateur storeUserLoggedIn pour mémoriser le fait que l'utilisateur soit connecté
             store.commit('storeUserLoggedIn', true)
             // on redirige vers l'accueil
-            this.$router.push('/SuccessMessage/home/' + response.data.message)
+            this.$router.push('/successmessage/home/' + response.data.message)
         }
     }
 }

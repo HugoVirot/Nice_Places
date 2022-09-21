@@ -88,7 +88,7 @@ import { store } from "../../store";
 export default {
     data() {
         return {
-            lieuId: this.$route.params.id,
+            lieuId: this.$route.params.lieuid,
             lieu: '',
             formData: new FormData(),
             validationErrors: ''

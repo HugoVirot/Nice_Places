@@ -1,21 +1,20 @@
 <script>
 import axios from "axios";
-import { store } from "../../store";
 import ValidationErrors from "../utilities/ValidationErrors.vue"
 
 export default {
     computed: {
         categories() {
-            return store.state.categories
+            return this.$store.state.categories
         },
-        userLoggedIn(){
-            return store.state.userLoggedIn
+        userLoggedIn() {
+            return this.$store.state.userLoggedIn
         }
     },
 
     data() {
         return {
-            departements: store.state.departements,
+            departements: this.$store.state.departements,
             nom: "",
             description: "",
             images: [],
@@ -38,20 +37,6 @@ export default {
     components: { ValidationErrors },
 
     methods: {
-        // dès qu'une ou plusieurs images sont choisies, on les ajoute à formData
-        onChange(e) {
-
-            let imagesChoisies = e.target.files;
-
-            console.log(imagesChoisies)
-
-            for (let i = 0; i < imagesChoisies.length; i++) {
-                this.formData.append('images[' + i + ']', imagesChoisies[i]);
-            }
-
-            console.log(this.formData)
-
-        },
 
         // poste le nouveau lieu pour le sauvegarder en base de données
         sendData() {
@@ -69,30 +54,29 @@ export default {
             this.formData.append("adresse", this.adresse);
             this.formData.append("code_postal", this.code_postal);
             this.formData.append("ville", this.ville);
-            this.formData.append("user_id", store.state.userData.id);
+            this.formData.append("user_id", this.$store.state.userData.id);
 
-            axios.post('/api/lieus', this.formData, { 'content-type': 'multipart/form-data' })
+            axios.post('/api/lieus', this.formData)
                 .then((response) => {
+                    this.$store.commit('storeNewLieu', response.data.data)
+
                     let message = response.data.message
-                    let lieuId = response.data.data.id
+                    let lieu = response.data.data
 
                     // si utilisateur normal, on sauvegarde une notification en base de données
-                    if (store.state.userData.role.role !== "admin") {
-                        this.createNotification(lieuId)
+                    if (this.$store.state.userData.role.role !== "admin") {
+                        this.createNotification(lieu.id)
                     }
 
                     // on récupère la nouvelle liste des lieux (avec le nouveau lieu en +)
-                    axios.get('/api/lieus').then(response => {
-                        store.commit('storeLieux', response.data)
-                        console.log(store.state.lieux)
+                    // axios.get('/api/lieus').then(response => {
+                    //store.commit('storeLieux', response.data) //pb avec le commit qui fait passer dans le catch
+                    //console.log(store.state.lieux)
 
-                        // on redirige vers l'accueil
-                        this.$router.push('/SuccessMessage/home/' + message)
+                    // on redirige vers le message de succès puis ensuite vers la page d'ajout d'image
+                    this.$router.push('/SuccessMessage/uploadimages/' + message + '/' + lieu.id)
 
-                    }).catch(response => console.log(response.error)) // on passe ici si images pas trop lourdes
-
-                })
-                .catch((error) => {
+                }).catch((error) => {
                     this.validationErrors = error.response.data.data;
                 })
         },
@@ -101,13 +85,13 @@ export default {
         // que son lieu a bien été proposé et est mis en attente
         createNotification(lieuId) {
             let titre = `Votre lieu ${this.nom} a bien été proposé !`;
-            let message = `Merci ${store.state.userData.pseudo} !<br> 
+            let message = `Merci ${this.$store.state.userData.pseudo} !<br> 
             Votre lieu, ${this.nom}, a bien été proposé.<br>
             Il a été mis en attente et va être vérifié par l'administrateur.<br>
             Ce dernier reviendra alors vers vous.<br>
             A très bientôt.`
 
-            axios.post('/api/notifications', { titre: titre, message: message, user_id: store.state.userData.id, lieu_id: lieuId },)
+            axios.post('/api/notifications', { titre: titre, message: message, user_id: this.$store.state.userData.id, lieu_id: lieuId },)
                 .then(response => console.log(response.data.message))
                 .catch(error => console.log(error))
         }
@@ -151,34 +135,6 @@ export default {
                                 <div class="col-md-6">
                                     <textarea v-model="description" id="description" class="form-control"
                                         name="description" required autocomplete="description"></textarea>
-                                </div>
-                            </div>
-
-                            <div class="form-group row mx-2 mt-3">
-                                <label for="nom" class="col-md-4 col-form-label text-md-right">photos</label>
-                                <input multiple type="file" class="form-control-file col-md-8" v-on:change="onChange">
-                            </div>
-
-                            <div class="form-group row mx-2 mt-3">
-                                <div class="form-text mb-3 col-md-8 offset-md-4">
-                                    <ul class="text-start ms-5 ms-md-0">
-                                        <li>
-                                            Maximum 5 photos, 2 Mo par photo et 8 Mo pour l'ensemble.
-                                        </li>
-                                        <li>
-                                            Formats acceptés : JPG, JPEG, PNG et SVG.
-                                        </li>
-                                        <li>
-                                            Uniquement en format paysage svp.
-                                        </li>
-                                        <li>
-                                            La première choisie sera la photo de couverture. </li>
-                                        <li>
-                                            Sur PC, maintenez la touche CTRL pour sélectionner plusieurs photos.
-                                        </li>
-                                        <li>
-                                            Sur mobile, explication à venir. </li>
-                                    </ul>
                                 </div>
                             </div>
 
@@ -329,8 +285,8 @@ i {
 }
 
 .btn {
-	background-color: #94D1BE !important;
-	color: white;
+    background-color: #94D1BE !important;
+    color: white;
 }
 
 img {

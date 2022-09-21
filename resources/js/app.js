@@ -18,4 +18,4 @@ import { store } from "./store";
 
 // On monte l'application Vue sur l'élément #app
 // on inclut le routeur et le store dans l'application
-createApp(App).use(router, store).mount("#app")
+createApp(App).use(router).use(store).mount("#app")

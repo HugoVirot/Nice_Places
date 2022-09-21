@@ -102,7 +102,7 @@ class ImageSeeder extends Seeder
         for ($i = 11; $i < 111; $i++) {
 
             Image::create([
-                'nom' => 'random.jpg',
+                'nom' => 'placeholder.png',
                 'mise_en_avant' => true,
                 'user_id' => 1,
                 'lieu_id' => $i

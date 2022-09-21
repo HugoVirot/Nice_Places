@@ -6,6 +6,7 @@ use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
+use App\Rules\ImagesTotalSize;
 
 class ImageController extends BaseController
 {
@@ -39,68 +40,49 @@ class ImageController extends BaseController
      */
     public function store(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
-            'images.*' => 'required|image|mimes:jpg,jpeg,png,svg|max:2048',
-            'images' => 'max:5'
-        ],["images.max" => "Vous ne pouvez pas envoyer plus de 5 images."]);
+            'image' => 'required|image|mimes:jpg,jpeg,png,svg|max:2048'
+        ]);
 
         if ($validator->fails()) {
             return $this->sendError('Error validation', $validator->errors());
         }
 
-        $totalSize = 0;
-
-        foreach ($request['images'] as $image) {
-            $totalSize += filesize($image);
-        }
-        // ne marche pas car erreur 413 avant (content too large)
-        if ($totalSize > 8000000) {
-            return $this->sendError('Error validation', ['La taille totale des images (' . $totalSize . ') dépasse les 8 Mo autorisés.']);
-        }
-
-        // ********************************** sauvegarde des images *************************************
+        // ********************************** sauvegarde de l'image *************************************
 
         // on récupère le nombre d'images pour ce lieu
         $imagesTotalForPlace = Image::where('lieu_id', $request->lieu_id)->count();
 
-        // on accède au tableau d'images transmises via le formulaire
-        $images = $request->file('images');
+        // on accède à l'image transmise via le formulaire
+        $image = $request->file('image');
 
-        // on stocke les noms des images pour les renvoyer
-        $imagesNames = [];
+        //nom de l'image = nom du lieu (espaces changés en underscores) + _image_ + le N° de l'image pour ce lieu + l'extension
+        $imageName = str_replace(' ', '_', $request->nom) . "_image_" . $imagesTotalForPlace + 1  . '.' . $image->extension();
 
-        foreach ($images as $key => $image) {  // on boucle sur les images uploadées
+        // on récupère les dimensions de l'image
+        $imageInfos = getimagesize($image);
 
-            //nom de l'image = nom du lieu (espaces changés en underscores) + _image_ + le N° de l'image pour ce lieu + l'extension
-            $imageName = str_replace(' ', '_', $request->nom) . "_image_" . $imagesTotalForPlace + $key + 1  . '.' . $image->extension();
+        // on récupère le poids en kb de l'image
+        $fileSize = round(filesize($image) / 1000);
 
-            // on récupère les dimensions de l'image
-            $imageInfos = getimagesize($image);
+        // on déplace l'image de son emplacement temporaire vers le dossier public/images
+        $image->move(public_path('images'), $imageName);
 
-            // on récupère le poids en kb de l'image
-            $fileSize = round(filesize($image) / 1000);
-
-            // on déplace l'image de son emplacement temporaire vers le dossier public/images
-            $image->move(public_path('images'), $imageName);
-
-            // on stocke le(s) nom(s) de(s) l'image(images) dans le tableau
-            array_push($imagesNames, $imageName);
-
-            // on sauvegarde l'image en bdd
-            Image::create([
-                'nom' => $imageName,
-                'user_id' => $request->user_id,
-                'lieu_id' => $request->lieu_id,
-                'longueur' => $imageInfos[0],
-                'largeur' => $imageInfos[1],
-                'taille' => $fileSize,
-                'mise_en_avant' => $key == 0 ? true : false
-            ]);
-        }
+        // on sauvegarde l'image en bdd
+        Image::create([
+            'nom' => $imageName,
+            'user_id' => $request->user_id,
+            'lieu_id' => session()->get('lieu_id'),
+            'longueur' => $imageInfos[0],
+            'largeur' => $imageInfos[1],
+            'taille' => $fileSize,
+            'mise_en_avant' => $imagesTotalForPlace == 0 ? true : false // on la met en avant si c'est la première postée pour ce lieu
+        ]);
 
         // on retourne un message de succès et les noms des images uploadées
-        $message = count($imagesNames) . " image(s) uploadée(s) avec succès !";
-        return $this->sendResponse($imagesNames, $message);
+        $message = "image uploadée avec succès !";
+        return $this->sendResponse($image, $message);
     }
 
 

@@ -39,11 +39,8 @@ class LieuController extends BaseController
      */
     public function store(Request $request)
     {
-
-        // dd($request);
-        
+      
         $validator = Validator::make($request->all(), [
-            'images.*' => 'required|image|mimes:jpg,jpeg,png,svg|max:2048',
             'latitude' => 'required',
             'longitude' => 'required',
             'categorie' => 'required|integer',
@@ -95,39 +92,8 @@ class LieuController extends BaseController
             'categorie_id' => $request->categorie
         ]);
 
-        // ********************************** sauvegarde des images *************************************
-
-        // on récupère le nombre d'images pour ce lieu
-        $imagesTotalForPlace = Image::where('lieu_id', $lieu->id)->count();
-
-        // on accède au tableau d'images transmises via le formulaire
-        $images = $request->file('images'); 
-
-        foreach ($images as $key => $image) {  // on boucle sur les images uploadées
-
-            //nom de l'image = nom du lieu (espaces changés en underscores) + _image_ + le N° de l'image pour ce lieu + l'extension
-            $imageName = str_replace(' ', '_', $request->nom) . "_image_" . $imagesTotalForPlace + $key + 1  . '.' . $image->extension();
-
-            // on récupère les dimensions de l'image
-            $imageInfos = getimagesize($image);
-
-            // on récupère le poids en kb de l'image
-            $fileSize = round(filesize($image) / 1000);
-
-            // on déplace l'image de son emplacement temporaire vers le dossier public/images
-            $image->move(public_path('images'), $imageName);
-
-            // on sauvegarde l'image en bdd
-            Image::create([
-                'nom' => $imageName,
-                'user_id' => $request->user_id,
-                'lieu_id' => $lieu->id,
-                'longueur' => $imageInfos[0],
-                'largeur' => $imageInfos[1],
-                'taille' => $fileSize,
-                'mise_en_avant' => $key == 0 ? true : false
-            ]);
-        }
+        // on stocke l'id du lieu créé en session (pour l'upload d'image juste après)
+        session()->put('lieu_id', $lieu->id);
 
         // On retourne la réponse JSON
         return $this->sendResponse($lieu, $message, 201);
