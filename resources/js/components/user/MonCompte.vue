@@ -44,7 +44,7 @@
                                     <select id="departement" required v-model="departement" class="form-select mx-auto"
                                         aria-label="filtre" autocomplete="departement">
                                         <option v-for="departement in departements" :value="departement">{{
-                                             departement.code  }} - {{  departement.nom  }}</option>
+                                        departement.code }} - {{ departement.nom }}</option>
                                     </select>
                                 </div>
 
@@ -180,17 +180,29 @@
 <script>
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
-import { store } from '../../store'
+import { useUserStore } from '../../stores/userStore'
+import { useLieuxStore } from '../../stores/lieuxStore'
+import { mapWritableState } from 'pinia'
+import { mapState } from 'pinia'
+import { mapActions } from 'pinia'
 
 export default {
 
+    computed: {
+        ...mapWritableState(useUserStore, [
+            'pseudo',
+            'email',
+            'id',
+            'departement'
+        ]),
+
+        ...mapState(useLieuxStore, [
+            'departements'
+        ]),
+    },
+
     data() {
         return {
-            pseudo: store.state.userData.pseudo,
-            email: store.state.userData.email,
-            id: store.state.userData.id,
-            departements: store.state.departements,
-            departement: store.state.userData.departement,
             passwordTyped: false,
             oldPassword: "",
             password: "",
@@ -207,6 +219,8 @@ export default {
     components: { ValidationErrors },
 
     methods: {
+        ...mapActions(useUserStore, ['storeUserData', 'logOut']),
+
         checkPassword(password) {
 
             this.passwordTyped = true
@@ -246,56 +260,25 @@ export default {
             axios.put('/api/users/' + this.id, {
                 pseudo: this.pseudo, email: this.email, departement_id: this.departement.id, region: this.departement.region, oldPassword: this.oldPassword,
                 password: this.password, password_confirmation: this.password_confirmation
+            }).then(response => {
+                storeUserData(response.data.data)
+                this.$router.push('/successmessage/lastpage/' + response.data.message)
+            }).catch((error) => {
+                this.validationErrors = error.response.data.data; // on passe ici de façon incompréhensible
             })
-                .then(response => {
-                    store.commit('storeUserData', response.data.data)
-                    this.$router.push('/successmessage/lastpage/' + response.data.message) 
-                    // this.editDataSuccess(response)
-                })
-                .catch((error) => {
-                    this.validationErrors = error.response.data.data; // on passe ici de façon incompréhensible
-                })
         },
 
         deleteAccount() {
             axios.delete('/api/users/' + this.id)
                 .then((response) => {
-                    this.deleteAccountSuccess(response)
+                    // suppression compte réussie => déconnexion + retour accueil
+                    this.logOut()
+                    this.$router.push('/SuccessMessage/home/' + response.data.message)
                 })
                 .catch((error) => {
                     this.validationErrors = error.response.data.data;
                 })
         },
-
-        editDataSuccess(response) {
-            store.commit('storeUserData', response.data.data)             // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
-            //store.dispatch('saveUserData', response.data.data)             // ici, response.data.data est le payload transmis au store
-            this.$router.push('/successmessage/lastpage/' + response.data.message)
-        },
-
-        deleteAccountSuccess(response) {
-            // suppression compte réussie => déconnexion + retour accueil
-            store.commit('resetState')
-            this.$router.push('/SuccessMessage/home/' + response.data.message)
-        },
-
-		getDepartements() {
-			axios.get("http://localhost:8000/api/departements")
-				.then(response => {
-					store.commit('storeDepartements', response.data)
-				}
-				)
-				.catch(error => {
-					console.log(error.response)
-				})
-		},
-
-    },
-    created(){
-        // on récupère les départements si ce n'est pas déjà fait
-        if(this.departements == ''){
-            this.getDepartements
-        }
     }
 }
 </script>

@@ -38,6 +38,8 @@ class CategorieController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'nom' => 'required|max:75',
+            'icone' => 'required|max:50',
+            'couleur' => 'required|max:15'
         ]);
 
         if ($validator->fails()) {
@@ -47,7 +49,8 @@ class CategorieController extends BaseController
         // on crée un nouveau lieu
         $categorie = Categorie::create([
             'nom' => $request->nom,
-            'icone' => $request->icone
+            'icone' => $request->icone,
+            'couleur' => $request->couleur
         ]);
 
         // On retourne les informations en JSON
@@ -78,7 +81,8 @@ class CategorieController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'nom' => 'required|max:75',
-            'icone' => 'required|max:100'
+            'icone' => 'required|max:100',
+            'couleur' => 'required|max:15'
         ]);
 
         if ($validator->fails()) {

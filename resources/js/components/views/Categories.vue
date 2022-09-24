@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { store } from "../../store.js";
+import { useUserStore } from "../../stores/userStore.js";
 
 export default {
     computed: {

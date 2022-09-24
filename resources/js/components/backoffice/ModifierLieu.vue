@@ -2,9 +2,9 @@
     <div class="p-3">
         <i class="fa-3x fa-solid fa-pen-to-square"></i>
         <h1 class="mt-2">Modifier {{ lieu.nom }}</h1>
-        <h2 v-if="userData.role == 'admin' && lieu">Posté par {{ lieu.user.pseudo }}</h2>
+        <h2 v-if="role == 'admin' && lieu">Posté par {{ lieu.user.pseudo }}</h2>
         <div v-if="lieu">
-            <div v-if="statut == 'validé'" class="mx-auto bg-success w-25">validé</div>
+            <div v-if="statut == 'validé'" class="mx-auto bg-success text-white w-25">validé</div>
             <div v-else-if="statut == 'en attente'" class="mx-auto bg-info w-25">en attente de validation
             </div>
             <div v-else-if="statut == 'à modifier'" class="mx-auto bg-warning w-25">à modifier pour être validé
@@ -27,7 +27,7 @@
 
                         <form @submit.prevent="saveChanges">
 
-                            <div v-if="userData.role == 'admin'" class="form-group row m-2">
+                            <div v-if="role == 'admin'" class="form-group row m-2">
                                 <label for="statut" class="col-md-4 col-form-label text-md-right">modifier le
                                     statut</label>
 
@@ -108,7 +108,7 @@
                             </div>
 
                             <!-- seul l'Admin peut changer la note du lieu -->
-                            <div v-if="userData.role == 'admin'" class="form-group row m-2">
+                            <div v-if="role == 'admin'" class="form-group row m-2">
                                 <label for="note" class="col-md-4 col-form-label text-md-right">note sur
                                     10</label>
 
@@ -201,14 +201,16 @@
 <script>
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
-import { store } from "../../store.js";
+import { useUserStore } from "../../stores/userStore.js";
+import { useLieuxStore } from '../../stores/lieuxStore';
+import { mapState } from 'pinia';
 
 export default {
 
     computed: {
-        userData() {
-            return store.state.userData
-        }
+       ...mapState(useUserStore, ['role']),
+
+       ...mapState(useLieuxStore, ['categories']),
     },
 
     data() {
@@ -220,7 +222,6 @@ export default {
             latitude: "",
             longitude: "",
             categorie_id: "",
-            categories: store.state.categories,
             note: "",
             temps: "",
             difficulte: "",
@@ -290,7 +291,7 @@ export default {
 
             // on envoie une notification en cas de changement de statut
             // ET seulement si l'auteur n'est pas administrateur (sinon, inutile)
-            if (this.statutPrecedent !== this.statut && this.lieu.user.role.role !== "admin") {
+            if (this.statutPrecedent !== this.statut && this.role !== "admin") {
                 this.sendNotification()
             }
 
@@ -359,6 +360,10 @@ h1 {
 
 img {
     width: 6vw
+}
+
+i {
+    color: #94D1BE
 }
 
 .card {

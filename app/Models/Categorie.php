@@ -20,6 +20,6 @@ class Categorie extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'nom', 'icone'
+        'nom', 'icone', 'couleur'
     ];
 }

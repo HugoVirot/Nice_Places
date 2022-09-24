@@ -41,17 +41,19 @@ class LieuController extends BaseController
     {
       
         $validator = Validator::make($request->all(), [
-            'latitude' => 'required',
-            'longitude' => 'required',
+            'nom' => 'required|max:100',
+            'description' => 'required|max:3000',
+            'latitude' => 'required|between:-90,90',
+            'longitude' => 'required|between:-180,180',
             'categorie' => 'required|integer',
-            'note' => 'required|integer',
+            'note' => 'required|integer|max:10',
             'temps' => 'required|integer',
             'difficulte' => 'required',
-            'kilometres' => 'nullable|integer',
+            'kilometres' => 'nullable|integer|max:100',
             'departement' => 'required',
             'adresse' => 'required|max:75',
-            'code_postal' => 'required',
-            'ville' => 'required'
+            'code_postal' => 'required|max:5',
+            'ville' => 'required|max:50'
         ]);
 
         if ($validator->fails()) {
@@ -93,7 +95,7 @@ class LieuController extends BaseController
         ]);
 
         // on stocke l'id du lieu créé en session (pour l'upload d'image juste après)
-        session()->put('lieu_id', $lieu->id);
+        // session()->put('lieu_id', $lieu->id);
 
         // On retourne la réponse JSON
         return $this->sendResponse($lieu, $message, 201);

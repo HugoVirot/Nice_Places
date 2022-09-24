@@ -4,6 +4,8 @@
         <h1 class="mt-2">Modifier l'image {{ image.nom }}</h1>
     </div>
 
+    <p>postée par {{ pseudo }}</p>
+
     <img class="w-75" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
 
 
@@ -11,7 +13,7 @@
 
         <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
 
-        <div v-if="image !== '' && userData.role == 'admin'" class="row justify-content-center p-2 p-lg-5">
+        <div v-if="image !== '' && role == 'admin'" class="row justify-content-center p-2 p-lg-5">
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header text-white mb-3">Entrez les nouvelles informations</div>
@@ -19,15 +21,6 @@
                     <div class="card-body">
 
                         <form @submit.prevent="saveChanges">
-
-                            <div class="form-group row m-2">
-                                <label for="nom" class="col-md-4 col-form-label text-md-right">nom</label>
-
-                                <div class="col-md-6">
-                                    <input v-model="nom" id="nom" type="text" class="form-control" name="nom" required
-                                        autocomplete="nom" autofocus>
-                                </div>
-                            </div>
 
                             <div class="form-group row m-2" v-if="imagesNumberForThisPlace > 1">
                                 <label for="mise_en_avant" class="col-md-4 col-form-label text-md-right">mettre en
@@ -61,14 +54,15 @@
 <script>
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
-import { store } from "../../store.js";
+import { useUserStore } from "../../stores/userStore.js";
+import { useLieuxStore } from '../../stores/lieuxStore';
+import { mapState } from 'pinia';
+import { mapActions } from 'pinia';
 
 export default {
 
     computed: {
-        userData() {
-            return store.state.userData
-        }
+        ...mapState(useUserStore, ['pseudo', 'role'])
     },
 
     data() {
@@ -77,13 +71,15 @@ export default {
             nom: "",
             mise_en_avant: "",
             validationErrors: "",
-            imagesNumberForThisPlace: 0
+            imagesNumberForThisPlace: 1
         }
     },
 
     components: { ValidationErrors },
 
     methods: {
+        ...mapActions(useLieuxStore, ['storeImages']),
+
         // cette fonction permet de mettre à jour les données locales du composant
         // une fois que l'appel API a récupéré l'image
         updateLocalData(image) {
@@ -91,19 +87,19 @@ export default {
             this.nom = image.nom
             this.mise_en_avant = image.mise_en_avant
 
-
+            if (this.image.lieu_id){
             axios.get("/api/lieus/getimagesnumberbyplace/" + this.image.lieu_id)
                 .then(response => {
                     this.imagesNumberForThisPlace = response.data
                 }).catch((response) => {
                     console.log(response.error);
                 })
+            }
         },
 
         saveChanges() {
 
             axios.put('/api/images/' + this.image.id, {
-                nom: this.nom,
                 mise_en_avant: this.mise_en_avant,
             })
                 .then((response) => {
@@ -113,7 +109,7 @@ export default {
                     axios.get('/api/images')
 
                         .then(response => {
-                            store.commit("storeImages", response.data)
+                            this.storeImages(response.data)
                             this.$router.push('/SuccessMessage/backoffice/' + message)
 
                         }).catch((response) => {

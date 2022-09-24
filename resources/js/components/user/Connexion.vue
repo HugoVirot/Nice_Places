@@ -54,7 +54,8 @@
 <script>
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
-import { store } from '../../store'
+import { mapActions } from 'pinia'
+import { useUserStore } from '../../stores/userStore'
 
 export default {
 
@@ -69,6 +70,7 @@ export default {
     components: { ValidationErrors },
 
     methods: {
+        ...mapActions(useUserStore, ['storeUserData']),
 
         logIn() {
             axios.post('/api/login', { email: this.email, password: this.password })
@@ -82,16 +84,10 @@ export default {
         },
 
         loginSuccess(response) {
-            console.log("loginsuccess");
-            // on appelle le mutateur storeUserData pour stocker les infos utilisateur dans le store
-            // ici, response.data.data est le payload transmis au store
-            store.commit('storeUserData', response.data.data)
-            // on appelle le mutateur storeUserLoggedIn pour mémoriser le fait que l'utilisateur soit connecté
-            store.commit('storeUserLoggedIn', true)
-            // on redirige vers l'accueil
+            this.storeUserData(response.data.data)
             this.$router.push('/successmessage/home/' + response.data.message)
         }
-    }
+    },
 }
 </script>
 

@@ -1,5 +1,5 @@
 <script>
-import { store } from '../../store'
+import { useUserStore } from '../../stores/userStore'
 import Filtres from "../utilities/Filtres.vue"
 
 export default {

@@ -32,26 +32,28 @@
 </template>
 
 <script>
-import { store } from "../../store";
+import { useUserStore } from "../../stores/userStore";
+import { mapState } from "pinia";
+import { mapActions } from "pinia";
 
 export default {
 
     computed: {
-        userPlaces() {
-            return store.state.userPlaces
-        }
+        ...mapState(useUserStore, ['id', 'userPlaces'])
     },
 
     methods: {
-        // on récupère les lieux postes par le user
 
+        ...mapActions(useUserStore, ['storeUserPlaces']),
+
+        // on récupère les lieux postes par le user
         getLieuxPostes() {
             axios.post("http://localhost:8000/api/lieus/getplacesbyuser", null, {
                 params: {
-                    user_id: store.state.userData.id
+                    user_id: this.id
                 }
             })
-                .then(response => store.commit('storeUserPlaces', response.data))
+                .then(response => this.storeUserPlaces(response.data))
                 .catch(error => {
                     console.log(error.response)
                 })

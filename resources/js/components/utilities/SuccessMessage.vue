@@ -28,7 +28,7 @@ export default {
                 this.$router.push('/')
             }
             else if (this.nextPage == '/uploadimages') {
-                let route = '/uploadimages/' + lieuId
+                let route = '/uploadimages/' + this.lieuId
                 this.$router.push(route)
             } else {
                 this.$router.push(this.nextPage)

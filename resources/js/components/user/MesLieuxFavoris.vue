@@ -12,7 +12,7 @@
     <div class="container-fluid p-3 p-lg-5">
 
         <div v-if="favoris.length > 0" class="row">
-            <div class="col-lg-6 border border-3 border-white card text-white" v-for="(favori, index) in favoris"
+            <div class="col-lg-6 border border-3 border-white card text-white" v-for="favori in favoris"
                 :key="favori.id"
                 :style="`background-image: url(images/${favori.image_mise_en_avant[0].nom}); background-position: center; background-size: cover;`">
                 <div class="p-3 fs-3 textWithShadow"> {{ favori.nom }} </div>
@@ -32,26 +32,31 @@
 </template>
 
 <script>
-import { store } from "../../store"
+import { useUserStore } from "../../stores/userStore"
+import { mapState } from "pinia"
 import Filtres from "../utilities/Filtres.vue"
 import Tris from "../utilities/Tris.vue"
 
 export default {
     data() {
         return {
-            favoris: store.state.favoris,
             favorisNonFiltres: ''
         }
+    },
+
+    computed: {
+        ...mapState(useUserStore, ['id', 'favoris'])
     },
 
     components: { Filtres, Tris },
 
     methods: {
 
+        // récupérer les favoris de l'utilisateur
         getFavoris() {
-            axios.get('/api/favoris/' + store.state.userData.id)
+            axios.get('/api/favoris/' + this.id)
                 .then(response => {
-                    store.commit('storeFavoris', response.data);
+                    this.storeFavoris(response.data);
                 }).catch((response) => {
                     console.log(response.error);
                 })

@@ -1,20 +1,22 @@
 <script>
 import axios from "axios";
 import ValidationErrors from "../utilities/ValidationErrors.vue"
+import { mapState } from 'pinia'
+import { useUserStore } from '../../stores/userStore'
+import { useLieuxStore } from '../../stores/lieuxStore'
 
 export default {
+
     computed: {
-        categories() {
-            return this.$store.state.categories
-        },
-        userLoggedIn() {
-            return this.$store.state.userLoggedIn
-        }
+        ...mapState(useUserStore, [
+            'pseudo', 'userLoggedIn', 'role', 'id'
+        ]),
+
+        ...mapState(useLieuxStore, ['categories', 'departements', 'storeNewLieu'])
     },
 
     data() {
         return {
-            departements: this.$store.state.departements,
             nom: "",
             description: "",
             images: [],
@@ -54,30 +56,27 @@ export default {
             this.formData.append("adresse", this.adresse);
             this.formData.append("code_postal", this.code_postal);
             this.formData.append("ville", this.ville);
-            this.formData.append("user_id", this.$store.state.userData.id);
+            this.formData.append("user_id", this.id);
 
             axios.post('/api/lieus', this.formData)
                 .then((response) => {
-                    this.$store.commit('storeNewLieu', response.data.data)
+                    // on ajoute le nouveau lieu à la liste des lieux du store
+                    // (cela évite de récupérer la liste complète via un appel API pour un lieu)
+                    // il ne sera pas visible tout de suite mais apparaîtra dans "mes lieux postés"
+                    this.storeNewLieu(response.data.data)
 
                     let message = response.data.message
                     let lieu = response.data.data
 
-                    // si utilisateur normal, on sauvegarde une notification en base de données
-                    if (this.$store.state.userData.role.role !== "admin") {
+                    // si utilisateur normal, on lui sauvegarde une notification en base de données
+                    // if (this.role !== "admin") {
                         this.createNotification(lieu.id)
-                    }
+                    // }
 
-                    // on récupère la nouvelle liste des lieux (avec le nouveau lieu en +)
-                    // axios.get('/api/lieus').then(response => {
-                    //store.commit('storeLieux', response.data) //pb avec le commit qui fait passer dans le catch
-                    //console.log(store.state.lieux)
-
-                    // on redirige vers le message de succès puis ensuite vers la page d'ajout d'image
                     this.$router.push('/SuccessMessage/uploadimages/' + message + '/' + lieu.id)
 
-                }).catch((error) => {
-                    this.validationErrors = error.response.data.data;
+                }).catch((response) => {
+                    console.log(response.error); // on passe ici => undefined => rien ne se passe (la création de lieu fonctionne)
                 })
         },
 
@@ -85,13 +84,14 @@ export default {
         // que son lieu a bien été proposé et est mis en attente
         createNotification(lieuId) {
             let titre = `Votre lieu ${this.nom} a bien été proposé !`;
-            let message = `Merci ${this.$store.state.userData.pseudo} !<br> 
+            let message = `Merci ${this.pseudo} !<br> 
+            <i style="color:#94D1BE" class="mx-auto fa-solid fa-circle-check fa-5x p-2"></i>
             Votre lieu, ${this.nom}, a bien été proposé.<br>
             Il a été mis en attente et va être vérifié par l'administrateur.<br>
             Ce dernier reviendra alors vers vous.<br>
             A très bientôt.`
 
-            axios.post('/api/notifications', { titre: titre, message: message, user_id: this.$store.state.userData.id, lieu_id: lieuId },)
+            axios.post('/api/notifications', { titre: titre, message: message, user_id: this.id, lieu_id: lieuId },)
                 .then(response => console.log(response.data.message))
                 .catch(error => console.log(error))
         }

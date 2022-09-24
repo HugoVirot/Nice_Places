@@ -3,7 +3,10 @@ import Header from "./template/Header.vue"
 import Slider from "./utilities/Slider.vue"
 import Map from "./utilities/Map.vue"
 import Footer from "./template/Footer.vue"
-import { store } from '../store'
+import { useLieuxStore } from '../stores/lieuxStore'
+import { useUserStore } from '../stores/userStore'
+import { mapState } from "pinia"
+import { mapActions } from 'pinia'
 import axios from "axios"
 
 export default {
@@ -11,36 +14,26 @@ export default {
 	// computed permet de surveiller automatiquement les changements
 	// de userData dans le state => utile pour la déconnexion
 	computed: {
-		userData() {
-			return store.state.userData
-		},
-		threeTopPlaces() {
-			return store.state.threeTopPlaces
-		},
-		threeLastPlaces() {
-			return store.state.threeLastPlaces
-		},
-		categories() {
-			return store.state.categories
-		},
-		lieux() {
-			return store.state.lieux
-		},
-		favoris() {
-			return store.state.favoris
-		},
-		departements() {
-			return store.state.departements
-		},
-		regions() {
-			return store.state.regions
-		}
+		...mapState(useLieuxStore, [
+			'threeTopPlaces',
+			'threeLastPlaces',
+			'categories',
+			'lieux',
+			'favoris',
+			'departements',
+			'regions',
+			'geolocationAnswered',
+			'userPosition'
+		]),
+
+		...mapState(useUserStore, ['departement', 'id'])
+
 	},
 
-	// on surveille userData. Si changement => user connecté => on récupère  :
-	// ses trois top lieux + 3 derniers lieux / ses favoris
+	// // on surveille userData. Si changement => user connecté => on récupère  :
+	// // ses trois top lieux + 3 derniers lieux / ses favoris
 	watch: {
-		userData: {
+		useUserStore: {
 			handler() {
 				this.getThreeTopAndLastPlaces()
 				// this.getFavoris()
@@ -49,12 +42,16 @@ export default {
 	},
 
 	methods: {
+		...mapActions(useLieuxStore, [
+			'storeCategories', 'storeLieux', 'storeDepartements', 'storeRegions', 'storeThreeTopPlaces', 'storeThreeLastPlaces']),
+
+        ...mapActions(useUserStore, ['storeFavoris']),
 
 		// on récupère les catégories et on les stocke dans le store, idem ensuite pour lieux/départements/régions/favoris
 		getCategories() {
 			axios.get("http://localhost:8000/api/categories")
 				.then(response => {
-					store.commit('storeCategories', response.data)
+					this.storeCategories(response.data)
 					console.log("catégories récupérées")
 				}
 				)
@@ -66,7 +63,7 @@ export default {
 		getLieux() {
 			axios.get("http://localhost:8000/api/lieus")
 				.then(response => {
-					store.commit('storeLieux', response.data)
+					this.storeLieux(response.data)
 				}
 				)
 				.catch(error => {
@@ -77,7 +74,7 @@ export default {
 		getDepartements() {
 			axios.get("http://localhost:8000/api/departements")
 				.then(response => {
-					store.commit('storeDepartements', response.data)
+					this.storeDepartements(response.data)
 				}
 				)
 				.catch(error => {
@@ -88,7 +85,7 @@ export default {
 		getRegions() {
 			axios.get("http://localhost:8000/api/regions")
 				.then(response => {
-					store.commit('storeRegions', response.data)
+					this.storeRegions(response.data)
 				}
 				)
 				.catch(error => {
@@ -97,9 +94,9 @@ export default {
 		},
 
 		getFavoris() {
-			axios.get("http://localhost:8000/api/favoris/" + this.userData.id)
+			axios.get("http://localhost:8000/api/favoris/" + this.id)
 				.then(response => {
-					store.commit('storeFavoris', response.data)
+					this.storeFavoris(response.data)
 				}
 				)
 				.catch(error => {
@@ -113,8 +110,8 @@ export default {
 			let department
 
 			// si l'utilisateur a choisi un département
-			if (store.state.userData.departement) {
-				department = store.state.userData.departement.code
+			if (this.departement) {
+				department = this.departement.code
 				//sinon => on cible la France entière
 			} else {
 				department = "all"
@@ -129,7 +126,7 @@ export default {
 				}
 			})
 				.then(response => {
-					store.commit('storeThreeTopPlaces', response.data)
+					this.storeThreeTopPlaces(response.data)
 				}
 				)
 				.catch(error => {
@@ -145,7 +142,7 @@ export default {
 				}
 			})
 				.then(response => {
-					store.commit('storeThreeLastPlaces', response.data)
+					this.storeThreeLastPlaces(response.data)
 				}
 				)
 				.catch(error => {
@@ -174,10 +171,10 @@ export default {
 		}
 
 		// ******************* si réponse à la demande de géoloc ************************
-		if (store.state.geolocationAnswered) {
+		if (this.geolocationAnswered) {
 
 			//*********** si géoloc acceptée => userPosition disponible (pas vide)*********
-			if (store.state.userPosition) {
+			if (this.userPosition) {
 
 				// on détecte le département de l'utilisateur
 
@@ -290,7 +287,7 @@ export default {
 			<div v-if="threeTopPlaces && threeTopPlaces.length > 2">
 				<div>
 					<i class="titleIcon mt-5 mx-auto fa-3x fa-solid fa-star"></i>
-					<h2 v-if="userData.departement" class="fs-2 m-3">Le top des lieux dans votre département</h2>
+					<h2 v-if="departement" class="fs-2 m-3">Le top des lieux dans votre département</h2>
 					<h2 v-else class="fs-2 m-3">Le top des lieux (France entière)</h2>
 				</div>
 
@@ -349,7 +346,7 @@ export default {
 			<div v-if="threeTopPlaces && threeTopPlaces.length > 2">
 
 				<i class="titleIcon mt-5 mx-auto fa-3x fa-solid fa-clock"></i>
-				<h2 v-if="userData.departement" class="fs-2 m-3"> Derniers lieux ajoutés dans votre département</h2>
+				<h2 v-if="departement" class="fs-2 m-3"> Derniers lieux ajoutés dans votre département</h2>
 				<h2 v-else class="fs-2 m-3"> Derniers lieux ajoutés (France entière)</h2>
 
 				<div class="container-fluid">

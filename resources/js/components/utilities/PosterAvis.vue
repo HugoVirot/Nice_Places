@@ -8,7 +8,7 @@
 
         <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
 
-        <div v-if="userData" class="row justify-content-center p-2 p-lg-4">
+        <div v-if="id" class="row justify-content-center p-2 p-lg-4">
             <div class="col-md-8">
 
                 <div class="card">
@@ -39,7 +39,8 @@
 
                             <div class="form-group row mt-3 text-center">
                                 <div class="col-md-6 offset-md-3">
-                                    <button type="submit" class="greenButton btn btn-lg rounded-pill text-light btn-info">
+                                    <button type="submit"
+                                        class="greenButton btn btn-lg rounded-pill text-light btn-info">
                                         Valider
                                     </button>
                                 </div>
@@ -52,14 +53,17 @@
             </div>
         </div>
 
-        <div v-else><p class="text-secondary">Vous devez être connecté pour poster un avis.</p></div>
+        <div v-else>
+            <p class="text-secondary">Vous devez être connecté pour poster un avis.</p>
+        </div>
     </div>
 </template>
 
 <script>
 
-import { store } from "../../store";
+import { useUserStore } from "../../stores/userStore"
 import ValidationErrors from "./ValidationErrors.vue"
+import { mapState } from "pinia";
 
 export default {
 
@@ -71,13 +75,17 @@ export default {
         }
     },
 
+    computed: {
+        ...mapState(useUserStore, ['id'])
+    },
+
     props: ['lieu_id'],
 
     components: { ValidationErrors },
 
     methods: {
         sendData() {
-            axios.post('/api/avis', { note: this.note, commentaire: this.commentaire, lieu_id : this.lieu_id, user_id: store.state.userData.id })
+            axios.post('/api/avis', { note: this.note, commentaire: this.commentaire, lieu_id: this.lieu_id, user_id: this.id })
                 .then((response) => {
                     this.$router.push('/successmessage/lastpage/' + response.data.message);
                 })
@@ -103,7 +111,7 @@ i {
 }
 
 .greenButton {
-    color : white;
+    color: white;
     background-color: #94D1BE;
 }
 </style>

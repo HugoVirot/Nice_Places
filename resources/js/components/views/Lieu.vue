@@ -42,7 +42,7 @@
             </div>
 
         </div>
-        <img class="singlePicture" v-if="lieu.images.length == 0" src="/images/placeholder.png">
+        <img class="singlePicture" v-if="lieu.images.length == 0" src="/images/placeholder.jpg">
 
         <img class="singlePicture" v-else-if="lieu.images.length == 1" :src="`/images/${lieu.images[0].nom}`">
 
@@ -50,13 +50,13 @@
 
             <div class="carousel-inner">
 
-                <div v-for="(image, index) in lieu.images" :class="['carousel-item', { active: index == 0 }]">
+                <div v-for="(image, index) in lieu.images" :class="['carousel-item', { active: image.mise_en_avant == true }]">
                     <img :src="`/images/${image.nom}`" class="d-block w-100" alt="">
                 </div>
 
                 <div class="carousel-indicators">
                     <button v-for="(image, index) in lieu.images" type="button" data-bs-target="#carouselLieu"
-                        :data-bs-slide-to="index" :class="{ active: index == 0 }" aria-current="true"
+                        :data-bs-slide-to="index" :class="{ active: image.mise_en_avant == true }" aria-current="true"
                         :aria-label="`Slide ${index + 1}`">
                     </button>
                 </div>
@@ -236,20 +236,19 @@ import Map from '../utilities/Map.vue'
 import moment from 'moment';
 moment.locale('fr');
 import PosterAvis from '../utilities/PosterAvis.vue';
-import { store } from "../../store"
+import { useUserStore } from "../../stores/userStore"
+import { mapState } from 'pinia';
+import { mapActions } from 'pinia';
 
 export default {
 
     computed: {
-        // on vérifie si le user est connecté (si oui, présence d'un token)
-        userLoggedIn() {
-            return store.state.userData.token
-        },
+        ...mapState(useUserStore, ['id', 'userLoggedIn', 'favoris', 'isInFavorites']),
+
         isInFavorites() {
-            // si les favoris 
             // on retourne true si le lieu fait partie des favoris de l'utilisateur
             // la fonction some permet de vérifier cela (on cherche un favori avec le nom du lieu)
-            return store.state.favoris ? store.state.favoris.some(favori => favori.nom === this.lieu.nom) : null
+            return this.favoris ? this.favoris.some(favori => favori.nom === this.lieu.nom) : null
         }
     },
 
@@ -267,16 +266,18 @@ export default {
     },
 
     methods: {
+        ...mapActions(useUserStore, ['storeFavoris']),
+
         addToFavorites() {
-            axios.post('/api/favoris', { lieu_id: this.lieuId, user_id: store.state.userData.id })
+            axios.post('/api/favoris', { lieu_id: this.lieuId, user_id: this.id })
 
                 .then(response => {
                     let message = response.data.message
 
-                    axios.get('/api/favoris/' + store.state.userData.id)
+                    axios.get('/api/favoris/' + this.id)
 
                         .then(response => {
-                            store.commit('storeFavoris', response.data)
+                            this.storeFavoris(response.data)
                             this.$router.push('/SuccessMessage/lastpage/' + message)
                         })
                         .catch((response) => {
@@ -289,15 +290,15 @@ export default {
         },
 
         removeToFavorites() {
-            axios.delete('/api/favoris/' + store.state.userData.id + '/' + this.lieuId)
+            axios.delete('/api/favoris/' + this.id + '/' + this.lieuId)
             
                 .then(response => {
                     let message = response.data.message
 
-                    axios.get('/api/favoris/' + store.state.userData.id)
+                    axios.get('/api/favoris/' + this.id)
 
                         .then(response => {
-                            store.commit('storeFavoris', response.data)
+                            this.storeFavoris(response.data)
                             this.$router.push('/SuccessMessage/lastpage/' + message)
                         })
                         .catch((response) => {

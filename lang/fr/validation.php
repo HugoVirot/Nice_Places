@@ -63,7 +63,7 @@ return array(
     ),
     "unique"           => "La valeur du champ :attribute est déjà utilisée.",
     "url"              => "Le format de l'URL de :attribute n'est pas valide.",
-    'uploaded' => 'L\'image :attribute n\'a pas pu être envoyée (taille trop importante ou mauvais format).',
+    'uploaded' => 'L\':attribute n\'a pas pu être envoyée (taille trop importante). Essayez une autre image de moins de 2 Mo.',
 
     /*
     |--------------------------------------------------------------------------

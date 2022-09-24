@@ -52,11 +52,11 @@
                         <router-link to="/proposerlieu" class="nav-link">proposer un lieu</router-link>
 
                         <!-- si utilisateur connecté : mon compte / mes lieux, si pas connecté : inscription/connexion -->
-                        <span v-if="userData.pseudo" class="d-flex justify-content-between">
+                        <span v-if="userLoggedIn" class="d-flex justify-content-between">
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false">
-                                    {{ userData.pseudo }}
+                                    {{ pseudo }}
                                     <span v-show="countUnreadNotifications > 0">
                                         <i class="text-danger fa-solid fa-bell"></i>
                                     </span>
@@ -88,13 +88,13 @@
                                         <router-link to="/mesavispostes" class="nav-link">mes avis postés
                                         </router-link>
                                     </li>
-                                    <li v-if="userData.role == 'admin'">
+                                    <li v-if="role == 'admin'">
                                         <router-link to="/backoffice" class="nav-link">back-office
                                         </router-link>
                                     </li>
                                 </ul>
                             </li>
-                            <i id="logoutIcon" class="fa-solid fa-right-from-bracket my-auto" @click="logOut()"></i>
+                            <i id="logoutIcon" class="fa-solid fa-right-from-bracket my-auto" @click="logOutUser()"></i>
                         </span>
 
                         <span v-else class="d-md-flex justify-content-center">
@@ -114,29 +114,31 @@
 </template>
 
 <script>
-import { store } from '../../store'
+import { useUserStore } from '../../stores/userStore'
+import { mapState } from "pinia"
+import { mapActions } from 'pinia'
 
 export default {
 
     computed: {
-        userData() {
-            return store.state.userData
-        },
-        
-        countUnreadNotifications() {
-            if (store.state.notifications) {
-                return store.state.notifications.filter(n => !n.lue).length
-            }
-            else {
-                return null
-            }
-        }
+        // permet d'accéder aux variables du state précisées dans le tableau
+        ...mapState(useUserStore, [
+            'userLoggedIn',
+            'pseudo',
+            'role',
+            'notifications',
+            'countUnreadNotifications'
+        ]),
+
     },
 
     methods: {
-        logOut() {
-            // on réinitialise le state
-            store.commit("resetState");
+        ...mapActions(useUserStore, ['logOut']),
+
+        logOutUser() {
+            // on réinitialise le state 
+            const userStore = useUserStore()
+            userStore.$reset()
 
             // on redirige vers l'accueil
             this.$router.push('/SuccessMessage/home/Déconnexion réussie')

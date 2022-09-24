@@ -9,7 +9,7 @@
 
         <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
 
-        <div v-if="avis !== '' && userData.role == 'admin'" class="row justify-content-center p-2 p-lg-5">
+        <div v-if="avis !== '' && role == 'admin'" class="row justify-content-center p-2 p-lg-5">
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header text-white mb-3">Entrez les nouvelles informations</div>
@@ -28,7 +28,7 @@
                             </div>
 
                             <div class="form-group row m-2">
-                                <label for="commentaire" class="col-md-4 col-form-label text-md-right"></label>
+                                <label for="commentaire" class="col-md-4 col-form-label text-md-right">commentaire</label>
 
                                 <div class="col-md-6">
                                     <textarea v-model="commentaire" id="commentaire" class="form-control"
@@ -57,14 +57,16 @@
 <script>
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
-import { store } from "../../store.js";
+import { useUserStore } from "../../stores/userStore.js";
+import { mapState } from 'pinia';
+import { useBackOfficeStore } from '../../stores/backOfficeStore';
 
 export default {
 
     computed: {
-        userData() {
-            return store.state.userData
-        }
+        ...mapState(useUserStore, ['role']),
+
+        ...mapState(useBackOfficeStore, ['storeAvis'])
     },
 
     data() {
@@ -100,7 +102,7 @@ export default {
 
                         .then(response => {
 
-                            store.commit("storeAvis", response.data)
+                            this.storeAvis(response.data)
                             this.$router.push('/SuccessMessage/backoffice/' + message)
 
                         }).catch((response) => {

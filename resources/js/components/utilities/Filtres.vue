@@ -4,8 +4,8 @@
     <select required v-model="filtre" class="form-select w-50 mx-auto" aria-label="filtre">
         <option value="france">de la France entière</option>
         <!-- disponible uniquement si le département de l'utilisateur a déjà été renseigné -->
-        <option v-if="departementUtilisateur" value="departementUtilisateur">de votre département</option>
-        <option v-if="departementUtilisateur" value="regionUtilisateur">de votre région</option>
+        <option v-if="departement" value="departementUtilisateur">de votre département</option>
+        <option v-if="departement" value="regionUtilisateur">de votre région</option>
         <option value="autreDepartement">d'un autre département</option>
         <option value="autreRegion">d'une autre région</option>
     </select>
@@ -15,7 +15,7 @@
         <select id="departmentSelect" required v-model="departementFiltre" class="form-select w-50 mx-auto"
             aria-label="filtre">
             <option v-for="(departement, index) in departements" :selected="index == 0" :value="departement.code">{{
-                    departement.code
+            departement.code
             }} - {{ departement.nom }}</option>
         </select>
     </div>
@@ -30,18 +30,22 @@
 </template>  
 
 <script>
-import { store } from "../../store.js";
+import { useLieuxStore } from "../../stores/lieuxStore";
+import { useUserStore } from "../../stores/userStore.js";
+import { mapState } from "pinia";
 
 export default {
     data() {
         return {
-            departementUtilisateur: store.state.userData.departement,
             departementFiltre: '',
             regionFiltre: '',
             filtre: "france",
-            departements: store.state.departements,
-            regions: store.state.regions
         }
+    },
+
+    computed: {
+        ...mapState(useUserStore, ['departement']),
+        ...mapState(useLieuxStore, ['departements', 'regions'])
     },
 
     props: ["lieux", "lieuxNonFiltres"],
@@ -56,7 +60,7 @@ export default {
             // si choix du département de l'utilisateur : on filtre les lieux ainsi
             if (newFilter == "departementUtilisateur") {
                 // on filtre les lieux non filtrés et on stocke le résultat dans une variable (impossible de modifier directement les props)
-                let lieuxFiltres = this.lieuxNonFiltres.filter(lieu => lieu.departement.code == this.departementUtilisateur.code)
+                let lieuxFiltres = this.lieuxNonFiltres.filter(lieu => lieu.departement.code == this.departement.code)
                 // on fait remonter les lieux filtrés vers le parent 
                 this.$emit("filtre_applique", lieuxFiltres)
             }
@@ -64,7 +68,7 @@ export default {
             // si choix de la région de l'utilisateur : on filtre les lieux ainsi
             else if (newFilter == "regionUtilisateur") {
                 // on filtre les lieux non filtrés et on stocke le résultat dans une variable (impossible de modifier directement les props)
-                let lieuxFiltres = this.lieuxNonFiltres.filter(lieu => lieu.departement.region.nom == this.departementUtilisateur.region.nom)
+                let lieuxFiltres = this.lieuxNonFiltres.filter(lieu => lieu.departement.region.nom == this.departement.region.nom)
                 // on fait remonter les lieux filtrés vers le parent 
                 this.$emit("filtre_applique", lieuxFiltres)
 

@@ -58,7 +58,7 @@ class ImageController extends BaseController
         $image = $request->file('image');
 
         //nom de l'image = nom du lieu (espaces changés en underscores) + _image_ + le N° de l'image pour ce lieu + l'extension
-        $imageName = str_replace(' ', '_', $request->nom) . "_image_" . $imagesTotalForPlace + 1  . '.' . $image->extension();
+        $imageName = str_replace(' ', '_', substr($request->nom_lieu, 0, 20)) . "_image_" . $imagesTotalForPlace + 1  . '.' . $image->extension();
 
         // on récupère les dimensions de l'image
         $imageInfos = getimagesize($image);
@@ -73,7 +73,7 @@ class ImageController extends BaseController
         Image::create([
             'nom' => $imageName,
             'user_id' => $request->user_id,
-            'lieu_id' => session()->get('lieu_id'),
+            'lieu_id' => $request->lieu_id,
             'longueur' => $imageInfos[0],
             'largeur' => $imageInfos[1],
             'taille' => $fileSize,
@@ -81,7 +81,7 @@ class ImageController extends BaseController
         ]);
 
         // on retourne un message de succès et les noms des images uploadées
-        $message = "image uploadée avec succès !";
+        $message = "image envoyée avec succès !";
         return $this->sendResponse($image, $message);
     }
 
@@ -110,7 +110,6 @@ class ImageController extends BaseController
         // ici, l'update ne concerne que "profil" => l'utilisateur la choisit en tant qu'image
         // de profil ou la déselectionne
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|string',
             'mise_en_avant' => 'required|boolean',
         ]);
 

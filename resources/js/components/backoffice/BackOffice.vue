@@ -30,6 +30,31 @@
         </div>
     </div>
 
+    <!-- modal de confirmation de suppression -->
+
+    <div class="modal" ref="confirmationModal" tabindex="-1" id="confirmationModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Demande de confirmation de suppression</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Etes-vous sûr de vouloir supprimer cet élément : {{ elementToDelete }} (id : {{
+                    idOfElementToDelete }}) ?</p>
+                    <p v-if="elementToDelete == 'categorie'" class="text-danger">Attention : tous les lieux associés à
+                        cette catégorie seront supprimés.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                        @click="handleDeleting()">Oui</button>
+                    <button type="button" class="btn btn-primary">Non</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <section v-if="showLieux" class="container-fluid">
 
         <h2 class="mb-2">Liste des lieux</h2>
@@ -65,7 +90,8 @@
                         <router-link :to="`/modifierlieu/${lieu.id}`"><i class="fa-solid fa-pen-to-square"></i>
                         </router-link>
                     </td>
-                    <td><i class="fa-solid fa-eraser" @click="deleteLieu(lieu.id)"></i></td>
+                    <td><i class="fa-solid fa-eraser" data-bs-toggle="modal" data-bs-target="#confirmationModal"
+                            @click="elementToDelete = 'lieu'; idOfElementToDelete = lieu.id"></i></td>
                     <td>{{ lieu.description.substring(0, 100) }}</td>
                     <td>{{ lieu.latitude }}</td>
                     <td>{{ lieu.longitude }}</td>
@@ -99,7 +125,7 @@
 
     <section v-if="showCategories" class="container-fluid p-3 p-lg-5">
 
-        <h2 class="mb-2">Liste des catégories</h2>
+        <h2 class="mb-3">Liste des catégories</h2>
 
         <div class="container">
             <table class="table table-striped table-responsive">
@@ -118,9 +144,10 @@
                     <tr v-for="categorie in categories">
                         <th scope="row">{{ categorie.id }}</th>
                         <td>{{ categorie.nom }}</td>
-                        <td>{{ categorie.icone }}</td>
+                        <td><span class="fa-2x iconWithShadow me-2" v-html="categorie.icone"
+                                :style="{color: categorie.couleur}"></span></td>
                         <td>{{ moment(categorie.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
-                        <td> {{ categorie.created_at == categorie.updated_at ? "jamais modifié" :
+                        <td> {{ categorie.created_at == categorie.updated_at ? "jamais modifiée" :
                         moment(categorie.updated_at).format("ddd DD MMM YYYY [à] HH:mm")
                         
                         }}</td>
@@ -129,14 +156,15 @@
                                     class="fa-solid fa-pen-to-square"></i>
                             </router-link>
                         </td>
-                        <td><i class="fa-solid fa-eraser" @click="deleteCategory(categorie.id)"></i></td>
+                        <td><i class="fa-solid fa-eraser" data-bs-toggle="modal" data-bs-target="#confirmationModal"
+                                @click="elementToDelete = 'categorie'; idOfElementToDelete = categorie.id"></i></td>
                     </tr>
 
                 </tbody>
             </table>
         </div>
 
-        <h2>Ajouter une catégorie</h2>
+        <h2 class="mt-4">Ajouter une catégorie</h2>
 
         <div class="row justify-content-center p-2 p-lg-5">
             <div class="col-md-8">
@@ -162,6 +190,15 @@
                                 <div class="col-md-6">
                                     <input v-model="icone" id="icone" type="text" class="form-control" name="icone"
                                         required autocomplete="icone">
+                                </div>
+                            </div>
+
+                            <div class="form-group row m-2">
+                                <label for="couleur" class="col-md-4 col-form-label text-md-right">couleur</label>
+
+                                <div class="col-md-6">
+                                    <input v-model="couleur" id="couleur" type="text" class="form-control"
+                                        name="couleur" required autocomplete="couleur">
                                 </div>
                             </div>
 
@@ -217,7 +254,8 @@
                             <router-link :to="`/modifieravis/${avis.id}`"><i class="fa-solid fa-pen-to-square"></i>
                             </router-link>
                         </td>
-                        <td><i class="fa-solid fa-eraser" @click="deleteReview(avis.id)"></i></td>
+                        <td><i class="fa-solid fa-eraser" data-bs-toggle="modal" data-bs-target="#confirmationModal"
+                                @click="elementToDelete = 'avis'; idOfElementToDelete = avis.id"></i></td>
                     </tr>
 
                 </tbody>
@@ -254,7 +292,8 @@
                         moment(user.updated_at).format("ddd DD MMM YYYY [à] HH:mm")
                         
                         }}</td>
-                        <td><i class="fa-solid fa-eraser" @click="deleteUser(user.id)"></i></td>
+                        <td><i class="fa-solid fa-eraser" data-bs-toggle="modal" data-bs-target="#confirmationModal"
+                                @click="elementToDelete = 'user'; idOfElementToDelete = user.id"></i></td>
                     </tr>
 
                 </tbody>
@@ -278,7 +317,7 @@
                     <th scope="col">largeur</th>
                     <th scope="col">taille</th>
                     <th scope="col">ajoutée le</th>
-                    <th scope="col">modifier</th>
+                    <th scope="col">mettre en avant</th>
                     <th scope="col">supprimer</th>
                 </tr>
             </thead>
@@ -300,11 +339,15 @@
                     <td>{{ image.largeur }} px</td>
                     <td>{{ image.taille }} kb</td>
                     <td>{{ moment(image.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
-                    <td>
+                    <td v-if="!image.mise_en_avant">
                         <router-link :to="`/modifierimage/${image.id}`"><i class="fa-solid fa-pen-to-square"></i>
                         </router-link>
                     </td>
-                    <td><i class="fa-solid fa-eraser" @click="deleteImage(image.id)"></i></td>
+                    <td v-else>
+                        image déjà mise en avant
+                    </td>
+                    <td><i class="fa-solid fa-eraser" data-bs-toggle="modal" data-bs-target="#confirmationModal"
+                            @click="elementToDelete = 'image'; idOfElementToDelete = image.id"></i></td>
 
                     <!-- modal pour afficher l'image en grand -->
                     <div :class="`modal fade imageZoom${image.id}`" tabindex="-1" role="dialog"
@@ -326,46 +369,79 @@
 </template>
 
 <script>
-import { store } from "../../store";
 import moment from 'moment';
 import axios from "axios";
+import { mapWritableState } from 'pinia';
+import { mapActions } from 'pinia';
+import { useBackOfficeStore } from '../../stores/backOfficeStore'
+import { useLieuxStore } from '../../stores/lieuxStore';
+
 moment.locale('fr');
 
 export default {
     // computed permet de surveiller automatiquement les changements
     // des variables dans le state => automatiquement à jour en cas
     // d'ajout / suppression / modif de lieu et/ou de catégorie
+
     computed: {
-        avis() {
-            return store.state.avis
-        },
-        lieux() {
-            return store.state.lieux
-        },
-        categories() {
-            return store.state.categories
-        },
-        users() {
-            return store.state.users
-        },
-        images() {
-            return store.state.images
-        }
+        ...mapWritableState(useBackOfficeStore, ['avis', 'users', 'images']),
+
+        ...mapWritableState(useLieuxStore, [
+            'lieux',
+            'categories'
+        ]),
+
     },
 
     data() {
         return {
+            // nom - icône - couleur : pour création catégorie
             nom: "",
             icone: "",
+            couleur: "",
+            showConfirm: false,
             showUsers: false,
             showLieux: false,
             showCategories: false,
             showAvis: false,
-            showImages: false
+            showImages: false,
+            elementToDelete: '',
+            idOfElementToDelete: ''
         }
     },
 
     methods: {
+
+        ...mapActions(useBackOfficeStore, ['storeAvis', 'storeUsers', 'storeImages']),
+
+        ...mapActions(useLieuxStore, ['storeLieux', 'storeCategories']),
+
+        showModal() {
+            this.showConfirm = true;
+            this.$nextTick(() => {
+                this.$refs.confirmationModal.modal('show');
+            });
+        },
+
+        handleDeleting() {
+            switch (this.elementToDelete) {
+                case ('user'):
+                    this.deleteUser(this.idOfElementToDelete)
+                    break
+                case ('lieu'):
+                    this.deleteLieu(this.idOfElementToDelete)
+                    break
+                case ('avis'):
+                    this.deleteReview(this.idOfElementToDelete)
+                    break
+                case ('image'):
+                    this.deleteImage(this.idOfElementToDelete)
+                    break
+                case ('categorie'):
+                    this.deleteCategory(this.idOfElementToDelete)
+                    break
+            }
+        },
 
         deleteReview(id) {
 
@@ -379,7 +455,7 @@ export default {
                     axios.get('/api/avis')
 
                         .then(response => {
-                            //store.commit("storeAvis", response.data)
+                            this.storeAvis(response.data)
                             // on redirige vers l'accueil en affichant le message de succès
                             this.$router.push('/successmessage/backoffice/' + message)
                         })
@@ -405,7 +481,7 @@ export default {
                     // on va récupérer la nouvelle liste des lieux
                     axios.get('/api/lieus')
                         .then(response => {
-                            store.commit("storeLieux", response.data)
+                            this.storeLieux(response.data)
                             // on redirige vers l'accueil en affichant le message de succès
                             this.$router.push('/SuccessMessage/backoffice/' + message)
                         })
@@ -427,48 +503,43 @@ export default {
 
                     let message = response.data.message
 
-                    // on va récupérer la nouvelle liste des lieux
+                    // on va récupérer la nouvelle liste des catégories
                     axios.get('/api/categories')
 
                         .then(response => {
-                            store.commit("storeCategories", response.data)
-                            // on redirige vers l'accueil en affichant le message de succès
+                            this.storeCategories(response.data)
+                            // on redirige vers le back office en affichant le message de succès
                             this.$router.push('/SuccessMessage/backoffice/' + message)
                         })
-
                         .catch(error => {
                             console.log(error.response)
                         })
 
                 })
-
                 .catch(error => {
                     console.log(error.response)
                 })
         },
 
         storeCategory() {
-            axios.post('/api/categories', { nom: this.nom, icone: this.icone })
+            axios.post('/api/categories', { nom: this.nom, icone: this.icone, couleur: this.couleur })
                 .then(response => {
 
                     let message = response.data.message
 
-                    // on va récupérer la nouvelle liste des lieux
+                    // on va récupérer la nouvelle liste des catégories
                     axios.get('/api/categories')
 
                         .then(response => {
-                            store.commit("storeCategories", response.data)
+                            this.storeCategories(response.data)
                             // on redirige vers l'accueil en affichant le message de succès
                             this.$router.push('/SuccessMessage/backoffice/' + message)
                         })
-
                         .catch(error => {
                             console.log(error.response)
                         })
 
-                })
-
-                .catch(error => {
+                }).catch(error => {
                     console.log(error.response)
                 })
         },
@@ -485,17 +556,14 @@ export default {
                     axios.get('/api/users')
 
                         .then(response => {
-                            store.commit("storeUsers", response.data)
+                            this.storeUsers(response.data)
                             // on redirige vers l'accueil en affichant le message de succès
                             this.$router.push('/SuccessMessage/backoffice/' + message)
                         })
-
                         .catch(error => {
                             console.log(error.response)
                         })
-
                 })
-
                 .catch(error => {
                     console.log(error.response)
                 })
@@ -513,17 +581,14 @@ export default {
                     axios.get('/api/images')
 
                         .then(response => {
-                            store.commit("storeImages", response.data)
+                            this.storeImages(response.data)
                             // on redirige vers l'accueil en affichant le message de succès
                             this.$router.push('/SuccessMessage/backoffice/' + message)
                         })
-
                         .catch(error => {
                             console.log(error.response)
                         })
-
                 })
-
                 .catch(error => {
                     console.log(error.response)
                 })
@@ -536,7 +601,7 @@ export default {
         axios.get("http://localhost:8000/api/lieus")
             .then(response => {
                 console.log("getLieux");
-                store.commit('storeLieux', response.data)
+                this.storeLieux(response.data)
                 console.log(store.state.lieux);
             }
             )
@@ -544,21 +609,21 @@ export default {
 
         axios.get("http://localhost:8000/api/avis")
             .then(response => {
-                store.commit('storeAvis', response.data)
+                this.storeAvis(response.data)
             }
             )
             .catch(error => console.log(error.response))
 
         axios.get("http://localhost:8000/api/users")
             .then(response => {
-                store.commit('storeUsers', response.data)
+                this.storeUsers(response.data)
             }
             )
             .catch(error => console.log(error.response))
 
         axios.get("http://localhost:8000/api/images")
             .then(response => {
-                store.commit('storeImages', response.data)
+                this.storeImages(response.data)
             }
             )
             .catch(error => console.log(error.response))
@@ -571,6 +636,10 @@ h1,
 h2,
 i {
     color: #1c6e8c
+}
+
+.iconWithShadow {
+    text-shadow: 2px 2px 4px #fff;
 }
 
 .bigIcon {

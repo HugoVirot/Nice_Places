@@ -159,7 +159,7 @@ class UserController extends BaseController
             'departement_id' => $request->departement_id
         ]);
 
-        // si nouveau mdp choisi
+        // si nouveau mdp choisi (et qui respecte bien sûr les critères de sécurité du validateur)
         if (isset($request->password)) {
 
             // si ancien mdp fourni ET valide, modification validée 
@@ -167,8 +167,8 @@ class UserController extends BaseController
                 $user->update([
                     'password' => Hash::make($request->password)
                 ]);
-                // sinon => on renvoie une erreur
                 
+                // sinon => on renvoie une erreur
             } else {
                 return $this->sendError('Error validation', ['mot de passe actuel non renseigné ou incorrect']);
             }

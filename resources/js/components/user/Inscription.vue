@@ -155,7 +155,7 @@
 <script>
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
-import { store } from "../../store.js";
+import { useUserStore } from "../../stores/userStore.js";
 
 export default {
 
@@ -181,12 +181,12 @@ export default {
         sendData() {
             axios.post('/api/register', { pseudo: this.pseudo, email: this.email, departement: this.departement, password: this.password, password_confirmation: this.password_confirmation })
                 .then(response => {
-                    // on stocke le message de succès dans le store ("inscription réussie")
+                    
                     let message = response.data.message
                     // on enregistre une notification de confirmation à destination de l'utilisateur
                     this.createNotification(response.data.data.id)
 
-                    this.$router.push('/successmessage/connexion/' + response.data.message);
+                    this.$router.push('/successmessage/connexion/' + message);
                 })
                 .catch((error) => {
                     this.validationErrors = error.response.data.data;
@@ -246,7 +246,6 @@ export default {
 </script>
 
 <style scoped>
-/*#94D1BE*/
 
 img {
     width: 6vw

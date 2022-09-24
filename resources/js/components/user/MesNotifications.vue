@@ -11,13 +11,13 @@
                 <div v-if="notifications.length > 0"
                     class="greenIcon mx-auto my-5 border border-4 rounded border-secondary col-md-4 offset-md-1 py-5">
                     <i class="fa-5x fa-solid fa-envelope mb-3"></i>
-                    <p><span class="fs-1">{{  notifications.length  }}</span> notification(s) reçues au total</p>
+                    <p><span class="fs-1">{{ notifications.length }}</span> notification(s) reçues au total</p>
                 </div>
 
                 <div v-show="notifications.length > 0 && countUnreadNotifications > 0"
                     class="mx-auto my-5 text-danger border border-4 rounded border-danger col-md-4 offset-md-1 py-5">
                     <i class="fa-5x fa-solid fa-bell mb-3"></i>
-                    <p><span class="fs-1">{{  countUnreadNotifications  }}</span> non lues </p>
+                    <p><span class="fs-1">{{ countUnreadNotifications }}</span> non lues </p>
                 </div>
             </div>
         </div>
@@ -40,9 +40,9 @@
                             :data-bs-target="`#message${notification.id}`" aria-expanded="false"
                             :aria-controls="`message${notification.id}`">
 
-                            <p class="text-white col-lg-3">reçue le {{  notification.created_at.substring(0, 10)  }}</p>
+                            <p class="text-white col-lg-3">reçue le {{ moment(notification.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</p>
 
-                            <h3 class="col-lg-7">{{  notification.titre  }}</h3>
+                            <h3 class="col-lg-7">{{ notification.titre }}</h3>
 
                             <div v-if="!notification.lue" class="text-white col-lg-2"><i
                                     class="fa-solid fa-2x fa-circle-exclamation text-danger me-2"></i>Non lue</div>
@@ -68,22 +68,16 @@
 </template>
 
 <script>
-import { store } from "../../store"
+import { useUserStore } from "../../stores/userStore"
+import { mapActions } from "pinia";
+import { mapState } from "pinia";
 import moment from 'moment';
 moment.locale('fr');
 
 export default {
     computed: {
-        notifications() {
-            return store.state.notifications
-        },
-        countUnreadNotifications() {
-            if (store.state.notifications) {
-                return store.state.notifications.filter(n => !n.lue).length
-            } else {
-                return null
-            }
-        }
+        ...mapState(useUserStore, ['id', 'notifications', 'countUnreadNotifications']),
+        ...mapActions(useUserStore, ['notifications', 'storeNotifications']),
     },
 
     data() {
@@ -95,10 +89,10 @@ export default {
 
     methods: {
         getNotifications() {
-            axios.get('/api/getnotificationsbyuser/' + store.state.userData.id)
+            axios.get('/api/getnotificationsbyuser/' + this.id)
                 .then(response => {
                     console.log(response.data)
-                    store.commit('storeNotifications', response.data);
+                    this.storeNotifications(response.data);
                 }).catch((response) => {
                     console.log(response.error);
                 })

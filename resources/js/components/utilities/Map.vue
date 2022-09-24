@@ -4,25 +4,21 @@
 
 <script>
 import axios from "axios";
-import { store } from "../../store.js";
+import { useUserStore } from "../../stores/userStore";
+import { useLieuxStore } from '../../stores/lieuxStore'
+import { mapState } from "pinia";
+import { mapActions } from 'pinia'
 
 export default {
 
     computed: {
-        userPosition() {
-            return store.state.userPosition
-        },
-        geolocationAnswered() {
-            return store.state.geolocationAnswered
-        },
-        lieux() {
-            if (store.state.lieux) {
-                return store.getters.getValidatedPlaces
-            }
-        },
-        categories() {
-            return store.state.categories
-        }
+        ...mapState(useLieuxStore, [
+            'categories',
+            'lieux'
+        ]),
+
+        ...mapState(useUserStore, ['geolocationAnswered',
+            'userPosition'])
     },
 
     data() {
@@ -34,6 +30,9 @@ export default {
     props: ["lieuSeul"],
 
     methods: {
+
+        ...mapActions(useUserStore, ['storeGeolocationAnswered', 'storeUserPosition']),
+
         initializeMap(component) {
 
             // ******************* si page détails => affichage d'un seul lieu (pas de pointeur user pour le moment, confusion) *****************
@@ -162,9 +161,9 @@ export default {
 
                                 let popupContent = "<div class=\"text-center\"><span style=\"display:none\">" + lieu.id + "</span>" +
                                     "<div><span class=\"mx-auto fa-2x\" style=\"color:" + lieu.categorie.couleur + "\">" + lieu.categorie.icone + "</span>" +
-                                    "<i class=\"fa-solid fa-star ms-3 me-2\" style=\"color: yellow\"></i>" + 
+                                    "<i class=\"fa-solid fa-star ms-3 me-2\" style=\"color: yellow\"></i>" +
                                     "<span class=\"fs-5 text-secondary\" style=\"font-family:'Cooper'\">" + lieu.note + "</span></div>" +
-                                     "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom + "</h5>" + 
+                                    "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom + "</h5>" +
                                     "<img class=\"mx-auto\" src=\"images/" + imageCouvertureLieu + "\" style=\"width:35vw\">" +
                                     "<p style=\"font-family:'Cooper'\" class=\"text-center text-secondary\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p></div>"
 
@@ -258,13 +257,13 @@ export default {
                 // on demande l'accès à la position via une petite fenêtre 
                 // si accepté, on stocke les coordonnées de l'utilisateur dans le state
                 navigator.geolocation.getCurrentPosition(position => {
-                    store.commit('storeGeolocationAnswered', true)
-                    store.commit('storeUserPosition', { latitude: position.coords.latitude, longitude: position.coords.longitude })
+                    this.storeGeolocationAnswered(true)
+                    this.storeUserPosition({ latitude: position.coords.latitude, longitude: position.coords.longitude })
                     console.log("accès position accepté, choix et coordonnées stockés dans le state")
                     this.initializeMap(this)
                     // si accès refusé, on stocke cela dans le state et on l'affiche dans la console
                 }, () => {
-                    store.commit('storeGeolocationAnswered', true)
+                    this.storeGeolocationAnswered(true)
                     console.log("accès à la position refusé, choix stocké dans le state")
                     this.initializeMap(this)
                 }

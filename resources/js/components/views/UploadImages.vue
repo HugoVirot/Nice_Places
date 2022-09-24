@@ -2,12 +2,12 @@
 
     <div class="pt-5 pb-2">
         <i class="mx-auto fa-3x fa-solid fa-paper-plane"></i>
-        <h1 class="mt-2">Proposer des images</h1>
+        <h1 class="mt-2">Proposer une image</h1>
         <h2>{{ lieu.nom }}</h2>
     </div>
 
-    <div class="container my-5">
-        <h2 class="mb-3">Images actuelles : {{ lieu.images.length }}</h2>
+    <div class="container my-5" v-if="lieu.images && lieu.images.length > 0">
+        <p class="mb-3">actuellement {{ lieu.images.length }} image(s) pour ce lieu</p>
 
         <div class="row my-2" v-if="lieu.images.length == 1">
             <div v-for="image in lieu.images" class="col-md-10 offset-md-1 my-1">
@@ -30,36 +30,32 @@
         <div class="row justify-content-center p-2 p-lg-5">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header text-white mb-3">Partagez vos plus belles photos !</div>
+                    <div class="card-header text-white mb-3">Partagez votre plus belle photo !</div>
 
                     <div class="card-body">
                         <form @submit.prevent="sendData" enctype="multipart/form-data">
 
                             <div class="form-group row mx-2 mt-3">
-                                <label for="nom" class="col-md-4 col-form-label text-md-right">photos</label>
-                                <input multiple type="file" class="form-control-file col-md-8" v-on:change="onChange">
+                                <input required type="file" class="form-control-file col-md-8 offset-md-2"
+                                    v-on:change="onChange">
                             </div>
 
-                            <div class="form-group row mx-2 mt-3">
+                            <div class="form-group row mt-4 py-3 bg-white">
                                 <div class="form-text mb-3 col-md-8 offset-md-2">
-                                    <ul class="text-start ms-5 ms-md-0">
-                                        <li>
-                                            Maximum 5 photos, 2 Mo par photo et 8 Mo pour l'ensemble.
-                                        </li>
-                                        <li>
-                                            Formats acceptés : JPG, JPEG, PNG et SVG.
-                                        </li>
-                                        <li>
-                                            Uniquement en format paysage svp.
-                                        </li>
-                                        <li>
-                                            La première choisie sera la photo de couverture. </li>
-                                        <li>
-                                            Sur PC, maintenez la touche CTRL pour sélectionner plusieurs photos.
-                                        </li>
-                                        <li>
-                                            Sur mobile, explication à venir. </li>
-                                    </ul>
+                                    <div class="row">
+                                        <div class="col-md-4 text-center">
+                                            <i class="my-1 fa-3x fa-solid fa-weight-scale"></i>
+                                            <p>Moins de 2 Mo</p>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <i class="my-1 fa-3x fa-solid fa-rectangle-list"></i>
+                                            <p>Formats acceptés : JPG / JPEG, PNG et SVG</p>
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <i class="my-1 fa-3x fa-solid fa-panorama"></i>
+                                            <p>Uniquement en format paysage svp</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -83,12 +79,18 @@
 <script>
 import axios from "axios";
 import ValidationErrors from "../utilities/ValidationErrors.vue"
-import { store } from "../../store";
+import { useUserStore } from "../../stores/userStore";
+import { mapState } from "pinia";
 
 export default {
+
+    computed: {
+        ...mapState(useUserStore, ['id'])
+    },
+
     data() {
         return {
-            lieuId: this.$route.params.lieuid,
+            lieuId: this.$route.params.id,
             lieu: '',
             formData: new FormData(),
             validationErrors: ''
@@ -99,18 +101,17 @@ export default {
 
     methods: {
         onChange(e) {
-            let imagesChoisies = e.target.files;
-            console.log(imagesChoisies)
-            for (let i = 0; i < imagesChoisies.length; i++) {
-                this.formData.append('images[' + i + ']', imagesChoisies[i]);
-            }
+            let imageChoisie = e.target.files[0]
+            console.log(imageChoisie)
+            this.formData.append('image', imageChoisie)
             console.log(this.formData)
         },
 
         sendData() {
             // on ajoute le user id et le lieu id au formulaire
-            this.formData.append("user_id", store.state.userData.id);
+            this.formData.append("user_id", this.id);
             this.formData.append("lieu_id", this.lieuId);
+            this.formData.append("nom_lieu", this.lieu.nom);
 
             // on envoie le tout à l'api
             axios.post('/api/images', this.formData, { 'content-type': 'multipart/form-data' })
@@ -167,7 +168,7 @@ i {
     color: white;
 }
 
-.previousPictures{
+.previousPictures {
     max-height: 100%;
     max-width: 100%
 }
