@@ -40,7 +40,7 @@
                             :data-bs-target="`#message${notification.id}`" aria-expanded="false"
                             :aria-controls="`message${notification.id}`">
 
-                            <p class="text-white col-lg-3">reçue le {{ moment(notification.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</p>
+                            <p class="text-white col-lg-3">reçue le {{ notification.created_at.substring(0, 10)}}</p>
 
                             <h3 class="col-lg-7">{{ notification.titre }}</h3>
 
@@ -71,13 +71,10 @@
 import { useUserStore } from "../../stores/userStore"
 import { mapActions } from "pinia";
 import { mapState } from "pinia";
-import moment from 'moment';
-moment.locale('fr');
 
 export default {
     computed: {
         ...mapState(useUserStore, ['id', 'notifications', 'countUnreadNotifications']),
-        ...mapActions(useUserStore, ['notifications', 'storeNotifications']),
     },
 
     data() {
@@ -88,6 +85,8 @@ export default {
     },
 
     methods: {
+        ...mapActions(useUserStore, ['storeNotifications']),
+
         getNotifications() {
             axios.get('/api/getnotificationsbyuser/' + this.id)
                 .then(response => {

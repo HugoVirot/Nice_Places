@@ -160,7 +160,7 @@ class UserController extends BaseController
         ]);
 
         // si nouveau mdp choisi (et qui respecte bien sûr les critères de sécurité du validateur)
-        if (isset($request->password)) {
+        if ($request->password) {
 
             // si ancien mdp fourni ET valide, modification validée 
             if (isset($request->oldPassword) && Hash::check($request->oldPassword, User::find($user->id)->password)) {
@@ -178,7 +178,7 @@ class UserController extends BaseController
         $user->load('departement');
 
         // On retourne la réponse JSON
-        return $this->sendResponse($user, 'Modifications validées.');
+        return $this->sendResponse($user, 'Modifications validées.', 201);
     }
 
     /**

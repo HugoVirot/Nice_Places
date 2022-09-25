@@ -1,12 +1,17 @@
 <script>
-import { useUserStore } from '../../stores/userStore'
+import { mapWritableState } from 'pinia'
 import Filtres from "../utilities/Filtres.vue"
+import { useLieuxStore } from '../../stores/lieuxStore'
 
 export default {
 
+    computed: {
+        ...mapWritableState(useLieuxStore, ['getTopRatedPlaces']),
+    },
+
     data() {
         return {
-            topLieux: store.getters.getTopRatedPlaces,
+            topLieux: '',
             topLieuxNonFiltres: ''
         }
     },
@@ -15,11 +20,16 @@ export default {
 
     methods: {
         updateLieux(lieuxTries) {  // déclenchée si filtre appliqué via composant enfant Filtres
-            this.topLieux = lieuxTries // on remplace les lieux de la catégorie par les lieux filtrés 
+            this.topLieux = lieuxTries // on remplace le classement affiché par les lieux filtrés 
         }
     },
 
     created() {
+        // on appelle le getter getTopRatedPlaces pour récupérer les 100 lieux les mieux notés
+        // on les stocke dans la variable toplieux des datas
+        this.topLieux = this.getTopRatedPlaces
+        // on garde une copie de cette liste des 100 lieux les mieux notés en cas de retour
+        // à l'affichage normal après avoir effectué un ou plusieurs tris
         this.topLieuxNonFiltres = this.topLieux
     }
 }

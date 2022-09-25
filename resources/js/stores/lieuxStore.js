@@ -15,6 +15,19 @@ export const useLieuxStore = defineStore({
         }
     },
 
+    getters: {
+        // on récupère les lieux validés uniquement
+        getValidatedPlaces() {
+            return this.lieux.filter(lieu => lieu.statut == "validé")
+        },
+        getTopRatedPlaces() {
+            return this.lieux.slice(0, 100).sort((a, b) => {
+                if (a.note > b.note) return -1;
+                return a.note < b.note ? 1 : 0;
+            });
+        }
+    },
+
     actions: {
         storeLieux(lieux) {
             console.log("storeLieux");
@@ -28,7 +41,7 @@ export const useLieuxStore = defineStore({
         storeCategories(categories) {
             this.categories = categories
         },
-        
+
         storeRegions(regions) {
             this.regions = regions
         },
@@ -41,11 +54,11 @@ export const useLieuxStore = defineStore({
             this.threeLastPlaces = threeLastPlaces
         },
 
-        storeImages(images){
+        storeImages(images) {
             this.images = images
         },
 
-        storeNewLieu(newLieu){
+        storeNewLieu(newLieu) {
             this.lieux.push(newLieu)
         }
     },

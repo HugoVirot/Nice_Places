@@ -23156,15 +23156,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   // computed permet de surveiller automatiquement les changements
   // de userData dans le state => utile pour la déconnexion
-  computed: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_7__.mapState)(_stores_lieuxStore__WEBPACK_IMPORTED_MODULE_4__.useLieuxStore, ['threeTopPlaces', 'threeLastPlaces', 'categories', 'lieux', 'favoris', 'departements', 'regions', 'geolocationAnswered', 'userPosition'])), (0,pinia__WEBPACK_IMPORTED_MODULE_7__.mapState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_5__.useUserStore, ['departement', 'id'])),
-  // // on surveille userData. Si changement => user connecté => on récupère  :
-  // // ses trois top lieux + 3 derniers lieux / ses favoris
+  computed: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_7__.mapState)(_stores_lieuxStore__WEBPACK_IMPORTED_MODULE_4__.useLieuxStore, ['categories', 'lieux', 'favoris', 'departements', 'regions', 'userPosition', 'threeTopPlaces', 'threeLastPlaces'])), (0,pinia__WEBPACK_IMPORTED_MODULE_7__.mapState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_5__.useUserStore, ['departement', 'id', 'geolocationAnswered'])),
+  // on surveille le choix d'un département ou le changement de département de l'utilisateur
+  // si c'est le cas => on récupère les 3 derniers lieux et les 3 mieux notés du nouveau département
   watch: {
-    useUserStore: {
-      handler: function handler() {
-        this.getThreeTopAndLastPlaces(); // this.getFavoris()
-      },
-      deep: true
+    departement: function departement() {
+      this.getThreeTopAndLastPlaces();
     }
   },
   methods: _objectSpread(_objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_7__.mapActions)(_stores_lieuxStore__WEBPACK_IMPORTED_MODULE_4__.useLieuxStore, ['storeCategories', 'storeLieux', 'storeDepartements', 'storeRegions', 'storeThreeTopPlaces', 'storeThreeLastPlaces'])), (0,pinia__WEBPACK_IMPORTED_MODULE_7__.mapActions)(_stores_userStore__WEBPACK_IMPORTED_MODULE_5__.useUserStore, ['storeFavoris'])), {}, {
@@ -23172,6 +23169,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getCategories: function getCategories() {
       var _this = this;
 
+      console.log("getCategories");
       axios__WEBPACK_IMPORTED_MODULE_6___default().get("http://localhost:8000/api/categories").then(function (response) {
         _this.storeCategories(response.data);
 
@@ -23183,6 +23181,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getLieux: function getLieux() {
       var _this2 = this;
 
+      console.log("getLieux");
       axios__WEBPACK_IMPORTED_MODULE_6___default().get("http://localhost:8000/api/lieus").then(function (response) {
         _this2.storeLieux(response.data);
       })["catch"](function (error) {
@@ -23192,6 +23191,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getDepartements: function getDepartements() {
       var _this3 = this;
 
+      console.log("getdepartements");
       axios__WEBPACK_IMPORTED_MODULE_6___default().get("http://localhost:8000/api/departements").then(function (response) {
         _this3.storeDepartements(response.data);
       })["catch"](function (error) {
@@ -23201,6 +23201,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getRegions: function getRegions() {
       var _this4 = this;
 
+      console.log("getregions");
       axios__WEBPACK_IMPORTED_MODULE_6___default().get("http://localhost:8000/api/regions").then(function (response) {
         _this4.storeRegions(response.data);
       })["catch"](function (error) {
@@ -23210,6 +23211,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getFavoris: function getFavoris() {
       var _this5 = this;
 
+      console.log("getfavoris");
       axios__WEBPACK_IMPORTED_MODULE_6___default().get("http://localhost:8000/api/favoris/" + this.id).then(function (response) {
         _this5.storeFavoris(response.data);
       })["catch"](function (error) {
@@ -23220,19 +23222,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getThreeTopAndLastPlaces: function getThreeTopAndLastPlaces() {
       var _this6 = this;
 
-      var department; // si l'utilisateur a choisi un département
+      console.log("getThreeTopAndLastPlaces");
+      var queryDepartment; // si l'utilisateur a choisi un département
 
       if (this.departement) {
-        department = this.departement.code; //sinon => on cible la France entière
+        queryDepartment = this.departement.code; //sinon => on cible la France entière
       } else {
-        department = "all";
+        queryDepartment = "all";
       } // on récupère les 3 lieux les mieux notés du dép. / de la France entière
       // on les stocke dans le store
 
 
       axios__WEBPACK_IMPORTED_MODULE_6___default().post("http://localhost:8000/api/lieus/gettopplacesbydep", null, {
         params: {
-          department: department
+          department: queryDepartment
         }
       }).then(function (response) {
         _this6.storeThreeTopPlaces(response.data);
@@ -23243,7 +23246,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       axios__WEBPACK_IMPORTED_MODULE_6___default().post("http://localhost:8000/api/lieus/getlastplacesbydep", null, {
         params: {
-          department: department
+          department: queryDepartment
         }
       }).then(function (response) {
         _this6.storeThreeLastPlaces(response.data);
@@ -23268,19 +23271,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
     if (!this.regions) {
       this.getRegions();
-    } // ******************* si réponse à la demande de géoloc ************************
+    } // ******************* si département choisi (à l'inscription ou après) ************************
+    // on récupère les 3 derniers lieux ajoutés + les 3 les mieux notés du dép.
 
 
-    if (this.geolocationAnswered) {
-      //*********** si géoloc acceptée => userPosition disponible (pas vide)*********
-      if (this.userPosition) {// on détecte le département de l'utilisateur
-        // on récupère les 3 derniers lieux ajoutés + les 3 les mieux notés du dép.
-        // on les stocke dans des variables locales ou du store
-      } else {
-        // *************** si le user a refusé la géoloc  *****
-        this.getThreeTopAndLastPlaces();
-      }
-    }
+    this.getThreeTopAndLastPlaces();
   },
   components: {
     Header: _template_Header_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
@@ -24168,21 +24163,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/user/MesAvisPostes.vue?vue&type=script&lang=js":
-/*!************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/user/MesAvisPostes.vue?vue&type=script&lang=js ***!
-  \************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({});
-
-/***/ }),
-
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/user/MesLieuxFavoris.vue?vue&type=script&lang=js":
 /*!**************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/user/MesLieuxFavoris.vue?vue&type=script&lang=js ***!
@@ -24306,9 +24286,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _stores_userStore__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../stores/userStore */ "./resources/js/stores/userStore.js");
-/* harmony import */ var pinia__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pinia */ "./node_modules/pinia/dist/pinia.mjs");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var pinia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! pinia */ "./node_modules/pinia/dist/pinia.mjs");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
@@ -24318,17 +24296,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
-
-moment__WEBPACK_IMPORTED_MODULE_1___default().locale('fr');
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  computed: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_2__.mapState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_0__.useUserStore, ['id', 'notifications', 'countUnreadNotifications'])), (0,pinia__WEBPACK_IMPORTED_MODULE_2__.mapActions)(_stores_userStore__WEBPACK_IMPORTED_MODULE_0__.useUserStore, ['notifications', 'storeNotifications'])),
+  computed: _objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_1__.mapState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_0__.useUserStore, ['id', 'notifications', 'countUnreadNotifications'])),
   data: function data() {
     return {
       showFullMessage: false,
       showNotificationReadMessage: false
     };
   },
-  methods: {
+  methods: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_1__.mapActions)(_stores_userStore__WEBPACK_IMPORTED_MODULE_0__.useUserStore, ['storeNotifications'])), {}, {
     getNotifications: function getNotifications() {
       var _this = this;
 
@@ -24353,7 +24329,7 @@ moment__WEBPACK_IMPORTED_MODULE_1___default().locale('fr');
         console.log(response.error);
       });
     }
-  },
+  }),
   created: function created() {
     console.log("je passe dans created");
     this.getNotifications();
@@ -24448,20 +24424,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     sendData: function sendData() {
       var _this = this;
 
+      console.log('senddata'); // ok on passe ici
+
       axios__WEBPACK_IMPORTED_MODULE_0___default().put('/api/users/' + this.id, {
+        // requête marche car modif ok en bdd
         pseudo: this.pseudo,
         email: this.email,
         departement_id: this.departement.id,
-        region: this.departement.region,
         oldPassword: this.oldPassword,
         password: this.password,
         password_confirmation: this.password_confirmation
       }).then(function (response) {
-        storeUserData(response.data.data);
+        // on devrait passer ici...
+        _this.storeUserData(response.data.data);
 
         _this.$router.push('/successmessage/lastpage/' + response.data.message);
       })["catch"](function (error) {
-        _this.validationErrors = error.response.data.data; // on passe ici de façon incompréhensible
+        _this.validationErrors = error.response.data.data; // on passe ici de façon incompréhensible (modif marche)
       });
     },
     deleteAccount: function deleteAccount() {
@@ -25395,27 +25374,41 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _stores_userStore__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../stores/userStore */ "./resources/js/stores/userStore.js");
-/* harmony import */ var _utilities_Filtres_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utilities/Filtres.vue */ "./resources/js/components/utilities/Filtres.vue");
+/* harmony import */ var pinia__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! pinia */ "./node_modules/pinia/dist/pinia.mjs");
+/* harmony import */ var _utilities_Filtres_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utilities/Filtres.vue */ "./resources/js/components/utilities/Filtres.vue");
+/* harmony import */ var _stores_lieuxStore__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../stores/lieuxStore */ "./resources/js/stores/lieuxStore.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  computed: _objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_2__.mapWritableState)(_stores_lieuxStore__WEBPACK_IMPORTED_MODULE_1__.useLieuxStore, ['getTopRatedPlaces'])),
   data: function data() {
     return {
-      topLieux: store.getters.getTopRatedPlaces,
+      topLieux: '',
       topLieuxNonFiltres: ''
     };
   },
   components: {
-    Filtres: _utilities_Filtres_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+    Filtres: _utilities_Filtres_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   methods: {
     updateLieux: function updateLieux(lieuxTries) {
       // déclenchée si filtre appliqué via composant enfant Filtres
-      this.topLieux = lieuxTries; // on remplace les lieux de la catégorie par les lieux filtrés 
+      this.topLieux = lieuxTries; // on remplace le classement affiché par les lieux filtrés 
     }
   },
   created: function created() {
+    // on appelle le getter getTopRatedPlaces pour récupérer les 100 lieux les mieux notés
+    // on les stocke dans la variable toplieux des datas
+    this.topLieux = this.getTopRatedPlaces; // on garde une copie de cette liste des 100 lieux les mieux notés en cas de retour
+    // à l'affichage normal après avoir effectué un ou plusieurs tris
+
     this.topLieuxNonFiltres = this.topLieux;
   }
 });
@@ -25566,7 +25559,7 @@ var _hoisted_8 = /*#__PURE__*/_withScopeId(function () {
 
 var _hoisted_9 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
-    "class": "titleIcon mt-5 mx-auto fa-3x fa-solid fa-location-dot"
+    "class": "titleIcon mt-5 mb-3 mx-auto fa-3x fa-solid fa-location-dot"
   }, null, -1
   /* HOISTED */
   );
@@ -25808,7 +25801,7 @@ var _hoisted_57 = {
   id: "inscrivezVous"
 };
 
-var _hoisted_58 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<i class=\"titleIcon mt-5 mx-auto fa-3x fa-solid fa-user\" data-v-332fccf4></i><h2 class=\"fs-2 m-3\" data-v-332fccf4>Inscrivez-vous gratuitement !</h2><div class=\"container-fluid px-5\" data-v-332fccf4><div class=\"row\" id=\"inscrivezVousIcones\" data-v-332fccf4><div class=\"col-md-4 p-1\" data-v-332fccf4><img class=\"inscrivezVousIcones\" src=\"images/icons/france.png\" alt=\"France\" data-v-332fccf4><p class=\"fs-4 mt-3\" data-v-332fccf4>Des lieux dans toute la France</p></div><div class=\"col-md-4 p-1\" data-v-332fccf4><img id=\"pointer\" src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4><p class=\"fs-4 mt-3\" data-v-332fccf4>Partagez vos coins préférés</p></div><div class=\"col-md-4 p-1\" data-v-332fccf4><img class=\"inscrivezVousIcones\" src=\"images/icons/phone.png\" alt=\"téléphone\" data-v-332fccf4><p class=\"fs-4 mt-3\" data-v-332fccf4>Un site web et une appli mobile</p></div></div></div>", 3);
+var _hoisted_58 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<i class=\"titleIcon mt-5 mx-auto fa-3x fa-solid fa-user-plus\" data-v-332fccf4></i><h2 class=\"fs-2 m-3\" data-v-332fccf4>Inscrivez-vous gratuitement !</h2><div class=\"container-fluid px-5\" data-v-332fccf4><div class=\"row\" id=\"inscrivezVousIcones\" data-v-332fccf4><div class=\"col-md-4 p-1\" data-v-332fccf4><img class=\"inscrivezVousIcones\" src=\"images/icons/france.png\" alt=\"France\" data-v-332fccf4><p class=\"fs-4 mt-3\" data-v-332fccf4>Des lieux dans toute la France</p></div><div class=\"col-md-4 p-1\" data-v-332fccf4><img id=\"pointer\" src=\"images/icons/pointer.png\" alt=\"pointeur\" data-v-332fccf4><p class=\"fs-4 mt-3\" data-v-332fccf4>Partagez vos coins préférés</p></div><div class=\"col-md-4 p-1\" data-v-332fccf4><img class=\"inscrivezVousIcones\" src=\"images/icons/phone.png\" alt=\"téléphone\" data-v-332fccf4><p class=\"fs-4 mt-3\" data-v-332fccf4>Un site web et une appli mobile</p></div></div></div>", 3);
 
 var _hoisted_61 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
@@ -25915,7 +25908,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1
     /* STABLE */
 
-  })])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ********************************* DERNIERS LIEUX AJOUTES *************************************** "), _ctx.threeTopPlaces && _ctx.threeTopPlaces.length > 2 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_37, [_hoisted_38, _ctx.departement ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h2", _hoisted_39, " Derniers lieux ajoutés dans votre département")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h2", _hoisted_40, " Derniers lieux ajoutés (France entière)")), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_41, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_42, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ********************** boucle qui affiche les 3 derniers lieux ************************* "), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.threeLastPlaces, function (lastPlace) {
+  })])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ********************************* DERNIERS LIEUX AJOUTES *************************************** "), _ctx.threeLastPlaces && _ctx.threeLastPlaces.length > 2 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_37, [_hoisted_38, _ctx.departement ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h2", _hoisted_39, " Derniers lieux ajoutés dans votre département")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h2", _hoisted_40, " Derniers lieux ajoutés (France entière)")), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_41, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_42, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" ********************** boucle qui affiche les 3 derniers lieux ************************* "), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.threeLastPlaces, function (lastPlace) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "mx-auto col-md-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between",
       style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)("background-image: url(images/".concat(lastPlace.image_mise_en_avant[0] ? lastPlace.image_mise_en_avant[0].nom : 'placeholder.png', "); background-position: center; background-size: cover;"))
@@ -28873,7 +28866,7 @@ var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementV
 var _hoisted_2 = {
   "class": "container-fluid p-3 p-lg-5"
 };
-function render(_ctx, _cache, $props, $setup, $data, $options) {
+function render(_ctx, _cache) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.avis, function (avis) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div");
   }), 256
@@ -29303,7 +29296,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       "data-bs-target": "#message".concat(notification.id),
       "aria-expanded": "false",
       "aria-controls": "message".concat(notification.id)
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_20, "reçue le " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.moment(notification.created_at).format("ddd DD MMM YYYY [à] HH:mm")), 1
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_20, "reçue le " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(notification.created_at.substring(0, 10)), 1
     /* TEXT */
     ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h3", _hoisted_21, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(notification.titre), 1
     /* TEXT */
@@ -29441,7 +29434,7 @@ var _hoisted_15 = /*#__PURE__*/_withScopeId(function () {
 var _hoisted_16 = {
   "class": "col-md-6"
 };
-var _hoisted_17 = ["value"];
+var _hoisted_17 = ["value", "selected"];
 
 var _hoisted_18 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
@@ -29664,10 +29657,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": "form-select mx-auto",
     "aria-label": "filtre",
     autocomplete: "departement"
-  }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.departements, function (departement) {
+  }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.departements, function (department) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
-      value: departement
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(departement.code) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(departement.nom), 9
+      value: department,
+      selected: department.nom == _ctx.departement ? 'selected' : ''
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(department.code) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(department.nom), 9
     /* TEXT, PROPS */
     , _hoisted_17);
   }), 256
@@ -32387,6 +32381,20 @@ var useLieuxStore = (0,pinia__WEBPACK_IMPORTED_MODULE_0__.defineStore)({
       threeLastPlaces: "",
       categories: ""
     };
+  },
+  getters: {
+    // on récupère les lieux validés uniquement
+    getValidatedPlaces: function getValidatedPlaces() {
+      return this.lieux.filter(function (lieu) {
+        return lieu.statut == "validé";
+      });
+    },
+    getTopRatedPlaces: function getTopRatedPlaces() {
+      return this.lieux.slice(0, 100).sort(function (a, b) {
+        if (a.note > b.note) return -1;
+        return a.note < b.note ? 1 : 0;
+      });
+    }
   },
   actions: {
     storeLieux: function storeLieux(lieux) {
@@ -79012,14 +79020,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _MesAvisPostes_vue_vue_type_template_id_7c9c4eaf__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MesAvisPostes.vue?vue&type=template&id=7c9c4eaf */ "./resources/js/components/user/MesAvisPostes.vue?vue&type=template&id=7c9c4eaf");
-/* harmony import */ var _MesAvisPostes_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MesAvisPostes.vue?vue&type=script&lang=js */ "./resources/js/components/user/MesAvisPostes.vue?vue&type=script&lang=js");
-/* harmony import */ var C_wamp64_www_Nice_Places_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+/* harmony import */ var C_wamp64_www_Nice_Places_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
 
-
-
+const script = {}
 
 ;
-const __exports__ = /*#__PURE__*/(0,C_wamp64_www_Nice_Places_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_MesAvisPostes_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_MesAvisPostes_vue_vue_type_template_id_7c9c4eaf__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/components/user/MesAvisPostes.vue"]])
+const __exports__ = /*#__PURE__*/(0,C_wamp64_www_Nice_Places_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_1__["default"])(script, [['render',_MesAvisPostes_vue_vue_type_template_id_7c9c4eaf__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/components/user/MesAvisPostes.vue"]])
 /* hot reload */
 if (false) {}
 
@@ -79761,22 +79767,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Inscription_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"])
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Inscription_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Inscription.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/user/Inscription.vue?vue&type=script&lang=js");
- 
-
-/***/ }),
-
-/***/ "./resources/js/components/user/MesAvisPostes.vue?vue&type=script&lang=js":
-/*!********************************************************************************!*\
-  !*** ./resources/js/components/user/MesAvisPostes.vue?vue&type=script&lang=js ***!
-  \********************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_MesAvisPostes_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"])
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_MesAvisPostes_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./MesAvisPostes.vue?vue&type=script&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/user/MesAvisPostes.vue?vue&type=script&lang=js");
  
 
 /***/ }),

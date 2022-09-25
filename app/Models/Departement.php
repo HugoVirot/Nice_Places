@@ -20,4 +20,9 @@ class Departement extends Model
     {
         return $this->hasMany(Lieu::class);
     }
+
+    public function user()
+    {
+        return $this->hasMany(User::class);
+    }
 }

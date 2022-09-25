@@ -43,8 +43,8 @@
                                 <div class="col-md-6">
                                     <select id="departement" required v-model="departement" class="form-select mx-auto"
                                         aria-label="filtre" autocomplete="departement">
-                                        <option v-for="departement in departements" :value="departement">{{
-                                        departement.code }} - {{ departement.nom }}</option>
+                                        <option v-for="department in departements" :value="department" :selected="department.nom == departement ? 'selected' : ''">{{
+                                        department.code }} - {{ department.nom }}</option>
                                     </select>
                                 </div>
 
@@ -257,14 +257,15 @@ export default {
         },
 
         sendData() {
-            axios.put('/api/users/' + this.id, {
-                pseudo: this.pseudo, email: this.email, departement_id: this.departement.id, region: this.departement.region, oldPassword: this.oldPassword,
+            console.log('senddata'); // ok on passe ici
+            axios.put('/api/users/' + this.id, { // requête marche car modif ok en bdd
+                pseudo: this.pseudo, email: this.email, departement_id: this.departement.id, oldPassword: this.oldPassword,
                 password: this.password, password_confirmation: this.password_confirmation
-            }).then(response => {
-                storeUserData(response.data.data)
+            }).then(response => { // on devrait passer ici...
+                this.storeUserData(response.data.data)
                 this.$router.push('/successmessage/lastpage/' + response.data.message)
             }).catch((error) => {
-                this.validationErrors = error.response.data.data; // on passe ici de façon incompréhensible
+                this.validationErrors = error.response.data.data; // on passe ici de façon incompréhensible (modif marche)
             })
         },
 

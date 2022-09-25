@@ -7,14 +7,12 @@
 
     <div class="container-fluid p-3 p-lg-5">
         <div v-for="avis in avis">
-        
+
         </div>
     </div>
 
 </template>
 
-    <script>
-    export default {
+<script>
 
-    }
-    </script>
+</script>

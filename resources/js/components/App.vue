@@ -15,40 +15,36 @@ export default {
 	// de userData dans le state => utile pour la déconnexion
 	computed: {
 		...mapState(useLieuxStore, [
-			'threeTopPlaces',
-			'threeLastPlaces',
 			'categories',
 			'lieux',
 			'favoris',
 			'departements',
 			'regions',
-			'geolocationAnswered',
-			'userPosition'
+			'userPosition',
+			'threeTopPlaces',
+			'threeLastPlaces'
 		]),
 
-		...mapState(useUserStore, ['departement', 'id'])
-
+		...mapState(useUserStore, ['departement', 'id', 'geolocationAnswered'])
 	},
 
-	// // on surveille userData. Si changement => user connecté => on récupère  :
-	// // ses trois top lieux + 3 derniers lieux / ses favoris
+	// on surveille le choix d'un département ou le changement de département de l'utilisateur
+	// si c'est le cas => on récupère les 3 derniers lieux et les 3 mieux notés du nouveau département
 	watch: {
-		useUserStore: {
-			handler() {
+			departement(){
 				this.getThreeTopAndLastPlaces()
-				// this.getFavoris()
-			}, deep: true
+			}
 		},
-	},
 
 	methods: {
 		...mapActions(useLieuxStore, [
 			'storeCategories', 'storeLieux', 'storeDepartements', 'storeRegions', 'storeThreeTopPlaces', 'storeThreeLastPlaces']),
 
-        ...mapActions(useUserStore, ['storeFavoris']),
+		...mapActions(useUserStore, ['storeFavoris']),
 
 		// on récupère les catégories et on les stocke dans le store, idem ensuite pour lieux/départements/régions/favoris
 		getCategories() {
+			console.log("getCategories");
 			axios.get("http://localhost:8000/api/categories")
 				.then(response => {
 					this.storeCategories(response.data)
@@ -61,6 +57,7 @@ export default {
 		},
 
 		getLieux() {
+			console.log("getLieux");
 			axios.get("http://localhost:8000/api/lieus")
 				.then(response => {
 					this.storeLieux(response.data)
@@ -72,6 +69,7 @@ export default {
 		},
 
 		getDepartements() {
+			console.log("getdepartements");
 			axios.get("http://localhost:8000/api/departements")
 				.then(response => {
 					this.storeDepartements(response.data)
@@ -83,6 +81,7 @@ export default {
 		},
 
 		getRegions() {
+			console.log("getregions");
 			axios.get("http://localhost:8000/api/regions")
 				.then(response => {
 					this.storeRegions(response.data)
@@ -94,6 +93,7 @@ export default {
 		},
 
 		getFavoris() {
+			console.log("getfavoris");
 			axios.get("http://localhost:8000/api/favoris/" + this.id)
 				.then(response => {
 					this.storeFavoris(response.data)
@@ -107,14 +107,16 @@ export default {
 		// on récupère les 3 endroits les mieux notés + les 3 derniers
 
 		getThreeTopAndLastPlaces() {
-			let department
+			console.log("getThreeTopAndLastPlaces");
+
+			let queryDepartment
 
 			// si l'utilisateur a choisi un département
 			if (this.departement) {
-				department = this.departement.code
+				queryDepartment = this.departement.code
 				//sinon => on cible la France entière
 			} else {
-				department = "all"
+				queryDepartment = "all"
 			}
 
 			// on récupère les 3 lieux les mieux notés du dép. / de la France entière
@@ -122,14 +124,12 @@ export default {
 
 			axios.post("http://localhost:8000/api/lieus/gettopplacesbydep", null, {
 				params: {
-					department: department
+					department: queryDepartment
 				}
 			})
 				.then(response => {
 					this.storeThreeTopPlaces(response.data)
-				}
-				)
-				.catch(error => {
+				}).catch(error => {
 					console.log(error.response)
 				})
 
@@ -138,14 +138,12 @@ export default {
 
 			axios.post("http://localhost:8000/api/lieus/getlastplacesbydep", null, {
 				params: {
-					department: department
+					department: queryDepartment
 				}
 			})
 				.then(response => {
 					this.storeThreeLastPlaces(response.data)
-				}
-				)
-				.catch(error => {
+				}).catch(error => {
 					console.log(error.response)
 				})
 		}
@@ -170,25 +168,11 @@ export default {
 			this.getRegions()
 		}
 
-		// ******************* si réponse à la demande de géoloc ************************
-		if (this.geolocationAnswered) {
+		// ******************* si département choisi (à l'inscription ou après) ************************
 
-			//*********** si géoloc acceptée => userPosition disponible (pas vide)*********
-			if (this.userPosition) {
+		// on récupère les 3 derniers lieux ajoutés + les 3 les mieux notés du dép.
+		this.getThreeTopAndLastPlaces()
 
-				// on détecte le département de l'utilisateur
-
-				// on récupère les 3 derniers lieux ajoutés + les 3 les mieux notés du dép.
-
-				// on les stocke dans des variables locales ou du store
-
-			} else {
-				// *************** si le user a refusé la géoloc  *****
-
-				this.getThreeTopAndLastPlaces()
-
-			}
-		}
 	},
 
 	components: { Header, Slider, Map, Footer }
@@ -239,14 +223,13 @@ export default {
 
 			<div id="presentationBottomStripe" class="mb-3"></div>
 
-			<i class="titleIcon mt-5 mx-auto fa-3x fa-solid fa-location-dot"></i>
+			<i class="titleIcon mt-5 mb-3 mx-auto fa-3x fa-solid fa-location-dot"></i>
 			<h2 class="fs-2 m-3"> Carte des lieux autour de chez vous</h2>
 
 
 			<!-- *********************************************** CARTE ************************************************** -->
 
 			<Map />
-
 
 			<!-- *********************************************** CATEGORIES ************************************************** -->
 
@@ -343,7 +326,7 @@ export default {
 
 			<!-- ********************************* DERNIERS LIEUX AJOUTES *************************************** -->
 
-			<div v-if="threeTopPlaces && threeTopPlaces.length > 2">
+			<div v-if="threeLastPlaces && threeLastPlaces.length > 2">
 
 				<i class="titleIcon mt-5 mx-auto fa-3x fa-solid fa-clock"></i>
 				<h2 v-if="departement" class="fs-2 m-3"> Derniers lieux ajoutés dans votre département</h2>
@@ -416,7 +399,7 @@ export default {
 
 			<section id="inscrivezVous">
 
-				<i class="titleIcon mt-5 mx-auto fa-3x fa-solid fa-user"></i>
+				<i class="titleIcon mt-5 mx-auto fa-3x fa-solid fa-user-plus"></i>
 				<h2 class="fs-2 m-3">Inscrivez-vous gratuitement !</h2>
 
 				<div class="container-fluid px-5">
