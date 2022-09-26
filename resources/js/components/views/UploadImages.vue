@@ -102,9 +102,7 @@ export default {
     methods: {
         onChange(e) {
             let imageChoisie = e.target.files[0]
-            console.log(imageChoisie)
             this.formData.append('image', imageChoisie)
-            console.log(this.formData)
         },
 
         sendData() {

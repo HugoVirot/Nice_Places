@@ -55,7 +55,7 @@ export default {
 
                 // **************** si le user a accepté la géoloc => on crée une map avec son emplacement *****************
                 if (this.userPosition) {
-                    console.log("géoloc déjà acceptée, coordonnées déjà stockées dans le state")
+                    // console.log("géoloc déjà acceptée, coordonnées déjà stockées dans le state")
 
                     component.map = L.map('map').setView([this.userPosition.latitude, this.userPosition.longitude], 13);
 
@@ -244,7 +244,7 @@ export default {
         }
     },
 
-    mounted: function () {
+    mounted() {
 
         // *********************si géolocalisation pas déjà demandée***********************
         if (!this.geolocationAnswered) {
@@ -259,12 +259,12 @@ export default {
                 navigator.geolocation.getCurrentPosition(position => {
                     this.storeGeolocationAnswered(true)
                     this.storeUserPosition({ latitude: position.coords.latitude, longitude: position.coords.longitude })
-                    console.log("accès position accepté, choix et coordonnées stockés dans le state")
+                    // console.log("accès position accepté, choix et coordonnées stockés dans le state")
                     this.initializeMap(this)
                     // si accès refusé, on stocke cela dans le state et on l'affiche dans la console
                 }, () => {
                     this.storeGeolocationAnswered(true)
-                    console.log("accès à la position refusé, choix stocké dans le state")
+                    // console.log("accès à la position refusé, choix stocké dans le state")
                     this.initializeMap(this)
                 }
                 )

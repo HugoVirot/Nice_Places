@@ -257,15 +257,15 @@ export default {
         },
 
         sendData() {
-            console.log('senddata'); // ok on passe ici
-            axios.put('/api/users/' + this.id, { // requête marche car modif ok en bdd
+            // on sauvegarde les modifs en bdd puis on redirige
+            axios.put('/api/users/' + this.id, { 
                 pseudo: this.pseudo, email: this.email, departement_id: this.departement.id, oldPassword: this.oldPassword,
                 password: this.password, password_confirmation: this.password_confirmation
             }).then(response => { // on devrait passer ici...
                 this.storeUserData(response.data.data)
                 this.$router.push('/successmessage/lastpage/' + response.data.message)
             }).catch((error) => {
-                this.validationErrors = error.response.data.data; // on passe ici de façon incompréhensible (modif marche)
+                this.validationErrors = error.response.data.data
             })
         },
 

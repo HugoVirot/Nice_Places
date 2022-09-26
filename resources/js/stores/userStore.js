@@ -37,7 +37,6 @@ export const useUserStore = defineStore({
 
     actions: {
         storeUserData(userData) {
-            console.log("storeuserdata");
             this.pseudo = userData.pseudo
             this.email = userData.email
             this.id = userData.id

@@ -1,6 +1,6 @@
 <template>
 
-    <div class="container-fluid p-5"
+    <div v-if="categorie" class="container-fluid p-5"
         :style="`background-image: url(/images/categorie${categorie.id}.jpg); background-position: center; background-size: cover;`">
 
         <div class="m-auto">
@@ -64,7 +64,6 @@ export default {
 
     methods: {
         updateLieux(lieuxTriesOuFiltres) {  // déclenchée si tri ou filtre appliqué via composant enfant Tris ou  Filtres
-            console.log("updateLieux")
             this.categorie.lieux = lieuxTriesOuFiltres // on remplace les lieux de la catégorie par les lieux triés ou filtrés 
         },
 

@@ -54,7 +54,7 @@
 <script>
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
-import { mapActions } from 'pinia'
+import { mapActions, mapState } from 'pinia'
 import { useUserStore } from '../../stores/userStore'
 
 export default {
@@ -67,15 +67,22 @@ export default {
         }
     },
 
+    computed: {
+        ...mapState(useUserStore, ['id'])
+    },
+
     components: { ValidationErrors },
 
     methods: {
         ...mapActions(useUserStore, ['storeUserData']),
 
-        logIn() {
+        logIn() { // on tente la connexion. Si réussie, on stocke les données du user dans le state
+            // on récupère aussi ses notifications qu'on stocke également dans le state
             axios.post('/api/login', { email: this.email, password: this.password })
                 .then(response => {
-                    this.loginSuccess(response)
+                    this.storeUserData(response.data.data)
+                    this.getNotifications()
+                    this.$router.push('/successmessage/home/' + response.data.message)
                 })
                 .catch(error => {
                     // on stocke les messages d'erreurs dans la variable validationErrors du composant, pour les afficher
@@ -83,10 +90,14 @@ export default {
                 })
         },
 
-        loginSuccess(response) {
-            this.storeUserData(response.data.data)
-            this.$router.push('/successmessage/home/' + response.data.message)
-        }
+        getNotifications() {
+            axios.get('/api/getnotificationsbyuser/' + this.id)
+                .then(response => {
+                    this.storeNotifications(response.data);
+                }).catch((response) => {
+                    console.log(response.error);
+                })
+        },
     },
 }
 </script>

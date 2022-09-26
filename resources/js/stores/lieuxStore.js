@@ -30,7 +30,6 @@ export const useLieuxStore = defineStore({
 
     actions: {
         storeLieux(lieux) {
-            console.log("storeLieux");
             this.lieux = lieux
         },
 

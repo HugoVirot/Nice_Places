@@ -7,7 +7,7 @@
 
     <div class="container-fluid p-3 p-lg-5">
         <div class="row">
-            <div class="col-lg-6 border border-3 border-white card text-white" v-for="(categorie, index) in categories"
+            <div class="col-lg-6 border border-3 border-white card text-white" v-for="categorie in categories"
                 :key="categorie.id"
                 :style="`background-image: url(images/categorie${categorie.id}.jpg); background-position: center; background-size: cover;`">
 
@@ -24,14 +24,13 @@
 </template>
 
 <script>
-import { useUserStore } from "../../stores/userStore.js";
+import { mapState } from "pinia";
+import { useLieuxStore } from "../../stores/lieuxStore.js";
 
 export default {
     computed: {
-        categories() {
-            return store.state.categories
-        }
-    }
+        ...mapState(useLieuxStore, ['categories'])
+    },
 
 }
 </script>
@@ -68,9 +67,9 @@ button:hover {
     color: white
 }
 
-@media screen and (max-width: 568px) {
+@media screen and (max-width: 768px) {
     .bigFontSize {
-        font-size: 2.5em;
+        font-size: 2em;
     }
 }
 </style>

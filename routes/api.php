@@ -32,12 +32,6 @@ Route::apiResource("users", App\Http\Controllers\API\UserController::class)->exc
 
 Route::apiResource("lieus", App\Http\Controllers\API\LieuController::class);
 
-// récupérer les 3 lieux les mieux notés du département
-Route::post('lieus/gettopplacesbydep', [App\Http\Controllers\API\LieuController::class, 'getTopPlacesByDep'])->name('gettopplacesbydep');
-
-// récupérer les 3 derniers lieux postés du département
-Route::post('lieus/getlastplacesbydep', [App\Http\Controllers\API\LieuController::class, 'getLastPlacesByDep'])->name('getlastplacesbydep');
-
 // récupérer les lieux postés par l'utilisateur
 Route::post('lieus/getplacesbyuser', [App\Http\Controllers\API\LieuController::class, 'getPlacesByUser'])->name('getplacesbyuser');
 

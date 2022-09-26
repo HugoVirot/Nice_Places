@@ -5,29 +5,35 @@
         <h1 class="mt-2">Mes lieux favoris</h1>
     </div>
 
-    <Filtres :lieux="favoris" :lieuxNonFiltres="favorisNonFiltres" @filtre_applique="updateLieux" />
+    <section v-if="listeFavoris.length > 0">
 
-    <Tris :lieux="favoris" @lieux_tries="updateLieux" />
+        <Filtres :lieux="listeFavoris" :lieuxNonFiltres="favorisNonFiltres" @filtre_applique="updateLieux" />
 
-    <div class="container-fluid p-3 p-lg-5">
+        <Tris :lieux="listeFavoris" @lieux_tries="updateLieux" />
 
-        <div v-if="favoris.length > 0" class="row">
-            <div class="col-lg-6 border border-3 border-white card text-white" v-for="favori in favoris"
-                :key="favori.id"
-                :style="`background-image: url(images/${favori.image_mise_en_avant[0].nom}); background-position: center; background-size: cover;`">
-                <div class="p-3 fs-3 textWithShadow"> {{ favori.nom }} </div>
-                <div class="card-body">
-                    <router-link :to="`/lieu/${favori.id}`"><button class="btn greenButton">Détails du lieu</button>
-                    </router-link>
+        <div class="container-fluid p-3 p-lg-5">
+
+            <div class="row">
+                <div class="col-lg-6 border border-3 border-white card text-white" v-for="favori in listeFavoris"
+                    :key="favori.id"
+                    :style="`background-image: url(images/${favori.image_mise_en_avant[0].nom}); background-position: center; background-size: cover;`">
+                    <div class="p-3 fs-3 textWithShadow"> {{ favori.nom }} </div>
+                    <p class="m-1"><i class="yellowStar fa-solid fa-star fa-2x ms-2 me-1"></i>
+                        <span class="text-white textWithShadow">{{ favori.note }}</span>
+                    </p>
+                    <div class="card-body">
+                        <router-link :to="`/lieu/${favori.id}`"><button class="btn greenButton">Détails du lieu</button>
+                        </router-link>
+                    </div>
                 </div>
             </div>
         </div>
+    </section>
 
-        <div v-else>
-            <p>Vous n'avez aucun lieu dans vos favoris.</p>
-        </div>
-
-    </div>
+    <section v-else class="p-5">
+        <i class="greenIcon fa-solid fa-xmark fa-5x"></i>
+        <p>Vous n'avez aucun lieu dans vos favoris.</p>
+    </section>
 
 </template>
 
@@ -40,7 +46,8 @@ import Tris from "../utilities/Tris.vue"
 export default {
     data() {
         return {
-            favorisNonFiltres: ''
+            listeFavoris: [],
+            favorisNonFiltres: []
         }
     },
 
@@ -63,7 +70,7 @@ export default {
         },
 
         updateLieux(lieuxTries) {  // déclenchée si filtre appliqué via composant enfant Filtres
-            this.favoris = lieuxTries // on remplace les lieux de la catégorie par les lieux filtrés 
+            this.listeFavoris = lieuxTries // on remplace les lieux de la catégorie par les lieux filtrés 
         }
 
     },
@@ -71,7 +78,10 @@ export default {
         // on récupère les lieux postés par l'utilisateur
         this.getFavoris()
 
-        // on stocke les favoris dans une variable pour conserver la liste de base en cas de tri
+        // on les stocke dans la variable listeFavoris pour pouvoir les trier (impossible de modifier une propriété computed / lecture seule)
+        this.listeFavoris = this.favoris
+
+        // on stocke les favoris dans une autre variable pour conserver la liste de base en cas de tri
         this.favorisNonFiltres = this.favoris
     }
 }
@@ -84,6 +94,10 @@ export default {
 
 h1 {
     color: #1C6E8C
+}
+
+.yellowStar {
+    color: yellow
 }
 
 p {

@@ -52,7 +52,7 @@
                     <div :id="`message${notification.id}`" class="accordion-collapse collapse"
                         aria-labelledby="headingOne" :data-bs-parent="`#notification${notification.id}`">
                         <div class="accordion-body">
-                            <p class="text-center notificationMessage" v-html="notification.message"></p>
+                            <p class="text-center notificationMessage p-2" v-html="notification.message"></p>
                             <button v-if="!notification.lue" class="btn btn-info mx-auto"
                                 @click="markNotificationAsRead(notification.id)">OK (marquer comme lue)</button>
                         </div>
@@ -90,7 +90,6 @@ export default {
         getNotifications() {
             axios.get('/api/getnotificationsbyuser/' + this.id)
                 .then(response => {
-                    console.log(response.data)
                     this.storeNotifications(response.data);
                 }).catch((response) => {
                     console.log(response.error);
@@ -111,7 +110,7 @@ export default {
     },
 
     created() {
-        console.log("je passe dans created")
+        // on récupère les notifications de l'utilisateur
         this.getNotifications()
     }
 }

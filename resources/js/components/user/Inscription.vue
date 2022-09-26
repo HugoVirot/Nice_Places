@@ -155,18 +155,23 @@
 <script>
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
-import { useUserStore } from "../../stores/userStore.js";
+import { useLieuxStore } from "../../stores/lieuxStore.js";
+import { mapState } from 'pinia';
 
 export default {
+
+    computed: {
+        ...mapState(useLieuxStore, ['departements']),
+    },
 
     data() {
         return {
             pseudo: "",
             email: "",
-            departements: store.state.departements,
             departement: "",
             password: "",
             password_confirmation: "",
+            passwordTyped: false,
             validationErrors: "",
             eightCharacters: false,
             oneLetter: false,
@@ -196,11 +201,12 @@ export default {
         createNotification(userId) {
 
             let titre = `Bienvenue sur Nice Places ${this.pseudo} !`;
-            let message = `Bonjour ${this.pseudo} et bienvenue sur Nice Places !
-            Votre inscription est réussie.<br> 
+            let message = `<p class="text-secondary">Bonjour ${this.pseudo} et bienvenue sur Nice Places !<br>
+            Votre inscription est réussie.<br>
+            <i class="mx-auto my-3 fa-solid fa-door-open fa-5x text-success"></i><br>
             Venez découvrir la France et partager vos lieux préférés avec nous !<br>
-            A très bientôt.<br>
-            L'administrateur.`
+            A très bientôt.</p>
+            <p class="text-end">L'administrateur.</p>`
 
             axios.post('/api/notifications', { titre: titre, message: message, user_id: userId, lieu_id: null })
                 .then(response => console.log(response.data.message))

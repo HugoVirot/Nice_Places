@@ -7,7 +7,11 @@
 
     <div class="container-fluid p-3 p-lg-5">
         <div class="row">
-            <div v-if="userPlaces.length == 0"><i class="greenIcon fa-solid fa-xmark fa-5x"></i><p class="fs-4">Vous n'avez posté aucun lieu</p></div>
+            <div v-if="userPlaces.length == 0"><i class="greenIcon fa-solid fa-xmark fa-5x"></i>
+                <p>Vous n'avez posté aucun lieu</p>
+            <router-link to="/proposerlieu"><button class="btn btn-lg mt-3 rounded-pill">Proposer un lieu</button>
+				</router-link>
+            </div>
             <div v-else class="col-lg-6 border border-3 border-white card text-white" v-for="(userPlace, index) in userPlaces"
                 :key="userPlace.id" :style="`background-image: url(images/${
                     userPlace.image_mise_en_avant[0] ?  userPlace.image_mise_en_avant[0].nom : 'placeholder.png'
@@ -63,7 +67,6 @@ export default {
     created() {
         // on récupère les lieux postés par l'utilisateur
         this.getLieuxPostes()
-        console.log(this.userPlaces)
     }
 }
 </script>

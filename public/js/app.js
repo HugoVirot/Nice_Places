@@ -23154,13 +23154,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  // computed permet de surveiller automatiquement les changements
-  // de userData dans le state => utile pour la déconnexion
+  // computed permet de se connecter aux variables du state => mise à jour automatique au niveau du composant
+  // si un de ces variables du state change
   computed: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_7__.mapState)(_stores_lieuxStore__WEBPACK_IMPORTED_MODULE_4__.useLieuxStore, ['categories', 'lieux', 'favoris', 'departements', 'regions', 'userPosition', 'threeTopPlaces', 'threeLastPlaces'])), (0,pinia__WEBPACK_IMPORTED_MODULE_7__.mapState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_5__.useUserStore, ['departement', 'id', 'geolocationAnswered'])),
   // on surveille le choix d'un département ou le changement de département de l'utilisateur
   // si c'est le cas => on récupère les 3 derniers lieux et les 3 mieux notés du nouveau département
   watch: {
     departement: function departement() {
+      this.getThreeTopAndLastPlaces();
+    },
+    id: function id() {
+      // on surveille également le changement d'utilisateur
       this.getThreeTopAndLastPlaces();
     }
   },
@@ -23169,11 +23173,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getCategories: function getCategories() {
       var _this = this;
 
-      console.log("getCategories");
       axios__WEBPACK_IMPORTED_MODULE_6___default().get("http://localhost:8000/api/categories").then(function (response) {
         _this.storeCategories(response.data);
-
-        console.log("catégories récupérées");
       })["catch"](function (error) {
         console.log(error.response);
       });
@@ -23181,7 +23182,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getLieux: function getLieux() {
       var _this2 = this;
 
-      console.log("getLieux");
       axios__WEBPACK_IMPORTED_MODULE_6___default().get("http://localhost:8000/api/lieus").then(function (response) {
         _this2.storeLieux(response.data);
       })["catch"](function (error) {
@@ -23191,7 +23191,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getDepartements: function getDepartements() {
       var _this3 = this;
 
-      console.log("getdepartements");
       axios__WEBPACK_IMPORTED_MODULE_6___default().get("http://localhost:8000/api/departements").then(function (response) {
         _this3.storeDepartements(response.data);
       })["catch"](function (error) {
@@ -23201,7 +23200,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getRegions: function getRegions() {
       var _this4 = this;
 
-      console.log("getregions");
       axios__WEBPACK_IMPORTED_MODULE_6___default().get("http://localhost:8000/api/regions").then(function (response) {
         _this4.storeRegions(response.data);
       })["catch"](function (error) {
@@ -23211,7 +23209,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getFavoris: function getFavoris() {
       var _this5 = this;
 
-      console.log("getfavoris");
       axios__WEBPACK_IMPORTED_MODULE_6___default().get("http://localhost:8000/api/favoris/" + this.id).then(function (response) {
         _this5.storeFavoris(response.data);
       })["catch"](function (error) {
@@ -23222,47 +23219,41 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getThreeTopAndLastPlaces: function getThreeTopAndLastPlaces() {
       var _this6 = this;
 
-      console.log("getThreeTopAndLastPlaces");
-      var queryDepartment; // si l'utilisateur a choisi un département
+      var listeLieuxFiltres; // si l'utilisateur a choisi un département
 
       if (this.departement) {
-        queryDepartment = this.departement.code; //sinon => on cible la France entière
+        console.log(this.departement); // on filtre l'ensemble des lieux pour ne garder que ceux du département de l'utilisateur
+
+        listeLieuxFiltres = this.lieux.filter(function (lieu) {
+          return lieu.departement.id == _this6.departement.id;
+        });
+        console.log(listeLieuxFiltres); //sinon => on cible la France entière
       } else {
-        queryDepartment = "all";
-      } // on récupère les 3 lieux les mieux notés du dép. / de la France entière
-      // on les stocke dans le store
+        listeLieuxFiltres = this.lieux;
+      } // on trie les lieux par note et on garde les 3 1ers, puis on les stocke dans le store
 
 
-      axios__WEBPACK_IMPORTED_MODULE_6___default().post("http://localhost:8000/api/lieus/gettopplacesbydep", null, {
-        params: {
-          department: queryDepartment
-        }
-      }).then(function (response) {
-        _this6.storeThreeTopPlaces(response.data);
-      })["catch"](function (error) {
-        console.log(error.response);
-      }); // on récupère les 3 derniers lieux ajoutés du dép. / de la France entière
-      // on les stocke dans le store
+      var troisTopLieux = listeLieuxFiltres.sort(function (a, b) {
+        if (a.note > b.note) return -1;
+        return a.note < b.note ? 1 : 0;
+      }).slice(0, 3);
+      this.storeThreeTopPlaces(troisTopLieux); // idem pour les 3 derniers
 
-      axios__WEBPACK_IMPORTED_MODULE_6___default().post("http://localhost:8000/api/lieus/getlastplacesbydep", null, {
-        params: {
-          department: queryDepartment
-        }
-      }).then(function (response) {
-        _this6.storeThreeLastPlaces(response.data);
-      })["catch"](function (error) {
-        console.log(error.response);
-      });
+      var troisDerniersLieux = listeLieuxFiltres.sort(function (a, b) {
+        if (a.created_at > b.created_at) return -1;
+        return a.created_at < b.created_at ? 1 : 0;
+      }).slice(0, 3);
+      this.storeThreeLastPlaces(troisDerniersLieux);
     }
   }),
   created: function created() {
-    // on récupère les catégories et on les stocke dans le store
+    // on récupère les cat / lieux / dep / régions et on les stocke dans le store
+    // getLieux est nécessaire à chaque affichage du composant pour actualiser les listes
+    // (les autres changent rarement surtout départements et régions)
+    this.getLieux();
+
     if (!this.categories) {
       this.getCategories();
-    }
-
-    if (!this.lieux) {
-      this.getLieux();
     }
 
     if (!this.departements) {
@@ -23271,10 +23262,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
     if (!this.regions) {
       this.getRegions();
-    } // ******************* si département choisi (à l'inscription ou après) ************************
+    }
+  },
+  mounted: function mounted() {
+    // ******************* si département choisi (à l'inscription ou après) ************************
     // on récupère les 3 derniers lieux ajoutés + les 3 les mieux notés du dép.
-
-
+    // on fait cela dans mounted pour être sûr que les lieux soient disponibles (sinon erreur)
+    // par défaut, s'effectue 1 seule fois par session car App est chargé au début (composant principal)
+    // le watch plus haut permet de surveiller les éventuels changements de département et d'actualiser ces deux "top 3"
     this.getThreeTopAndLastPlaces();
   },
   components: {
@@ -24027,6 +24022,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       validationErrors: ""
     };
   },
+  computed: _objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_3__.mapState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['id'])),
   components: {
     ValidationErrors: _utilities_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
@@ -24034,19 +24030,30 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     logIn: function logIn() {
       var _this = this;
 
+      // on tente la connexion. Si réussie, on stocke les données du user dans le state
+      // on récupère aussi ses notifications qu'on stocke également dans le state
       axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/login', {
         email: this.email,
         password: this.password
       }).then(function (response) {
-        _this.loginSuccess(response);
+        _this.storeUserData(response.data.data);
+
+        _this.getNotifications();
+
+        _this.$router.push('/successmessage/home/' + response.data.message);
       })["catch"](function (error) {
         // on stocke les messages d'erreurs dans la variable validationErrors du composant, pour les afficher
         _this.validationErrors = error.response.data.data;
       });
     },
-    loginSuccess: function loginSuccess(response) {
-      this.storeUserData(response.data.data);
-      this.$router.push('/successmessage/home/' + response.data.message);
+    getNotifications: function getNotifications() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/getnotificationsbyuser/' + this.id).then(function (response) {
+        _this2.storeNotifications(response.data);
+      })["catch"](function (response) {
+        console.log(response.error);
+      });
     }
   })
 });
@@ -24067,19 +24074,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _utilities_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utilities/ValidationErrors.vue */ "./resources/js/components/utilities/ValidationErrors.vue");
-/* harmony import */ var _stores_userStore_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../stores/userStore.js */ "./resources/js/stores/userStore.js");
+/* harmony import */ var _stores_lieuxStore_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../stores/lieuxStore.js */ "./resources/js/stores/lieuxStore.js");
+/* harmony import */ var pinia__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! pinia */ "./node_modules/pinia/dist/pinia.mjs");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
 
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  computed: _objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_3__.mapState)(_stores_lieuxStore_js__WEBPACK_IMPORTED_MODULE_2__.useLieuxStore, ['departements'])),
   data: function data() {
     return {
       pseudo: "",
       email: "",
-      departements: store.state.departements,
       departement: "",
       password: "",
       password_confirmation: "",
+      passwordTyped: false,
       validationErrors: "",
       eightCharacters: false,
       oneLetter: false,
@@ -24113,7 +24129,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     createNotification: function createNotification(userId) {
       var titre = "Bienvenue sur Nice Places ".concat(this.pseudo, " !");
-      var message = "Bonjour ".concat(this.pseudo, " et bienvenue sur Nice Places !\n            Votre inscription est r\xE9ussie.<br> \n            Venez d\xE9couvrir la France et partager vos lieux pr\xE9f\xE9r\xE9s avec nous !<br>\n            A tr\xE8s bient\xF4t.<br>\n            L'administrateur.");
+      var message = "<p class=\"text-secondary\">Bonjour ".concat(this.pseudo, " et bienvenue sur Nice Places !<br>\n            Votre inscription est r\xE9ussie.<br>\n            <i class=\"mx-auto my-3 fa-solid fa-door-open fa-5x text-success\"></i><br>\n            Venez d\xE9couvrir la France et partager vos lieux pr\xE9f\xE9r\xE9s avec nous !<br>\n            A tr\xE8s bient\xF4t.</p>\n            <p class=\"text-end\">L'administrateur.</p>");
       axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/notifications', {
         titre: titre,
         message: message,
@@ -24191,7 +24207,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      favorisNonFiltres: ''
+      listeFavoris: [],
+      favorisNonFiltres: []
     };
   },
   computed: _objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_3__.mapState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_0__.useUserStore, ['id', 'favoris'])),
@@ -24212,12 +24229,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     updateLieux: function updateLieux(lieuxTries) {
       // déclenchée si filtre appliqué via composant enfant Filtres
-      this.favoris = lieuxTries; // on remplace les lieux de la catégorie par les lieux filtrés 
+      this.listeFavoris = lieuxTries; // on remplace les lieux de la catégorie par les lieux filtrés 
     }
   },
   created: function created() {
     // on récupère les lieux postés par l'utilisateur
-    this.getFavoris(); // on stocke les favoris dans une variable pour conserver la liste de base en cas de tri
+    this.getFavoris(); // on les stocke dans la variable listeFavoris pour pouvoir les trier (impossible de modifier une propriété computed / lecture seule)
+
+    this.listeFavoris = this.favoris; // on stocke les favoris dans une autre variable pour conserver la liste de base en cas de tri
 
     this.favorisNonFiltres = this.favoris;
   }
@@ -24268,7 +24287,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   created: function created() {
     // on récupère les lieux postés par l'utilisateur
     this.getLieuxPostes();
-    console.log(this.userPlaces);
   }
 });
 
@@ -24309,8 +24327,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this = this;
 
       axios.get('/api/getnotificationsbyuser/' + this.id).then(function (response) {
-        console.log(response.data);
-
         _this.storeNotifications(response.data);
       })["catch"](function (response) {
         console.log(response.error);
@@ -24331,7 +24347,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   created: function created() {
-    console.log("je passe dans created");
+    // on récupère les notifications de l'utilisateur
     this.getNotifications();
   }
 });
@@ -24424,10 +24440,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     sendData: function sendData() {
       var _this = this;
 
-      console.log('senddata'); // ok on passe ici
-
+      // on sauvegarde les modifs en bdd puis on redirige
       axios__WEBPACK_IMPORTED_MODULE_0___default().put('/api/users/' + this.id, {
-        // requête marche car modif ok en bdd
         pseudo: this.pseudo,
         email: this.email,
         departement_id: this.departement.id,
@@ -24440,7 +24454,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         _this.$router.push('/successmessage/lastpage/' + response.data.message);
       })["catch"](function (error) {
-        _this.validationErrors = error.response.data.data; // on passe ici de façon incompréhensible (modif marche)
+        _this.validationErrors = error.response.data.data;
       });
     },
     deleteAccount: function deleteAccount() {
@@ -24611,7 +24625,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         // **************** si le user a accepté la géoloc => on crée une map avec son emplacement *****************
         if (this.userPosition) {
-          console.log("géoloc déjà acceptée, coordonnées déjà stockées dans le state");
+          // console.log("géoloc déjà acceptée, coordonnées déjà stockées dans le state")
           component.map = L.map('map').setView([this.userPosition.latitude, this.userPosition.longitude], 13); // pour pouvoir ajouter des tuiles
 
           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -24750,16 +24764,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           _this.storeUserPosition({
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
-          });
+          }); // console.log("accès position accepté, choix et coordonnées stockés dans le state")
 
-          console.log("accès position accepté, choix et coordonnées stockés dans le state");
 
           _this.initializeMap(_this); // si accès refusé, on stocke cela dans le state et on l'affiche dans la console
 
         }, function () {
-          _this.storeGeolocationAnswered(true);
+          _this.storeGeolocationAnswered(true); // console.log("accès à la position refusé, choix stocké dans le state")
 
-          console.log("accès à la position refusé, choix stocké dans le state");
 
           _this.initializeMap(_this);
         });
@@ -25052,14 +25064,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _stores_userStore_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../stores/userStore.js */ "./resources/js/stores/userStore.js");
+/* harmony import */ var pinia__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! pinia */ "./node_modules/pinia/dist/pinia.mjs");
+/* harmony import */ var _stores_lieuxStore_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../stores/lieuxStore.js */ "./resources/js/stores/lieuxStore.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  computed: {
-    categories: function categories() {
-      return store.state.categories;
-    }
-  }
+  computed: _objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_1__.mapState)(_stores_lieuxStore_js__WEBPACK_IMPORTED_MODULE_0__.useLieuxStore, ['categories']))
 });
 
 /***/ }),
@@ -25112,7 +25128,6 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     updateLieux: function updateLieux(lieuxTriesOuFiltres) {
       // déclenchée si tri ou filtre appliqué via composant enfant Tris ou  Filtres
-      console.log("updateLieux");
       this.categorie.lieux = lieuxTriesOuFiltres; // on remplace les lieux de la catégorie par les lieux triés ou filtrés 
     },
     // filtre les lieux en ne gardant que ceux validés
@@ -25457,9 +25472,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   methods: {
     onChange: function onChange(e) {
       var imageChoisie = e.target.files[0];
-      console.log(imageChoisie);
       this.formData.append('image', imageChoisie);
-      console.log(this.formData);
     },
     sendData: function sendData() {
       var _this = this;
@@ -28246,7 +28259,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* TEXT */
   ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, _hoisted_23, 512
   /* NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, _ctx.countUnreadNotifications > 0]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", _hoisted_24, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, _ctx.countUnreadNotifications && _ctx.countUnreadNotifications > 0]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", _hoisted_24, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("li", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
     to: "/moncompte",
     "class": "nav-link"
   }, {
@@ -28791,7 +28804,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": "form-select mx-auto",
     "aria-label": "filtre",
     autocomplete: "departement"
-  }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.departements, function (departement) {
+  }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.departements, function (departement) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
       value: departement.id
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(departement.code) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(departement.nom), 9
@@ -28816,7 +28829,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     autocomplete: "new-password"
   }, null, 544
   /* HYDRATE_EVENTS, NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.password]])])]), _ctx.passwordTyped ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_24, $data.eightCharacters ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_25)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_26))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_28, $data.oneLetter ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_29)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_30))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_32, $data.oneDigit ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_33)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_34))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_35, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_36, $data.oneUppercaseOneLowercase ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_37)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_38))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_39, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_40, $data.oneSpecialCharacter ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_41)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_42))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_43, [_hoisted_44, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_45, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.password]])])]), $data.passwordTyped ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_24, $data.eightCharacters ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_25)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_26))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_28, $data.oneLetter ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_29)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_30))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_32, $data.oneDigit ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_33)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_34))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_35, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_36, $data.oneUppercaseOneLowercase ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_37)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_38))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_39, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [_hoisted_40, $data.oneSpecialCharacter ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_41)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_42))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_43, [_hoisted_44, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_45, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
       return $data.password_confirmation = $event;
     }),
@@ -28909,20 +28922,37 @@ var _hoisted_1 = /*#__PURE__*/_withScopeId(function () {
 });
 
 var _hoisted_2 = {
-  "class": "container-fluid p-3 p-lg-5"
+  key: 0
 };
 var _hoisted_3 = {
-  key: 0,
-  "class": "row"
+  "class": "container-fluid p-3 p-lg-5"
 };
 var _hoisted_4 = {
-  "class": "p-3 fs-3 textWithShadow"
+  "class": "row"
 };
 var _hoisted_5 = {
+  "class": "p-3 fs-3 textWithShadow"
+};
+var _hoisted_6 = {
+  "class": "m-1"
+};
+
+var _hoisted_7 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+    "class": "yellowStar fa-solid fa-star fa-2x ms-2 me-1"
+  }, null, -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_8 = {
+  "class": "text-white textWithShadow"
+};
+var _hoisted_9 = {
   "class": "card-body"
 };
 
-var _hoisted_6 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_10 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "btn greenButton"
   }, "Détails du lieu", -1
@@ -28930,17 +28960,26 @@ var _hoisted_6 = /*#__PURE__*/_withScopeId(function () {
   );
 });
 
-var _hoisted_7 = {
-  key: 1
+var _hoisted_11 = {
+  key: 1,
+  "class": "p-5"
 };
 
-var _hoisted_8 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_12 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+    "class": "greenIcon fa-solid fa-xmark fa-5x"
+  }, null, -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_13 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, "Vous n'avez aucun lieu dans vos favoris.", -1
   /* HOISTED */
   );
 });
 
-var _hoisted_9 = [_hoisted_8];
+var _hoisted_14 = [_hoisted_12, _hoisted_13];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Filtres = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Filtres");
 
@@ -28948,29 +28987,31 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Filtres, {
-    lieux: _ctx.favoris,
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, $data.listeFavoris.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("section", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Filtres, {
+    lieux: $data.listeFavoris,
     lieuxNonFiltres: $data.favorisNonFiltres,
     onFiltre_applique: $options.updateLieux
   }, null, 8
   /* PROPS */
   , ["lieux", "lieuxNonFiltres", "onFiltre_applique"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Tris, {
-    lieux: _ctx.favoris,
+    lieux: $data.listeFavoris,
     onLieux_tries: $options.updateLieux
   }, null, 8
   /* PROPS */
-  , ["lieux", "onLieux_tries"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [_ctx.favoris.length > 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_3, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.favoris, function (favori) {
+  , ["lieux", "onLieux_tries"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.listeFavoris, function (favori) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "col-lg-6 border border-3 border-white card text-white",
       key: favori.id,
       style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)("background-image: url(images/".concat(favori.image_mise_en_avant[0].nom, "); background-position: center; background-size: cover;"))
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(favori.nom), 1
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(favori.nom), 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_6, [_hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(favori.note), 1
+    /* TEXT */
+    )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
       to: "/lieu/".concat(favori.id)
     }, {
       "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-        return [_hoisted_6];
+        return [_hoisted_10];
       }),
       _: 2
       /* DYNAMIC */
@@ -28982,7 +29023,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     );
   }), 128
   /* KEYED_FRAGMENT */
-  ))])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, _hoisted_9))])], 64
+  ))])])])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("section", _hoisted_11, _hoisted_14))], 64
   /* STABLE_FRAGMENT */
   );
 }
@@ -29038,14 +29079,19 @@ var _hoisted_5 = /*#__PURE__*/_withScopeId(function () {
 });
 
 var _hoisted_6 = /*#__PURE__*/_withScopeId(function () {
-  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
-    "class": "fs-4"
-  }, "Vous n'avez posté aucun lieu", -1
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, "Vous n'avez posté aucun lieu", -1
   /* HOISTED */
   );
 });
 
-var _hoisted_7 = [_hoisted_5, _hoisted_6];
+var _hoisted_7 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    "class": "btn btn-lg mt-3 rounded-pill"
+  }, "Proposer un lieu", -1
+  /* HOISTED */
+  );
+});
+
 var _hoisted_8 = {
   "class": "p-3 fs-3 textWithShadow"
 };
@@ -29088,7 +29134,16 @@ var _hoisted_15 = /*#__PURE__*/_withScopeId(function () {
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [_ctx.userPlaces.length == 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_4, _hoisted_7)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [_ctx.userPlaces.length == 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_4, [_hoisted_5, _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
+    to: "/proposerlieu"
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [_hoisted_7];
+    }),
+    _: 1
+    /* STABLE */
+
+  })])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
     key: 1
   }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.userPlaces, function (userPlace, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
@@ -29308,7 +29363,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       "aria-labelledby": "headingOne",
       "data-bs-parent": "#notification".concat(notification.id)
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
-      "class": "text-center notificationMessage",
+      "class": "text-center notificationMessage p-2",
       innerHTML: notification.message
     }, null, 8
     /* PROPS */
@@ -30497,7 +30552,7 @@ var _hoisted_6 = /*#__PURE__*/_withScopeId(function () {
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.categories, function (categorie, index) {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.categories, function (categorie) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       "class": "col-lg-6 border border-3 border-white card text-white",
       key: categorie.id,
@@ -30640,7 +30695,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [$data.categorie ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
+    key: 0,
     "class": "container-fluid p-5",
     style: (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeStyle)("background-image: url(/images/categorie".concat($data.categorie.id, ".jpg); background-position: center; background-size: cover;"))
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
@@ -30655,7 +30711,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* TEXT */
   )])], 4
   /* STYLE */
-  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Tris, {
+  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Tris, {
     lieux: $data.categorie.lieux,
     onLieux_tries: $options.updateLieux
   }, null, 8
@@ -32398,7 +32454,6 @@ var useLieuxStore = (0,pinia__WEBPACK_IMPORTED_MODULE_0__.defineStore)({
   },
   actions: {
     storeLieux: function storeLieux(lieux) {
-      console.log("storeLieux");
       this.lieux = lieux;
     },
     storeDepartements: function storeDepartements(departements) {
@@ -32475,7 +32530,6 @@ var useUserStore = (0,pinia__WEBPACK_IMPORTED_MODULE_0__.defineStore)({
   },
   actions: {
     storeUserData: function storeUserData(userData) {
-      console.log("storeuserdata");
       this.pseudo = userData.pseudo;
       this.email = userData.email;
       this.id = userData.id;
@@ -38052,7 +38106,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.greenIcon[data-v-5b8887c2] {\r\n    color: #94DEB1\n}\nh1[data-v-5b8887c2] {\r\n    color: #1C6E8C\n}\np[data-v-5b8887c2] {\r\n    color: grey\n}\n.textWithShadow[data-v-5b8887c2] {\r\n    text-shadow: 2px 2px 4px #1C6E8C;\n}\n.card[data-v-5b8887c2] {\r\n    height: 35vh\n}\nbutton[data-v-5b8887c2] {\r\n    background-color: #94DEB1;\r\n    color: white\n}\nbutton[data-v-5b8887c2]:hover {\r\n    background-color: #1C6E8C;\r\n    color: white\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.greenIcon[data-v-5b8887c2] {\r\n    color: #94DEB1\n}\nh1[data-v-5b8887c2] {\r\n    color: #1C6E8C\n}\n.yellowStar[data-v-5b8887c2] {\r\n    color: yellow\n}\np[data-v-5b8887c2] {\r\n    color: grey\n}\n.textWithShadow[data-v-5b8887c2] {\r\n    text-shadow: 2px 2px 4px #1C6E8C;\n}\n.card[data-v-5b8887c2] {\r\n    height: 35vh\n}\nbutton[data-v-5b8887c2] {\r\n    background-color: #94DEB1;\r\n    color: white\n}\nbutton[data-v-5b8887c2]:hover {\r\n    background-color: #1C6E8C;\r\n    color: white\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -38274,7 +38328,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.greenIcon[data-v-274b8048] {\r\n    color: #94D1BE\n}\nh1[data-v-274b8048],\r\nh2[data-v-274b8048] {\r\n    color: #1C6E8C\n}\n.textWithShadow[data-v-274b8048] {\r\n    text-shadow: 2px 2px 4px #1C6E8C;\n}\n.bigFontSize[data-v-274b8048] {\r\n    font-size: 3.5em;\n}\n.card[data-v-274b8048] {\r\n    height: 35vh\n}\nbutton[data-v-274b8048] {\r\n    background-color: #94DEB1;\r\n    color: white\n}\nbutton[data-v-274b8048]:hover {\r\n    background-color: #1C6E8C;\r\n    color: white\n}\n@media screen and (max-width: 568px) {\n.bigFontSize[data-v-274b8048] {\r\n        font-size: 2.5em;\n}\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.greenIcon[data-v-274b8048] {\r\n    color: #94D1BE\n}\nh1[data-v-274b8048],\r\nh2[data-v-274b8048] {\r\n    color: #1C6E8C\n}\n.textWithShadow[data-v-274b8048] {\r\n    text-shadow: 2px 2px 4px #1C6E8C;\n}\n.bigFontSize[data-v-274b8048] {\r\n    font-size: 3.5em;\n}\n.card[data-v-274b8048] {\r\n    height: 35vh\n}\nbutton[data-v-274b8048] {\r\n    background-color: #94DEB1;\r\n    color: white\n}\nbutton[data-v-274b8048]:hover {\r\n    background-color: #1C6E8C;\r\n    color: white\n}\n@media screen and (max-width: 768px) {\n.bigFontSize[data-v-274b8048] {\r\n        font-size: 2em;\n}\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

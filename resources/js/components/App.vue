@@ -11,8 +11,8 @@ import axios from "axios"
 
 export default {
 
-	// computed permet de surveiller automatiquement les changements
-	// de userData dans le state => utile pour la déconnexion
+	// computed permet de se connecter aux variables du state => mise à jour automatique au niveau du composant
+	// si un de ces variables du state change
 	computed: {
 		...mapState(useLieuxStore, [
 			'categories',
@@ -31,10 +31,13 @@ export default {
 	// on surveille le choix d'un département ou le changement de département de l'utilisateur
 	// si c'est le cas => on récupère les 3 derniers lieux et les 3 mieux notés du nouveau département
 	watch: {
-			departement(){
-				this.getThreeTopAndLastPlaces()
-			}
+		departement() {
+			this.getThreeTopAndLastPlaces()
 		},
+		id() { // on surveille également le changement d'utilisateur
+			this.getThreeTopAndLastPlaces()
+		}
+	},
 
 	methods: {
 		...mapActions(useLieuxStore, [
@@ -44,120 +47,93 @@ export default {
 
 		// on récupère les catégories et on les stocke dans le store, idem ensuite pour lieux/départements/régions/favoris
 		getCategories() {
-			console.log("getCategories");
 			axios.get("http://localhost:8000/api/categories")
 				.then(response => {
 					this.storeCategories(response.data)
-					console.log("catégories récupérées")
-				}
-				)
-				.catch(error => {
+				}).catch(error => {
 					console.log(error.response)
 				})
 		},
 
 		getLieux() {
-			console.log("getLieux");
 			axios.get("http://localhost:8000/api/lieus")
 				.then(response => {
 					this.storeLieux(response.data)
-				}
-				)
-				.catch(error => {
+				}).catch(error => {
 					console.log(error.response)
 				})
 		},
 
 		getDepartements() {
-			console.log("getdepartements");
 			axios.get("http://localhost:8000/api/departements")
 				.then(response => {
 					this.storeDepartements(response.data)
-				}
-				)
-				.catch(error => {
+				}).catch(error => {
 					console.log(error.response)
 				})
 		},
 
 		getRegions() {
-			console.log("getregions");
 			axios.get("http://localhost:8000/api/regions")
 				.then(response => {
 					this.storeRegions(response.data)
-				}
-				)
-				.catch(error => {
+				}).catch(error => {
 					console.log(error.response)
 				})
 		},
 
 		getFavoris() {
-			console.log("getfavoris");
 			axios.get("http://localhost:8000/api/favoris/" + this.id)
 				.then(response => {
 					this.storeFavoris(response.data)
-				}
-				)
-				.catch(error => {
+				}).catch(error => {
 					console.log(error.response)
 				})
 		},
 
 		// on récupère les 3 endroits les mieux notés + les 3 derniers
-
 		getThreeTopAndLastPlaces() {
-			console.log("getThreeTopAndLastPlaces");
-
-			let queryDepartment
+			let listeLieuxFiltres
 
 			// si l'utilisateur a choisi un département
 			if (this.departement) {
-				queryDepartment = this.departement.code
+				console.log(this.departement);
+				// on filtre l'ensemble des lieux pour ne garder que ceux du département de l'utilisateur
+				listeLieuxFiltres = this.lieux.filter(lieu => lieu.departement.id == this.departement.id)
+				console.log(listeLieuxFiltres);
+
 				//sinon => on cible la France entière
 			} else {
-				queryDepartment = "all"
+				listeLieuxFiltres = this.lieux
 			}
 
-			// on récupère les 3 lieux les mieux notés du dép. / de la France entière
-			// on les stocke dans le store
+			// on trie les lieux par note et on garde les 3 1ers, puis on les stocke dans le store
+			let troisTopLieux = listeLieuxFiltres.sort((a, b) => {
+				if (a.note > b.note) return -1;
+				return a.note < b.note ? 1 : 0;
+			}).slice(0, 3)
 
-			axios.post("http://localhost:8000/api/lieus/gettopplacesbydep", null, {
-				params: {
-					department: queryDepartment
-				}
-			})
-				.then(response => {
-					this.storeThreeTopPlaces(response.data)
-				}).catch(error => {
-					console.log(error.response)
-				})
+			this.storeThreeTopPlaces(troisTopLieux)
 
-			// on récupère les 3 derniers lieux ajoutés du dép. / de la France entière
-			// on les stocke dans le store
+			// idem pour les 3 derniers
+			let troisDerniersLieux = listeLieuxFiltres.sort((a, b) => {
+				if (a.created_at > b.created_at) return -1;
+				return a.created_at < b.created_at ? 1 : 0;
+			}).slice(0, 3)
 
-			axios.post("http://localhost:8000/api/lieus/getlastplacesbydep", null, {
-				params: {
-					department: queryDepartment
-				}
-			})
-				.then(response => {
-					this.storeThreeLastPlaces(response.data)
-				}).catch(error => {
-					console.log(error.response)
-				})
+			this.storeThreeLastPlaces(troisDerniersLieux)
 		}
 	},
 
 	created() {
 
-		// on récupère les catégories et on les stocke dans le store
+		// on récupère les cat / lieux / dep / régions et on les stocke dans le store
+		// getLieux est nécessaire à chaque affichage du composant pour actualiser les listes
+		// (les autres changent rarement surtout départements et régions)
+		this.getLieux()
+
 		if (!this.categories) {
 			this.getCategories()
-		}
-
-		if (!this.lieux) {
-			this.getLieux()
 		}
 
 		if (!this.departements) {
@@ -167,10 +143,16 @@ export default {
 		if (!this.regions) {
 			this.getRegions()
 		}
+	},
+
+	mounted() {
 
 		// ******************* si département choisi (à l'inscription ou après) ************************
 
 		// on récupère les 3 derniers lieux ajoutés + les 3 les mieux notés du dép.
+		// on fait cela dans mounted pour être sûr que les lieux soient disponibles (sinon erreur)
+		// par défaut, s'effectue 1 seule fois par session car App est chargé au début (composant principal)
+		// le watch plus haut permet de surveiller les éventuels changements de département et d'actualiser ces deux "top 3"
 		this.getThreeTopAndLastPlaces()
 
 	},

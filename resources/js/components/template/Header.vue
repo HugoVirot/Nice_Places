@@ -57,7 +57,7 @@
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false">
                                     {{ pseudo }}
-                                    <span v-show="countUnreadNotifications > 0">
+                                    <span v-show="countUnreadNotifications && countUnreadNotifications > 0">
                                         <i class="text-danger fa-solid fa-bell"></i>
                                     </span>
                                 </a>
