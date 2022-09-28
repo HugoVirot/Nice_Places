@@ -77,7 +77,7 @@
                     <th scope="col">code postal</th>
                     <th scope="col">ville</th>
                     <th scope="col">posté par</th>
-                    <th scope="col">validé</th>
+                    <th scope="col">statut</th>
                     <th scope="col">ajouté le</th>
                     <th scope="col">modifié le</th>
                 </tr>
@@ -309,6 +309,7 @@
             <thead>
                 <tr>
                     <th scope="col">aperçu</th>
+                    <th scope="col">statut</th>
                     <th scope="col">id</th>
                     <th scope="col">nom</th>
                     <th scope="col">postée par</th>
@@ -317,21 +318,25 @@
                     <th scope="col">largeur</th>
                     <th scope="col">taille</th>
                     <th scope="col">ajoutée le</th>
-                    <th scope="col">mettre en avant</th>
+                    <th scope="col">modifier</th>
                     <th scope="col">supprimer</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="image in images">
-                    <th>
+                    <td>
                         <button class="m-3" data-bs-toggle="modal" :data-bs-target="`.imageZoom${image.id}`"
                             style="border: none; outline:none">
                             <img v-if="image.lieu_id !== null" class="w-75" :src="`/images/${image.nom}`"
                                 :alt="`${image.nom}`">
                             <img v-else class="w-75" :src="`/images/categorie${image.id}.jpg`" :alt="`${image.nom}`">
                         </button>
-                    </th>
-                    <th>{{ image.id }}</th>
+                    </td>
+                    <td v-if="image.statut == 'validée'" class="bg-success text-white">validée</td>
+                    <td v-else-if="image.statut == 'en attente'" class="mx-auto bg-info w-25">en attente de validation
+                    </td>
+                    <td v-else class="mx-auto bg-danger w-25">refusée</td>
+                    <td>{{ image.id }}</td>
                     <td>{{ image.nom }}</td>
                     <td>{{ image.user.pseudo }}</td>
                     <td>{{ image.mise_en_avant ? 'oui' : 'non' }}</td>
@@ -339,12 +344,9 @@
                     <td>{{ image.largeur }} px</td>
                     <td>{{ image.taille }} kb</td>
                     <td>{{ moment(image.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
-                    <td v-if="!image.mise_en_avant">
+                    <td>
                         <router-link :to="`/modifierimage/${image.id}`"><i class="fa-solid fa-pen-to-square"></i>
                         </router-link>
-                    </td>
-                    <td v-else>
-                        image déjà mise en avant
                     </td>
                     <td><i class="fa-solid fa-eraser" data-bs-toggle="modal" data-bs-target="#confirmationModal"
                             @click="elementToDelete = 'image'; idOfElementToDelete = image.id"></i></td>
@@ -460,14 +462,6 @@ export default {
                             this.$router.push('/successmessage/backoffice/' + message)
                         })
 
-                        .catch(error => {
-                            console.log(error.response)
-                        })
-
-                })
-
-                .catch(error => {
-                    console.log(error.response)
                 })
         },
 
@@ -485,13 +479,6 @@ export default {
                             // on redirige vers l'accueil en affichant le message de succès
                             this.$router.push('/SuccessMessage/backoffice/' + message)
                         })
-                        .catch(error => {
-                            console.log(error.response)
-                        })
-                })
-
-                .catch(error => {
-                    console.log(error.response)
                 })
         },
 
@@ -511,13 +498,7 @@ export default {
                             // on redirige vers le back office en affichant le message de succès
                             this.$router.push('/SuccessMessage/backoffice/' + message)
                         })
-                        .catch(error => {
-                            console.log(error.response)
-                        })
 
-                })
-                .catch(error => {
-                    console.log(error.response)
                 })
         },
 
@@ -535,12 +516,6 @@ export default {
                             // on redirige vers l'accueil en affichant le message de succès
                             this.$router.push('/SuccessMessage/backoffice/' + message)
                         })
-                        .catch(error => {
-                            console.log(error.response)
-                        })
-
-                }).catch(error => {
-                    console.log(error.response)
                 })
         },
 
@@ -560,12 +535,6 @@ export default {
                             // on redirige vers l'accueil en affichant le message de succès
                             this.$router.push('/SuccessMessage/backoffice/' + message)
                         })
-                        .catch(error => {
-                            console.log(error.response)
-                        })
-                })
-                .catch(error => {
-                    console.log(error.response)
                 })
         },
 
@@ -585,48 +554,49 @@ export default {
                             // on redirige vers l'accueil en affichant le message de succès
                             this.$router.push('/SuccessMessage/backoffice/' + message)
                         })
-                        .catch(error => {
-                            console.log(error.response)
-                        })
                 })
-                .catch(error => {
-                    console.log(error.response)
+        },
+
+        getLieux() {
+            axios.get("http://localhost:8000/api/lieus")
+                .then(response => {
+                    console.log("getLieux");
+                    this.storeLieux(response.data)
+                })
+        },
+
+        getAvis() {
+            axios.get("http://localhost:8000/api/avis")
+                .then(response => {
+                    this.storeAvis(response.data)
+                })
+        },
+
+        getUsers() {
+            axios.get("http://localhost:8000/api/users")
+                .then(response => {
+                    this.storeUsers(response.data)
+                })
+        },
+
+        getImages() {
+            axios.get("http://localhost:8000/api/images")
+                .then(response => {
+                    this.storeImages(response.data)
                 })
         }
     },
 
     created() {
+        console.log("created du backoffice");
+        // on initialise moment pour afficher la date en français
         this.moment = moment
 
-        axios.get("http://localhost:8000/api/lieus")
-            .then(response => {
-                console.log("getLieux");
-                this.storeLieux(response.data)
-                console.log(store.state.lieux);
-            }
-            )
-            .catch(error => console.log(error.response))
-
-        axios.get("http://localhost:8000/api/avis")
-            .then(response => {
-                this.storeAvis(response.data)
-            }
-            )
-            .catch(error => console.log(error.response))
-
-        axios.get("http://localhost:8000/api/users")
-            .then(response => {
-                this.storeUsers(response.data)
-            }
-            )
-            .catch(error => console.log(error.response))
-
-        axios.get("http://localhost:8000/api/images")
-            .then(response => {
-                this.storeImages(response.data)
-            }
-            )
-            .catch(error => console.log(error.response))
+        // on récupère lieux / avis / images / users (catégorie déjà récupérées sur App.vue)
+        this.getLieux()
+        this.getAvis()
+        this.getImages()
+        this.getUsers()
     }
 }
 </script>

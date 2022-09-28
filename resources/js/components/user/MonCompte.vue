@@ -43,8 +43,9 @@
                                 <div class="col-md-6">
                                     <select id="departement" required v-model="departement" class="form-select mx-auto"
                                         aria-label="filtre" autocomplete="departement">
-                                        <option v-for="department in departements" :value="department" :selected="department.nom == departement ? 'selected' : ''">{{
-                                        department.code }} - {{ department.nom }}</option>
+                                        <option v-for="department in departements" :value="department"
+                                            :selected="department.nom == departement ? 'selected' : ''">{{
+                                            department.code }} - {{ department.nom }}</option>
                                     </select>
                                 </div>
 
@@ -182,8 +183,7 @@ import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
 import { useUserStore } from '../../stores/userStore'
 import { useLieuxStore } from '../../stores/lieuxStore'
-import { mapWritableState } from 'pinia'
-import { mapState } from 'pinia'
+import { mapState, mapWritableState } from 'pinia';
 import { mapActions } from 'pinia'
 
 export default {
@@ -193,7 +193,8 @@ export default {
             'pseudo',
             'email',
             'id',
-            'departement'
+            'departement',
+            'validationErrors'
         ]),
 
         ...mapState(useLieuxStore, [
@@ -207,7 +208,6 @@ export default {
             oldPassword: "",
             password: "",
             password_confirmation: "",
-            validationErrors: "",
             eightCharacters: false,
             oneLetter: false,
             oneUppercaseOneLowercase: false,
@@ -257,15 +257,16 @@ export default {
         },
 
         sendData() {
+            // on réinitialise les erreurs de validation à chaque nouvel appel api
+            this.validationErrors = []
+
             // on sauvegarde les modifs en bdd puis on redirige
-            axios.put('/api/users/' + this.id, { 
+            axios.put('/api/users/' + this.id, {
                 pseudo: this.pseudo, email: this.email, departement_id: this.departement.id, oldPassword: this.oldPassword,
                 password: this.password, password_confirmation: this.password_confirmation
             }).then(response => { // on devrait passer ici...
                 this.storeUserData(response.data.data)
                 this.$router.push('/successmessage/lastpage/' + response.data.message)
-            }).catch((error) => {
-                this.validationErrors = error.response.data.data
             })
         },
 
@@ -275,9 +276,6 @@ export default {
                     // suppression compte réussie => déconnexion + retour accueil
                     this.logOut()
                     this.$router.push('/SuccessMessage/home/' + response.data.message)
-                })
-                .catch((error) => {
-                    this.validationErrors = error.response.data.data;
                 })
         },
     }

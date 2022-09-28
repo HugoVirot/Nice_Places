@@ -50,8 +50,6 @@ export default {
 			axios.get("http://localhost:8000/api/categories")
 				.then(response => {
 					this.storeCategories(response.data)
-				}).catch(error => {
-					console.log(error.response)
 				})
 		},
 
@@ -59,8 +57,6 @@ export default {
 			axios.get("http://localhost:8000/api/lieus")
 				.then(response => {
 					this.storeLieux(response.data)
-				}).catch(error => {
-					console.log(error.response)
 				})
 		},
 
@@ -68,8 +64,6 @@ export default {
 			axios.get("http://localhost:8000/api/departements")
 				.then(response => {
 					this.storeDepartements(response.data)
-				}).catch(error => {
-					console.log(error.response)
 				})
 		},
 
@@ -77,8 +71,6 @@ export default {
 			axios.get("http://localhost:8000/api/regions")
 				.then(response => {
 					this.storeRegions(response.data)
-				}).catch(error => {
-					console.log(error.response)
 				})
 		},
 
@@ -86,8 +78,6 @@ export default {
 			axios.get("http://localhost:8000/api/favoris/" + this.id)
 				.then(response => {
 					this.storeFavoris(response.data)
-				}).catch(error => {
-					console.log(error.response)
 				})
 		},
 
@@ -153,8 +143,9 @@ export default {
 		// on fait cela dans mounted pour être sûr que les lieux soient disponibles (sinon erreur)
 		// par défaut, s'effectue 1 seule fois par session car App est chargé au début (composant principal)
 		// le watch plus haut permet de surveiller les éventuels changements de département et d'actualiser ces deux "top 3"
-		this.getThreeTopAndLastPlaces()
-
+		if (this.lieux) {
+			this.getThreeTopAndLastPlaces()
+		}
 	},
 
 	components: { Header, Slider, Map, Footer }

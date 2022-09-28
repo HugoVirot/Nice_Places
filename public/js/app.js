@@ -23175,8 +23175,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       axios__WEBPACK_IMPORTED_MODULE_6___default().get("http://localhost:8000/api/categories").then(function (response) {
         _this.storeCategories(response.data);
-      })["catch"](function (error) {
-        console.log(error.response);
       });
     },
     getLieux: function getLieux() {
@@ -23184,8 +23182,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       axios__WEBPACK_IMPORTED_MODULE_6___default().get("http://localhost:8000/api/lieus").then(function (response) {
         _this2.storeLieux(response.data);
-      })["catch"](function (error) {
-        console.log(error.response);
       });
     },
     getDepartements: function getDepartements() {
@@ -23193,8 +23189,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       axios__WEBPACK_IMPORTED_MODULE_6___default().get("http://localhost:8000/api/departements").then(function (response) {
         _this3.storeDepartements(response.data);
-      })["catch"](function (error) {
-        console.log(error.response);
       });
     },
     getRegions: function getRegions() {
@@ -23202,8 +23196,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       axios__WEBPACK_IMPORTED_MODULE_6___default().get("http://localhost:8000/api/regions").then(function (response) {
         _this4.storeRegions(response.data);
-      })["catch"](function (error) {
-        console.log(error.response);
       });
     },
     getFavoris: function getFavoris() {
@@ -23211,8 +23203,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       axios__WEBPACK_IMPORTED_MODULE_6___default().get("http://localhost:8000/api/favoris/" + this.id).then(function (response) {
         _this5.storeFavoris(response.data);
-      })["catch"](function (error) {
-        console.log(error.response);
       });
     },
     // on récupère les 3 endroits les mieux notés + les 3 derniers
@@ -23270,7 +23260,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     // on fait cela dans mounted pour être sûr que les lieux soient disponibles (sinon erreur)
     // par défaut, s'effectue 1 seule fois par session car App est chargé au début (composant principal)
     // le watch plus haut permet de surveiller les éventuels changements de département et d'actualiser ces deux "top 3"
-    this.getThreeTopAndLastPlaces();
+    if (this.lieux) {
+      this.getThreeTopAndLastPlaces();
+    }
   },
   components: {
     Header: _template_Header_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
@@ -23377,11 +23369,7 @@ moment__WEBPACK_IMPORTED_MODULE_0___default().locale('fr');
 
 
           _this2.$router.push('/successmessage/backoffice/' + message);
-        })["catch"](function (error) {
-          console.log(error.response);
         });
-      })["catch"](function (error) {
-        console.log(error.response);
       });
     },
     deleteLieu: function deleteLieu(id) {
@@ -23395,11 +23383,7 @@ moment__WEBPACK_IMPORTED_MODULE_0___default().locale('fr');
 
 
           _this3.$router.push('/SuccessMessage/backoffice/' + message);
-        })["catch"](function (error) {
-          console.log(error.response);
         });
-      })["catch"](function (error) {
-        console.log(error.response);
       });
     },
     deleteCategory: function deleteCategory(id) {
@@ -23413,11 +23397,7 @@ moment__WEBPACK_IMPORTED_MODULE_0___default().locale('fr');
 
 
           _this4.$router.push('/SuccessMessage/backoffice/' + message);
-        })["catch"](function (error) {
-          console.log(error.response);
         });
-      })["catch"](function (error) {
-        console.log(error.response);
       });
     },
     storeCategory: function storeCategory() {
@@ -23435,11 +23415,7 @@ moment__WEBPACK_IMPORTED_MODULE_0___default().locale('fr');
 
 
           _this5.$router.push('/SuccessMessage/backoffice/' + message);
-        })["catch"](function (error) {
-          console.log(error.response);
         });
-      })["catch"](function (error) {
-        console.log(error.response);
       });
     },
     deleteUser: function deleteUser(id) {
@@ -23453,11 +23429,7 @@ moment__WEBPACK_IMPORTED_MODULE_0___default().locale('fr');
 
 
           _this6.$router.push('/SuccessMessage/backoffice/' + message);
-        })["catch"](function (error) {
-          console.log(error.response);
         });
-      })["catch"](function (error) {
-        console.log(error.response);
       });
     },
     deleteImage: function deleteImage(id) {
@@ -23471,42 +23443,49 @@ moment__WEBPACK_IMPORTED_MODULE_0___default().locale('fr');
 
 
           _this7.$router.push('/SuccessMessage/backoffice/' + message);
-        })["catch"](function (error) {
-          console.log(error.response);
         });
-      })["catch"](function (error) {
-        console.log(error.response);
+      });
+    },
+    getLieux: function getLieux() {
+      var _this8 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get("http://localhost:8000/api/lieus").then(function (response) {
+        console.log("getLieux");
+
+        _this8.storeLieux(response.data);
+      });
+    },
+    getAvis: function getAvis() {
+      var _this9 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get("http://localhost:8000/api/avis").then(function (response) {
+        _this9.storeAvis(response.data);
+      });
+    },
+    getUsers: function getUsers() {
+      var _this10 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get("http://localhost:8000/api/users").then(function (response) {
+        _this10.storeUsers(response.data);
+      });
+    },
+    getImages: function getImages() {
+      var _this11 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get("http://localhost:8000/api/images").then(function (response) {
+        _this11.storeImages(response.data);
       });
     }
   }),
   created: function created() {
-    var _this8 = this;
+    console.log("created du backoffice"); // on initialise moment pour afficher la date en français
 
-    this.moment = (moment__WEBPACK_IMPORTED_MODULE_0___default());
-    axios__WEBPACK_IMPORTED_MODULE_1___default().get("http://localhost:8000/api/lieus").then(function (response) {
-      console.log("getLieux");
+    this.moment = (moment__WEBPACK_IMPORTED_MODULE_0___default()); // on récupère lieux / avis / images / users (catégorie déjà récupérées sur App.vue)
 
-      _this8.storeLieux(response.data);
-
-      console.log(store.state.lieux);
-    })["catch"](function (error) {
-      return console.log(error.response);
-    });
-    axios__WEBPACK_IMPORTED_MODULE_1___default().get("http://localhost:8000/api/avis").then(function (response) {
-      _this8.storeAvis(response.data);
-    })["catch"](function (error) {
-      return console.log(error.response);
-    });
-    axios__WEBPACK_IMPORTED_MODULE_1___default().get("http://localhost:8000/api/users").then(function (response) {
-      _this8.storeUsers(response.data);
-    })["catch"](function (error) {
-      return console.log(error.response);
-    });
-    axios__WEBPACK_IMPORTED_MODULE_1___default().get("http://localhost:8000/api/images").then(function (response) {
-      _this8.storeImages(response.data);
-    })["catch"](function (error) {
-      return console.log(error.response);
-    });
+    this.getLieux();
+    this.getAvis();
+    this.getImages();
+    this.getUsers();
   }
 });
 
@@ -23541,13 +23520,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  computed: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_userStore_js__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['role'])), (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_backOfficeStore__WEBPACK_IMPORTED_MODULE_3__.useBackOfficeStore, ['storeAvis'])),
+  computed: _objectSpread(_objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_backOfficeStore__WEBPACK_IMPORTED_MODULE_3__.useBackOfficeStore, ['storeAvis'])), (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_userStore_js__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['role'])), (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapWritableState)(_stores_userStore_js__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['validationErrors'])),
   data: function data() {
     return {
       avis: "",
       note: "",
-      commentaire: "",
-      validationErrors: ""
+      commentaire: ""
     };
   },
   components: {
@@ -23564,6 +23542,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     saveChanges: function saveChanges() {
       var _this = this;
 
+      // on réinitialise les erreurs de validation à chaque nouvel appel api
+      this.validationErrors = [];
       axios__WEBPACK_IMPORTED_MODULE_0___default().put('/api/avis/' + this.avis.id, {
         note: this.note,
         commentaire: this.commentaire
@@ -23574,11 +23554,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           _this.storeAvis(response.data);
 
           _this.$router.push('/SuccessMessage/backoffice/' + message);
-        })["catch"](function (response) {
-          console.log(response.error);
         });
-      })["catch"](function (error) {
-        _this.validationErrors = error.response.data.data;
       });
     }
   },
@@ -23587,9 +23563,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
     axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/avis/" + this.$route.params.id).then(function (response) {
       _this2.updateLocalData(response.data);
-    })["catch"](function (error) {
-      console.log(error);
-      _this2.validationErrors = error.response.data.data;
     });
   }
 });
@@ -23625,14 +23598,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  computed: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_userStore_js__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['role'])), (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_lieuxStore__WEBPACK_IMPORTED_MODULE_3__.useLieuxStore, ['categories', 'storeCategories'])),
+  computed: _objectSpread(_objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_userStore_js__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['role'])), (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapWritableState)(_stores_userStore_js__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['validationErrors'])), (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_lieuxStore__WEBPACK_IMPORTED_MODULE_3__.useLieuxStore, ['categories', 'storeCategories'])),
   data: function data() {
     return {
       categorie: "",
       nom: "",
       icone: "",
-      couleur: "",
-      validationErrors: ""
+      couleur: ""
     };
   },
   components: {
@@ -23650,6 +23622,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     saveChanges: function saveChanges() {
       var _this = this;
 
+      // on réinitialise les erreurs de validation à chaque nouvel appel api
+      this.validationErrors = [];
       axios__WEBPACK_IMPORTED_MODULE_0___default().put('/api/categories/' + this.categorie.id, {
         nom: this.nom,
         icone: this.icone,
@@ -23661,11 +23635,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           _this.storeCategories(response.data);
 
           _this.$router.push('/SuccessMessage/backoffice/' + message);
-        })["catch"](function (response) {
-          console.log(response.error);
         });
-      })["catch"](function (error) {
-        _this.validationErrors = error.response.data.data;
       });
     }
   },
@@ -23674,9 +23644,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
     axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/categories/" + this.$route.params.id).then(function (response) {
       _this2.updateLocalData(response.data);
-    })["catch"](function (error) {
-      console.log(error);
-      _this2.validationErrors = error.response.data.data;
     });
   }
 });
@@ -23698,7 +23665,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _utilities_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utilities/ValidationErrors.vue */ "./resources/js/components/utilities/ValidationErrors.vue");
 /* harmony import */ var _stores_userStore_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../stores/userStore.js */ "./resources/js/stores/userStore.js");
-/* harmony import */ var _stores_lieuxStore__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../stores/lieuxStore */ "./resources/js/stores/lieuxStore.js");
+/* harmony import */ var _stores_backOfficeStore__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../stores/backOfficeStore */ "./resources/js/stores/backOfficeStore.js");
 /* harmony import */ var pinia__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! pinia */ "./node_modules/pinia/dist/pinia.mjs");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
@@ -23713,20 +23680,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  computed: _objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_userStore_js__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['pseudo', 'role'])),
+  computed: _objectSpread(_objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_userStore_js__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['id', 'pseudo', 'role'])), (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapWritableState)(_stores_userStore_js__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['validationErrors'])), (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapWritableState)(_stores_backOfficeStore__WEBPACK_IMPORTED_MODULE_3__.useBackOfficeStore, ['images'])),
   data: function data() {
     return {
       image: "",
       nom: "",
       mise_en_avant: "",
-      validationErrors: "",
+      statut: "",
+      raisonsRefus: "",
       imagesNumberForThisPlace: 1
     };
   },
   components: {
     ValidationErrors: _utilities_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  methods: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapActions)(_stores_lieuxStore__WEBPACK_IMPORTED_MODULE_3__.useLieuxStore, ['storeImages'])), {}, {
+  methods: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapActions)(_stores_backOfficeStore__WEBPACK_IMPORTED_MODULE_3__.useBackOfficeStore, ['storeImages'])), {}, {
     // cette fonction permet de mettre à jour les données locales du composant
     // une fois que l'appel API a récupéré l'image
     updateLocalData: function updateLocalData(image) {
@@ -23735,32 +23703,96 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.image = image;
       this.nom = image.nom;
       this.mise_en_avant = image.mise_en_avant;
+      this.statut = image.statut;
 
       if (this.image.lieu_id) {
         axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/lieus/getimagesnumberbyplace/" + this.image.lieu_id).then(function (response) {
           _this.imagesNumberForThisPlace = response.data;
-        })["catch"](function (response) {
-          console.log(response.error);
         });
       }
     },
+    // on sauvegarde les changements en bdd via un appel api
     saveChanges: function saveChanges() {
       var _this2 = this;
 
+      // on réinitialise les erreurs de validation à chaque nouvel appel api
+      this.validationErrors = [];
       axios__WEBPACK_IMPORTED_MODULE_0___default().put('/api/images/' + this.image.id, {
-        mise_en_avant: this.mise_en_avant
+        mise_en_avant: this.mise_en_avant,
+        statut: this.statut
       }).then(function (response) {
-        var message = response.data.message; // on récupère la nouvelle liste des catégories 
+        var message = response.data.message;
+        var newImage = response.data.data;
 
-        axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/images').then(function (response) {
-          _this2.storeImages(response.data);
+        if (_this2.statut == "validée") {
+          // notification validée => message de succès
+          _this2.createSuccessNotification(_this2.id); // on actualise la liste des images en remplaçant l'ancienne version par la nouvelle 
 
-          _this2.$router.push('/SuccessMessage/backoffice/' + message);
-        })["catch"](function (response) {
-          console.log(response.error);
-        });
-      })["catch"](function (error) {
-        _this2.validationErrors = error.response.data.data;
+
+          var index = _this2.images.findIndex(function (image) {
+            return image.id == newImage.id;
+          });
+
+          console.log(index);
+
+          _this2.images.splice(index, 1, newImage); // on sauvegarde la nouvelle liste dans le store
+
+
+          _this2.storeImages(_this2.images);
+
+          console.log(_this2.images);
+        } else if (_this2.statut == "refusée") {
+          // notification refusée : message de refus avec la raison
+          // else if au lieu de else pour éviter un message de refus si l'image reste en attente
+          _this2.createRefusalNotification(_this2.id); // on supprime l'image de la bdd (inutile de la conserver plus longtemps)
+
+
+          axios__WEBPACK_IMPORTED_MODULE_0___default()["delete"]("/api/images/" + _this2.image.id).then(function (response) {
+            // une fois l'image  supprimée, on la retire des images du store
+            // cela permet d'éviter un appel api qui récupérerait toutes les images alors qu'une seule a changé
+            var index = _this2.images.findIndex(function (image) {
+              return image.id == _this2.image.id;
+            });
+
+            _this2.images.splice(index, 1); // on sauvegarde la nouvelle liste dans le store
+
+
+            _this2.storeImages(_this2.images);
+
+            message = "Suppression effectuée et notifiée à l'utilisateur.";
+
+            _this2.$router.push('/SuccessMessage/backoffice/' + message);
+          });
+        } else if (_this2.statut == "") {// cas du contenu choquant / totalement interdit sur le site
+          // déclencher la suppression immédiate de l'image
+          // message avertissant de l'exclusion de l'utilisateur et de la suppression immédiate de son compte
+        }
+
+        _this2.$router.push('/SuccessMessage/backoffice/' + message);
+      });
+    },
+    createSuccessNotification: function createSuccessNotification(userId) {
+      var titre = "Votre image ".concat(this.nom, " a bien \xE9t\xE9 valid\xE9e !");
+      var message = "<p class=\"text-secondary\">Bonjour ".concat(this.pseudo, ",<br>\n                    F\xE9licitations, votre image a bien \xE9t\xE9 valid\xE9e !<br>\n                    <i style=\"color: #94D1BE\" class=\"mx-auto my-3 fa-solid fa-circle-check fa-5x\"></i><br>\n                    Elle est visible d\xE8s maintenant sur la page du lieu concern\xE9.<br>\n                    N'h\xE9sitez pas \xE0 en proposer de nouvelles, pour ce lieu ou pour d'autres.<br>\n                    Merci et \xE0 tr\xE8s bient\xF4t.</p>\n                    <p class=\"text-end\">L'administrateur.</p>");
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/notifications', {
+        titre: titre,
+        message: message,
+        user_id: userId,
+        lieu_id: this.image.lieu_id
+      }).then(function (response) {
+        return console.log(response.data.message);
+      });
+    },
+    createRefusalNotification: function createRefusalNotification(userId) {
+      var titre = "Votre image ".concat(this.nom, " a \xE9t\xE9 refus\xE9e");
+      var message = "<p class=\"text-secondary\">Bonjour ".concat(this.pseudo, ",<br>\n        Votre image a \xE9t\xE9 refus\xE9e pour la (les) raison(s) suivant(es) : <br>\n        ").concat(this.raisonsRefus, "<br>\n        <i style=\"color: #94D1BE\" class=\"mx-auto my-3 fa-solid fa-xmark fa-5x\"></i><br>\n        N'h\xE9sitez pas \xE0 en proposer de nouvelles, pour ce lieu ou pour d'autres.<br>\n        Merci et \xE0 tr\xE8s bient\xF4t.</p>\n        <p class=\"text-end\">L'administrateur.</p>");
+      axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/notifications', {
+        titre: titre,
+        message: message,
+        user_id: userId,
+        lieu_id: this.image.lieu_id
+      }).then(function (response) {
+        return console.log(response.data.message);
       });
     }
   }),
@@ -23769,8 +23801,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
     axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/images/" + this.$route.params.id).then(function (response) {
       _this3.updateLocalData(response.data);
-    })["catch"](function (response) {
-      console.log(response.error);
     });
   }
 });
@@ -23806,7 +23836,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  computed: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_userStore_js__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['role'])), (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_lieuxStore__WEBPACK_IMPORTED_MODULE_3__.useLieuxStore, ['categories'])),
+  computed: _objectSpread(_objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_userStore_js__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['role'])), (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapWritableState)(_stores_userStore_js__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['validationErrors'])), (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_lieuxStore__WEBPACK_IMPORTED_MODULE_3__.useLieuxStore, ['categories'])),
   data: function data() {
     return {
       lieuId: this.$route.params.id,
@@ -23825,8 +23855,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       ville: "",
       statut: "",
       statutPrecedent: "",
-      commentaire: "",
-      validationErrors: ""
+      commentaire: ""
     };
   },
   components: {
@@ -23856,7 +23885,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     saveChanges: function saveChanges() {
       var _this = this;
 
-      // on sauvegarde les changements dans la base de données
+      // on réinitialise les erreurs de validation à chaque nouvel appel api
+      this.validationErrors = []; // on sauvegarde les changements dans la base de données
+
       axios__WEBPACK_IMPORTED_MODULE_0___default().put('/api/lieus/' + this.lieu.id, {
         nom: this.nom,
         description: this.description,
@@ -23874,10 +23905,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         commentaire: this.commentaire
       }).then(function (response) {
         return _this.handleSuccess(response);
-      }) // en cas d'erreur sur la modification de lieu, on affiche les erreurs
-      ["catch"](function (error) {
-        _this.validationErrors = error.data.data;
-      });
+      }); // en cas d'erreur sur la modification de lieu, on affiche les erreurs
     },
     handleSuccess: function handleSuccess(response) {
       var message = response.data.message; // on envoie une notification en cas de changement de statut
@@ -23918,8 +23946,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         lieu_id: this.lieu.id
       }).then(function (response) {
         return console.log(response.data.message);
-      })["catch"](function (response) {
-        return console.log(response.data.message);
       });
     }
   },
@@ -23928,8 +23954,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
     axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/lieus/" + this.lieuId).then(function (response) {
       _this2.updateLocalData(response.data);
-    })["catch"](function (error) {
-      console.log(error);
     });
   }
 });
@@ -24018,18 +24042,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       email: "",
-      password: "",
-      validationErrors: ""
+      password: ""
     };
   },
-  computed: _objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_3__.mapState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['id'])),
+  computed: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_3__.mapState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['id', 'validationErrors'])), (0,pinia__WEBPACK_IMPORTED_MODULE_3__.mapWritableState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['validationErrors'])),
   components: {
     ValidationErrors: _utilities_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  methods: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_3__.mapActions)(_stores_userStore__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['storeUserData'])), {}, {
+  methods: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_3__.mapActions)(_stores_userStore__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['storeUserData', 'storeNotifications'])), {}, {
     logIn: function logIn() {
       var _this = this;
 
+      // on réinitialise les erreurs de validation à chaque nouvel appel api
       // on tente la connexion. Si réussie, on stocke les données du user dans le state
       // on récupère aussi ses notifications qu'on stocke également dans le state
       axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/login', {
@@ -24041,9 +24065,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this.getNotifications();
 
         _this.$router.push('/successmessage/home/' + response.data.message);
-      })["catch"](function (error) {
-        // on stocke les messages d'erreurs dans la variable validationErrors du composant, pour les afficher
-        _this.validationErrors = error.response.data.data;
       });
     },
     getNotifications: function getNotifications() {
@@ -24051,8 +24072,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       axios__WEBPACK_IMPORTED_MODULE_0___default().get('/api/getnotificationsbyuser/' + this.id).then(function (response) {
         _this2.storeNotifications(response.data);
-      })["catch"](function (response) {
-        console.log(response.error);
       });
     }
   })
@@ -24075,7 +24094,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _utilities_ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utilities/ValidationErrors.vue */ "./resources/js/components/utilities/ValidationErrors.vue");
 /* harmony import */ var _stores_lieuxStore_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../stores/lieuxStore.js */ "./resources/js/stores/lieuxStore.js");
-/* harmony import */ var pinia__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! pinia */ "./node_modules/pinia/dist/pinia.mjs");
+/* harmony import */ var _stores_userStore_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../stores/userStore.js */ "./resources/js/stores/userStore.js");
+/* harmony import */ var pinia__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! pinia */ "./node_modules/pinia/dist/pinia.mjs");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
@@ -24086,8 +24106,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  computed: _objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_3__.mapState)(_stores_lieuxStore_js__WEBPACK_IMPORTED_MODULE_2__.useLieuxStore, ['departements'])),
+  computed: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_lieuxStore_js__WEBPACK_IMPORTED_MODULE_2__.useLieuxStore, ['departements'])), (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapWritableState)(_stores_userStore_js__WEBPACK_IMPORTED_MODULE_3__.useUserStore, ['validationErrors'])),
   data: function data() {
     return {
       pseudo: "",
@@ -24096,7 +24117,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       password: "",
       password_confirmation: "",
       passwordTyped: false,
-      validationErrors: "",
       eightCharacters: false,
       oneLetter: false,
       oneUppercaseOneLowercase: false,
@@ -24111,6 +24131,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     sendData: function sendData() {
       var _this = this;
 
+      // on réinitialise les erreurs de validation à chaque nouvel appel api
+      this.validationErrors = [];
       axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/register', {
         pseudo: this.pseudo,
         email: this.email,
@@ -24123,8 +24145,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this.createNotification(response.data.data.id);
 
         _this.$router.push('/successmessage/connexion/' + message);
-      })["catch"](function (error) {
-        _this.validationErrors = error.response.data.data;
       });
     },
     createNotification: function createNotification(userId) {
@@ -24136,8 +24156,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         user_id: userId,
         lieu_id: null
       }).then(function (response) {
-        return console.log(response.data.message);
-      })["catch"](function (response) {
         return console.log(response.data.message);
       });
     },
@@ -24223,8 +24241,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       axios.get('/api/favoris/' + this.id).then(function (response) {
         _this.storeFavoris(response.data);
-      })["catch"](function (response) {
-        console.log(response.error);
       });
     },
     updateLieux: function updateLieux(lieuxTries) {
@@ -24279,8 +24295,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
       }).then(function (response) {
         return _this.storeUserPlaces(response.data);
-      })["catch"](function (error) {
-        console.log(error.response);
       });
     }
   }),
@@ -24328,8 +24342,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       axios.get('/api/getnotificationsbyuser/' + this.id).then(function (response) {
         _this.storeNotifications(response.data);
-      })["catch"](function (response) {
-        console.log(response.error);
       });
     },
     markNotificationAsRead: function markNotificationAsRead(notificationId) {
@@ -24341,8 +24353,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this2.getNotifications();
 
         _this2.$router.push('/mesnotifications');
-      })["catch"](function (response) {
-        console.log(response.error);
       });
     }
   }),
@@ -24383,16 +24393,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
-
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  computed: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapWritableState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['pseudo', 'email', 'id', 'departement'])), (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_lieuxStore__WEBPACK_IMPORTED_MODULE_3__.useLieuxStore, ['departements'])),
+  computed: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapWritableState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['pseudo', 'email', 'id', 'departement', 'validationErrors'])), (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_lieuxStore__WEBPACK_IMPORTED_MODULE_3__.useLieuxStore, ['departements'])),
   data: function data() {
     return {
       passwordTyped: false,
       oldPassword: "",
       password: "",
       password_confirmation: "",
-      validationErrors: "",
       eightCharacters: false,
       oneLetter: false,
       oneUppercaseOneLowercase: false,
@@ -24440,7 +24448,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     sendData: function sendData() {
       var _this = this;
 
-      // on sauvegarde les modifs en bdd puis on redirige
+      // on réinitialise les erreurs de validation à chaque nouvel appel api
+      this.validationErrors = []; // on sauvegarde les modifs en bdd puis on redirige
+
       axios__WEBPACK_IMPORTED_MODULE_0___default().put('/api/users/' + this.id, {
         pseudo: this.pseudo,
         email: this.email,
@@ -24453,8 +24463,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this.storeUserData(response.data.data);
 
         _this.$router.push('/successmessage/lastpage/' + response.data.message);
-      })["catch"](function (error) {
-        _this.validationErrors = error.response.data.data;
       });
     },
     deleteAccount: function deleteAccount() {
@@ -24465,8 +24473,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this2.logOut();
 
         _this2.$router.push('/SuccessMessage/home/' + response.data.message);
-      })["catch"](function (error) {
-        _this2.validationErrors = error.response.data.data;
       });
     }
   })
@@ -24591,7 +24597,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     };
   },
   props: ["lieuSeul"],
-  methods: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_3__.mapActions)(_stores_userStore__WEBPACK_IMPORTED_MODULE_1__.useUserStore, ['storeGeolocationAnswered', 'storeUserPosition'])), {}, {
+  methods: _objectSpread(_objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_3__.mapActions)(_stores_userStore__WEBPACK_IMPORTED_MODULE_1__.useUserStore, ['storeGeolocationAnswered', 'storeUserPosition'])), (0,pinia__WEBPACK_IMPORTED_MODULE_3__.mapActions)(_stores_lieuxStore__WEBPACK_IMPORTED_MODULE_2__.useLieuxStore, ['storeLieux'])), {}, {
     initializeMap: function initializeMap(component) {
       // ******************* si page détails => affichage d'un seul lieu (pas de pointeur user pour le moment, confusion) *****************
       if (component.lieuSeul) {
@@ -24737,19 +24743,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   created: function created() {
+    var _this = this;
+
     // si les lieux ne sont pas encore récupérés, on va les chercher
     if (!this.lieux) {
       axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/lieus").then(function (response) {
-        var lieux = response.data; // on stocke les lieux dans le state
-
-        store.commit("storeLieux", lieux);
-      })["catch"](function (response) {
-        return console.log(response.error);
+        // on stocke les lieux dans le state
+        _this.storeLieux(response.data);
       });
     }
   },
   mounted: function mounted() {
-    var _this = this;
+    var _this2 = this;
 
     // *********************si géolocalisation pas déjà demandée***********************
     if (!this.geolocationAnswered) {
@@ -24759,21 +24764,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         // on demande l'accès à la position via une petite fenêtre 
         // si accepté, on stocke les coordonnées de l'utilisateur dans le state
         navigator.geolocation.getCurrentPosition(function (position) {
-          _this.storeGeolocationAnswered(true);
+          _this2.storeGeolocationAnswered(true);
 
-          _this.storeUserPosition({
+          _this2.storeUserPosition({
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
           }); // console.log("accès position accepté, choix et coordonnées stockés dans le state")
 
 
-          _this.initializeMap(_this); // si accès refusé, on stocke cela dans le state et on l'affiche dans la console
+          _this2.initializeMap(_this2); // si accès refusé, on stocke cela dans le state et on l'affiche dans la console
 
         }, function () {
-          _this.storeGeolocationAnswered(true); // console.log("accès à la position refusé, choix stocké dans le state")
+          _this2.storeGeolocationAnswered(true); // console.log("accès à la position refusé, choix stocké dans le state")
 
 
-          _this.initializeMap(_this);
+          _this2.initializeMap(_this2);
         });
       } else {
         alert("La géolocalisation est indisponible sur votre navigateur");
@@ -24816,11 +24821,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       note: "",
-      commentaire: "",
-      validationErrors: ""
+      commentaire: ""
     };
   },
-  computed: _objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_2__.mapState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_0__.useUserStore, ['id'])),
+  computed: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_2__.mapState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_0__.useUserStore, ['id'])), (0,pinia__WEBPACK_IMPORTED_MODULE_2__.mapWritableState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_0__.useUserStore, ['validationErrors'])),
   props: ['lieu_id'],
   components: {
     ValidationErrors: _ValidationErrors_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
@@ -24829,6 +24833,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     sendData: function sendData() {
       var _this = this;
 
+      // on réinitialise les erreurs de validation à chaque nouvel appel api
+      this.validationErrors = [];
       axios.post('/api/avis', {
         note: this.note,
         commentaire: this.commentaire,
@@ -24836,8 +24842,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         user_id: this.id
       }).then(function (response) {
         _this.$router.push('/successmessage/lastpage/' + response.data.message);
-      })["catch"](function (error) {
-        _this.validationErrors = error.response.data.data;
       });
     }
   }
@@ -25148,8 +25152,6 @@ __webpack_require__.r(__webpack_exports__);
 
       _this.loading = false;
       _this.lieuxNonFiltres = _this.categorie.lieux;
-    })["catch"](function (response) {
-      console.log(response.error);
     });
   }
 });
@@ -25226,11 +25228,7 @@ moment__WEBPACK_IMPORTED_MODULE_2___default().locale('fr');
           _this2.storeFavoris(response.data);
 
           _this2.$router.push('/SuccessMessage/lastpage/' + message);
-        })["catch"](function (response) {
-          console.log(response.error);
         });
-      })["catch"](function (response) {
-        console.log(response.error);
       });
     },
     removeToFavorites: function removeToFavorites() {
@@ -25242,11 +25240,7 @@ moment__WEBPACK_IMPORTED_MODULE_2___default().locale('fr');
           _this3.storeFavoris(response.data);
 
           _this3.$router.push('/SuccessMessage/lastpage/' + message);
-        })["catch"](function (response) {
-          console.log(response.error);
         });
-      })["catch"](function (response) {
-        console.log(response.error);
       });
     }
   }),
@@ -25259,8 +25253,6 @@ moment__WEBPACK_IMPORTED_MODULE_2___default().locale('fr');
     axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/lieus/" + this.lieuId).then(function (response) {
       console.log(response.data);
       _this4.lieu = response.data;
-    })["catch"](function (response) {
-      console.log(response.error);
     });
   }
 });
@@ -25313,7 +25305,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       adresse: "",
       code_postal: "",
       ville: "",
-      validationErrors: "",
       formData: new FormData()
     };
   },
@@ -25353,8 +25344,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
         _this.$router.push('/SuccessMessage/uploadimages/' + message + '/' + lieu.id);
-      })["catch"](function (response) {
-        console.log(response.error); // on passe ici => undefined => rien ne se passe (la création de lieu fonctionne)
       });
     },
     // on sauvegarde une notification en base de données pour indiquer à l'utilisateur
@@ -25369,8 +25358,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         lieu_id: lieuId
       }).then(function (response) {
         return console.log(response.data.message);
-      })["catch"](function (error) {
-        return console.log(error);
       });
     }
   }
@@ -25457,13 +25444,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  computed: _objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_3__.mapState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['id'])),
+  computed: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_3__.mapState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['id'])), (0,pinia__WEBPACK_IMPORTED_MODULE_3__.mapWritableState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['validationErrors'])),
   data: function data() {
     return {
       lieuId: this.$route.params.id,
       lieu: '',
-      formData: new FormData(),
-      validationErrors: ''
+      formData: new FormData()
     };
   },
   components: {
@@ -25477,7 +25463,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     sendData: function sendData() {
       var _this = this;
 
-      // on ajoute le user id et le lieu id au formulaire
+      // on réinitialise les erreurs de validation à chaque nouvel appel api
+      this.validationErrors = []; // on ajoute le user id et le lieu id au formulaire
+
       this.formData.append("user_id", this.id);
       this.formData.append("lieu_id", this.lieuId);
       this.formData.append("nom_lieu", this.lieu.nom); // on envoie le tout à l'api
@@ -25488,8 +25476,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         var message = response.data.message; // on redirige vers l'accueil
 
         _this.$router.push('/SuccessMessage/home/' + message);
-      })["catch"](function (error) {
-        _this.validationErrors = error.response.data.data;
       });
     }
   },
@@ -25498,8 +25484,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
     axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/lieus/" + this.lieuId).then(function (response) {
       _this2.lieu = response.data;
-    })["catch"](function (error) {
-      console.log(error);
     });
   }
 });
@@ -26191,7 +26175,7 @@ var _hoisted_30 = /*#__PURE__*/_withScopeId(function () {
     scope: "col"
   }, "posté par"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
     scope: "col"
-  }, "validé"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+  }, "statut"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
     scope: "col"
   }, "ajouté le"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
     scope: "col"
@@ -26504,6 +26488,8 @@ var _hoisted_83 = /*#__PURE__*/_withScopeId(function () {
     scope: "col"
   }, "aperçu"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
     scope: "col"
+  }, "statut"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+    scope: "col"
   }, "id"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
     scope: "col"
   }, "nom"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
@@ -26520,7 +26506,7 @@ var _hoisted_83 = /*#__PURE__*/_withScopeId(function () {
     scope: "col"
   }, "ajoutée le"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
     scope: "col"
-  }, "mettre en avant"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+  }, "modifier"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
     scope: "col"
   }, "supprimer")])], -1
   /* HOISTED */
@@ -26531,10 +26517,19 @@ var _hoisted_84 = ["data-bs-target"];
 var _hoisted_85 = ["src", "alt"];
 var _hoisted_86 = ["src", "alt"];
 var _hoisted_87 = {
-  key: 0
+  key: 0,
+  "class": "bg-success text-white"
+};
+var _hoisted_88 = {
+  key: 1,
+  "class": "mx-auto bg-info w-25"
+};
+var _hoisted_89 = {
+  key: 2,
+  "class": "mx-auto bg-danger w-25"
 };
 
-var _hoisted_88 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_90 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
     "class": "fa-solid fa-pen-to-square"
   }, null, -1
@@ -26542,18 +26537,15 @@ var _hoisted_88 = /*#__PURE__*/_withScopeId(function () {
   );
 });
 
-var _hoisted_89 = {
-  key: 1
-};
-var _hoisted_90 = ["onClick"];
-var _hoisted_91 = {
+var _hoisted_91 = ["onClick"];
+var _hoisted_92 = {
   "class": "modal-dialog modal-xl"
 };
-var _hoisted_92 = {
+var _hoisted_93 = {
   "class": "modal-body w-100"
 };
-var _hoisted_93 = ["src", "alt"];
 var _hoisted_94 = ["src", "alt"];
+var _hoisted_95 = ["src", "alt"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
 
@@ -26797,7 +26789,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }), 256
   /* UNKEYED_FRAGMENT */
   ))])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.showImages ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("section", _hoisted_80, [_hoisted_81, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_82, [_hoisted_83, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.images, function (image) {
-    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
       "class": "m-3",
       "data-bs-toggle": "modal",
       "data-bs-target": ".imageZoom".concat(image.id),
@@ -26821,7 +26813,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     /* PROPS */
     , _hoisted_86))], 8
     /* PROPS */
-    , _hoisted_84)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(image.id), 1
+    , _hoisted_84)]), image.statut == 'validée' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_87, "validée")) : image.statut == 'en attente' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_88, "en attente de validation ")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_89, "refusée")), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(image.id), 1
     /* TEXT */
     ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(image.nom), 1
     /* TEXT */
@@ -26837,18 +26829,18 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     /* TEXT */
     ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.moment(image.created_at).format("ddd DD MMM YYYY [à] HH:mm")), 1
     /* TEXT */
-    ), !image.mise_en_avant ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_87, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
       to: "/modifierimage/".concat(image.id)
     }, {
       "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-        return [_hoisted_88];
+        return [_hoisted_90];
       }),
       _: 2
       /* DYNAMIC */
 
     }, 1032
     /* PROPS, DYNAMIC_SLOTS */
-    , ["to"])])) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_89, " image déjà mise en avant ")), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+    , ["to"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
       "class": "fa-solid fa-eraser",
       "data-bs-toggle": "modal",
       "data-bs-target": "#confirmationModal",
@@ -26858,27 +26850,27 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }
     }, null, 8
     /* PROPS */
-    , _hoisted_90)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" modal pour afficher l'image en grand "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+    , _hoisted_91)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" modal pour afficher l'image en grand "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
       "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)("modal fade imageZoom".concat(image.id)),
       tabindex: "-1",
       role: "dialog",
       "aria-labelledby": "myLargeModalLabel",
       "aria-hidden": "true"
-    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_91, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_92, [image.lieu_id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("img", {
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_92, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_93, [image.lieu_id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("img", {
       key: 0,
       "class": "w-100",
       src: "/images/".concat(image.nom),
       alt: "".concat(image.nom)
     }, null, 8
     /* PROPS */
-    , _hoisted_93)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("img", {
+    , _hoisted_94)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("img", {
       key: 1,
       "class": "w-100",
       src: "/images/categorie".concat(image.id, ".jpg"),
       alt: "".concat(image.nom)
     }, null, 8
     /* PROPS */
-    , _hoisted_94))])])], 2
+    , _hoisted_95))])])], 2
     /* CLASS */
     )]);
   }), 256
@@ -26999,9 +26991,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [_hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", _hoisted_3, "Modifier avis n°" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.avis.id), 1
   /* TEXT */
-  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [$data.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
+  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [_ctx.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
     key: 0,
-    errors: $data.validationErrors
+    errors: _ctx.validationErrors
   }, null, 8
   /* PROPS */
   , ["errors"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.avis !== '' && _ctx.role == 'admin' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [_hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
@@ -27167,9 +27159,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [_hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", _hoisted_3, "Modifier " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.categorie.nom), 1
   /* TEXT */
-  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [$data.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
+  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [_ctx.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
     key: 0,
-    errors: $data.validationErrors
+    errors: _ctx.validationErrors
   }, null, 8
   /* PROPS */
   , ["errors"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.categorie !== '' && _ctx.role == 'admin' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [_hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [_hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [$data.couleur ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", {
@@ -27266,22 +27258,40 @@ var _hoisted_2 = /*#__PURE__*/_withScopeId(function () {
 var _hoisted_3 = {
   "class": "mt-2"
 };
-var _hoisted_4 = ["src", "alt"];
+var _hoisted_4 = {
+  key: 0
+};
 var _hoisted_5 = {
-  "class": "container-fluid p-3 p-lg-5"
+  key: 0,
+  "class": "mx-auto bg-success text-white w-25"
 };
 var _hoisted_6 = {
   key: 1,
-  "class": "row justify-content-center p-2 p-lg-5"
+  "class": "mx-auto bg-info w-25"
 };
 var _hoisted_7 = {
-  "class": "col-md-8"
+  key: 2,
+  "class": "mx-auto bg-danger w-25"
 };
 var _hoisted_8 = {
+  key: 0
+};
+var _hoisted_9 = ["src", "alt"];
+var _hoisted_10 = {
+  "class": "container-fluid p-3 p-lg-5"
+};
+var _hoisted_11 = {
+  key: 1,
+  "class": "row justify-content-center p-2 p-lg-5"
+};
+var _hoisted_12 = {
+  "class": "col-md-8"
+};
+var _hoisted_13 = {
   "class": "card"
 };
 
-var _hoisted_9 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_14 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "card-header text-white mb-3"
   }, "Entrez les nouvelles informations", -1
@@ -27289,15 +27299,15 @@ var _hoisted_9 = /*#__PURE__*/_withScopeId(function () {
   );
 });
 
-var _hoisted_10 = {
+var _hoisted_15 = {
   "class": "card-body"
 };
-var _hoisted_11 = {
+var _hoisted_16 = {
   key: 0,
   "class": "form-group row m-2"
 };
 
-var _hoisted_12 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_17 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
     "for": "mise_en_avant",
     "class": "col-md-4 col-form-label text-md-right"
@@ -27306,13 +27316,89 @@ var _hoisted_12 = /*#__PURE__*/_withScopeId(function () {
   );
 });
 
-var _hoisted_13 = {
+var _hoisted_18 = {
   "class": "col-md-6"
 };
-var _hoisted_14 = ["selected"];
-var _hoisted_15 = ["selected"];
 
-var _hoisted_16 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_19 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+    value: "1"
+  }, "Oui", -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_20 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+    value: "0"
+  }, "Non", -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_21 = [_hoisted_19, _hoisted_20];
+var _hoisted_22 = {
+  key: 1,
+  "class": "form-group row m-2"
+};
+
+var _hoisted_23 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+    "for": "statut",
+    "class": "col-md-4 col-form-label text-md-right"
+  }, "modifier le statut", -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_24 = {
+  "class": "col-md-6"
+};
+
+var _hoisted_25 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+    value: "validée"
+  }, "validée", -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_26 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+    value: "en attente"
+  }, "en attente", -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_27 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
+    value: "refusée"
+  }, "refusée", -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_28 = [_hoisted_25, _hoisted_26, _hoisted_27];
+var _hoisted_29 = {
+  key: 2,
+  "class": "form-group row m-2"
+};
+
+var _hoisted_30 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+    "for": "raisonsRefus",
+    "class": "col-md-4 col-form-label text-md-right"
+  }, "raisons du refus", -1
+  /* HOISTED */
+  );
+});
+
+var _hoisted_31 = {
+  "class": "col-md-6"
+};
+
+var _hoisted_32 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "form-group row mt-3 text-center"
   }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
@@ -27330,24 +27416,24 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [_hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", _hoisted_3, "Modifier l'image " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.image.nom), 1
   /* TEXT */
-  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, "postée par " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.pseudo), 1
+  ), $data.image ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_4, [$data.statut == 'validée' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_5, "validée")) : $data.statut == 'en attente' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_6, "en attente de validation ")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, "refusée "))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), $data.image ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_8, "postée par " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.image.user.pseudo), 1
   /* TEXT */
-  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
     "class": "w-75",
     src: "/images/".concat($data.image.nom),
     alt: "".concat($data.image.nom)
   }, null, 8
   /* PROPS */
-  , _hoisted_4), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [$data.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
+  , _hoisted_9), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [_ctx.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
     key: 0,
-    errors: $data.validationErrors
+    errors: _ctx.validationErrors
   }, null, 8
   /* PROPS */
-  , ["errors"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.image !== '' && _ctx.role == 'admin' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [_hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
-    onSubmit: _cache[1] || (_cache[1] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
+  , ["errors"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.image !== '' && _ctx.role == 'admin' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [_hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
+    onSubmit: _cache[3] || (_cache[3] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.saveChanges && $options.saveChanges.apply($options, arguments);
     }, ["prevent"]))
-  }, [$data.imagesNumberForThisPlace > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_11, [_hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
+  }, [$data.imagesNumberForThisPlace > 1 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_16, [_hoisted_17, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
     required: "",
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return $data.mise_en_avant = $event;
@@ -27355,19 +27441,28 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     name: "mise_en_avant",
     "class": "form-select",
     "aria-label": "mise_en_avant"
-  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
-    selected: $data.image.mise_en_avant ? _ctx.selected : '',
-    value: "1"
-  }, "Oui", 8
-  /* PROPS */
-  , _hoisted_14), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
-    selected: !$data.image.mise_en_avant ? _ctx.selected : '',
-    value: "0"
-  }, "Non", 8
-  /* PROPS */
-  , _hoisted_15)], 512
+  }, _hoisted_21, 512
   /* NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.mise_en_avant]])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _hoisted_16], 32
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.mise_en_avant]])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.role == 'admin' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_22, [_hoisted_23, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
+    required: "",
+    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+      return $data.statut = $event;
+    }),
+    "class": "form-select",
+    "aria-label": "statut"
+  }, _hoisted_28, 512
+  /* NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.statut]])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.statut == 'refusée' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_29, [_hoisted_30, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
+    "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
+      return $data.raisonsRefus = $event;
+    }),
+    id: "raisonsRefus",
+    "class": "form-control",
+    name: "raisonsRefus",
+    autocomplete: "raisonsRefus"
+  }, "\r\n                                        image trop pixellisée / en double / non pertinente / etc", 512
+  /* NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.raisonsRefus]])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _hoisted_32], 32
   /* HYDRATE_EVENTS */
   )])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])], 64
   /* STABLE_FRAGMENT */
@@ -27760,9 +27855,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* TEXT */
   ), _ctx.role == 'admin' && $data.lieu ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("h2", _hoisted_4, "Posté par " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.lieu.user.pseudo), 1
   /* TEXT */
-  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.lieu ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_5, [$data.statut == 'validé' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_6, "validé")) : $data.statut == 'en attente' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, "en attente de validation ")) : $data.statut == 'à modifier' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_8, "à modifier pour être validé ")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_9, "refusé "))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [$data.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
+  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.lieu ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_5, [$data.statut == 'validé' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_6, "validé")) : $data.statut == 'en attente' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, "en attente de validation ")) : $data.statut == 'à modifier' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_8, "à modifier pour être validé ")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_9, "refusé "))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [_ctx.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
     key: 0,
-    errors: $data.validationErrors
+    errors: _ctx.validationErrors
   }, null, 8
   /* PROPS */
   , ["errors"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.lieu !== '' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [_hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
@@ -28467,9 +28562,9 @@ var _hoisted_14 = /*#__PURE__*/_withScopeId(function () {
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_ValidationErrors = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ValidationErrors");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [$data.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [_ctx.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
     key: 0,
-    errors: $data.validationErrors
+    errors: _ctx.validationErrors
   }, null, 8
   /* PROPS */
   , ["errors"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [_hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
@@ -28761,9 +28856,9 @@ var _hoisted_49 = [_hoisted_48];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_ValidationErrors = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ValidationErrors");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [$data.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [_ctx.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
     key: 0,
-    errors: $data.validationErrors
+    errors: _ctx.validationErrors
   }, null, 8
   /* PROPS */
   , ["errors"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [_hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
@@ -29671,9 +29766,9 @@ var _hoisted_55 = [_hoisted_54];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_ValidationErrors = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ValidationErrors");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" composant affichant les erreurs de validation des formulaires "), $data.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" composant affichant les erreurs de validation des formulaires "), _ctx.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
     key: 0,
-    errors: $data.validationErrors
+    errors: _ctx.validationErrors
   }, null, 8
   /* PROPS */
   , ["errors"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [_hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
@@ -30042,9 +30137,9 @@ var _hoisted_17 = [_hoisted_16];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_ValidationErrors = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ValidationErrors");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [_hoisted_2, $data.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [_hoisted_2, _ctx.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
     key: 0,
-    errors: $data.validationErrors
+    errors: _ctx.validationErrors
   }, null, 8
   /* PROPS */
   , ["errors"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.id ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [_hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
@@ -30234,7 +30329,7 @@ var _hoisted_21 = /*#__PURE__*/_withScopeId(function () {
 var _hoisted_22 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "btn btn-lg"
-  }, "Derniers lieux postés", -1
+  }, "Explorer les catégories", -1
   /* HOISTED */
   );
 });
@@ -30296,7 +30391,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE */
 
   })]), _hoisted_16]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [_hoisted_18, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [_hoisted_20, _hoisted_21, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
-    to: "/dernierslieux"
+    to: "/categories"
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [_hoisted_22];
@@ -30484,16 +30579,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
 
 
-var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", null, "Carte", -1
+var _hoisted_1 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+  "class": "pt-5 pb-4"
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+  "class": "mx-auto fa-3x fa-solid fa-paper-plane"
+}), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", {
+  "class": "mt-2"
+}, "Carte des lieux")], -1
 /* HOISTED */
 );
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Map = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Map");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Map)], 64
-  /* STABLE_FRAGMENT */
-  );
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("section", null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Map)]);
 }
 
 /***/ }),
@@ -30851,7 +30950,7 @@ var _hoisted_17 = [_hoisted_16];
 var _hoisted_18 = {
   key: 0,
   "class": "singlePicture",
-  src: "/images/placeholder.jpg"
+  src: "/images/placeholder.png"
 };
 var _hoisted_19 = ["src"];
 var _hoisted_20 = {
@@ -31678,9 +31777,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, _ctx.userLoggedIn ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [$data.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, _ctx.userLoggedIn ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [_ctx.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
     key: 0,
-    errors: $data.validationErrors
+    errors: _ctx.validationErrors
   }, null, 8
   /* PROPS */
   , ["errors"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [_hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
@@ -32152,9 +32251,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     , _hoisted_11)]);
   }), 256
   /* UNKEYED_FRAGMENT */
-  ))]))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [$data.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
+  ))]))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [_ctx.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
     key: 0,
-    errors: $data.validationErrors
+    errors: _ctx.validationErrors
   }, null, 8
   /* PROPS */
   , ["errors"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [_hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
@@ -32222,8 +32321,11 @@ pinia.use(pinia_plugin_persistedstate__WEBPACK_IMPORTED_MODULE_5__["default"]); 
 /*!***********************************!*\
   !*** ./resources/js/bootstrap.js ***!
   \***********************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _stores_userStore__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./stores/userStore */ "./resources/js/stores/userStore.js");
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -32234,7 +32336,25 @@ window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'; // implémentation de Sanctum => cette ligne permet d'éviter le problème de CORS
 
-window.axios.defaults.withCredentials = true;
+window.axios.defaults.withCredentials = true; // gérer les erreurs des appels api
+
+
+axios.interceptors.response.use(function (response) {
+  return response;
+}, function (error) {
+  console.log("fonction error de l'interceptor");
+  console.log(error.response);
+  var userStore = (0,_stores_userStore__WEBPACK_IMPORTED_MODULE_0__.useUserStore)();
+
+  if (error.response.data.errors) {
+    userStore.storeErrors(error.response.data.errors); // return Promise.reject(error.response);
+    //throw error;
+  } else if (error.response.message) {
+    alert(error.response.message);
+  } else {
+    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.");
+  }
+});
 
 /***/ }),
 
@@ -32249,7 +32369,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.mjs");
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.mjs");
 /* harmony import */ var _components_App__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/App */ "./resources/js/components/App.vue");
 /* harmony import */ var _components_views_Carte__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/views/Carte */ "./resources/js/components/views/Carte.vue");
 /* harmony import */ var _components_views_Categories__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/views/Categories */ "./resources/js/components/views/Categories.vue");
@@ -32272,6 +32392,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_views_DerniersLieux__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./components/views/DerniersLieux */ "./resources/js/components/views/DerniersLieux.vue");
 /* harmony import */ var _components_user_MesNotifications__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./components/user/MesNotifications */ "./resources/js/components/user/MesNotifications.vue");
 /* harmony import */ var _components_views_UploadImages__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./components/views/UploadImages */ "./resources/js/components/views/UploadImages.vue");
+/* harmony import */ var _stores_userStore__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./stores/userStore */ "./resources/js/stores/userStore.js");
+
 
 
 
@@ -32363,9 +32485,18 @@ var routes = [{
   path: "/uploadimages/:id",
   component: _components_views_UploadImages__WEBPACK_IMPORTED_MODULE_21__["default"]
 }];
-var router = (0,vue_router__WEBPACK_IMPORTED_MODULE_22__.createRouter)({
-  history: (0,vue_router__WEBPACK_IMPORTED_MODULE_22__.createWebHistory)(),
+var router = (0,vue_router__WEBPACK_IMPORTED_MODULE_23__.createRouter)({
+  history: (0,vue_router__WEBPACK_IMPORTED_MODULE_23__.createWebHistory)(),
   routes: routes
+});
+router.beforeEach(function () {
+  // permet de réinitialiser les messages d'erreur des formulaires entre deux pages
+  var userStore = (0,_stores_userStore__WEBPACK_IMPORTED_MODULE_22__.useUserStore)();
+
+  if (userStore.validationErrors && userStore.validationErrors.error) {
+    console.log("suppression erreurs de validation");
+    userStore.storeErrors([]);
+  }
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (router);
 
@@ -32513,7 +32644,8 @@ var useUserStore = (0,pinia__WEBPACK_IMPORTED_MODULE_0__.defineStore)({
       userPosition: "",
       userPlaces: "",
       favoris: "",
-      notifications: ""
+      notifications: "",
+      validationErrors: []
     };
   },
   getters: {
@@ -32555,6 +32687,10 @@ var useUserStore = (0,pinia__WEBPACK_IMPORTED_MODULE_0__.defineStore)({
     },
     storeFavoris: function storeFavoris(favoris) {
       this.favoris = favoris;
+    },
+    storeErrors: function storeErrors(errors) {
+      console.log("storerrors");
+      this.validationErrors = errors;
     }
   },
   persist: true // activation du plugin de persistance
@@ -38305,6 +38441,30 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
 ___CSS_LOADER_EXPORT___.push([module.id, "\n.greenButton {\r\n    color: white;\r\n    background-color: #94D1BE;\n}\r\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/views/Carte.vue?vue&type=style&index=0&id=230b4f49&lang=css":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/views/Carte.vue?vue&type=style&index=0&id=230b4f49&lang=css ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\nh1 {\r\n    color: #1C6E8C\n}\n.greenIcon {\r\n    color: #94DEB1\n}\ni {\r\n    color: #94D1BE\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -78271,6 +78431,36 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 /***/ }),
 
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/views/Carte.vue?vue&type=style&index=0&id=230b4f49&lang=css":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/views/Carte.vue?vue&type=style&index=0&id=230b4f49&lang=css ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Carte_vue_vue_type_style_index_0_id_230b4f49_lang_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../../node_modules/vue-loader/dist/stylePostLoader.js!../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Carte.vue?vue&type=style&index=0&id=230b4f49&lang=css */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/views/Carte.vue?vue&type=style&index=0&id=230b4f49&lang=css");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Carte_vue_vue_type_style_index_0_id_230b4f49_lang_css__WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Carte_vue_vue_type_style_index_0_id_230b4f49_lang_css__WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+
+/***/ }),
+
 /***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/views/Categories.vue?vue&type=style&index=0&id=274b8048&scoped=true&lang=css":
 /*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/views/Categories.vue?vue&type=style&index=0&id=274b8048&scoped=true&lang=css ***!
@@ -79436,13 +79626,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _Carte_vue_vue_type_template_id_230b4f49__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Carte.vue?vue&type=template&id=230b4f49 */ "./resources/js/components/views/Carte.vue?vue&type=template&id=230b4f49");
 /* harmony import */ var _Carte_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Carte.vue?vue&type=script&lang=js */ "./resources/js/components/views/Carte.vue?vue&type=script&lang=js");
-/* harmony import */ var C_wamp64_www_Nice_Places_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+/* harmony import */ var _Carte_vue_vue_type_style_index_0_id_230b4f49_lang_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Carte.vue?vue&type=style&index=0&id=230b4f49&lang=css */ "./resources/js/components/views/Carte.vue?vue&type=style&index=0&id=230b4f49&lang=css");
+/* harmony import */ var C_wamp64_www_Nice_Places_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
 
 
 
 
 ;
-const __exports__ = /*#__PURE__*/(0,C_wamp64_www_Nice_Places_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_Carte_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_Carte_vue_vue_type_template_id_230b4f49__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/components/views/Carte.vue"]])
+
+
+const __exports__ = /*#__PURE__*/(0,C_wamp64_www_Nice_Places_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_3__["default"])(_Carte_vue_vue_type_script_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_Carte_vue_vue_type_template_id_230b4f49__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"resources/js/components/views/Carte.vue"]])
 /* hot reload */
 if (false) {}
 
@@ -80852,6 +81045,19 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Tris_vue_vue_type_style_index_0_id_7af528b8_lang_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader/dist/cjs.js!../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../../node_modules/vue-loader/dist/stylePostLoader.js!../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Tris.vue?vue&type=style&index=0&id=7af528b8&lang=css */ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/utilities/Tris.vue?vue&type=style&index=0&id=7af528b8&lang=css");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/views/Carte.vue?vue&type=style&index=0&id=230b4f49&lang=css":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/views/Carte.vue?vue&type=style&index=0&id=230b4f49&lang=css ***!
+  \*********************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_dist_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Carte_vue_vue_type_style_index_0_id_230b4f49_lang_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader/dist/cjs.js!../../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../../node_modules/vue-loader/dist/stylePostLoader.js!../../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Carte.vue?vue&type=style&index=0&id=230b4f49&lang=css */ "./node_modules/style-loader/dist/cjs.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./resources/js/components/views/Carte.vue?vue&type=style&index=0&id=230b4f49&lang=css");
 
 
 /***/ }),

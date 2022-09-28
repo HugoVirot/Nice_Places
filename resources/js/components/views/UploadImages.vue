@@ -80,20 +80,20 @@
 import axios from "axios";
 import ValidationErrors from "../utilities/ValidationErrors.vue"
 import { useUserStore } from "../../stores/userStore";
-import { mapState } from "pinia";
+import { mapState, mapWritableState } from 'pinia';
 
 export default {
 
     computed: {
-        ...mapState(useUserStore, ['id'])
+        ...mapState(useUserStore, ['id']),
+        ...mapWritableState(useUserStore, ['validationErrors'])
     },
 
     data() {
         return {
             lieuId: this.$route.params.id,
             lieu: '',
-            formData: new FormData(),
-            validationErrors: ''
+            formData: new FormData()
         }
     },
 
@@ -106,6 +106,8 @@ export default {
         },
 
         sendData() {
+            // on réinitialise les erreurs de validation à chaque nouvel appel api
+            this.validationErrors = []
             // on ajoute le user id et le lieu id au formulaire
             this.formData.append("user_id", this.id);
             this.formData.append("lieu_id", this.lieuId);
@@ -118,9 +120,6 @@ export default {
                     // on redirige vers l'accueil
                     this.$router.push('/SuccessMessage/home/' + message)
                 })
-                .catch((error) => {
-                    this.validationErrors = error.response.data.data;
-                })
         }
     },
 
@@ -129,9 +128,6 @@ export default {
             .then(response => {
                 this.lieu = response.data
             })
-            .catch((error) => {
-                console.log(error)
-            });
     }
 }
 </script>

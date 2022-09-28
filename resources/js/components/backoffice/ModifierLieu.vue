@@ -203,14 +203,14 @@ import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
 import { useUserStore } from "../../stores/userStore.js";
 import { useLieuxStore } from '../../stores/lieuxStore';
-import { mapState } from 'pinia';
+import { mapState, mapWritableState } from 'pinia';
 
 export default {
 
     computed: {
-       ...mapState(useUserStore, ['role']),
-
-       ...mapState(useLieuxStore, ['categories']),
+        ...mapState(useUserStore, ['role']),
+        ...mapWritableState(useUserStore, ['validationErrors']),
+        ...mapState(useLieuxStore, ['categories']),
     },
 
     data() {
@@ -231,9 +231,7 @@ export default {
             ville: "",
             statut: "",
             statutPrecedent: "",
-            commentaire: "",
-            validationErrors: ""
-        }
+            commentaire: ""        }
     },
 
     components: { ValidationErrors },
@@ -261,6 +259,9 @@ export default {
         },
 
         saveChanges() {
+            // on réinitialise les erreurs de validation à chaque nouvel appel api
+            this.validationErrors = []
+            
             // on sauvegarde les changements dans la base de données
             axios.put('/api/lieus/' + this.lieu.id, {
                 nom: this.nom,
@@ -279,10 +280,7 @@ export default {
                 commentaire: this.commentaire
             })
                 .then(response => this.handleSuccess(response))
-                // en cas d'erreur sur la modification de lieu, on affiche les erreurs
-                .catch((error) => {
-                    this.validationErrors = error.data.data;
-                })
+            // en cas d'erreur sur la modification de lieu, on affiche les erreurs
         },
 
         handleSuccess(response) {
@@ -336,7 +334,6 @@ export default {
 
             axios.post('/api/notifications', { titre: titre, message: message, user_id: this.lieu.user.id, lieu_id: this.lieu.id },)
                 .then(response => console.log(response.data.message))
-                .catch(response => console.log(response.data.message))
         }
     },
 
@@ -346,9 +343,6 @@ export default {
             .then(response => {
                 this.updateLocalData(response.data)
             })
-            .catch((error) => {
-                console.log(error)
-            });
     },
 }
 </script>

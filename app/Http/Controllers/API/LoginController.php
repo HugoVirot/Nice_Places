@@ -39,7 +39,7 @@ class LoginController extends BaseController
             
         } else {
             // si échec de la connexion, on renvoie un message d'erreur
-            return $this->sendError('Echec de la connexion.', ['error' => 'L\utilisateur n\'existe pas ou le mot de passe est incorrect']);
+            return $this->sendError('Echec de la connexion.', ['error' => 'L\'utilisateur n\'existe pas ou le mot de passe est incorrect']);
         }
     }
 }

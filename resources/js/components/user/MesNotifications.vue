@@ -91,8 +91,6 @@ export default {
             axios.get('/api/getnotificationsbyuser/' + this.id)
                 .then(response => {
                     this.storeNotifications(response.data);
-                }).catch((response) => {
-                    console.log(response.error);
                 })
         },
 
@@ -102,9 +100,6 @@ export default {
                     this.showNotificationReadMessage = true
                     this.getNotifications()
                     this.$router.push('/mesnotifications')
-                })
-                .catch((response) => {
-                    console.log(response.error);
                 })
         }
     },

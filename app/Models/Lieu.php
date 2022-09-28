@@ -41,7 +41,7 @@ class Lieu extends Model
 
     public function images()
     {
-        return $this->hasMany(Image::class);
+        return $this->hasMany(Image::class)->where('statut', 'validée');
     }
 
     public function image_mise_en_avant()

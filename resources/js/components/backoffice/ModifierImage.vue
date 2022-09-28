@@ -2,9 +2,16 @@
     <div class="p-3">
         <i class="fa-3x fa-solid fa-pen-to-square"></i>
         <h1 class="mt-2">Modifier l'image {{ image.nom }}</h1>
+        <div v-if="image">
+            <div v-if="statut == 'validée'" class="mx-auto bg-success text-white w-25">validée</div>
+            <div v-else-if="statut == 'en attente'" class="mx-auto bg-info w-25">en attente de validation
+            </div>
+            <div v-else class="mx-auto bg-danger w-25">refusée
+            </div>
+        </div>
     </div>
 
-    <p>postée par {{ pseudo }}</p>
+    <p v-if="image">postée par {{ image.user.pseudo }}</p>
 
     <img class="w-75" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
 
@@ -29,9 +36,33 @@
                                 <div class="col-md-6">
                                     <select required v-model="mise_en_avant" name="mise_en_avant" class="form-select"
                                         aria-label="mise_en_avant">
-                                        <option :selected="image.mise_en_avant ? selected : ''" value="1">Oui</option>
-                                        <option :selected="!image.mise_en_avant ? selected : ''" value="0">Non</option>
+                                        <option value="1">Oui</option>
+                                        <option value="0">Non</option>
                                     </select>
+                                </div>
+                            </div>
+
+                            <div v-if="role == 'admin'" class="form-group row m-2">
+                                <label for="statut" class="col-md-4 col-form-label text-md-right">modifier le
+                                    statut</label>
+
+                                <div class="col-md-6">
+                                    <select required v-model="statut" class="form-select" aria-label="statut">
+                                        <option value="validée">validée</option>
+                                        <option value="en attente">en attente</option>
+                                        <option value="refusée">refusée</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div v-if="statut == 'refusée'" class="form-group row m-2">
+                                <label for="raisonsRefus" class="col-md-4 col-form-label text-md-right">raisons du
+                                    refus</label>
+
+                                <div class="col-md-6">
+                                    <textarea v-model="raisonsRefus" id="raisonsRefus" class="form-control"
+                                        name="raisonsRefus" autocomplete="raisonsRefus">
+                                        image trop pixellisée / en double / non pertinente / etc</textarea>
                                 </div>
                             </div>
 
@@ -55,14 +86,16 @@
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
 import { useUserStore } from "../../stores/userStore.js";
-import { useLieuxStore } from '../../stores/lieuxStore';
-import { mapState } from 'pinia';
+import { useBackOfficeStore } from '../../stores/backOfficeStore';
+import { mapState, mapWritableState } from 'pinia';
 import { mapActions } from 'pinia';
 
 export default {
 
     computed: {
-        ...mapState(useUserStore, ['pseudo', 'role'])
+        ...mapState(useUserStore, ['id', 'pseudo', 'role']),
+        ...mapWritableState(useUserStore, ['validationErrors']),
+        ...mapWritableState(useBackOfficeStore, ['images'])
     },
 
     data() {
@@ -70,7 +103,8 @@ export default {
             image: "",
             nom: "",
             mise_en_avant: "",
-            validationErrors: "",
+            statut: "",
+            raisonsRefus: "",
             imagesNumberForThisPlace: 1
         }
     },
@@ -78,7 +112,7 @@ export default {
     components: { ValidationErrors },
 
     methods: {
-        ...mapActions(useLieuxStore, ['storeImages']),
+        ...mapActions(useBackOfficeStore, ['storeImages']),
 
         // cette fonction permet de mettre à jour les données locales du composant
         // une fois que l'appel API a récupéré l'image
@@ -86,41 +120,99 @@ export default {
             this.image = image
             this.nom = image.nom
             this.mise_en_avant = image.mise_en_avant
+            this.statut = image.statut
 
-            if (this.image.lieu_id){
-            axios.get("/api/lieus/getimagesnumberbyplace/" + this.image.lieu_id)
-                .then(response => {
-                    this.imagesNumberForThisPlace = response.data
-                }).catch((response) => {
-                    console.log(response.error);
-                })
+            if (this.image.lieu_id) {
+                axios.get("/api/lieus/getimagesnumberbyplace/" + this.image.lieu_id)
+                    .then(response => {
+                        this.imagesNumberForThisPlace = response.data
+                    })
             }
         },
 
+        // on sauvegarde les changements en bdd via un appel api
         saveChanges() {
-
+            // on réinitialise les erreurs de validation à chaque nouvel appel api
+            this.validationErrors = []
+            
             axios.put('/api/images/' + this.image.id, {
                 mise_en_avant: this.mise_en_avant,
+                statut: this.statut
             })
                 .then((response) => {
 
                     let message = response.data.message
-                    // on récupère la nouvelle liste des catégories 
-                    axios.get('/api/images')
+                    let newImage = response.data.data
 
-                        .then(response => {
-                            this.storeImages(response.data)
-                            this.$router.push('/SuccessMessage/backoffice/' + message)
+                    if (this.statut == "validée") { // notification validée => message de succès
+                        this.createSuccessNotification(this.id)
+                        // on actualise la liste des images en remplaçant l'ancienne version par la nouvelle 
+                        let index = this.images.findIndex(image => image.id == newImage.id)
+                        console.log(index);
+                        this.images.splice(index, 1, newImage)
+                        // on sauvegarde la nouvelle liste dans le store
+                        this.storeImages(this.images)
+                        console.log(this.images)
 
-                        }).catch((response) => {
-                            console.log(response.error);
-                        })
+                    } else if (this.statut == "refusée") { // notification refusée : message de refus avec la raison
+                        // else if au lieu de else pour éviter un message de refus si l'image reste en attente
+                        this.createRefusalNotification(this.id)
+
+                        // on supprime l'image de la bdd (inutile de la conserver plus longtemps)
+                        axios.delete("/api/images/" + this.image.id)
+            
+                            .then(response => {
+                                // une fois l'image  supprimée, on la retire des images du store
+                                // cela permet d'éviter un appel api qui récupérerait toutes les images alors qu'une seule a changé
+                                let index = this.images.findIndex(image => image.id == this.image.id)
+                                this.images.splice(index, 1)
+                            
+                                // on sauvegarde la nouvelle liste dans le store
+                                this.storeImages(this.images)
+
+                                message = "Suppression effectuée et notifiée à l'utilisateur."
+                                this.$router.push('/SuccessMessage/backoffice/' + message)
+                            })
+
+                    } else if (this.statut == "") {
+                        // cas du contenu choquant / totalement interdit sur le site
+                        // déclencher la suppression immédiate de l'image
+                        // message avertissant de l'exclusion de l'utilisateur et de la suppression immédiate de son compte
+                    }
+
+                    this.$router.push('/SuccessMessage/backoffice/' + message)
                 })
+        },
 
-                .catch((error) => {
-                    this.validationErrors = error.response.data.data;
-                })
-        }
+        createSuccessNotification(userId) {
+
+            let titre = `Votre image ${this.nom} a bien été validée !`;
+            let message = `<p class="text-secondary">Bonjour ${this.pseudo},<br>
+                    Félicitations, votre image a bien été validée !<br>
+                    <i style="color: #94D1BE" class="mx-auto my-3 fa-solid fa-circle-check fa-5x"></i><br>
+                    Elle est visible dès maintenant sur la page du lieu concerné.<br>
+                    N'hésitez pas à en proposer de nouvelles, pour ce lieu ou pour d'autres.<br>
+                    Merci et à très bientôt.</p>
+                    <p class="text-end">L'administrateur.</p>`
+
+            axios.post('/api/notifications', { titre: titre, message: message, user_id: userId, lieu_id: this.image.lieu_id })
+                .then(response => console.log(response.data.message))
+        },
+
+        createRefusalNotification(userId) {
+
+            let titre = `Votre image ${this.nom} a été refusée`;
+            let message = `<p class="text-secondary">Bonjour ${this.pseudo},<br>
+        Votre image a été refusée pour la (les) raison(s) suivant(es) : <br>
+        ${this.raisonsRefus}<br>
+        <i style="color: #94D1BE" class="mx-auto my-3 fa-solid fa-xmark fa-5x"></i><br>
+        N'hésitez pas à en proposer de nouvelles, pour ce lieu ou pour d'autres.<br>
+        Merci et à très bientôt.</p>
+        <p class="text-end">L'administrateur.</p>`
+
+            axios.post('/api/notifications', { titre: titre, message: message, user_id: userId, lieu_id: this.image.lieu_id })
+                .then(response => console.log(response.data.message))
+        },
     },
 
     created() {
@@ -128,8 +220,6 @@ export default {
         axios.get("/api/images/" + this.$route.params.id)
             .then(response => {
                 this.updateLocalData(response.data)
-            }).catch((response) => {
-                console.log(response.error);
             })
     },
 }

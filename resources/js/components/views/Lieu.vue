@@ -42,7 +42,7 @@
             </div>
 
         </div>
-        <img class="singlePicture" v-if="lieu.images.length == 0" src="/images/placeholder.jpg">
+        <img class="singlePicture" v-if="lieu.images.length == 0" src="/images/placeholder.png">
 
         <img class="singlePicture" v-else-if="lieu.images.length == 1" :src="`/images/${lieu.images[0].nom}`">
 
@@ -280,12 +280,6 @@ export default {
                             this.storeFavoris(response.data)
                             this.$router.push('/SuccessMessage/lastpage/' + message)
                         })
-                        .catch((response) => {
-                            console.log(response.error);
-                        })
-
-                }).catch((response) => {
-                    console.log(response.error)
                 })
         },
 
@@ -301,12 +295,6 @@ export default {
                             this.storeFavoris(response.data)
                             this.$router.push('/SuccessMessage/lastpage/' + message)
                         })
-                        .catch((response) => {
-                            console.log(response.error);
-                        })
-
-                }).catch((response) => {
-                    console.log(response.error);
                 })
         }
     },
@@ -320,9 +308,6 @@ export default {
             .then((response) => {
                 console.log(response.data);
                 this.lieu = response.data;
-            })
-            .catch((response) => {
-                console.log(response.error);
             })
     }
 }

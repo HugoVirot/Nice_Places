@@ -33,6 +33,9 @@ export default {
 
         ...mapActions(useUserStore, ['storeGeolocationAnswered', 'storeUserPosition']),
 
+        ...mapActions(useLieuxStore, ['storeLieux']),
+
+
         initializeMap(component) {
 
             // ******************* si page détails => affichage d'un seul lieu (pas de pointeur user pour le moment, confusion) *****************
@@ -234,13 +237,9 @@ export default {
         if (!this.lieux) {
             axios.get("/api/lieus")
                 .then(response => {
-
-                    const lieux = response.data
-
                     // on stocke les lieux dans le state
-                    store.commit("storeLieux", lieux)
-
-                }).catch(response => console.log(response.error))
+                   this.storeLieux(response.data)
+                })
         }
     },
 

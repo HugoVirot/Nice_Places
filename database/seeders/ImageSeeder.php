@@ -21,7 +21,8 @@ class ImageSeeder extends Seeder
                 'nom' => 'categorie' . $i . '.jpg',
                 'mise_en_avant' => true,
                 'user_id' => 1,
-                'lieu_id' => null
+                'lieu_id' => null,
+                'statut' => 'validée'
             ]);
         }
 
@@ -31,70 +32,80 @@ class ImageSeeder extends Seeder
             'nom' => 'mervent.jpg',
             'mise_en_avant' => true,
             'user_id' => 1,
-            'lieu_id' => 1
+            'lieu_id' => 1,
+            'statut' => 'validée'
         ]);
 
         Image::create([
             'nom' => 'parc-des-oiseaux-du-marais.jpg',
             'mise_en_avant' => true,
             'user_id' => 1,
-            'lieu_id' => 2
+            'lieu_id' => 2,
+            'statut' => 'validée'
         ]);
 
         Image::create([
             'nom' => 'jardin-des-plantes-nantes.jpg',
             'mise_en_avant' => true,
             'user_id' => 1,
-            'lieu_id' => 3
+            'lieu_id' => 3,
+            'statut' => 'validée'
         ]);
 
         Image::create([
             'nom' => 'zoo-de-la-palmyre.jpg',
             'mise_en_avant' => true,
             'user_id' => 1,
-            'lieu_id' => 4
+            'lieu_id' => 4,
+            'statut' => 'validée'
         ]);
 
         Image::create([
             'nom' => 'planete-sauvage.jpg',
             'mise_en_avant' => true,
             'user_id' => 1,
-            'lieu_id' => 5
+            'lieu_id' => 5,
+            'statut' => 'validée'
         ]);
 
         Image::create([
             'nom' => 'marais-poitevin.jpg',
             'mise_en_avant' => true,
             'user_id' => 1,
-            'lieu_id' => 6
+            'lieu_id' => 6,
+            'statut' => 'validée'
         ]);
 
         Image::create([
             'nom' => 'plage-des-chardons.jpg',
             'mise_en_avant' => true,
             'user_id' => 1,
-            'lieu_id' => 7
+            'lieu_id' => 7,
+            'statut' => 'validée'
         ]);
 
         Image::create([
             'nom' => 'plage-des-conches.jpg',
             'mise_en_avant' => true,
             'user_id' => 1,
-            'lieu_id' => 8
+            'lieu_id' => 8,                
+            'statut' => 'validée'
         ]);
 
         Image::create([
             'nom' => 'parc-pre-leroy.jpg',
             'mise_en_avant' => true,
             'user_id' => 1,
-            'lieu_id' => 9
+            'lieu_id' => 9,
+            'statut' => 'validée'
         ]);
 
         Image::create([
             'nom' => 'vallee-des-singes.jpg',
             'mise_en_avant' => true,
             'user_id' => 1,
-            'lieu_id' => 10
+            'lieu_id' => 10,
+            'statut' => 'validée'
         ]);
 
         // images pour les lieux aléatoires
@@ -102,10 +113,11 @@ class ImageSeeder extends Seeder
         for ($i = 11; $i < 111; $i++) {
 
             Image::create([
-                'nom' => 'placeholder.jpg',
+                'nom' => 'placeholder.png',
                 'mise_en_avant' => true,
                 'user_id' => 1,
-                'lieu_id' => $i
+                'lieu_id' => $i,
+                'statut' => 'validée'
             ]);
         }
     }

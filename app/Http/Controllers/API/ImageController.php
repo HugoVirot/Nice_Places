@@ -6,7 +6,6 @@ use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\File;
-use App\Rules\ImagesTotalSize;
 
 class ImageController extends BaseController
 {
@@ -40,7 +39,6 @@ class ImageController extends BaseController
      */
     public function store(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'image' => 'required|image|mimes:jpg,jpeg,png,svg|max:2048'
         ]);
@@ -77,11 +75,17 @@ class ImageController extends BaseController
             'longueur' => $imageInfos[0],
             'largeur' => $imageInfos[1],
             'taille' => $fileSize,
-            'mise_en_avant' => $imagesTotalForPlace == 0 ? true : false // on la met en avant si c'est la première postée pour ce lieu
+            'mise_en_avant' => $imagesTotalForPlace == 0 ? true : false, // on la met en avant si c'est la première postée pour ce lieu
+            'statut' => $request->user_id == 1 ? "validée" : "en attente"
         ]);
 
         // on retourne un message de succès et les noms des images uploadées
-        $message = "image envoyée avec succès !";
+        $message = "Image envoyée avec succès !";
+
+        if ($request->user_id !== 1) {
+            $message .= " En attente de validation par l'administrateur.";
+        }
+
         return $this->sendResponse($image, $message);
     }
 
@@ -111,6 +115,7 @@ class ImageController extends BaseController
         // de profil ou la déselectionne
         $validator = Validator::make($request->all(), [
             'mise_en_avant' => 'required|boolean',
+            'statut' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -125,6 +130,11 @@ class ImageController extends BaseController
             $samePlaceCoverImage = $samePlaceCoverImage[0];
             $samePlaceCoverImage->mise_en_avant = false;
             $samePlaceCoverImage->save();
+        }
+
+        // on supprime l'image si son statut est "refusée" (on vérifie par précaution que le fichier existe)
+        if ($image->statut == "refusée" && File::exists(public_path('images/' . $image->nom))) {
+            File::delete(public_path('images/' . $image->nom));
         }
 
         // On retourne la réponse en JSON

@@ -31,7 +31,6 @@ export default {
             adresse: "",
             code_postal: "",
             ville: "",
-            validationErrors: "",
             formData: new FormData()
         }
     },
@@ -74,9 +73,6 @@ export default {
                     // }
 
                     this.$router.push('/SuccessMessage/uploadimages/' + message + '/' + lieu.id)
-
-                }).catch((response) => {
-                    console.log(response.error); // on passe ici => undefined => rien ne se passe (la création de lieu fonctionne)
                 })
         },
 
@@ -93,7 +89,6 @@ export default {
 
             axios.post('/api/notifications', { titre: titre, message: message, user_id: this.id, lieu_id: lieuId },)
                 .then(response => console.log(response.data.message))
-                .catch(error => console.log(error))
         }
     }
 }

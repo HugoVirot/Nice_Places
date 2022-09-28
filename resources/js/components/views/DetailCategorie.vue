@@ -82,9 +82,6 @@ export default {
                 this.loading = false
                 this.lieuxNonFiltres = this.categorie.lieux
             })
-            .catch((response) => {
-                console.log(response.error);
-            })
     }
 }
 </script>

@@ -28,7 +28,8 @@
                             </div>
 
                             <div class="form-group row m-2">
-                                <label for="commentaire" class="col-md-4 col-form-label text-md-right">commentaire</label>
+                                <label for="commentaire"
+                                    class="col-md-4 col-form-label text-md-right">commentaire</label>
 
                                 <div class="col-md-6">
                                     <textarea v-model="commentaire" id="commentaire" class="form-control"
@@ -58,23 +59,22 @@
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
 import { useUserStore } from "../../stores/userStore.js";
-import { mapState } from 'pinia';
+import { mapState, mapWritableState } from 'pinia';
 import { useBackOfficeStore } from '../../stores/backOfficeStore';
 
 export default {
 
     computed: {
+        ...mapState(useBackOfficeStore, ['storeAvis']),
         ...mapState(useUserStore, ['role']),
-
-        ...mapState(useBackOfficeStore, ['storeAvis'])
+        ...mapWritableState(useUserStore, ['validationErrors'])
     },
 
     data() {
         return {
             avis: "",
             note: "",
-            commentaire: "",
-            validationErrors: ""
+            commentaire: ""
         }
     },
 
@@ -90,6 +90,9 @@ export default {
         },
 
         saveChanges() {
+            // on réinitialise les erreurs de validation à chaque nouvel appel api
+            this.validationErrors = []
+
             axios.put('/api/avis/' + this.avis.id, {
                 note: this.note,
                 commentaire: this.commentaire,
@@ -99,19 +102,10 @@ export default {
 
                     // on récupère la nouvelle liste des avis 
                     axios.get('/api/avis')
-
                         .then(response => {
-
                             this.storeAvis(response.data)
                             this.$router.push('/SuccessMessage/backoffice/' + message)
-
-                        }).catch((response) => {
-                            console.log(response.error);
                         })
-                })
-
-                .catch((error) => {
-                    this.validationErrors = error.response.data.data;
                 })
         }
     },
@@ -122,10 +116,6 @@ export default {
             .then(response => {
                 this.updateLocalData(response.data)
             })
-            .catch((error) => {
-                console.log(error)
-                this.validationErrors = error.response.data.data;
-            });
     },
 }
 </script>

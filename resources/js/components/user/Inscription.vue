@@ -42,7 +42,7 @@
                                     <select id="departement" required v-model="departement" class="form-select mx-auto"
                                         aria-label="filtre" autocomplete="departement">
                                         <option v-for="departement in departements" :value="departement.id">{{
-                                                departement.code
+                                        departement.code
                                         }} - {{ departement.nom }}</option>
                                     </select>
                                 </div>
@@ -155,13 +155,15 @@
 <script>
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
-import { useLieuxStore } from "../../stores/lieuxStore.js";
-import { mapState } from 'pinia';
+import { useLieuxStore } from "../../stores/lieuxStore.js"
+import { useUserStore } from "../../stores/userStore.js"
+import { mapState,mapWritableState } from 'pinia';
 
 export default {
 
     computed: {
         ...mapState(useLieuxStore, ['departements']),
+        ...mapWritableState(useUserStore, ['validationErrors']),
     },
 
     data() {
@@ -172,7 +174,6 @@ export default {
             password: "",
             password_confirmation: "",
             passwordTyped: false,
-            validationErrors: "",
             eightCharacters: false,
             oneLetter: false,
             oneUppercaseOneLowercase: false,
@@ -184,17 +185,17 @@ export default {
 
     methods: {
         sendData() {
+            // on réinitialise les erreurs de validation à chaque nouvel appel api
+            this.validationErrors = []
+
             axios.post('/api/register', { pseudo: this.pseudo, email: this.email, departement: this.departement, password: this.password, password_confirmation: this.password_confirmation })
                 .then(response => {
-                    
+
                     let message = response.data.message
                     // on enregistre une notification de confirmation à destination de l'utilisateur
                     this.createNotification(response.data.data.id)
 
                     this.$router.push('/successmessage/connexion/' + message);
-                })
-                .catch((error) => {
-                    this.validationErrors = error.response.data.data;
                 })
         },
 
@@ -210,7 +211,6 @@ export default {
 
             axios.post('/api/notifications', { titre: titre, message: message, user_id: userId, lieu_id: null })
                 .then(response => console.log(response.data.message))
-                .catch(response => console.log(response.data.message))
         },
 
         checkPassword(password) {
@@ -252,7 +252,6 @@ export default {
 </script>
 
 <style scoped>
-
 img {
     width: 6vw
 }

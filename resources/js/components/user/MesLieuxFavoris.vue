@@ -64,8 +64,6 @@ export default {
             axios.get('/api/favoris/' + this.id)
                 .then(response => {
                     this.storeFavoris(response.data);
-                }).catch((response) => {
-                    console.log(response.error);
                 })
         },
 

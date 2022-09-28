@@ -21,6 +21,7 @@ import ModifierImage from "./components/backoffice/ModifierImage"
 import DerniersLieux from "./components/views/DerniersLieux"
 import MesNotifications from "./components/user/MesNotifications"
 import UploadImages from "./components/views/UploadImages"
+import { useUserStore } from "./stores/userStore";
 
 const routes = [
   {
@@ -105,11 +106,11 @@ const routes = [
     component: ModifierImage
   },
   {
-    path : "/mesnotifications",
+    path: "/mesnotifications",
     component: MesNotifications
   },
   {
-    path : "/uploadimages/:id",
+    path: "/uploadimages/:id",
     component: UploadImages
   }
 ];
@@ -118,5 +119,14 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
+router.beforeEach(() => {
+  // permet de réinitialiser les messages d'erreur des formulaires entre deux pages
+  const userStore = useUserStore()
+  if (userStore.validationErrors && userStore.validationErrors.error) {
+    console.log("suppression erreurs de validation");
+    userStore.storeErrors([])
+  }
+})
 
 export default router;

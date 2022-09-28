@@ -6,7 +6,7 @@
 
     <div class="container-fluid p-3 p-lg-5">
 
-        <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
+        <ValidationErrors :errors="validationErrors" v-if="validationErrors"  />
 
         <div class="row justify-content-center p-2 p-lg-5">
             <div class="col-md-8">
@@ -54,7 +54,7 @@
 <script>
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
-import { mapActions, mapState } from 'pinia'
+import { mapActions, mapState, mapWritableState } from 'pinia'
 import { useUserStore } from '../../stores/userStore'
 
 export default {
@@ -63,20 +63,23 @@ export default {
         return {
             email: "",
             password: "",
-            validationErrors: ""
         }
     },
 
     computed: {
-        ...mapState(useUserStore, ['id'])
+        ...mapState(useUserStore, ['id', 'validationErrors']),
+        ...mapWritableState(useUserStore, ['validationErrors'])
     },
 
     components: { ValidationErrors },
 
     methods: {
-        ...mapActions(useUserStore, ['storeUserData']),
+        ...mapActions(useUserStore, ['storeUserData', 'storeNotifications']),
 
-        logIn() { // on tente la connexion. Si réussie, on stocke les données du user dans le state
+        logIn() {
+            // on réinitialise les erreurs de validation à chaque nouvel appel api
+
+            // on tente la connexion. Si réussie, on stocke les données du user dans le state
             // on récupère aussi ses notifications qu'on stocke également dans le state
             axios.post('/api/login', { email: this.email, password: this.password })
                 .then(response => {
@@ -84,18 +87,12 @@ export default {
                     this.getNotifications()
                     this.$router.push('/successmessage/home/' + response.data.message)
                 })
-                .catch(error => {
-                    // on stocke les messages d'erreurs dans la variable validationErrors du composant, pour les afficher
-                    this.validationErrors = error.response.data.data;
-                })
         },
 
         getNotifications() {
             axios.get('/api/getnotificationsbyuser/' + this.id)
                 .then(response => {
                     this.storeNotifications(response.data);
-                }).catch((response) => {
-                    console.log(response.error);
                 })
         },
     },

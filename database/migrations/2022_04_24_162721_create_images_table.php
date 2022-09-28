@@ -20,6 +20,8 @@ return new class extends Migration
             $table->integer('longueur')->nullable();
             $table->integer('largeur')->nullable();
             $table->integer('taille')->nullable();
+            $table->enum('statut', ['validée', 'en attente', 'refusée']);
+
             $table->timestamps();
 
             $table->unsignedBigInteger('user_id')->nullable();

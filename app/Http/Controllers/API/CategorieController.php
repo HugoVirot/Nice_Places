@@ -37,7 +37,7 @@ class CategorieController extends BaseController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|max:75',
+            'nom' => 'required|min:5|max:75',
             'icone' => 'required|max:50',
             'couleur' => 'required|max:15'
         ]);

@@ -54,7 +54,7 @@
 
                             <div class="form-group row">
                                 <div class="mx-auto p-2 m-2 text-secondary">
-                                   * en toutes lettres, ou code hexadécimal avec le # au début
+                                    * en toutes lettres, ou code hexadécimal avec le # au début
                                 </div>
                             </div>
 
@@ -79,12 +79,13 @@ import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
 import { useUserStore } from "../../stores/userStore.js";
 import { useLieuxStore } from '../../stores/lieuxStore';
-import { mapState } from 'pinia';
+import { mapState, mapWritableState } from 'pinia';
 
 export default {
 
     computed: {
         ...mapState(useUserStore, ['role']),
+        ...mapWritableState(useUserStore, ['validationErrors']),
         ...mapState(useLieuxStore, ['categories', 'storeCategories'])
     },
 
@@ -93,8 +94,7 @@ export default {
             categorie: "",
             nom: "",
             icone: "",
-            couleur: "",
-            validationErrors: ""
+            couleur: ""
         }
     },
 
@@ -111,6 +111,8 @@ export default {
         },
 
         saveChanges() {
+            // on réinitialise les erreurs de validation à chaque nouvel appel api
+            this.validationErrors = []
 
             axios.put('/api/categories/' + this.categorie.id, {
                 nom: this.nom,
@@ -125,13 +127,7 @@ export default {
                         .then(response => {
                             this.storeCategories(response.data)
                             this.$router.push('/SuccessMessage/backoffice/' + message)
-                        }).catch((response) => {
-                            console.log(response.error);
                         })
-                })
-
-                .catch((error) => {
-                    this.validationErrors = error.response.data.data;
                 })
         }
     },
@@ -142,10 +138,6 @@ export default {
             .then(response => {
                 this.updateLocalData(response.data)
             })
-            .catch((error) => {
-                console.log(error)
-                this.validationErrors = error.response.data.data;
-            });
     },
 }
 </script>

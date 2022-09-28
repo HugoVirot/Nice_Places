@@ -32,7 +32,7 @@
                     <h2>Destination nature !</h2>
                     <p>Il y a toujours une nouvelle sortie sur Nice Places !
                     </p>
-                    <router-link to="/dernierslieux"><button class="btn btn-lg">Derniers lieux postés</button>
+                    <router-link to="/categories"><button class="btn btn-lg">Explorer les catégories</button>
                     </router-link>
                 </div>
                 <h2 class="carousel-caption d-block d-md-none fs-1 ">Destination nature !</h2>

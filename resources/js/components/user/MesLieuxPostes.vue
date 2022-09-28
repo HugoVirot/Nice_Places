@@ -58,9 +58,6 @@ export default {
                 }
             })
                 .then(response => this.storeUserPlaces(response.data))
-                .catch(error => {
-                    console.log(error.response)
-                })
         },
     },
 
