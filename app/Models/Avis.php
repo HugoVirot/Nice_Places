@@ -30,6 +30,7 @@ class Avis extends Model
         'user_id',
         'lieu_id',
         'note',
-        'commentaire'
+        'commentaire',
+        'statut'
     ];
 }

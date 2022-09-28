@@ -12,13 +12,11 @@ import MonCompte from "./components/user/MonCompte"
 import SuccessMessage from "./components/utilities/SuccessMessage"
 import MesLieuxPostes from "./components/user/MesLieuxPostes"
 import MesLieuxFavoris from "./components/user/MesLieuxFavoris"
-import MesAvisPostes from "./components/user/MesAvisPostes"
 import BackOffice from "./components/backoffice/BackOffice"
 import ModifierLieu from "./components/backoffice/ModifierLieu"
 import ModifierCategorie from "./components/backoffice/ModifierCategorie"
 import ModifierAvis from "./components/backoffice/ModifierAvis"
 import ModifierImage from "./components/backoffice/ModifierImage"
-import DerniersLieux from "./components/views/DerniersLieux"
 import MesNotifications from "./components/user/MesNotifications"
 import UploadImages from "./components/views/UploadImages"
 import { useUserStore } from "./stores/userStore";
@@ -40,10 +38,6 @@ const routes = [
   {
     path: "/categories/:id",
     component: DetailCategorie,
-  },
-  {
-    path: "/dernierslieux",
-    component: DerniersLieux,
   },
   {
     path: "/toplieux",
@@ -76,10 +70,6 @@ const routes = [
   {
     path: "/meslieuxfavoris",
     component: MesLieuxFavoris,
-  },
-  {
-    path: "/mesavispostes",
-    component: MesAvisPostes,
   },
   {
     path: "/backoffice",

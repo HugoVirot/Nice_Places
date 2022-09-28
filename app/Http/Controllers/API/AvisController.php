@@ -6,6 +6,7 @@ use App\Models\Avis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Lieu;
+use App\Models\User;
 
 class AvisController extends BaseController
 {
@@ -38,9 +39,9 @@ class AvisController extends BaseController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'note' => 'required|max:10',
-            'commentaire' => 'nullable|max:2000',
-            'lieu_id' => 'required'  // à transmettre en input hidden
+            'note' => 'required|integer|min:1|max:10',
+            'commentaire' => 'nullable|min:5|max:2000',
+            'lieu_id' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -52,7 +53,9 @@ class AvisController extends BaseController
             'note' => $request->note,
             'commentaire' => $request->commentaire,
             'lieu_id' => $request->lieu_id,
-            'user_id' => $request->user_id
+            'user_id' => $request->user_id,
+            // selon le statut de l'utilisateur (admin ou utilisateur standard), on valide ou on met en attente l'avis
+            'statut' => User::find($request->user_id)->role->role == "admin" ? "validé" : "en attente",
         ]);
 
         // actualiser la note moyenne du lieu en fonction de la note de l'avis
@@ -98,8 +101,8 @@ class AvisController extends BaseController
     public function update(Request $request, Avis $avi)
     {
         $validator = Validator::make($request->all(), [
-            'note' => 'required|max:10',
-            'commentaire' => 'nullable|max:2000',
+            'note' => 'required|integer|min:1|max:10',
+            'commentaire' => 'nullable|min:5|max:2000',
         ]);
 
         if ($validator->fails()) {

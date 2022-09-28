@@ -63,20 +63,20 @@
 
 import { useUserStore } from "../../stores/userStore"
 import ValidationErrors from "./ValidationErrors.vue"
-import { mapState, mapWritableState } from 'pinia';
+import { mapState } from 'pinia';
 
 export default {
 
     data() {
         return {
             note: "",
-            commentaire: ""
+            commentaire: "",
+            validationErrors: ""
         }
     },
 
     computed: {
         ...mapState(useUserStore, ['id']),
-        ...mapWritableState(useUserStore, ['validationErrors'])
     },
 
     props: ['lieu_id'],
@@ -85,12 +85,11 @@ export default {
 
     methods: {
         sendData() {
-            // on réinitialise les erreurs de validation à chaque nouvel appel api
-            this.validationErrors = []
-
             axios.post('/api/avis', { note: this.note, commentaire: this.commentaire, lieu_id: this.lieu_id, user_id: this.id })
                 .then((response) => {
                     this.$router.push('/successmessage/lastpage/' + response.data.message);
+                }).catch((error) => {
+                    this.validationErrors = error.response.data.errors;
                 })
         },
     }

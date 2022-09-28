@@ -91,15 +91,19 @@ export default {
             axios.get('/api/getnotificationsbyuser/' + this.id)
                 .then(response => {
                     this.storeNotifications(response.data);
+                }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
         },
 
         markNotificationAsRead(notificationId) {
             axios.put('/api/notifications/' + notificationId)
-                .then(response => {
+                .then(() => {
                     this.showNotificationReadMessage = true
                     this.getNotifications()
                     this.$router.push('/mesnotifications')
+                }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
         }
     },

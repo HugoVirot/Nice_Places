@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('lieu_id')->constrained()->onDelete('cascade');
             $table->integer('note');
             $table->text('commentaire', 2000)->nullable();
+            $table->enum('statut', ['validé', 'en attente', 'refusé']);
             $table->timestamps();
         });
     }

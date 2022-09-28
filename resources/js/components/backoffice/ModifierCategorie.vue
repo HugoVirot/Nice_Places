@@ -79,13 +79,12 @@ import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
 import { useUserStore } from "../../stores/userStore.js";
 import { useLieuxStore } from '../../stores/lieuxStore';
-import { mapState, mapWritableState } from 'pinia';
+import { mapState } from 'pinia';
 
 export default {
 
     computed: {
         ...mapState(useUserStore, ['role']),
-        ...mapWritableState(useUserStore, ['validationErrors']),
         ...mapState(useLieuxStore, ['categories', 'storeCategories'])
     },
 
@@ -94,7 +93,8 @@ export default {
             categorie: "",
             nom: "",
             icone: "",
-            couleur: ""
+            couleur: "",
+            validationErrors: ""
         }
     },
 
@@ -111,9 +111,6 @@ export default {
         },
 
         saveChanges() {
-            // on réinitialise les erreurs de validation à chaque nouvel appel api
-            this.validationErrors = []
-
             axios.put('/api/categories/' + this.categorie.id, {
                 nom: this.nom,
                 icone: this.icone,
@@ -127,7 +124,12 @@ export default {
                         .then(response => {
                             this.storeCategories(response.data)
                             this.$router.push('/SuccessMessage/backoffice/' + message)
+                        }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                            alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                         })
+
+                }).catch((error) => {
+                    this.validationErrors = error.response.data.errors;
                 })
         }
     },
@@ -137,7 +139,10 @@ export default {
         axios.get("/api/categories/" + this.$route.params.id)
             .then(response => {
                 this.updateLocalData(response.data)
+            }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
             })
+
     },
 }
 </script>

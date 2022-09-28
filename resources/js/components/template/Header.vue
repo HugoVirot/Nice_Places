@@ -84,10 +84,6 @@
                                         <router-link to="/meslieuxfavoris" class="nav-link">mes lieux favoris
                                         </router-link>
                                     </li>
-                                    <li>
-                                        <router-link to="/mesavispostes" class="nav-link">mes avis postés
-                                        </router-link>
-                                    </li>
                                     <li v-if="role == 'admin'">
                                         <router-link to="/backoffice" class="nav-link">back-office
                                         </router-link>
@@ -136,7 +132,7 @@ export default {
         ...mapActions(useUserStore, ['logOut']),
 
         logOutUser() {
-            // on réinitialise le state 
+            // on réinitialise le store 
             const userStore = useUserStore()
             userStore.$reset()
 

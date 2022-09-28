@@ -204,13 +204,14 @@ import ValidationErrors from "../utilities/ValidationErrors.vue"
 import { useUserStore } from "../../stores/userStore.js";
 import { useLieuxStore } from '../../stores/lieuxStore';
 import { mapState, mapWritableState } from 'pinia';
+import { mapActions } from 'pinia';
 
 export default {
 
     computed: {
         ...mapState(useUserStore, ['role']),
-        ...mapWritableState(useUserStore, ['validationErrors']),
         ...mapState(useLieuxStore, ['categories']),
+        ...mapWritableState(useLieuxStore, ['lieux'])
     },
 
     data() {
@@ -231,12 +232,16 @@ export default {
             ville: "",
             statut: "",
             statutPrecedent: "",
-            commentaire: ""        }
+            commentaire: "",
+            validationErrors: ""
+        }
     },
 
     components: { ValidationErrors },
 
     methods: {
+        ...mapActions(useLieuxStore, ['storeLieux']),
+
         // cette fonction permet de mettre à jour les données locales du composant
         // une fois que l'appel API a récupéré le lieu
         updateLocalData(lieu) {
@@ -259,9 +264,6 @@ export default {
         },
 
         saveChanges() {
-            // on réinitialise les erreurs de validation à chaque nouvel appel api
-            this.validationErrors = []
-            
             // on sauvegarde les changements dans la base de données
             axios.put('/api/lieus/' + this.lieu.id, {
                 nom: this.nom,
@@ -280,16 +282,28 @@ export default {
                 commentaire: this.commentaire
             })
                 .then(response => this.handleSuccess(response))
-            // en cas d'erreur sur la modification de lieu, on affiche les erreurs
+                // en cas d'erreur sur la modification de lieu, on affiche les erreurs
+                .catch((error) => {
+                    this.validationErrors = error.response.data.errors;
+                })
         },
 
         handleSuccess(response) {
-
             let message = response.data.message
 
+            // on actualise le lieu modifié dans la liste des lieux contenue dans le backOfficeStore
+            // cela évite de faire un appel api
+            // on repère d'abord l'index du lieu modifié
+            let index = this.lieux.findIndex(lieu => lieu.id == this.lieu.id)
+            // puis on le remplace par sa nouvelle version
+            this.lieux[index] = response.data.data
+
+            console.log(this.lieux);
+            // on sauvegarde dans le store
+            this.storeLieux(this.lieux)
+
             // on envoie une notification en cas de changement de statut
-            // ET seulement si l'auteur n'est pas administrateur (sinon, inutile)
-            if (this.statutPrecedent !== this.statut && this.role !== "admin") {
+            if (this.statutPrecedent !== this.statut) {
                 this.sendNotification()
             }
 
@@ -299,24 +313,25 @@ export default {
         },
 
         sendNotification() {
-
             let titre = ""
             let message = ""
 
             switch (this.statut) {
 
                 case ("validé"):
-                    titre = `Félicitations ${this.lieu.user.pseudo} , votre lieu ${this.nom} a été validé !`;
+                    titre = `Félicitations ${this.lieu.user.pseudo}, votre lieu ${this.nom} a été validé !`;
                     message = `Après vérification, j'ai décidé de valider votre lieu : ${this.nom}.<br> 
+                    <i style="color:#94D1BE" class="mx-auto fa-solid fa-circle-check fa-5x p-2"></i><br>
             Merci pour ce partage, Nice Places est maintenant plus complet grâce à vous !<br>
             A très bientôt.<br>
             L'administrateur.`
                     break
 
                 case ("à modifier"):
-                    titre = `${this.lieu.user.pseudo} , votre lieu ${this.nom} a besoin de modifications pour être validé !`;
+                    titre = `${this.lieu.user.pseudo}, votre lieu ${this.nom} a besoin de modifications pour être validé.`;
                     message = `Après vérification, votre lieu ${this.nom} a besoin des modifications suivantes : <br> 
                     ${this.commentaire}<br>
+                    <i style="color:#94D1BE" class="mx-auto fa-solid fa-pen-to-square fa-5x p-2"></i><br>
             Merci de faire le nécessaire pour qu'il soit validé.<br>
             A très bientôt.<br>
             L'administrateur.`
@@ -326,6 +341,7 @@ export default {
                     titre = `${this.lieu.user.pseudo}, votre lieu ${this.nom} a été refusé.`;
                     message = `Après vérification, j'ai décidé de refuser votre lieu : ${this.nom}, pour la ou les raison(s) suivante(s) : <br> 
                                 ${this.commentaire}<br>
+                                <i class="mx-auto fa-solid fa-xmark fa-5x p-2 text-danger"></i><br>
             Merci de votre compréhension.<br>
             A très bientôt.<br>
             L'administrateur.`
@@ -334,6 +350,9 @@ export default {
 
             axios.post('/api/notifications', { titre: titre, message: message, user_id: this.lieu.user.id, lieu_id: this.lieu.id },)
                 .then(response => console.log(response.data.message))
+                .catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
+                })
         }
     },
 
@@ -342,6 +361,8 @@ export default {
         axios.get("/api/lieus/" + this.lieuId)
             .then(response => {
                 this.updateLocalData(response.data)
+            }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
             })
     },
 }

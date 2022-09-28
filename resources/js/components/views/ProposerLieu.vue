@@ -31,7 +31,8 @@ export default {
             adresse: "",
             code_postal: "",
             ville: "",
-            formData: new FormData()
+            formData: new FormData(),
+            validationErrors: ""
         }
     },
 
@@ -69,10 +70,12 @@ export default {
 
                     // si utilisateur normal, on lui sauvegarde une notification en base de données
                     // if (this.role !== "admin") {
-                        this.createNotification(lieu.id)
+                    this.createNotification(lieu.id)
                     // }
 
                     this.$router.push('/SuccessMessage/uploadimages/' + message + '/' + lieu.id)
+                }).catch((error) => {
+                    this.validationErrors = error.response.data.errors;
                 })
         },
 
@@ -81,7 +84,7 @@ export default {
         createNotification(lieuId) {
             let titre = `Votre lieu ${this.nom} a bien été proposé !`;
             let message = `Merci ${this.pseudo} !<br> 
-            <i style="color:#94D1BE" class="mx-auto fa-solid fa-circle-check fa-5x p-2"></i>
+            <i style="color:#94D1BE" class="mx-auto fa-solid fa-paper-plane fa-5x p-2"></i><br>
             Votre lieu, ${this.nom}, a bien été proposé.<br>
             Il a été mis en attente et va être vérifié par l'administrateur.<br>
             Ce dernier reviendra alors vers vous.<br>
@@ -89,6 +92,9 @@ export default {
 
             axios.post('/api/notifications', { titre: titre, message: message, user_id: this.id, lieu_id: lieuId },)
                 .then(response => console.log(response.data.message))
+                .catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
+                })
         }
     }
 }

@@ -193,9 +193,7 @@ export default {
             'pseudo',
             'email',
             'id',
-            'departement',
-            'validationErrors'
-        ]),
+            'departement']),
 
         ...mapState(useLieuxStore, [
             'departements'
@@ -212,7 +210,8 @@ export default {
             oneLetter: false,
             oneUppercaseOneLowercase: false,
             oneDigit: false,
-            oneSpecialCharacter: false
+            oneSpecialCharacter: false,
+            validationErrors: ""
         }
     },
 
@@ -257,16 +256,15 @@ export default {
         },
 
         sendData() {
-            // on réinitialise les erreurs de validation à chaque nouvel appel api
-            this.validationErrors = []
-
             // on sauvegarde les modifs en bdd puis on redirige
             axios.put('/api/users/' + this.id, {
                 pseudo: this.pseudo, email: this.email, departement_id: this.departement.id, oldPassword: this.oldPassword,
                 password: this.password, password_confirmation: this.password_confirmation
-            }).then(response => { // on devrait passer ici...
+            }).then(response => { 
                 this.storeUserData(response.data.data)
                 this.$router.push('/successmessage/lastpage/' + response.data.message)
+            }).catch((error) => {
+                this.validationErrors = error.response.data.errors;
             })
         },
 
@@ -277,6 +275,10 @@ export default {
                     this.logOut()
                     this.$router.push('/SuccessMessage/home/' + response.data.message)
                 })
+                .catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
+                })
+
         },
     }
 }

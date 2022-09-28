@@ -106,8 +106,7 @@ export default {
         },
 
         sendData() {
-            // on réinitialise les erreurs de validation à chaque nouvel appel api
-            this.validationErrors = []
+
             // on ajoute le user id et le lieu id au formulaire
             this.formData.append("user_id", this.id);
             this.formData.append("lieu_id", this.lieuId);
@@ -120,6 +119,9 @@ export default {
                     // on redirige vers l'accueil
                     this.$router.push('/SuccessMessage/home/' + message)
                 })
+                .catch((error) => {
+                    this.validationErrors = error.response.data.errors;
+                })
         }
     },
 
@@ -127,6 +129,9 @@ export default {
         axios.get("/api/lieus/" + this.lieuId)
             .then(response => {
                 this.lieu = response.data
+            })
+            .catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
             })
     }
 }

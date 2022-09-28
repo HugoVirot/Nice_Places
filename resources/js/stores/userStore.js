@@ -17,8 +17,7 @@ export const useUserStore = defineStore({
             userPosition: "",
             userPlaces: "",
             favoris: "",
-            notifications: "",
-            validationErrors: []
+            notifications: ""
         }
     },
 
@@ -58,21 +57,16 @@ export const useUserStore = defineStore({
             this.userPosition = userCoordinates
         },
 
-        storeNotifications(notifications){
+        storeNotifications(notifications) {
             this.notifications = notifications
         },
 
-        storeUserPlaces(userPlaces){
+        storeUserPlaces(userPlaces) {
             this.userPlaces = userPlaces
         },
 
-        storeFavoris(favoris){
+        storeFavoris(favoris) {
             this.favoris = favoris
-        },
-
-        storeErrors(errors){
-            console.log("storerrors");
-            this.validationErrors = errors
         }
     },
 

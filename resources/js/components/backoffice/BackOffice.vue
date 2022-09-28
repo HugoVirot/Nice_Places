@@ -4,28 +4,74 @@
         <h1 class="mt-2">Back-office</h1>
     </div>
 
-
-    <div class="container mb-4">
+    <!-- évènements : lieux / avis / images à valider -->
+    <div class="container">
         <div class="row">
-            <div @click="showLieux = !showLieux" class="col-6 col-lg-4 py-5 border border-secondary">
+
+            <!-- images à valider-->
+            <div v-if="countNewImages > 0" @click="showImages = !showImages"
+                class="greenIcon mx-auto text-danger border border-4 rounded border-danger col-md-4 offset-md-1 py-5">
+                <i class="fa-5x fa-solid fa-images mb-3"></i>
+                <p class="fs-3"><span class="fs-1">{{ countNewImages }}</span> images à valider</p>
+            </div>
+            <!-- images à jour-->
+            <div v-else @click="showImages = !showImages"
+                class="greenIcon mx-auto border border-4 rounded border-secondary col-md-4 offset-md-1 py-5">
+                <i class="fa-5x fa-solid fa-images mb-3"></i>
+                <p class="fs-3"><i class="fa-2x fa-solid fa-check mb-3"></i>images à jour</p>
+            </div>
+
+            <!-- lieux à valider-->
+            <div v-if="countNewLieux > 0" @click="showLieux = !showLieux"
+                class="greenIcon mx-auto text-danger border border-4 rounded border-danger col-md-4 offset-md-1 py-5">
+                <i class="fa-5x fa-solid fa-images mb-3"></i>
+                <p class="fs-3"><span class="fs-1">{{ countNewLieux }}</span> lieux à valider</p>
+            </div>
+            <!-- lieux à jour-->
+            <div v-else @click="showLieux = !showLieux"
+                class="greenIcon mx-auto border border-4 rounded border-secondary col-md-4 offset-md-1 py-5">
+                <i class="fa-5x fa-solid fa-location-dot mb-3"></i>
+                <p class="fs-3"><i class="fa-2x fa-solid fa-check mb-3"></i>lieux à jour</p>
+            </div>
+
+            <!-- avis à valider-->
+            <div v-if="countNewAvis > 0" @click="showAvis = !showAvis"
+                class="greenIcon mx-auto text-danger border border-4 rounded border-danger col-md-4 offset-md-1 py-5">
+                <i class="fa-5x fa-solid fa-comment mb-3"></i>
+                <p class="fs-3"><span class="fs-1">{{countNewAvis }}</span> avis à valider</p>
+            </div>
+            <!-- avis à jour-->
+            <div v-else @click="showAvis = !showAvis"
+                class="greenIcon mx-auto border border-4 rounded border-secondary col-md-4 offset-md-1 py-5">
+                <i class="fa-5x fa-solid fa-comment mb-3"></i>
+                <p class="fs-3"><i class="fa-2x fa-solid fa-check mb-3"></i>avis à jour</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-4" id="entities">
+        <div class="row">
+            <div @click="showLieux = !showLieux"
+                class="col-md-6 col-lg-4 col-xl-2 offset-xl-1 py-5 border border-secondary">
                 <i class="bigIcon fa-3x fa-solid fa-map-location-dot"></i>
-                <h2>Lieux</h2>
+                <p class="fs-3">Lieux</p>
             </div>
-            <div @click="showCategories = !showCategories" class="col-6 col-lg-4 py-5 border border-secondary">
+            <div @click="showCategories = !showCategories"
+                class="col-md-6 col-lg-4 col-xl-2 py-5 border border-secondary">
                 <i class="bigIcon fa-solid fa-3x fa-rectangle-list"></i>
-                <h2>Catégories</h2>
+                <p class="fs-3">Catégories</p>
             </div>
-            <div @click="showAvis = !showAvis" class="col-6 col-lg-4  py-5 border border-secondary">
+            <div @click="showAvis = !showAvis" class="col-md-6 col-lg-4 col-xl-2 py-5 border border-secondary">
                 <i class="bigIcon fa-solid fa-3x fa-pen"></i>
-                <h2>Avis</h2>
+                <p class="fs-3">Avis</p>
             </div>
-            <div @click="showUsers = !showUsers" class="col-6 col-lg-4 py-5 border border-secondary">
+            <div @click="showUsers = !showUsers" class="col-md-6 col-lg-4 col-xl-2 py-5 border border-secondary">
                 <i class="bigIcon fa-solid fa-3x fa-user"></i>
-                <h2>Utilisateurs</h2>
+                <p class="fs-3">Utilisateurs</p>
             </div>
-            <div @click="showImages = !showImages" class="col-6 col-lg-4 py-5 border border-secondary">
+            <div @click="showImages = !showImages" class="col-md-6 col-lg-4 col-xl-2 py-5 border border-secondary">
                 <i class="bigIcon fa-3x fa-solid fa-camera"></i>
-                <h2>Images</h2>
+                <p class="fs-3">Images</p>
             </div>
         </div>
     </div>
@@ -63,6 +109,7 @@
             <thead>
                 <tr>
                     <th scope="col">id</th>
+                    <th scope="col">statut</th>
                     <th scope="col">nom</th>
                     <th scope="col">modifier</th>
                     <th scope="col">supprimer</th>
@@ -77,7 +124,6 @@
                     <th scope="col">code postal</th>
                     <th scope="col">ville</th>
                     <th scope="col">posté par</th>
-                    <th scope="col">statut</th>
                     <th scope="col">ajouté le</th>
                     <th scope="col">modifié le</th>
                 </tr>
@@ -85,6 +131,13 @@
             <tbody>
                 <tr v-for="lieu in lieux">
                     <th scope="row">{{ lieu.id }}</th>
+                    <td v-if="lieu.statut == 'validé'" class="bg-success text-white">validé</td>
+                    <td v-else-if="lieu.statut == 'en attente'" class="bg-info text-white">en attente de validation
+                    </td>
+                    <td v-else-if="lieu.statut == 'à modifier'" class="bg-warning text-white">à modifier pour être
+                        validé
+                    </td>
+                    <td v-else class="bg-danger text-white">refusé</td>
                     <td>{{ lieu.nom }}</td>
                     <td>
                         <router-link :to="`/modifierlieu/${lieu.id}`"><i class="fa-solid fa-pen-to-square"></i>
@@ -103,15 +156,6 @@
                     <td>{{ lieu.code_postal }}</td>
                     <td>{{ lieu.ville }}</td>
                     <td>{{ lieu.user ? lieu.user.pseudo : 'compte supprimé'}}</td>
-
-                    <td v-if="lieu.statut == 'validé'" class="bg-success text-white">validé</td>
-                    <td v-else-if="lieu.statut == 'en attente'" class="mx-auto bg-info w-25">en attente de validation
-                    </td>
-                    <td v-else-if="lieu.statut == 'à modifier'" class="mx-auto bg-warning w-25">à modifier pour être
-                        validé
-                    </td>
-                    <td v-else class="mx-auto bg-danger w-25">refusé</td>
-
                     <td>{{ moment(lieu.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
                     <td> {{ lieu.created_at == lieu.updated_at ? "jamais modifié" :
                     moment(avis.updated_at).format("ddd DD MMM YYYY [à] HH:mm")
@@ -164,12 +208,15 @@
             </table>
         </div>
 
-        <h2 class="mt-4">Ajouter une catégorie</h2>
+        <h2 class="mt-5">Ajouter une catégorie</h2>
 
         <div class="row justify-content-center p-2 p-lg-5">
+
+            <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
+
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header text-white mb-3">Entrez ici vos informations</div>
+                    <div class="card-header text-white mb-3">Entrez ici les informations</div>
 
                     <div class="card-body">
 
@@ -204,7 +251,7 @@
 
                             <div class="form-group row mt-3 text-center">
                                 <div class="col-md-6 offset-md-3">
-                                    <button type="submit" class="btn btn-lg rounded-pill text-light btn-info">
+                                    <button type="submit" class="btn btn-lg rounded-pill text-light greenButton">
                                         Valider
                                     </button>
                                 </div>
@@ -227,6 +274,7 @@
                 <thead>
                     <tr>
                         <th scope="col">id</th>
+                        <th scope="col">statut</th>
                         <th scope="col">utilisateur</th>
                         <th scope="col">lieu</th>
                         <th scope="col">note</th>
@@ -240,6 +288,11 @@
                 <tbody>
                     <tr v-for="avis in avis">
                         <th scope="row">{{ avis.id }}</th>
+                        <td v-if="avis.statut == 'validé'" class="bg-success text-white">validé</td>
+                        <td v-else-if="avis.statut == 'en attente'" class="bg-info text-white">en attente de
+                            validation
+                        </td>
+                        <td v-else class="bg-danger text-white">refusé</td>
                         <td>{{ avis.user.pseudo }}</td>
                         <td>{{ avis.lieu.nom }}</td>
                         <td>{{ avis.note }}</td>
@@ -333,9 +386,9 @@
                         </button>
                     </td>
                     <td v-if="image.statut == 'validée'" class="bg-success text-white">validée</td>
-                    <td v-else-if="image.statut == 'en attente'" class="mx-auto bg-info w-25">en attente de validation
+                    <td v-else-if="image.statut == 'en attente'" class="bg-info">en attente de validation
                     </td>
-                    <td v-else class="mx-auto bg-danger w-25">refusée</td>
+                    <td v-else class="bg-danger text-white">refusée</td>
                     <td>{{ image.id }}</td>
                     <td>{{ image.nom }}</td>
                     <td>{{ image.user.pseudo }}</td>
@@ -377,6 +430,7 @@ import { mapWritableState } from 'pinia';
 import { mapActions } from 'pinia';
 import { useBackOfficeStore } from '../../stores/backOfficeStore'
 import { useLieuxStore } from '../../stores/lieuxStore';
+import ValidationErrors from '../utilities/ValidationErrors.vue'
 
 moment.locale('fr');
 
@@ -393,6 +447,21 @@ export default {
             'categories'
         ]),
 
+        // renvoie le nombre d'images avec statut "en attente"
+        countNewImages() {
+            return this.images.filter(image => image.statut == "en attente").length
+        },
+
+        // renvoie le nombre d'images avec statut "en attente"
+        countNewLieux() {
+            return this.lieux.filter(lieu => lieu.statut == "en attente").length
+        },
+
+        // renvoie le nombre d'images avec statut "en attente"
+        countNewAvis() {
+            return this.avis.filter(avi => avi.statut == "en attente").length
+        },
+
     },
 
     data() {
@@ -408,9 +477,12 @@ export default {
             showAvis: false,
             showImages: false,
             elementToDelete: '',
-            idOfElementToDelete: ''
+            idOfElementToDelete: '',
+            validationErrors: ''
         }
     },
+
+    components: { ValidationErrors },
 
     methods: {
 
@@ -460,8 +532,12 @@ export default {
                             this.storeAvis(response.data)
                             // on redirige vers l'accueil en affichant le message de succès
                             this.$router.push('/successmessage/backoffice/' + message)
+                        }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                            alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                         })
 
+                }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
         },
 
@@ -478,7 +554,11 @@ export default {
                             this.storeLieux(response.data)
                             // on redirige vers l'accueil en affichant le message de succès
                             this.$router.push('/SuccessMessage/backoffice/' + message)
+                        }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                            alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                         })
+                }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
         },
 
@@ -497,25 +577,30 @@ export default {
                             this.storeCategories(response.data)
                             // on redirige vers le back office en affichant le message de succès
                             this.$router.push('/SuccessMessage/backoffice/' + message)
+                        }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                            alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                         })
 
+                }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
         },
 
         storeCategory() {
             axios.post('/api/categories', { nom: this.nom, icone: this.icone, couleur: this.couleur })
                 .then(response => {
-
                     let message = response.data.message
 
-                    // on va récupérer la nouvelle liste des catégories
-                    axios.get('/api/categories')
+                    // on ajoute la nouvelle catégorie à la liste, qu'on sauvegarde dans le store
+                    // cela évite de faire un appel API
+                    this.categories.push(response.data.data)
+                    this.storeCategories(this.categories)
 
-                        .then(response => {
-                            this.storeCategories(response.data)
-                            // on redirige vers l'accueil en affichant le message de succès
-                            this.$router.push('/SuccessMessage/backoffice/' + message)
-                        })
+                    // on redirige vers le back-office en affichant le message de succès
+                    this.$router.push('/SuccessMessage/backoffice/' + message)
+
+                }).catch((error) => {
+                    this.validationErrors = error.response.data.errors;
                 })
         },
 
@@ -534,7 +619,12 @@ export default {
                             this.storeUsers(response.data)
                             // on redirige vers l'accueil en affichant le message de succès
                             this.$router.push('/SuccessMessage/backoffice/' + message)
+                        }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                            alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                         })
+
+                }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
         },
 
@@ -553,7 +643,12 @@ export default {
                             this.storeImages(response.data)
                             // on redirige vers l'accueil en affichant le message de succès
                             this.$router.push('/SuccessMessage/backoffice/' + message)
+                        }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                            alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                         })
+
+                }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
         },
 
@@ -562,6 +657,8 @@ export default {
                 .then(response => {
                     console.log("getLieux");
                     this.storeLieux(response.data)
+                }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
         },
 
@@ -569,6 +666,8 @@ export default {
             axios.get("http://localhost:8000/api/avis")
                 .then(response => {
                     this.storeAvis(response.data)
+                }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
         },
 
@@ -576,6 +675,8 @@ export default {
             axios.get("http://localhost:8000/api/users")
                 .then(response => {
                     this.storeUsers(response.data)
+                }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
         },
 
@@ -583,6 +684,8 @@ export default {
             axios.get("http://localhost:8000/api/images")
                 .then(response => {
                     this.storeImages(response.data)
+                }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
         }
     },
@@ -605,6 +708,15 @@ export default {
 h1,
 h2,
 i {
+    color: #1c6e8c
+}
+
+.card-header,
+.greenButton {
+    background-color: #94D1BE;
+}
+
+#entities p {
     color: #1c6e8c
 }
 

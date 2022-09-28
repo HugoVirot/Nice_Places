@@ -39,7 +39,7 @@
                                     (facultatif)</label>
 
                                 <div class="col-md-6">
-                                    <select id="departement" required v-model="departement" class="form-select mx-auto"
+                                    <select id="departement" v-model="departement" class="form-select mx-auto"
                                         aria-label="filtre" autocomplete="departement">
                                         <option v-for="departement in departements" :value="departement.id">{{
                                         departement.code
@@ -106,6 +106,11 @@
 
                             </div>
 
+                            <div v-if="passwordCorrect == true" class="form-group row mx-auto rounded-pill mt-2 mb-4 bg-white w-50">
+                                <i class="fa-solid fa-circle-check fa-3x p-2 mb-2"></i>
+                                <p class="text-success">Mot de passe sécurisé</p>
+                            </div>
+
                             <div class="form-group row m-2">
                                 <label for="password_confirmation"
                                     class="col-md-4 col-form-label text-md-right">confirmez le
@@ -118,9 +123,15 @@
                                 </div>
                             </div>
 
+                            <div v-if="passwordCorrect && password == password_confirmation"
+                                class="form-group row mx-auto m-2 mt-3 rounded-pill bg-white w-50">
+                                <i class="fa-solid fa-circle-check fa-3x p-2"></i>
+                                <p class="text-success">Confirmation OK</p>
+                            </div>
+
                             <div class="form-group row mt-3 text-center">
                                 <div class="col-md-6 offset-md-3">
-                                    <button type="submit" class="btn btn-lg rounded-pill text-light btn-info">
+                                    <button type="submit" class="btn btn-lg rounded-pill text-white">
                                         Valider
                                     </button>
                                 </div>
@@ -156,14 +167,12 @@
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
 import { useLieuxStore } from "../../stores/lieuxStore.js"
-import { useUserStore } from "../../stores/userStore.js"
-import { mapState,mapWritableState } from 'pinia';
+import { mapState } from 'pinia';
 
 export default {
 
     computed: {
-        ...mapState(useLieuxStore, ['departements']),
-        ...mapWritableState(useUserStore, ['validationErrors']),
+        ...mapState(useLieuxStore, ['departements'])
     },
 
     data() {
@@ -178,16 +187,15 @@ export default {
             oneLetter: false,
             oneUppercaseOneLowercase: false,
             oneDigit: false,
-            oneSpecialCharacter: false
+            oneSpecialCharacter: false,
+            passwordCorrect: false,
+            validationErrors: "",
         }
     },
     components: { ValidationErrors },
 
     methods: {
         sendData() {
-            // on réinitialise les erreurs de validation à chaque nouvel appel api
-            this.validationErrors = []
-
             axios.post('/api/register', { pseudo: this.pseudo, email: this.email, departement: this.departement, password: this.password, password_confirmation: this.password_confirmation })
                 .then(response => {
 
@@ -196,6 +204,9 @@ export default {
                     this.createNotification(response.data.data.id)
 
                     this.$router.push('/successmessage/connexion/' + message);
+                })
+                .catch((error) => {
+                    this.validationErrors = error.response.data.errors;
                 })
         },
 
@@ -211,6 +222,9 @@ export default {
 
             axios.post('/api/notifications', { titre: titre, message: message, user_id: userId, lieu_id: null })
                 .then(response => console.log(response.data.message))
+                .catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
+                })
         },
 
         checkPassword(password) {
@@ -246,6 +260,10 @@ export default {
             } else {
                 this.oneSpecialCharacter = false;
             }
+
+            if (this.eightCharacters && this.oneLetter && this.oneUppercaseOneLowercase && this.oneDigit && this.oneSpecialCharacter) {
+                this.passwordCorrect = true
+            }
         }
     }
 }
@@ -265,6 +283,14 @@ img {
 
 h1 {
     color: #1C6E8C
+}
+
+button {
+    background-color: #1C6E8C;
+}
+
+button:hover{
+    background-color: #94D1BE;
 }
 
 .card {

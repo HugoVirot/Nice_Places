@@ -50,7 +50,8 @@
 
             <div class="carousel-inner">
 
-                <div v-for="(image, index) in lieu.images" :class="['carousel-item', { active: image.mise_en_avant == true }]">
+                <div v-for="(image, index) in lieu.images"
+                    :class="['carousel-item', { active: image.mise_en_avant == true }]">
                     <img :src="`/images/${image.nom}`" class="d-block w-100" alt="">
                 </div>
 
@@ -103,9 +104,10 @@
                     </p>
                     <p v-if="lieu.kilometres"> <i class="fa-2x fa-solid fa-shoe-prints me-3"></i>
                         {{ lieu.kilometres }} kilomètres (en moyenne)</p>
-                        <p>
-                            <router-link :to="`/uploadimages/${lieu.id}`"><button class="btn btn-lg rounded-pill">proposer des images</button></router-link>
-                        </p>
+                    <p>
+                        <router-link :to="`/uploadimages/${lieu.id}`"><button class="btn btn-lg rounded-pill">proposer
+                                des images</button></router-link>
+                    </p>
                 </div>
             </div>
         </div>
@@ -279,13 +281,17 @@ export default {
                         .then(response => {
                             this.storeFavoris(response.data)
                             this.$router.push('/SuccessMessage/lastpage/' + message)
+                        }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                            alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                         })
+                }).catch(() => {
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
         },
 
         removeToFavorites() {
             axios.delete('/api/favoris/' + this.id + '/' + this.lieuId)
-            
+
                 .then(response => {
                     let message = response.data.message
 
@@ -294,7 +300,11 @@ export default {
                         .then(response => {
                             this.storeFavoris(response.data)
                             this.$router.push('/SuccessMessage/lastpage/' + message)
+                        }).catch(() => {
+                            alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                         })
+                }).catch(() => {
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
         }
     },
@@ -308,6 +318,8 @@ export default {
             .then((response) => {
                 console.log(response.data);
                 this.lieu = response.data;
+            }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
             })
     }
 }
@@ -317,9 +329,10 @@ export default {
 .greenIcon {
     color: #94D1BE
 }
+
 .btn {
-	background-color: #94D1BE !important;
-	color: white;
+    background-color: #94D1BE !important;
+    color: white;
 }
 
 h1,

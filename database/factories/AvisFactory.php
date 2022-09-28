@@ -22,7 +22,8 @@ class AvisFactory extends Factory
             'note' => rand(7, 10),
             'commentaire' => $this->faker->randomElement([null,'J\'ai adoré', 'Génial', 'Inoubliable. Foncez !', 'Pas mal du tout',
             'De très bons souvenirs. Je recommande !', 'pas mal mais il y a mieux', 'Exceptionnel !', 'Allez-y !', 'Super endroit.',
-            'mes enfants ont adoré'])
+            'mes enfants ont adoré']),
+            'statut' => $this->faker->randomElement(['validé', 'en attente', 'refusé'])
         ];
     }
 }

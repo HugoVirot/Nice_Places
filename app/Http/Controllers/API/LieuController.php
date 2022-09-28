@@ -5,7 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\Lieu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Image;
+use App\Models\User;
 
 class LieuController extends BaseController
 {
@@ -88,9 +88,8 @@ class LieuController extends BaseController
             'code_postal' =>  $request->code_postal,
             'ville' =>  $request->ville,
             'user_id' => $request->user_id,
-            // selon le statut de l'utilisateur (id 1 = admin), 
-            // on valide ou on met en attente le lieu
-            'statut' => $request->user_id == 1 ? "validé" : "en attente",
+            // selon le statut de l'utilisateur (admin ou utilisateur standard), on valide ou on met en attente le lieu
+            'statut' => User::find($request->user_id)->role->role == "admin" ? "validé" : "en attente",
             'categorie_id' => $request->categorie
         ]);
 

@@ -26,7 +26,7 @@ h1 {
     color: #94DEB1
 }
 
-i {
+h1 i {
     color: #94D1BE
 }
 </style>

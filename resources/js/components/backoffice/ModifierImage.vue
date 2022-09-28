@@ -94,7 +94,6 @@ export default {
 
     computed: {
         ...mapState(useUserStore, ['id', 'pseudo', 'role']),
-        ...mapWritableState(useUserStore, ['validationErrors']),
         ...mapWritableState(useBackOfficeStore, ['images'])
     },
 
@@ -105,7 +104,8 @@ export default {
             mise_en_avant: "",
             statut: "",
             raisonsRefus: "",
-            imagesNumberForThisPlace: 1
+            imagesNumberForThisPlace: 1,
+            validationErrors: ""
         }
     },
 
@@ -126,15 +126,14 @@ export default {
                 axios.get("/api/lieus/getimagesnumberbyplace/" + this.image.lieu_id)
                     .then(response => {
                         this.imagesNumberForThisPlace = response.data
+                    }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                        alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                     })
             }
         },
 
         // on sauvegarde les changements en bdd via un appel api
         saveChanges() {
-            // on réinitialise les erreurs de validation à chaque nouvel appel api
-            this.validationErrors = []
-            
             axios.put('/api/images/' + this.image.id, {
                 mise_en_avant: this.mise_en_avant,
                 statut: this.statut
@@ -160,19 +159,22 @@ export default {
 
                         // on supprime l'image de la bdd (inutile de la conserver plus longtemps)
                         axios.delete("/api/images/" + this.image.id)
-            
-                            .then(response => {
+
+                            .then(() => {
                                 // une fois l'image  supprimée, on la retire des images du store
                                 // cela permet d'éviter un appel api qui récupérerait toutes les images alors qu'une seule a changé
                                 let index = this.images.findIndex(image => image.id == this.image.id)
                                 this.images.splice(index, 1)
-                            
+
                                 // on sauvegarde la nouvelle liste dans le store
                                 this.storeImages(this.images)
 
                                 message = "Suppression effectuée et notifiée à l'utilisateur."
                                 this.$router.push('/SuccessMessage/backoffice/' + message)
+                            }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                                alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                             })
+
 
                     } else if (this.statut == "") {
                         // cas du contenu choquant / totalement interdit sur le site
@@ -181,6 +183,9 @@ export default {
                     }
 
                     this.$router.push('/SuccessMessage/backoffice/' + message)
+                })
+                .catch((error) => {
+                    this.validationErrors = error.response.data.errors;
                 })
         },
 
@@ -197,6 +202,10 @@ export default {
 
             axios.post('/api/notifications', { titre: titre, message: message, user_id: userId, lieu_id: this.image.lieu_id })
                 .then(response => console.log(response.data.message))
+                .catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
+                })
+
         },
 
         createRefusalNotification(userId) {
@@ -212,6 +221,9 @@ export default {
 
             axios.post('/api/notifications', { titre: titre, message: message, user_id: userId, lieu_id: this.image.lieu_id })
                 .then(response => console.log(response.data.message))
+                .catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
+                })
         },
     },
 
@@ -220,6 +232,8 @@ export default {
         axios.get("/api/images/" + this.$route.params.id)
             .then(response => {
                 this.updateLocalData(response.data)
+            }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
             })
     },
 }

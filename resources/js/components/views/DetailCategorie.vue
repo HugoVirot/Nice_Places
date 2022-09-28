@@ -34,7 +34,7 @@
                             <i class="greenIcon fa-solid fa-hourglass-half ms-2 me-1"></i>
                             {{ lieu.temps }} heure(s)
                             <i class="greenIcon fa-solid fa-gauge-simple-high ms-2 me-1"></i>
-                        {{ lieu.difficulte }}
+                            {{ lieu.difficulte }}
                         </p>
                     </div>
                     <router-link :to="`/lieu/${lieu.id}`"><button class="btn btn-lg">Détails du lieu</button>
@@ -81,6 +81,8 @@ export default {
                 this.getValidatedPlaces()
                 this.loading = false
                 this.lieuxNonFiltres = this.categorie.lieux
+            }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
             })
     }
 }

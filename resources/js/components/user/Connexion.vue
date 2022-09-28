@@ -6,7 +6,7 @@
 
     <div class="container-fluid p-3 p-lg-5">
 
-        <ValidationErrors :errors="validationErrors" v-if="validationErrors"  />
+        <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
 
         <div class="row justify-content-center p-2 p-lg-5">
             <div class="col-md-8">
@@ -54,7 +54,7 @@
 <script>
 import axios from 'axios'
 import ValidationErrors from "../utilities/ValidationErrors.vue"
-import { mapActions, mapState, mapWritableState } from 'pinia'
+import { mapActions, mapState } from 'pinia'
 import { useUserStore } from '../../stores/userStore'
 
 export default {
@@ -63,12 +63,12 @@ export default {
         return {
             email: "",
             password: "",
+            validationErrors: ""
         }
     },
 
     computed: {
-        ...mapState(useUserStore, ['id', 'validationErrors']),
-        ...mapWritableState(useUserStore, ['validationErrors'])
+        ...mapState(useUserStore, ['id']),
     },
 
     components: { ValidationErrors },
@@ -77,8 +77,6 @@ export default {
         ...mapActions(useUserStore, ['storeUserData', 'storeNotifications']),
 
         logIn() {
-            // on réinitialise les erreurs de validation à chaque nouvel appel api
-
             // on tente la connexion. Si réussie, on stocke les données du user dans le state
             // on récupère aussi ses notifications qu'on stocke également dans le state
             axios.post('/api/login', { email: this.email, password: this.password })
@@ -86,6 +84,9 @@ export default {
                     this.storeUserData(response.data.data)
                     this.getNotifications()
                     this.$router.push('/successmessage/home/' + response.data.message)
+
+                }).catch((error) => {
+                    this.validationErrors = error.response.data.errors;
                 })
         },
 
@@ -93,6 +94,8 @@ export default {
             axios.get('/api/getnotificationsbyuser/' + this.id)
                 .then(response => {
                     this.storeNotifications(response.data);
+                }).catch(() => {
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
         },
     },

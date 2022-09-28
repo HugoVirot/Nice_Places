@@ -50,6 +50,8 @@ export default {
 			axios.get("http://localhost:8000/api/categories")
 				.then(response => {
 					this.storeCategories(response.data)
+				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+					alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
 				})
 		},
 
@@ -57,6 +59,8 @@ export default {
 			axios.get("http://localhost:8000/api/lieus")
 				.then(response => {
 					this.storeLieux(response.data)
+				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+					alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
 				})
 		},
 
@@ -64,6 +68,8 @@ export default {
 			axios.get("http://localhost:8000/api/departements")
 				.then(response => {
 					this.storeDepartements(response.data)
+				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+					alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
 				})
 		},
 
@@ -71,6 +77,8 @@ export default {
 			axios.get("http://localhost:8000/api/regions")
 				.then(response => {
 					this.storeRegions(response.data)
+				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+					alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
 				})
 		},
 
@@ -78,6 +86,8 @@ export default {
 			axios.get("http://localhost:8000/api/favoris/" + this.id)
 				.then(response => {
 					this.storeFavoris(response.data)
+				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+					alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
 				})
 		},
 

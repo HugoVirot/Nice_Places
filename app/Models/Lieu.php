@@ -36,7 +36,7 @@ class Lieu extends Model
 
     public function avis()
     {
-        return $this->hasMany(Avis::class);
+        return $this->hasMany(Avis::class)->where('statut', 'validé');
     }
 
     public function images()
