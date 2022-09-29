@@ -1,6 +1,6 @@
 <template>
     <div class="p-3">
-        <i class="fa-3x fa-solid fa-pen-to-square"></i>
+        <i class="fa-3x greenIcon fa-solid fa-pen-to-square"></i>
         <h1 class="mt-2">Modifier {{ lieu.nom }}</h1>
         <h2 v-if="role == 'admin' && lieu">Posté par {{ lieu.user.pseudo }}</h2>
         <div v-if="lieu">
@@ -184,7 +184,7 @@
 
                             <div class="form-group row mt-3 text-center">
                                 <div class="col-md-6 offset-md-3">
-                                    <button type="submit" class="btn btn-lg rounded-pill text-light btn-info">
+                                    <button type="submit" class="btn btn-lg greenButton rounded-pill text-light btn-info">
                                         Valider
                                     </button>
                                 </div>
@@ -369,41 +369,9 @@ export default {
 </script>
 
 <style scoped>
-h1 {
-    color: #1C6E8C
-}
-
-img {
-    width: 6vw
-}
-
-i {
-    color: #94D1BE
-}
-
-.card {
-    color: #1C6E8C;
-    background: rgba(254, 254, 254, 0.73)
-}
-
-.card-header {
-    background-color: #94D1BE
-}
-
 .container-fluid {
-    background-image: url(../../../../public/images/plage.jpg);
+    background-image: url(../../../../public/images/rocks.jpg);
     background-position: center;
     background-size: cover;
-}
-
-.btn {
-    background-color: #94D1BE !important;
-    color: white;
-}
-
-@media screen and (max-width: 768px) {
-    img {
-        width: 10vw
-    }
 }
 </style>

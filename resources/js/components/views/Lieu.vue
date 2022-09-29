@@ -105,7 +105,7 @@
                     <p v-if="lieu.kilometres"> <i class="fa-2x fa-solid fa-shoe-prints me-3"></i>
                         {{ lieu.kilometres }} kilomètres (en moyenne)</p>
                     <p>
-                        <router-link :to="`/uploadimages/${lieu.id}`"><button class="btn btn-lg rounded-pill">proposer
+                        <router-link :to="`/uploadimages/${lieu.id}`"><button class="btn btn-lg greenButton rounded-pill">proposer
                                 des images</button></router-link>
                     </p>
                 </div>
@@ -143,13 +143,13 @@
                             <!-- si commentaire limité à 500 => bouton "lire plus" pour afficher  -->
                         <div v-if="!showFullComment">
                             {{ avis.commentaire.substring(0, 500) + "..." }}
-                            <span class="blueText" @click="showFullComment = !showFullComment">lire plus</span>
+                            <span class="blueElement" @click="showFullComment = !showFullComment">lire plus</span>
                         </div>
 
                         <!-- si commentaire entièrement affiché => bouton "lire moins" pour replier  -->
                         <div v-else>
                             {{ avis.commentaire }}
-                            <span class="blueText" @click="showFullComment = !showFullComment">lire moins</span>
+                            <span class="blueElement" @click="showFullComment = !showFullComment">lire moins</span>
                         </div>
                         </p>
                     </div>
@@ -161,10 +161,10 @@
 
                 <div v-else>
                     <!-- si avis n°6 ou + : on l'affiche (ainsi que les autres de numéro > 6) au clic sur le bouton -->
-                    <button v-if="index + 1 == 6 && !showAllReviews" class="btn btn-lg rounded-pill mb-2"
+                    <button v-if="index + 1 == 6 && !showAllReviews" class="btn btn-lg greenButton rounded-pill mb-2"
                         @click="showAllReviews = !showAllReviews">Afficher tous les avis</button>
 
-                    <button v-if="index + 1 == 6 && showAllReviews" class="btn btn-lg rounded-pill mb-2"
+                    <button v-if="index + 1 == 6 && showAllReviews" class="btn btn-lg greenButton rounded-pill mb-2"
                         @click="showAllReviews = !showAllReviews">Masquer</button>
 
                     <div v-if="showAllReviews">
@@ -197,14 +197,14 @@
                                     <!-- si commentaire limité à 500 => bouton "lire plus" pour afficher  -->
                                 <div v-if="!showFullComment">
                                     {{ avis.commentaire.substring(0, 500) + "..." }}
-                                    <span class="blueText fs-5" @click="showFullComment = !showFullComment">lire
+                                    <span class="blueElement fs-5" @click="showFullComment = !showFullComment">lire
                                         plus</span>
                                 </div>
 
                                 <!-- si commentaire entièrement affiché => bouton "lire moins" pour replier  -->
                                 <div v-else>
                                     {{ avis.commentaire }}
-                                    <span class="blueText fs-5" @click="showFullComment = !showFullComment">lire
+                                    <span class="blueElement fs-5" @click="showFullComment = !showFullComment">lire
                                         moins</span>
                                 </div>
 
@@ -326,20 +326,6 @@ export default {
 </script>
 
 <style scoped>
-.greenIcon {
-    color: #94D1BE
-}
-
-.btn {
-    background-color: #94D1BE !important;
-    color: white;
-}
-
-h1,
-h2 {
-    color: #1C6E8C
-}
-
 .singlePicture {
     width: 90vw
 }
@@ -348,29 +334,9 @@ h2 {
     font-size: small;
 }
 
-p {
-    color: grey
-}
-
-i {
-    color: #1C6E8C
-}
-
-.yellowStar {
-    color: yellow
-}
-
 #detailsLieu p {
     display: flex;
     align-items: center
 }
 
-.btn {
-    background-color: #94D1BE !important;
-    color: white;
-}
-
-.blueText {
-    color: #1C6E8C
-}
 </style>

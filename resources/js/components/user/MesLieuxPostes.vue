@@ -1,7 +1,7 @@
 <template>
 
     <div class="pt-5 pb-2">
-        <i class="mx-auto fa-3x fa-solid fa-paper-plane"></i>
+        <i class="mx-auto fa-3x greenIcon fa-solid fa-paper-plane"></i>
         <h1 class="mt-2">Mes lieux postés</h1>
     </div>
 
@@ -9,10 +9,10 @@
         <div class="row">
             <div v-if="userPlaces.length == 0"><i class="greenIcon fa-solid fa-xmark fa-5x"></i>
                 <p>Vous n'avez posté aucun lieu</p>
-                <router-link to="/proposerlieu"><button class="btn btn-lg mt-3 rounded-pill">Proposer un lieu</button>
+                <router-link to="/proposerlieu"><button class="btn btn-lg mt-3 greenButton rounded-pill">Proposer un lieu</button>
                 </router-link>
             </div>
-            <div v-else class="col-lg-6 border border-3 border-white card text-white"
+            <div v-else class="col-lg-6 border border-3 border-white card card35vh text-white"
                 v-for="(userPlace, index) in userPlaces" :key="userPlace.id" :style="`background-image: url(images/${
                 userPlace.image_mise_en_avant[0] ?  userPlace.image_mise_en_avant[0].nom : 'placeholder.png'
                 }); background-position: center; background-size: cover;`">
@@ -26,9 +26,9 @@
                 <div v-else class="mx-auto bg-danger w-25">refusé
                 </div>
                 <div class="card-body">
-                    <router-link :to="`/lieu/${userPlace.id}`"><button class="btn me-2">Détails du lieu</button>
+                    <router-link :to="`/lieu/${userPlace.id}`"><button class="btn greenButton me-2">Détails du lieu</button>
                     </router-link>
-                    <router-link :to="`modifierLieu/${userPlace.id}`"><button class="btn">Modifier lieu</button>
+                    <router-link :to="`modifierLieu/${userPlace.id}`"><button class="btn blueButton">Modifier lieu</button>
                     </router-link>
                 </div>
             </div>
@@ -72,35 +72,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-h1 {
-    color: #1C6E8C
-}
-
-.greenIcon {
-    color: #94DEB1
-}
-
-i {
-    color: #94D1BE
-}
-
-.textWithShadow {
-    text-shadow: 2px 2px 4px #1C6E8C;
-}
-
-.card {
-    height: 35vh
-}
-
-button {
-    background-color: #94DEB1;
-    color: white
-}
-
-button:hover {
-    background-color: #1C6E8C;
-    color: white
-}
-</style>

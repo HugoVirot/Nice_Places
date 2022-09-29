@@ -60,7 +60,7 @@
 
                             <div class="form-group row mt-3 text-center">
                                 <div class="col-md-6 offset-md-3">
-                                    <button type="submit" class="btn btn-lg rounded-pill text-light btn-info">
+                                    <button type="submit" class="btn btn-lg greenButton rounded-pill text-light">
                                         Valider
                                     </button>
                                 </div>
@@ -148,27 +148,10 @@ export default {
 </script>
 
 <style scoped>
-h1 {
-    color: #1C6E8C
-}
-
-.card {
-    color: #1C6E8C;
-    background: rgba(254, 254, 254, 0.73)
-}
-
-.card-header {
-    background-color: #94D1BE
-}
 
 .container-fluid {
-    background-image: url(../../../../public/images/plage.jpg);
+    background-image: url(../../../../public/images/forest.jpg);
     background-position: center;
     background-size: cover;
-}
-
-.btn {
-    background-color: #94D1BE !important;
-    color: white;
 }
 </style>

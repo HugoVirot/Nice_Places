@@ -1,6 +1,6 @@
 <template>
     <div class="p-5">
-        <img class="mx-auto" src="images/icons/user.png" alt="user">
+        <i class="greenIcon mt-5 mx-auto fa-3x fa-solid fa-user-plus"></i>
         <h1 class="mt-2">Inscription</h1>
     </div>
 
@@ -71,35 +71,35 @@
 
                                 <div class="row">
                                     <p>minimum 8 caractères
-                                        <i v-if="eightCharacters" class="p-2 fa-solid fa-check"></i>
+                                        <i v-if="eightCharacters" class="p-2 greenIcon fa-solid fa-check"></i>
                                         <i v-else class="fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 lettre
-                                        <i v-if="oneLetter" class="p-2 fa-solid fa-check"></i>
+                                        <i v-if="oneLetter" class="p-2 greenIcon fa-solid fa-check"></i>
                                         <i v-else class="fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 chiffre
-                                        <i v-if="oneDigit" class="p-2 fa-solid fa-check"></i>
+                                        <i v-if="oneDigit" class="p-2 greenIcon fa-solid fa-check"></i>
                                         <i v-else class="fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 majuscule et 1 minuscule
-                                        <i v-if="oneUppercaseOneLowercase" class="p-2 fa-solid fa-check"></i>
+                                        <i v-if="oneUppercaseOneLowercase" class="p-2 greenIcon fa-solid fa-check"></i>
                                         <i v-else class="fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 caractère spécial
-                                        <i v-if="oneSpecialCharacter" class="p-2 fa-solid fa-check"></i>
+                                        <i v-if="oneSpecialCharacter" class="p-2 greenIcon fa-solid fa-check"></i>
                                         <i v-else class="fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
@@ -107,7 +107,7 @@
                             </div>
 
                             <div v-if="passwordCorrect == true" class="form-group row mx-auto rounded-pill mt-2 mb-4 bg-white w-50">
-                                <i class="fa-solid fa-circle-check fa-3x p-2 mb-2"></i>
+                                <i class="fa-solid fa-circle-check greenIcon fa-3x p-2 mb-2"></i>
                                 <p class="text-success">Mot de passe sécurisé</p>
                             </div>
 
@@ -125,13 +125,13 @@
 
                             <div v-if="passwordCorrect && password == password_confirmation"
                                 class="form-group row mx-auto m-2 mt-3 rounded-pill bg-white w-50">
-                                <i class="fa-solid fa-circle-check fa-3x p-2"></i>
+                                <i class="fa-solid fa-circle-check greenIcon fa-3x p-2"></i>
                                 <p class="text-success">Confirmation OK</p>
                             </div>
 
                             <div class="form-group row mt-3 text-center">
                                 <div class="col-md-6 offset-md-3">
-                                    <button type="submit" class="btn btn-lg rounded-pill text-white">
+                                    <button type="submit" class="btn btn-lg greenButton rounded-pill text-white">
                                         Valider
                                     </button>
                                 </div>
@@ -270,9 +270,6 @@ export default {
 </script>
 
 <style scoped>
-img {
-    width: 6vw
-}
 
 .container-fluid {
     background-image: linear-gradient(rgba(132, 247, 192, 0.4),
@@ -281,43 +278,12 @@ img {
     background-size: cover;
 }
 
-h1 {
-    color: #1C6E8C
-}
-
-button {
-    background-color: #1C6E8C;
-}
-
-button:hover{
-    background-color: #94D1BE;
-}
-
-.card {
-    color: #1C6E8C;
-    background: rgba(254, 254, 254, 0.73)
-}
-
-.card-header {
-    background-color: #94D1BE
-}
-
 #passwordHelpBlock {
     max-width: 600px;
 }
 
-i {
-    color: #94D1BE
-}
-
 .fa-xmark {
     color: red
-}
-
-@media screen and (max-width: 768px) {
-    img {
-        width: 10vw
-    }
 }
 </style>
 

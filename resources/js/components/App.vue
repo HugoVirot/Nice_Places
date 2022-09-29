@@ -187,7 +187,7 @@ export default {
 			<div class="container-fluid p-5" id="presentation" style="background-image: url(images/mervent2.jpg)">
 				<div class="row pb-4">
 					<div class="col-md-6 my-auto">
-						<img class="w-100 h-100 bg-white rounded" src="images/logo.png">
+						<img id="bigLogo" class="w-100 h-100 bg-white rounded" src="images/logo.png">
 					</div>
 
 					<div class="col-md-6 my-auto">
@@ -200,13 +200,14 @@ export default {
 					</div>
 				</div>
 
-				<router-link to="/inscription"><button class="btn btn-lg mt-3 rounded-pill">Je m'inscris</button>
+				<router-link to="/inscription"><button class="btn btn-lg greenButton mt-3 rounded-pill">Je
+						m'inscris</button>
 				</router-link>
 			</div>
 
 			<div id="presentationBottomStripe" class="mb-3"></div>
 
-			<i class="titleIcon mt-5 mb-3 mx-auto fa-3x fa-solid fa-location-dot"></i>
+			<i class="greenIcon mt-5 mx-auto fa-3x fa-solid fa-map-location-dot"></i>
 			<h2 class="fs-2 m-3"> Carte des lieux autour de chez vous</h2>
 
 
@@ -219,7 +220,7 @@ export default {
 			<div class="container-fluid">
 
 				<div>
-					<i class="titleIcon mt-5 mx-auto fa-3x fa-solid fa-book-atlas"></i>
+					<i class="greenIcon mt-5 mx-auto fa-3x fa-solid fa-book-atlas"></i>
 					<h2 class="fs-2 m-3">Catégories</h2>
 				</div>
 
@@ -234,14 +235,14 @@ export default {
 						<p class="fs-2 m-auto text-white textWithShadow p-5">{{ categorie.nom }}</p>
 
 						<router-link :to="`/categories/${categorie.id}`"><button
-								class="btn btn-lg rounded-pill mt-2">voir les lieux</button>
+								class="btn btn-lg greenButton rounded-pill mt-2">voir les lieux</button>
 						</router-link>
 
 					</div>
 
 				</div>
 
-				<router-link to="/categories"><button class="btn btn-lg mt-3 rounded-pill">Toutes les
+				<router-link to="/categories"><button class="btn btn-lg blueButton mt-3 rounded-pill">Toutes les
 						catégories</button>
 				</router-link>
 
@@ -252,7 +253,7 @@ export default {
 
 			<div v-if="threeTopPlaces && threeTopPlaces.length > 2">
 				<div>
-					<i class="titleIcon mt-5 mx-auto fa-3x fa-solid fa-star"></i>
+					<i class="greenIcon mt-5 mx-auto fa-3x fa-solid fa-star"></i>
 					<h2 v-if="departement" class="fs-2 m-3">Le top des lieux dans votre département</h2>
 					<h2 v-else class="fs-2 m-3">Le top des lieux (France entière)</h2>
 				</div>
@@ -285,8 +286,8 @@ export default {
 											v-html="topPlace.categorie.icone"></span>
 									</div>
 									<div class="col-6 d-flex">
-										<i class="titleIcon fa-2x fa-solid fa-location-dot me-2"></i>
-										<p class="my-auto">{{ topPlace.ville }} ({{ topPlace.code_postal.substr(0, 2)
+										<i class="greenIcon fa-2x fa-solid fa-location-dot me-2"></i>
+										<p class="text-white my-auto">{{ topPlace.ville }} ({{ topPlace.code_postal.substr(0, 2)
 										}})</p>
 									</div>
 								</div>
@@ -294,13 +295,14 @@ export default {
 							</div>
 
 							<router-link :to="`/lieu/${topPlace.id}`"><button
-									class="btn btn-lg rounded-pill">découvrir</button></router-link>
+									class="btn btn-lg greenButton rounded-pill">découvrir</button></router-link>
 
 						</div>
 
 					</div>
 
-					<router-link to="/toplieux"><button class="btn btn-lg mt-3 rounded-pill">Classement complet</button>
+					<router-link to="/toplieux"><button class="btn btn-lg blueButton mt-3 rounded-pill">Classement
+							complet</button>
 					</router-link>
 
 				</div>
@@ -311,7 +313,7 @@ export default {
 
 			<div v-if="threeLastPlaces && threeLastPlaces.length > 2">
 
-				<i class="titleIcon mt-5 mx-auto fa-3x fa-solid fa-clock"></i>
+				<i class="greenIcon mt-5 mx-auto fa-3x fa-solid fa-clock"></i>
 				<h2 v-if="departement" class="fs-2 m-3"> Derniers lieux ajoutés dans votre département</h2>
 				<h2 v-else class="fs-2 m-3"> Derniers lieux ajoutés (France entière)</h2>
 
@@ -341,11 +343,11 @@ export default {
 									<div class="row col">
 
 										<div class="col-3">
-											<i class="titleIcon fa-2x fa-solid fa-location-dot"></i>
+											<i class="greenIcon fa-2x fa-solid fa-location-dot"></i>
 										</div>
 
 										<div class="col-9">
-											<p>{{ lastPlace.ville }} ({{ lastPlace.code_postal.substr(0, 2) }})</p>
+											<p class="text-white">{{ lastPlace.ville }} ({{ lastPlace.code_postal.substr(0, 2) }})</p>
 										</div>
 
 									</div>
@@ -353,7 +355,7 @@ export default {
 									<div class="row col-md-8" v-if="lastPlace.ville.length < 15">
 
 										<div class="col-3">
-											<i class="titleIcon fa-2x fa-solid fa-user"></i>
+											<i class="greenIcon fa-2x fa-solid fa-user"></i>
 										</div>
 
 										<div class="col-9" v-if="lastPlace.user">
@@ -366,26 +368,27 @@ export default {
 							</div>
 
 							<router-link :to="`/lieu/${lastPlace.id}`"><button
-									class="btn btn-lg rounded-pill">découvrir</button></router-link>
+									class="btn btn-lg greenButton rounded-pill">découvrir</button></router-link>
 
 						</div>
 
 					</div>
 				</div>
 
-				<router-link to="/proposerlieu"><button class="btn btn-lg mt-3 rounded-pill">Proposer un lieu</button>
+				<router-link to="/proposerlieu"><button class="btn btn-lg blueButton mt-3 rounded-pill">Proposer un
+						lieu</button>
 				</router-link>
 
 			</div>
 
 			<!-- *********************************** INSCRIVEZ-VOUS ************************************** -->
 
-			<section id="inscrivezVous">
+			<section id="inscrivezVous" class="mt-2">
 
-				<i class="titleIcon mt-5 mx-auto fa-3x fa-solid fa-user-plus"></i>
+				<i class="greenIcon mt-5 mx-auto fa-3x fa-solid fa-user-plus"></i>
 				<h2 class="fs-2 m-3">Inscrivez-vous gratuitement !</h2>
 
-				<div class="container-fluid px-5">
+				<div class="container-fluid px-5 mt-4">
 					<div class="row" id="inscrivezVousIcones">
 						<div class="col-md-4 p-1">
 							<img class="inscrivezVousIcones" src="images/icons/france.png" alt="France">
@@ -404,7 +407,8 @@ export default {
 					</div>
 				</div>
 
-				<router-link to="/inscription"><button class="btn btn-lg mt-3 rounded-pill">Je m'inscris</button>
+				<router-link to="/inscription"><button class="btn btn-lg blueButton mt-3 rounded-pill">C'est décidé, je
+						m'inscris !</button>
 				</router-link>
 			</section>
 
@@ -417,30 +421,105 @@ export default {
 
 </template>
 
-<style scoped>
-img {
-	height: 1.7em
-}
+<style>
 
-.titleIcon {
-	color: #94D1BE
-}
+/******************* REGLES GENERALES ************/
 
-h1,
-h2 {
+.blueElement {
 	color: #1c6e8c
 }
 
-.btn {
-	background-color: #94D1BE !important;
-	color: white;
+.greenBackground {
+	background-color: #94D1BE;
 }
 
-#presentation {
-	background-position: center;
-	background-size: cover;
-	height: 55vh
+/******************* titres ************/
+
+h1,
+h2, .blueElement {
+	color: #1c6e8c
 }
+
+/******************* icônes ************/
+
+.greenIcon {
+	color: #94D1BE
+}
+
+.inscrivezVousIcones {
+	width: 10vw;
+	height: 10vw
+}
+
+.yellowStar {
+	color: yellow !important
+}
+
+.categoryicon {
+	background-color: white;
+}
+
+/******************* images ************/
+
+#bigLogo {
+	height: 1.7em
+}
+
+/******************* boutons ************/
+
+.greenButton {
+	color: white;
+	background-color: #94D1BE;
+}
+
+.greenButton:hover {
+	color: white;
+	background-color: #1C6E8C;
+}
+
+.blueButton {
+	color: white;
+	background-color: #1C6E8C;
+}
+
+.blueButton:hover {
+	color: white;
+	background-color: #94D1BE;
+}
+
+/************* ombres ************/
+
+.textWithShadow {
+	text-shadow: 2px 2px 4px #1C6E8C;
+}
+
+.iconWithShadow {
+	text-shadow: 2px 2px 4px #fff;
+}
+
+/************* Textes et polices ************/
+
+.bigFontSize {
+	font-size: 3.5em;
+}
+
+.bigFontSize2 {
+	margin-top: -4vh;
+	font-size: 4em;
+}
+
+.blueElement {
+	color: #1C6E8C
+}
+
+p {
+    color: grey
+}
+
+/******************* SECTIONS ACCUEIL ************/
+
+
+/******************* section présentation ************/
 
 #presentationTopStripe {
 	background-color: #94D1BE;
@@ -452,15 +531,32 @@ h2 {
 	height: 2vh;
 }
 
+#presentation {
+	background-position: center;
+	background-size: cover;
+	height: 55vh
+}
+
+/******************* sections lieux ************/
+
 #toplieux,
 #dernierslieux {
 	height: 50vh;
 	color: white
 }
 
-#toplieux button,
-#dernierslieux button {
-	background-color: #1c6e8c !important;
+.card {
+	color: #1C6E8C;
+	background: rgba(254, 254, 254, 0.73)
+}
+
+.card35vh {
+	height: 35vh
+}
+
+
+#inscrivezVous p{
+	color: #1c6e8c;
 }
 
 .infosTopLieux,
@@ -477,31 +573,17 @@ h2 {
 	height: 70%
 }
 
-.textWithShadow {
-	text-shadow: 2px 2px 4px #1C6E8C;
-}
 
-.yellowStar {
-	color: yellow
-}
-
-.categoryicon {
-	background-color: white;
-}
-
-#inscrivezVous {
-	color: #1c6e8c;
-}
-
-.inscrivezVousIcones {
-	width: 10vw;
-	height: 10vw
+.card-header {
+	background-color: #94D1BE
 }
 
 #pointer {
-	width: 7vw;
+	width: 6vw;
 	height: 10vw
 }
+
+/********* media queries (principalement pour style accueil) ********/
 
 @media screen and (max-width: 380px) {
 	#toplieux .rounded-circle {
@@ -528,6 +610,11 @@ h2 {
 	#pointer {
 		width: 20vw;
 		height: 30vw
+	}
+
+	.bigFontSize2 {
+		margin-top: -3vh;
+		font-size: 3em;
 	}
 }
 
@@ -585,6 +672,12 @@ h2 {
 @media screen and (min-width: 993px) {
 	.infosDerniersLieux {
 		height: 35%
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.bigFontSize {
+		font-size: 2em;
 	}
 }
 </style>

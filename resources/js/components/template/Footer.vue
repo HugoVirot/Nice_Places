@@ -1,5 +1,5 @@
 <template>
-    <footer class="container-fluid text-center p-5 mt-5">
+    <footer class="container-fluid greenBackground text-center p-5 mt-5">
         <img id="logoFooter" src="images/logo2.png">
         <p class="text-white fs-4">sorties nature près de chez vous</p>
         <p><a href="/">mentions légales</a> | <a href="/">politique de confidentialité</a></p>
@@ -13,9 +13,6 @@ export default {
 </script>
 
 <style>
-footer {
-    background-color: #94D1BE;
-}
 
 footer p {
     color: #1C6E8C

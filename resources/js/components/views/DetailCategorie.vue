@@ -5,7 +5,7 @@
 
         <div class="m-auto">
             <span class="fa-5x iconWithShadow" v-html="categorie.icone" :style="{color: categorie.couleur}"></span>
-            <h1 class="textWithShadow bigFontSize text-white">{{ categorie.nom }}</h1>
+            <h1 class="textWithShadow bigFontSize2 text-white">{{ categorie.nom }}</h1>
         </div>
 
     </div>
@@ -23,7 +23,7 @@
 
         <div class="row">
             <!-- composant qui affiche les lieux (le créer et lui passer les lieux en props)-->
-            <div class="col-lg-6 border border-3 border-white card text-white" v-for="(lieu, index) in categorie.lieux"
+            <div class="col-lg-6 border border-3 border-white card card35vh text-white" v-for="(lieu, index) in categorie.lieux"
                 :key="lieu.id"
                 :style="`background-image: url(/images/${lieu.image_mise_en_avant[0].nom}); background-position: center; background-size: cover;`">
                 <span class="m-auto">
@@ -37,7 +37,7 @@
                             {{ lieu.difficulte }}
                         </p>
                     </div>
-                    <router-link :to="`/lieu/${lieu.id}`"><button class="btn btn-lg">Détails du lieu</button>
+                    <router-link :to="`/lieu/${lieu.id}`"><button class="btn greenButton btn-lg">Détails du lieu</button>
                     </router-link>
                 </span>
             </div>
@@ -87,56 +87,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-.greenIcon {
-    color: #94D1BE
-}
-
-h1,
-h2 {
-    color: #1C6E8C
-}
-
-.yellowStar {
-    color: yellow
-}
-
-p {
-    color: grey
-}
-
-.bigFontSize {
-    margin-top: -4vh;
-    font-size: 4em;
-}
-
-.iconWithShadow {
-    text-shadow: 2px 2px 4px #fff;
-}
-
-.textWithShadow {
-    text-shadow: 2px 2px 4px #1C6E8C;
-}
-
-.card {
-    height: 35vh
-}
-
-button {
-    background-color: #94DEB1;
-    color: white
-}
-
-button:hover {
-    background-color: #1C6E8C;
-    color: white
-}
-
-@media screen and (max-width: 568px) {
-    .bigFontSize {
-        margin-top: -3vh;
-        font-size: 3em;
-    }
-}
-</style>

@@ -2,7 +2,7 @@
     <div class="container-fluid p-3 p-lg-4">
 
         <div class="m-3">
-            <i class="mx-auto fa-solid fa-pen fa-3x"></i>
+            <i class="mx-auto fa-solid fa-pen greenIcon fa-3x"></i>
             <h2 class="mt-2">Poster un avis</h2>
         </div>
 
@@ -95,22 +95,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-h2 {
-    color: #1C6E8C
-}
-
-i {
-    color: #94D1BE
-}
-
-.card-header {
-    background-color: #94D1BE
-}
-
-.greenButton {
-    color: white;
-    background-color: #94D1BE;
-}
-</style>

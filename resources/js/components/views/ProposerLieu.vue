@@ -103,7 +103,7 @@ export default {
 <template>
 
     <div class="p-5">
-        <i class="mx-auto fa-3x fa-solid fa-paper-plane"></i>
+        <i class="mx-auto greenIcon fa-3x fa-solid fa-paper-plane"></i>
         <h1 class="mt-2">Proposer un lieu</h1>
     </div>
 
@@ -252,7 +252,7 @@ export default {
 
                             <div class="form-group row mt-3 text-center">
                                 <div class="col-md-6 offset-md-3">
-                                    <button type="submit" class="btn btn-lg rounded-pill text-light btn-info">
+                                    <button type="submit" class="btn btn-lg greenButton rounded-pill text-light btn-info">
                                         Valider
                                     </button>
                                 </div>
@@ -266,57 +266,20 @@ export default {
     </div>
     <div v-else class="container">
         <p class="mb-2">Vous devez être connecté pour proposer un lieu.</p>
-        <router-link to="/connexion"><button class="btn btn-lg mb-3 rounded-pill">Se connecter</button>
+        <router-link to="/connexion"><button class="btn btn-lg greenButton mb-3 rounded-pill">Se connecter</button>
         </router-link>
 
         <p class="mb-2">Pas encore inscrit ?</p>
-        <router-link to="/inscription"><button class="btn btn-lg rounded-pill">Créer un compte</button>
+        <router-link to="/inscription"><button class="btn btn-lg greenButton rounded-pill">Créer un compte</button>
         </router-link>
     </div>
 
 </template>
 
 <style scoped>
-h1 {
-    color: #1C6E8C
-}
-
-i {
-    color: #94D1BE
-}
-
-.btn {
-    background-color: #94D1BE !important;
-    color: white;
-}
-
-img {
-    width: 6vw
-}
-
-.card {
-    color: #1C6E8C;
-    background: rgba(254, 254, 254, 0.73)
-}
-
-.card-header {
-    background-color: #94D1BE
-}
-
 .container-fluid {
     background-image: url(../../../../public/images/riviere.jpg);
     background-position: center;
     background-size: cover;
-}
-
-.btn {
-    background-color: #94D1BE !important;
-    color: white;
-}
-
-@media screen and (max-width: 768px) {
-    img {
-        width: 10vw
-    }
 }
 </style>

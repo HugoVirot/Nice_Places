@@ -14,7 +14,7 @@
         <div class="container-fluid p-3 p-lg-5">
 
             <div class="row">
-                <div class="col-lg-6 border border-3 border-white card text-white" v-for="favori in listeFavoris"
+                <div class="col-lg-6 border border-3 border-white card card35vh text-white" v-for="favori in listeFavoris"
                     :key="favori.id"
                     :style="`background-image: url(images/${favori.image_mise_en_avant[0].nom}); background-position: center; background-size: cover;`">
                     <div class="p-3 fs-3 textWithShadow"> {{ favori.nom }} </div>
@@ -86,39 +86,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-.greenIcon {
-    color: #94DEB1
-}
-
-h1 {
-    color: #1C6E8C
-}
-
-.yellowStar {
-    color: yellow
-}
-
-p {
-    color: grey
-}
-
-.textWithShadow {
-    text-shadow: 2px 2px 4px #1C6E8C;
-}
-
-.card {
-    height: 35vh
-}
-
-button {
-    background-color: #94DEB1;
-    color: white
-}
-
-button:hover {
-    background-color: #1C6E8C;
-    color: white
-}
-</style>

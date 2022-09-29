@@ -86,36 +86,7 @@ export default {
 </template>
 
 <style scoped>
-.textWithShadow {
-    text-shadow: 2px 2px 4px #1C6E8C;
-}
-
-.greenIcon {
-    color: #94DEB1
-}
-
-.greenBackground {
-    background-color: #94DEB1;
-}
-
 .ranking {
     font-size: 4em;
-}
-
-h1 {
-    color: #1C6E8C
-}
-
-.yellowStar {
-    color: yellow
-}
-
-.textWithShadow {
-    text-shadow: 2px 2px 4px #1C6E8C;
-}
-
-.greenButton {
-    color: white;
-    background-color: #94D1BE;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
 
     <div class="pt-5 pb-2">
-        <i class="mx-auto fa-3x fa-solid fa-paper-plane"></i>
+        <i class="mx-auto greenIcon fa-3x fa-solid fa-paper-plane"></i>
         <h1 class="mt-2">Proposer une image</h1>
         <h2>{{ lieu.nom }}</h2>
     </div>
@@ -44,15 +44,15 @@
                                 <div class="form-text mb-3 col-md-8 offset-md-2">
                                     <div class="row">
                                         <div class="col-md-4 text-center">
-                                            <i class="my-1 fa-3x fa-solid fa-weight-scale"></i>
+                                            <i class="my-1 fa-3x fa-solid greenIcon fa-weight-scale"></i>
                                             <p>Moins de 2 Mo</p>
                                         </div>
                                         <div class="col-md-4 text-center">
-                                            <i class="my-1 fa-3x fa-solid fa-rectangle-list"></i>
+                                            <i class="my-1 fa-3x fa-solid greenIcon fa-rectangle-list"></i>
                                             <p>Formats acceptés : JPG / JPEG, PNG et SVG</p>
                                         </div>
                                         <div class="col-md-4 text-center">
-                                            <i class="my-1 fa-3x fa-solid fa-panorama"></i>
+                                            <i class="my-1 fa-3x fa-solid greenIcon fa-panorama"></i>
                                             <p>Uniquement en format paysage svp</p>
                                         </div>
                                     </div>
@@ -61,7 +61,7 @@
 
                             <div class="form-group row mt-3 text-center">
                                 <div class="col-md-6 offset-md-3">
-                                    <button type="submit" class="btn btn-lg rounded-pill text-light">
+                                    <button type="submit" class="btn btn-lg greenButton rounded-pill text-light">
                                         Valider
                                     </button>
                                 </div>
@@ -138,33 +138,11 @@ export default {
 </script>
 
 <style scoped>
-h1,
-h2 {
-    color: #1C6E8C
-}
-
-i {
-    color: #94D1BE
-}
 
 .container-fluid {
     background-image: url(../../../../public/images/lake.jpg);
     background-position: center;
     background-size: cover;
-}
-
-.card {
-    color: #1C6E8C;
-    background: rgba(254, 254, 254, 0.73)
-}
-
-.card-header {
-    background-color: #94D1BE
-}
-
-.btn {
-    background-color: #94D1BE !important;
-    color: white;
 }
 
 .previousPictures {

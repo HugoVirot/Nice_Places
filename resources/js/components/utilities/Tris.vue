@@ -122,10 +122,3 @@ export default {
     }
 }
 </script>
-
-<style>
-.greenButton {
-    color: white;
-    background-color: #94D1BE;
-}
-</style>

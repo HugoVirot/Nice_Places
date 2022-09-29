@@ -1,6 +1,6 @@
 <template>
     <div class="p-5">
-        <i class="fa-solid fa-3x fa-user-check"></i>
+        <i class="fa-solid fa-3x fa-user-check greenIcon"></i>
         <h1 class="mt-2">Mon Compte</h1>
     </div>
 
@@ -291,25 +291,8 @@ export default {
     background-size: cover;
 }
 
-h1 {
-    color: #1C6E8C
-}
-
-i {
-    color: #94D1BE
-}
-
 .fa-xmark {
     color: red
-}
-
-.card {
-    color: #1C6E8C;
-    background: rgba(254, 254, 254, 0.73)
-}
-
-.card-header {
-    background-color: #94D1BE
 }
 
 #passwordHelpBlock {

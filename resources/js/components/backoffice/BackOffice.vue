@@ -1,50 +1,49 @@
 <template>
     <div class="p-5">
-        <i class="bigIcon fa-solid fa-3x fa-wrench"></i>
+        <i class="greenIcon fa-solid fa-3x fa-wrench"></i>
         <h1 class="mt-2">Back-office</h1>
     </div>
 
     <!-- évènements : lieux / avis / images à valider -->
     <div class="container">
         <div class="row">
-
             <!-- images à valider-->
             <div v-if="countNewImages > 0" @click="showImages = !showImages"
-                class="greenIcon mx-auto text-danger border border-4 rounded border-danger col-md-4 offset-md-1 py-5">
+                class="mx-auto text-danger border border-4 rounded border-danger col-md-4 offset-md-1 py-5">
                 <i class="fa-5x fa-solid fa-images mb-3"></i>
                 <p class="fs-3"><span class="fs-1">{{ countNewImages }}</span> images à valider</p>
             </div>
             <!-- images à jour-->
             <div v-else @click="showImages = !showImages"
-                class="greenIcon mx-auto border border-4 rounded border-secondary col-md-4 offset-md-1 py-5">
-                <i class="fa-5x fa-solid fa-images mb-3"></i>
-                <p class="fs-3"><i class="fa-2x fa-solid fa-check mb-3"></i>images à jour</p>
+                class="mx-auto border border-4 rounded border-secondary col-md-4 offset-md-1 py-5">
+                <i class="blueElement fa-5x fa-solid fa-images mb-3"></i>
+                <p class="fs-3"><i class="fa-2x fa-solid fa-check greenIcon mb-3"></i>images à jour</p>
             </div>
 
             <!-- lieux à valider-->
             <div v-if="countNewLieux > 0" @click="showLieux = !showLieux"
-                class="greenIcon mx-auto text-danger border border-4 rounded border-danger col-md-4 offset-md-1 py-5">
+                class="mx-auto text-danger border border-4 rounded border-danger col-md-4 offset-md-1 py-5">
                 <i class="fa-5x fa-solid fa-images mb-3"></i>
                 <p class="fs-3"><span class="fs-1">{{ countNewLieux }}</span> lieux à valider</p>
             </div>
             <!-- lieux à jour-->
             <div v-else @click="showLieux = !showLieux"
-                class="greenIcon mx-auto border border-4 rounded border-secondary col-md-4 offset-md-1 py-5">
-                <i class="fa-5x fa-solid fa-location-dot mb-3"></i>
-                <p class="fs-3"><i class="fa-2x fa-solid fa-check mb-3"></i>lieux à jour</p>
+                class="mx-auto border border-4 rounded border-secondary col-md-4 offset-md-1 py-5">
+                <i class="blueElement fa-5x fa-solid fa-location-dot mb-3"></i>
+                <p class="fs-3"><i class="fa-2x fa-solid fa-check greenIcon mb-3"></i>lieux à jour</p>
             </div>
 
             <!-- avis à valider-->
             <div v-if="countNewAvis > 0" @click="showAvis = !showAvis"
-                class="greenIcon mx-auto text-danger border border-4 rounded border-danger col-md-4 offset-md-1 py-5">
+                class="mx-auto text-danger border border-4 rounded border-danger col-md-4 offset-md-1 py-5">
                 <i class="fa-5x fa-solid fa-comment mb-3"></i>
                 <p class="fs-3"><span class="fs-1">{{countNewAvis }}</span> avis à valider</p>
             </div>
             <!-- avis à jour-->
             <div v-else @click="showAvis = !showAvis"
-                class="greenIcon mx-auto border border-4 rounded border-secondary col-md-4 offset-md-1 py-5">
-                <i class="fa-5x fa-solid fa-comment mb-3"></i>
-                <p class="fs-3"><i class="fa-2x fa-solid fa-check mb-3"></i>avis à jour</p>
+                class="mx-auto border border-4 rounded border-secondary col-md-4 offset-md-1 py-5">
+                <i class="blueElement fa-5x fa-solid fa-comment mb-3"></i>
+                <p class="fs-3"><i class="fa-2x fa-solid fa-check greenIcon mb-3"></i>avis à jour</p>
             </div>
         </div>
     </div>
@@ -53,24 +52,24 @@
         <div class="row">
             <div @click="showLieux = !showLieux"
                 class="col-md-6 col-lg-4 col-xl-2 offset-xl-1 py-5 border border-secondary">
-                <i class="bigIcon fa-3x fa-solid fa-map-location-dot"></i>
+                <i class="greenIcon fa-3x fa-solid fa-map-location-dot"></i>
                 <p class="fs-3">Lieux</p>
             </div>
             <div @click="showCategories = !showCategories"
                 class="col-md-6 col-lg-4 col-xl-2 py-5 border border-secondary">
-                <i class="bigIcon fa-solid fa-3x fa-rectangle-list"></i>
+                <i class="greenIcon fa-solid fa-3x fa-rectangle-list"></i>
                 <p class="fs-3">Catégories</p>
             </div>
             <div @click="showAvis = !showAvis" class="col-md-6 col-lg-4 col-xl-2 py-5 border border-secondary">
-                <i class="bigIcon fa-solid fa-3x fa-pen"></i>
+                <i class="greenIcon fa-solid fa-3x fa-pen"></i>
                 <p class="fs-3">Avis</p>
             </div>
             <div @click="showUsers = !showUsers" class="col-md-6 col-lg-4 col-xl-2 py-5 border border-secondary">
-                <i class="bigIcon fa-solid fa-3x fa-user"></i>
+                <i class="greenIcon fa-solid fa-3x fa-user"></i>
                 <p class="fs-3">Utilisateurs</p>
             </div>
             <div @click="showImages = !showImages" class="col-md-6 col-lg-4 col-xl-2 py-5 border border-secondary">
-                <i class="bigIcon fa-3x fa-solid fa-camera"></i>
+                <i class="greenIcon fa-3x fa-solid fa-camera"></i>
                 <p class="fs-3">Images</p>
             </div>
         </div>
@@ -705,27 +704,8 @@ export default {
 </script>
 
 <style scoped>
-h1,
-h2,
-i {
+.card-header, #entities p {
     color: #1c6e8c
-}
-
-.card-header,
-.greenButton {
-    background-color: #94D1BE;
-}
-
-#entities p {
-    color: #1c6e8c
-}
-
-.iconWithShadow {
-    text-shadow: 2px 2px 4px #fff;
-}
-
-.bigIcon {
-    color: #94D1BE
 }
 
 @media screen and (max-width: 1200px) {

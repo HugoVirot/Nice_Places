@@ -24,7 +24,7 @@
 
         <div v-if="showNotificationReadMessage">
             <p class="text-white greenBackground rounded mx-auto w-25 p-3">Notification marquée comme lue</p>
-            <button class="btn greenBackground" @click="showNotificationReadMessage = false">OK</button>
+            <button class="btn greenButton" @click="showNotificationReadMessage = false">OK</button>
         </div>
 
         <div class="container my-2" v-if="notifications.length > 0" v-for="notification in notifications">
@@ -53,7 +53,7 @@
                         aria-labelledby="headingOne" :data-bs-parent="`#notification${notification.id}`">
                         <div class="accordion-body">
                             <p class="text-center notificationMessage p-2" v-html="notification.message"></p>
-                            <button v-if="!notification.lue" class="btn btn-info mx-auto"
+                            <button v-if="!notification.lue" class="btn greenButton mx-auto"
                                 @click="markNotificationAsRead(notification.id)">OK (marquer comme lue)</button>
                         </div>
                     </div>
@@ -116,46 +116,11 @@ export default {
 </script>
 
 <style scoped>
-.greenIcon {
-    color: #94DEB1
-}
-
-.greenBackground {
-    background-color: #94DEB1;
-}
-
-h1 {
-    color: #1C6E8C
-}
-
 h3 {
     color: white
 }
-
-p {
-    color: grey
-}
-
 .accordion-button {
     background-color: #1C6E8C;
-}
-
-.textWithShadow {
-    text-shadow: 2px 2px 4px #1C6E8C;
-}
-
-.card {
-    height: 35vh
-}
-
-button {
-    background-color: #1C6E8C;
-    color: white
-}
-
-button:hover {
-    background-color: #94DEB1;
-    color: white
 }
 
 .notificationMessage {

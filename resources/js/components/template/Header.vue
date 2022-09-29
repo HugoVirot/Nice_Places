@@ -6,7 +6,7 @@
 
             <!-- ************************** titre et bandes ***********************-->
 
-            <div class="mt-1 d-none d-md-block" id="leftstripe"></div>
+            <div class="mt-1 d-none d-md-block greenBackground" id="leftstripe"></div>
 
             <!-- image avec deux bandes (mobiles uniquement) -->
             <img class="d-block mt-3 d-md-none" id="twostripes" alt="twostripes"
@@ -18,7 +18,7 @@
                 </router-link>
                 <p id="textelogo" class="mx-auto d-none d-md-block">
                     <span class="greentext">sorties nature </span>
-                    <span class="bluetext">près de chez vous</span>
+                    <span class="blueElement">près de chez vous</span>
                 </p>
             </div>
 
@@ -26,7 +26,7 @@
 
             <!-- hamburger -->
 
-            <button class="navbar-toggler mt-3 d-md-none my-auto" type="button" data-bs-toggle="collapse"
+            <button class="navbar-toggler greenBackground mt-3 d-md-none my-auto" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
                 aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -90,7 +90,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            <i id="logoutIcon" class="fa-solid fa-right-from-bracket my-auto" @click="logOutUser()"></i>
+                            <i class="greenIcon fa-solid fa-right-from-bracket my-auto" @click="logOutUser()"></i>
                         </span>
 
                         <span v-else class="d-md-flex justify-content-center">
@@ -145,7 +145,7 @@ export default {
 
 <style>
 @font-face {
-    font-family: 'Cooper';
+    font-family: 'Cooper', Arial;
     src: './Cooper Black Regular.ttf';
 }
 
@@ -171,10 +171,6 @@ a {
     color: inherit
 }
 
-#logoutIcon {
-    color: #94D1BE
-}
-
 .dropdown-menu .router-link {
     color: #94D1BE
 }
@@ -185,7 +181,6 @@ body {
 
 #leftstripe {
     width: 33vw;
-    background-color: #94D1BE;
     height: 2vh;
 }
 
@@ -199,18 +194,12 @@ body {
     color: #94D1BE
 }
 
-
-.bluetext {
-    color: #1C6E8C
-}
-
 .navbar-brand,
 .nav-link {
     color: #1C6E8C
 }
 
 .navbar-toggler {
-    background-color: #94D1BE;
     border-radius: 30%;
 }
 

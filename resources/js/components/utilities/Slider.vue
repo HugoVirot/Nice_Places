@@ -5,10 +5,10 @@
 
             <div class="carousel-item active">
                 <img src="images/coulon.jpg" class="d-block w-100" alt="marais poitevin">
-                <div class="carousel-caption captionfondbleu d-none d-md-block p-5">
+                <div class="carousel-caption captionfondbleu d-none d-md-block p-5 mt-auto">
                     <h2>Redécouvrez votre région !</h2>
                     <p>Vous serez étonné(e) par les nombreux lieux extraordinaires qu'elle propose.</p>
-                    <router-link to="/carte"><button class="btn btn-lg">Voir la carte des lieux</button>
+                    <router-link to="/carte"><button class="btn btn-lg greenButton">Voir la carte des lieux</button>
                     </router-link>
                 </div>
                 <h2 class="carousel-caption d-block d-md-none fs-1">Redécouvrez votre région !</h2>
@@ -20,7 +20,7 @@
                     <h2>Partagez vos coups de coeur !</h2>
                     <p>Faites profiter la communauté de vos petits coins de paradis.</p>
 
-                    <router-link to="/proposerlieu"><button class="btn btn-lg">Partager un lieu</button>
+                    <router-link to="/proposerlieu"><button class="btn btn-lg greenButton">Partager un lieu</button>
                     </router-link>
                 </div>
                 <h2 class="carousel-caption d-block d-md-none fs-1">Partagez vos coups de coeur</h2>
@@ -32,7 +32,7 @@
                     <h2>Destination nature !</h2>
                     <p>Il y a toujours une nouvelle sortie sur Nice Places !
                     </p>
-                    <router-link to="/categories"><button class="btn btn-lg">Explorer les catégories</button>
+                    <router-link to="/categories"><button class="btn btn-lg greenButton">Explorer les catégories</button>
                     </router-link>
                 </div>
                 <h2 class="carousel-caption d-block d-md-none fs-1 ">Destination nature !</h2>
@@ -67,21 +67,22 @@ export default {
 </script>
 
 <style scoped>
+.carouselAccueil h2 {
+    color: white !important
+}
+
 .captionfondbleu {
     background-color: rgba(50, 61, 158, 0.5);
 }
 
 p {
     font-size: larger;
+    color: white
 }
 
 h2 {
-    font-size: 2.6vw;
+    font-size: 3.8vw;
     z-index: 1;
-}
-
-.btn {
-    background-color: #94D1BE !important;
     color: white;
 }
 </style>
