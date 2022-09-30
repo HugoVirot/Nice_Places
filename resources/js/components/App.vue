@@ -287,7 +287,8 @@ export default {
 									</div>
 									<div class="col-6 d-flex">
 										<i class="greenIcon fa-2x fa-solid fa-location-dot me-2"></i>
-										<p class="text-white my-auto">{{ topPlace.ville }} ({{ topPlace.code_postal.substr(0, 2)
+										<p class="text-white my-auto">{{ topPlace.ville }} ({{
+										topPlace.code_postal.substr(0, 2)
 										}})</p>
 									</div>
 								</div>
@@ -347,7 +348,8 @@ export default {
 										</div>
 
 										<div class="col-9">
-											<p class="text-white">{{ lastPlace.ville }} ({{ lastPlace.code_postal.substr(0, 2) }})</p>
+											<p class="text-white">{{ lastPlace.ville }} ({{
+											lastPlace.code_postal.substr(0, 2) }})</p>
 										</div>
 
 									</div>
@@ -422,7 +424,6 @@ export default {
 </template>
 
 <style>
-
 /******************* REGLES GENERALES ************/
 
 .blueElement {
@@ -436,7 +437,8 @@ export default {
 /******************* titres ************/
 
 h1,
-h2, .blueElement {
+h2,
+.blueElement {
 	color: #1c6e8c
 }
 
@@ -513,11 +515,36 @@ h2, .blueElement {
 }
 
 p {
-    color: grey
+	color: grey
 }
 
-/******************* SECTIONS ACCUEIL ************/
+/******************* cards ************/
 
+.card {
+	color: #1C6E8C;
+	background: rgba(254, 254, 254, 0.73)
+}
+
+.card-header {
+	background-color: #94D1BE
+}
+
+
+.card35vh {
+	height: 35vh
+}
+
+/******************* classements ************/
+
+.ranking {
+	font-size: 2em;
+}
+
+.rankingAndName {
+	height: 70%
+}
+
+/******************* SECTIONS ACCUEIL *****************/
 
 /******************* section présentation ************/
 
@@ -545,37 +572,17 @@ p {
 	color: white
 }
 
-.card {
-	color: #1C6E8C;
-	background: rgba(254, 254, 254, 0.73)
-}
-
-.card35vh {
-	height: 35vh
-}
-
-
-#inscrivezVous p{
-	color: #1c6e8c;
-}
-
 .infosTopLieux,
 .infosDerniersLieux {
 	background-color: rgba(50, 61, 158, 0.5);
 	height: 34%
 }
 
-.ranking {
-	font-size: 2em;
-}
-
-.rankingAndName {
-	height: 70%
-}
+/******************* inscrivez-vous ************/
 
 
-.card-header {
-	background-color: #94D1BE
+#inscrivezVous p {
+	color: #1c6e8c;
 }
 
 #pointer {
@@ -583,7 +590,8 @@ p {
 	height: 10vw
 }
 
-/********* media queries (principalement pour style accueil) ********/
+
+/********* MEDIA QUERIES (principalement pour l'accueil) ********/
 
 @media screen and (max-width: 380px) {
 	#toplieux .rounded-circle {

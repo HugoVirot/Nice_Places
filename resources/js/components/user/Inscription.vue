@@ -106,7 +106,8 @@
 
                             </div>
 
-                            <div v-if="passwordCorrect == true" class="form-group row mx-auto rounded-pill mt-2 mb-4 bg-white w-50">
+                            <div v-if="passwordCorrect == true"
+                                class="form-group row mx-auto rounded-pill mt-2 mb-4 bg-white w-50">
                                 <i class="fa-solid fa-circle-check greenIcon fa-3x p-2 mb-2"></i>
                                 <p class="text-success">Mot de passe sécurisé</p>
                             </div>
@@ -129,7 +130,18 @@
                                 <p class="text-success">Confirmation OK</p>
                             </div>
 
-                            <div class="form-group row mt-3 text-center">
+                            <div class="form-group row m-2">
+                                <div class="col-md-9">
+                                    <label for="politique">J'ai lu et j'accepte la
+                                        <router-link to="/politique">politique de confidentialité</router-link>
+                                    </label>
+                                </div>
+                                <div class="col-md-1">
+                                    <input type="checkbox" v-model="politique" id="politique" name="politique">
+                                </div>
+                            </div>
+
+                            <div v-if="politique" class="form-group row mt-3 text-center">
                                 <div class="col-md-6 offset-md-3">
                                     <button type="submit" class="btn btn-lg greenButton rounded-pill text-white">
                                         Valider
@@ -190,6 +202,7 @@ export default {
             oneSpecialCharacter: false,
             passwordCorrect: false,
             validationErrors: "",
+            politique: false
         }
     },
     components: { ValidationErrors },
@@ -270,10 +283,9 @@ export default {
 </script>
 
 <style scoped>
-
 .container-fluid {
     background-image: linear-gradient(rgba(132, 247, 192, 0.4),
-            rgba(7, 117, 230, 0.3)), url(../../../../public/images/foret.jpg);
+            rgba(7, 117, 230, 0.3)), url(../../../../public/images/mountain_river.jpg);
     background-position: center;
     background-size: cover;
 }

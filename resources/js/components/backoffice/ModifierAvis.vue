@@ -180,7 +180,7 @@ export default {
                     break
 
                 case ("refusé"):
-                    titre = `${this.avis.user.pseudo}, votre avis ${this.nom} a été refusé.`;
+                    titre = `${this.avis.user.pseudo}, votre avis a été refusé.`;
                     message = `Après vérification, j'ai décidé de refuser votre avis : <br> 
                     <p>Lieu : ${this.avis.lieu.nom} </p>
                     <p>Note : ${this.note} </p>

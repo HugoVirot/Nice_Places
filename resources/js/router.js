@@ -19,6 +19,8 @@ import ModifierAvis from "./components/backoffice/ModifierAvis"
 import ModifierImage from "./components/backoffice/ModifierImage"
 import MesNotifications from "./components/user/MesNotifications"
 import UploadImages from "./components/views/UploadImages"
+import Contact from "./components/views/Contact"
+import Politique from "./components/views/Politique"
 import { useUserStore } from "./stores/userStore";
 
 const routes = [
@@ -102,6 +104,14 @@ const routes = [
   {
     path: "/uploadimages/:id",
     component: UploadImages
+  },
+  {
+    path: "/contact",
+    component: Contact
+  },
+  {
+    path: "/politique",
+    component: Politique
   }
 ];
 

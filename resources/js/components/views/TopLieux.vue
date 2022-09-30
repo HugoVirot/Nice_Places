@@ -58,7 +58,7 @@ export default {
                         </div>
                         <div class="col-6 d-flex justify-content-center align-items-center">
                             <p><i class="yellowStar fa-2x fa-solid fa-star ms-2 me-1"></i>
-                                <span class="fs-2">{{ topLieu.note }}</span>
+                                <span class="fs-2 text-white">{{ topLieu.note }}</span>
                             </p>
                         </div>
                     </div>

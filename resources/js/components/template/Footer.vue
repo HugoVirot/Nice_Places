@@ -2,7 +2,8 @@
     <footer class="container-fluid greenBackground text-center p-5 mt-5">
         <img id="logoFooter" src="images/logo2.png">
         <p class="text-white fs-4">sorties nature près de chez vous</p>
-        <p><a href="/">mentions légales</a> | <a href="/">politique de confidentialité</a></p>
+        <p><router-link to="politique/">mentions légales / politique de confidentialité</router-link> | 
+            <router-link to="/contact">contact</router-link></p>
         <p>© 2022 Nice Places</p>
     </footer>
 </template>
@@ -12,7 +13,10 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+a:hover {
+    color: white !important
+}
 
 footer p {
     color: #1C6E8C

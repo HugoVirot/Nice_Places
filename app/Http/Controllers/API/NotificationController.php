@@ -38,31 +38,19 @@ class NotificationController extends BaseController
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'message' => 'required|string|min:20|max:3000',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Error validation', $validator->errors());
+        }
+
         $notification = Notification::create($request->all());
-        $this->sendResponse($notification, "Notification sauvegardée");
+
+        $this->sendResponse($notification, "Notification envoyée");
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Notification  $notification
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Notification $notification)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Notification  $notification
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Notification $notification)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -71,7 +59,7 @@ class NotificationController extends BaseController
      * @param  \App\Models\Notification  $notification
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Notification $notification)
+    public function update(Notification $notification)
     {
         $notification->lue = true;
         $notification->save();

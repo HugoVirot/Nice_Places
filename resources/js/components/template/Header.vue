@@ -171,6 +171,10 @@ a {
     color: inherit
 }
 
+a:hover{
+    color: #94D1BE !important
+}
+
 .dropdown-menu .router-link {
     color: #94D1BE
 }
