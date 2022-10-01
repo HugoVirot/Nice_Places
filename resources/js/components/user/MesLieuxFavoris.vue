@@ -14,17 +14,8 @@
         <div class="container-fluid p-3 p-lg-5">
 
             <div class="row">
-                <div class="col-lg-6 border border-3 border-white card card35vh text-white" v-for="favori in listeFavoris"
-                    :key="favori.id"
-                    :style="`background-image: url(images/${favori.image_mise_en_avant[0].nom}); background-position: center; background-size: cover;`">
-                    <div class="p-3 fs-3 textWithShadow"> {{ favori.nom }} </div>
-                    <p class="m-1"><i class="yellowStar fa-solid fa-star fa-2x ms-2 me-1"></i>
-                        <span class="text-white textWithShadow">{{ favori.note }}</span>
-                    </p>
-                    <div class="card-body">
-                        <router-link :to="`/lieu/${favori.id}`"><button class="btn greenButton">Détails du lieu</button>
-                        </router-link>
-                    </div>
+                <div class="col-lg-6 border border-3 border-white" v-for="favori in listeFavoris" :key="favori.id">
+                   <RectangleLieu :lieu="favori"/>
                 </div>
             </div>
         </div>
@@ -39,9 +30,10 @@
 
 <script>
 import { useUserStore } from "../../stores/userStore"
-import { mapState } from "pinia"
+import { mapActions, mapState } from "pinia"
 import Filtres from "../utilities/Filtres.vue"
 import Tris from "../utilities/Tris.vue"
+import RectangleLieu from "../utilities/RectangleLieu.vue"
 
 export default {
     data() {
@@ -55,9 +47,10 @@ export default {
         ...mapState(useUserStore, ['id', 'favoris'])
     },
 
-    components: { Filtres, Tris },
+    components: { Filtres, Tris, RectangleLieu },
 
     methods: {
+        ...mapActions(useUserStore, ['storeFavoris']),
 
         // récupérer les favoris de l'utilisateur
         getFavoris() {

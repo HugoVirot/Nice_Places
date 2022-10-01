@@ -26,7 +26,7 @@
             <div class="col-lg-6 border border-3 border-white card card35vh text-white" v-for="(lieu, index) in categorie.lieux"
                 :key="lieu.id"
                 :style="`background-image: url(/images/${lieu.image_mise_en_avant[0].nom}); background-position: center; background-size: cover;`">
-                <span class="m-auto">
+                <span>
                     <div class="p-2 textWithShadow">
                         <p class="fs-1 text-white">{{ lieu.nom }}</p>
                         <p class="text-white fs-4">

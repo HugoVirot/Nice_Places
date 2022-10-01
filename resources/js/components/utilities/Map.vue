@@ -160,7 +160,7 @@ export default {
 
                             if (lieu.categorie.id == categorie.id) { // si la catégorie du lieu est bien la catégorie concernée, on crée le marqueur et son pointeur
 
-                                let imageCouvertureLieu = lieu.image_mise_en_avant[0] ? lieu.image_mise_en_avant[0].nom : 'placeholder.png'
+                                let imageCouvertureLieu = lieu.image_mise_en_avant[0] ? lieu.image_mise_en_avant[0].nom : 'defaultpicture.jpg'
 
                                 let popupContent = "<div class=\"text-center\"><span style=\"display:none\">" + lieu.id + "</span>" +
                                     "<div><span class=\"mx-auto fa-2x\" style=\"color:" + lieu.categorie.couleur + "\">" + lieu.categorie.icone + "</span>" +

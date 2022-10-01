@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// ****************** Inscription et connexion ****************
+
 // inscription 
 Route::post('register', [App\Http\Controllers\API\UserController::class, 'store'])->name('register');
 
@@ -20,15 +22,14 @@ Route::post('register', [App\Http\Controllers\API\UserController::class, 'store'
 Route::post('login', [App\Http\Controllers\API\LoginController::class, 'login'])->name('login');
 
 
-// *******************Pour toutes les routes : apiResource = mode ressource version API, sans create et edit****************
+// ****************** Pour toutes les routes : apiResource = mode ressource version API, sans create et edit ****************
 
-// ****************************************Les routes "users.*" de l'API ***************************************************
+// **************************************** routes USERS ***************************************************
 
 Route::apiResource("users", App\Http\Controllers\API\UserController::class)->except('store');
 
 
-
-// ****************************************Les routes "lieux.*" de l'API ***************************************************
+// **************************************** routes LIEUX ***************************************************
 
 Route::apiResource("lieus", App\Http\Controllers\API\LieuController::class);
 
@@ -39,43 +40,39 @@ Route::post('lieus/getplacesbyuser', [App\Http\Controllers\API\LieuController::c
 Route::get('lieus/getimagesnumberbyplace/{lieu}', [App\Http\Controllers\API\LieuController::class, 'getImagesNumberByPlace'])->name('getImagesNumberByPlace');
 
 
-
-// ***********************************************Les routes "avis.*" de l'API *********************************************
+// ******************************************* routes AVIS *********************************************
 
 Route::apiResource("avis", App\Http\Controllers\API\AvisController::class);
 
 
-
-// **************************************Les routes "categories.*" de l'API*************************************************
+// ************************************** routes CATEGORIES *************************************************
 
 Route::apiResource("categories", App\Http\Controllers\API\CategorieController::class);
 
 
-
-// *********************************************Les routes "favoris.*" de l'API********************************************
+// **************************************** routes FAVORIS ********************************************
 
 Route::apiResource("favoris", App\Http\Controllers\API\FavoriController::class)->except('index', 'update', 'show', 'delete');
 Route::get('favoris/{user}', [App\Http\Controllers\API\FavoriController::class, 'index'])->name('index');
 Route::delete('favoris/{user}/{lieu}', [App\Http\Controllers\API\FavoriController::class, 'destroy'])->name('destroy');
 
 
-//*********************************************les routes "images*" de l'API***********************************************
+//**************************************** routes IMAGES ***********************************************
 
 Route::apiResource("images", App\Http\Controllers\API\ImageController::class);
 
 
-//****************************************Les routes "notifications.*" de l'API*************************************************
+//************************************** routes NOTIFICATIONS *************************************************
 
 Route::apiResource("notifications", App\Http\Controllers\API\NotificationController::class)->except('index');
 Route::get('getnotificationsbyuser/{user}', [App\Http\Controllers\API\NotificationController::class, 'getNotificationsByUser'])->name('getNotificationsByUser');
-Route::put('notifications/{notification}', [App\Http\Controllers\API\NotificationController::class, 'markNotificationAsRead'])->name('markNotificationAsRead');
 
 
-//****************************************Les routes "departements.*" de l'API*************************************************
+//************************************** route DEPARTEMENTS *************************************************
 
-Route::apiResource("departements", App\Http\Controllers\API\DepartementController::class);
+route::get("/departements", App\Http\Controllers\API\DepartementController::class)->name("getDepartements");
 
 
-//****************************************Les routes "regions.*" de l'API*************************************************
+//************************************** route REGIONS *************************************************
 
-Route::apiResource("regions", App\Http\Controllers\API\RegionController::class);
+route::get("/regions", App\Http\Controllers\API\RegionController::class)->name("getRegions");

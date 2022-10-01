@@ -11,21 +11,22 @@ use App\Models\Departement;
 class LoginController extends BaseController
 {
     /**
-     * Handle an login attempt.
+     * Tenter la connexion utilisateur.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function login(Request $request)
     {
-        // Laravel tente de connecter le user si l'email existe et si le mdp en clair correspond à celui hashé 
+        // Laravel tente de connecter le user si l'email existe ET si le mdp en clair correspond à celui hashé 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
 
+             // si la connexion fonctionne
              // on récupère l'utilisateur et on charge son rôle
             $authUser = User::find(Auth::user()->id);
             $authUser->load('role'); 
 
-            // on lui crée un token (enregistré dans la table personnal_access_tokens)
+            // on lui crée un token de session (enregistré dans la table personnal_access_tokens)
             // on le stocke dans $success ainsi que ses autres infos
             $success['token'] =  $authUser->createToken('LoginUser' . $authUser->id)->plainTextToken;
             $success['pseudo'] =  $authUser->pseudo;

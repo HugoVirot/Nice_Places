@@ -122,6 +122,7 @@
                     <th scope="col">adresse</th>
                     <th scope="col">code postal</th>
                     <th scope="col">ville</th>
+                    <th scope="col">commentaire</th>
                     <th scope="col">posté par</th>
                     <th scope="col">ajouté le</th>
                     <th scope="col">modifié le</th>
@@ -154,6 +155,7 @@
                     <td>{{ lieu.adresse }}</td>
                     <td>{{ lieu.code_postal }}</td>
                     <td>{{ lieu.ville }}</td>
+                    <td>{{ lieu.commentaire ? lieu.commentaire : "aucun" }}</td>
                     <td>{{ lieu.user ? lieu.user.pseudo : 'compte supprimé'}}</td>
                     <td>{{ moment(lieu.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
                     <td> {{ lieu.created_at == lieu.updated_at ? "jamais modifié" :
@@ -448,17 +450,23 @@ export default {
 
         // renvoie le nombre d'images avec statut "en attente"
         countNewImages() {
-            return this.images.filter(image => image.statut == "en attente").length
+            if (this.images) {
+                return this.images.filter(image => image.statut == "en attente").length
+            }
         },
 
         // renvoie le nombre d'images avec statut "en attente"
         countNewLieux() {
+            if (this.lieux) {
             return this.lieux.filter(lieu => lieu.statut == "en attente").length
+            }
         },
 
         // renvoie le nombre d'images avec statut "en attente"
         countNewAvis() {
+            if (this.avis){
             return this.avis.filter(avi => avi.statut == "en attente").length
+            }
         },
 
     },
@@ -704,7 +712,8 @@ export default {
 </script>
 
 <style scoped>
-.card-header, #entities p {
+.card-header,
+#entities p {
     color: #1c6e8c
 }
 

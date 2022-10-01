@@ -65,7 +65,7 @@ class UserController extends BaseController
                     'nullable'
                 ]
             ],
-            // messages d'erreur personnalisés
+            // message d'erreur pour mdp trop court (n'est pas présent par défaut)
             [
                 'password.min' => 'Votre mot de passe doit faire au moins :min caractères.',
             ]
@@ -82,7 +82,7 @@ class UserController extends BaseController
             'departement_id' => $request->departement
         ]);
 
-        // création d'un token pour le user
+        // création d'un token de session (enregistré dans la table personnal_access_tokens)
         $success['token'] =  $user->createToken('RegistrationUser' . $user->id)->plainTextToken;
         $success['pseudo'] =  $user->pseudo;
         $success["email"] = $user->email;
@@ -93,7 +93,7 @@ class UserController extends BaseController
 
 
     /**
-     * Display the specified resource.
+     * Return all the user's informations to be displayed on his profile.
      *
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
@@ -101,25 +101,11 @@ class UserController extends BaseController
 
     public function show(User $user)
     {
-        // 2) on retourne uniquement les infos précisées dans la ressource
-        //(pseudo et département) => pour le profil public
+        // on retourne uniquement les infos précisées dans la ressource
+        //(pseudo et département) => pour le profil public (à venir dans une future version)
         return new UserResource($user);
     }
-
-
-    /**
-     * Return all the user's informations to be displayed on his profile.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-
-    public function profile(User $user)
-    {
-        // 1) On retourne toutes les informations de l'utilisateur en JSON
-        return response()->json($user);
-    }
-
+    
 
     /**
      * Update the user in storage.
@@ -162,8 +148,9 @@ class UserController extends BaseController
         // si nouveau mdp choisi (et qui respecte bien sûr les critères de sécurité du validateur)
         if ($request->password) {
 
-            // si ancien mdp fourni ET valide, modification validée 
+            // si ancien mdp fourni ET valide (vérifié via Hash::check), modification validée 
             if (isset($request->oldPassword) && Hash::check($request->oldPassword, User::find($user->id)->password)) {
+                // on sauvegarde le nouveau mot de passe hashé
                 $user->update([
                     'password' => Hash::make($request->password)
                 ]);

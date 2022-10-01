@@ -42,7 +42,7 @@
             </div>
 
         </div>
-        <img class="singlePicture" v-if="lieu.images.length == 0" src="/images/placeholder.png">
+        <img class="singlePicture" v-if="lieu.images.length == 0" src="/images/defaultpicture.jpg">
 
         <img class="singlePicture" v-else-if="lieu.images.length == 1" :src="`/images/${lieu.images[0].nom}`">
 
@@ -126,10 +126,10 @@
                             {{ avis.note }} / 10
                         </div>
                         <div class="col-md-4 p-3 p-md-0">
-                            <i class="fa-solid fa-user fa-2x ms-2 me-3"></i>Posté par {{ avis.user.pseudo }}
+                            <i class="fa-solid greenIcon fa-user fa-2x ms-2 me-3"></i>Posté par {{ avis.user.pseudo }}
                         </div>
                         <div class="col-md-4 p-3 p-md-0">
-                            <i class="fa-solid fa-calendar-days fa-2x ms-2 me-3"></i>
+                            <i class="fa-solid blueElement fa-calendar-days fa-2x ms-2 me-3"></i>
                             <p class="text-dark">{{ moment(avis.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</p>
                         </div>
                     </div>
@@ -337,6 +337,10 @@ export default {
 #detailsLieu p {
     display: flex;
     align-items: center
+}
+
+#detailsLieu i {
+   color: #1c6e8c
 }
 
 </style>

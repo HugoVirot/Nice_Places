@@ -18,7 +18,6 @@ class ImageController extends BaseController
         //middleware admin à ajouter pour index (en supplément)
     }
 
-
     /**
      * Display a listing of all the images for the administrator.
      *
@@ -29,7 +28,6 @@ class ImageController extends BaseController
         $images = Image::all();
         return response()->json($images);
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -89,7 +87,6 @@ class ImageController extends BaseController
         return $this->sendResponse($image, $message);
     }
 
-
     /**
      * Display the specified resource.
      *
@@ -101,7 +98,6 @@ class ImageController extends BaseController
         return response()->json($image);
     }
 
-
     /**
      * Update the specified resource in storage.
      *
@@ -111,8 +107,6 @@ class ImageController extends BaseController
      */
     public function update(Request $request, Image $image)
     {
-        // ici, l'update ne concerne que "profil" => l'utilisateur la choisit en tant qu'image
-        // de profil ou la déselectionne
         $validator = Validator::make($request->all(), [
             'mise_en_avant' => 'required|boolean',
             'statut' => 'required'
@@ -141,7 +135,6 @@ class ImageController extends BaseController
         $message = "L'image a bien été modifiée";
         return $this->sendResponse($image, $message, 201);
     }
-
 
     /**
      * Remove the specified resource from storage.

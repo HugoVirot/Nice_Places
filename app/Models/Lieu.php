@@ -29,6 +29,7 @@ class Lieu extends Model
         return $this->belongsToMany(User::class, 'favoris');
     }
 
+    // dans le cadre de la mise en favoris
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -23,7 +23,7 @@ class LieuFactory extends Factory
             'latitude' => rand(44, 49),
             'longitude' => rand(-1, 6.9),
             'note' => rand(6, 10),
-            'temps' => rand(0, 5),
+            'temps' => rand(1, 5),
             'difficulte' => $this->faker->randomElement(['famille' ,'amateur', 'sportif']),
             'adresse' => $this->faker->secondaryAddress(),
             'code_postal' => substr($this->faker->departmentNumber() . '000', 0, 5),

@@ -11,24 +11,20 @@ use Illuminate\Support\Facades\Validator;
 class NotificationController extends BaseController
 {
     /**
-     * Get notifications by user.
+     * Get the notifications of a particular user.
      *
      * @return \Illuminate\Http\Response
      */
     public function getNotificationsByUser(User $user)
     {
+        // on récupère les notifications de l'utilisateur en paramètre
+        // triées dans l'ordre suivant : la plus récente en premier
         $user->load(['notifications' => function ($query) {
             $query->latest()->get();
         }]);
         return response()->json($user->notifications);
     }
 
-    public function markNotificationAsRead(Notification $notification)
-    {
-        $notification->vue = true;
-        $notification->save();
-        return $this->sendResponse('', "Notification marquée comme lue");
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -61,20 +57,9 @@ class NotificationController extends BaseController
      */
     public function update(Notification $notification)
     {
+        // on marque la notification comme lue
         $notification->lue = true;
         $notification->save();
         $this->sendResponse($notification, "Notification marquée comme lue", 201);
-
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Notification  $notification
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Notification $notification)
-    {
-        //
     }
 }

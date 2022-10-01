@@ -80,8 +80,8 @@ class CategorieController extends BaseController
     public function update(Request $request, Categorie $category)
     {
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|max:75',
-            'icone' => 'required|max:100',
+            'nom' => 'required|max:50',
+            'icone' => 'required|max:50',
             'couleur' => 'required|max:15'
         ]);
 

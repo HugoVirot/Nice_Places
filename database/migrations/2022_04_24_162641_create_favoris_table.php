@@ -14,7 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('favoris', function (Blueprint $table) {
-            $table->id();
+            // la clé primaire est placée sur la combinaison des deux clés étrangères
+            // pour que chaque ligne soit unique
+            $table->primary(['user_id', 'lieu_id']);
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('lieu_id')->constrained()->onDelete('cascade');
             $table->timestamps();

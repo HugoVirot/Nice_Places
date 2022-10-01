@@ -266,7 +266,7 @@ export default {
 
 						<div v-for="(topPlace, index) in threeTopPlaces"
 							class="mx-auto col-md-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
-							:style="`background-image: url(images/${topPlace.image_mise_en_avant[0] ? topPlace.image_mise_en_avant[0].nom : 'placeholder.png'
+							:style="`background-image: url(images/${topPlace.image_mise_en_avant[0] ? topPlace.image_mise_en_avant[0].nom : 'defaultpicture.jpg'
 							}); background-position: center; background-size: cover;`">
 							<div class="infosTopLieux pt-1 pb-3">
 
@@ -326,7 +326,7 @@ export default {
 
 						<div v-for="lastPlace in threeLastPlaces"
 							class="mx-auto col-md-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
-							:style="`background-image: url(images/${lastPlace.image_mise_en_avant[0] ?  lastPlace.image_mise_en_avant[0].nom : 'placeholder.png'
+							:style="`background-image: url(images/${lastPlace.image_mise_en_avant[0] ?  lastPlace.image_mise_en_avant[0].nom : 'defaultpicture.jpg'
 							}); background-position: center; background-size: cover;`">
 							<div class="infosDerniersLieux pt-2 px-1">
 
@@ -502,7 +502,7 @@ h2,
 /************* Textes et polices ************/
 
 .bigFontSize {
-	font-size: 3.5em;
+	font-size: 2.5em;
 }
 
 .bigFontSize2 {

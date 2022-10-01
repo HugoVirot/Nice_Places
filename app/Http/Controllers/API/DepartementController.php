@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\Departement;
-use Illuminate\Http\Request;
 
 class DepartementController extends BaseController
 {
@@ -17,5 +16,4 @@ class DepartementController extends BaseController
         $departements = Departement::all();
         return response()->json($departements);
     }
-
 }

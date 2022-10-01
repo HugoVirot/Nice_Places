@@ -81,17 +81,6 @@ class AvisController extends BaseController
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Avis  $avis
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Avis $avi)
-    {
-        return response()->json($avi);
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

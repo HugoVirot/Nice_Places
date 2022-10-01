@@ -39,20 +39,21 @@ class LieuController extends BaseController
      */
     public function store(Request $request)
     {
-      
+        // on précise les critères attendus pour les champs
+        // longitude et latitude : intervalles possibles définis avec between
         $validator = Validator::make($request->all(), [
             'nom' => 'required|max:100',
             'description' => 'required|max:3000',
             'latitude' => 'required|between:-90,90',
             'longitude' => 'required|between:-180,180',
             'categorie' => 'required|integer',
-            'note' => 'required|integer|max:10',
-            'temps' => 'required|integer',
+            'note' => 'required|integer|min:1|max:10',
+            'temps' => 'required|integer|min:1|max:24',
             'difficulte' => 'required',
             'kilometres' => 'nullable|integer|max:100',
             'departement' => 'required',
             'adresse' => 'required|max:75',
-            'code_postal' => 'required|max:5',
+            'code_postal' => 'required|min:5|max:5',
             'ville' => 'required|max:50'
         ]);
 
@@ -62,14 +63,13 @@ class LieuController extends BaseController
 
         $message = "";
         // si le user est Admin => on valide directement la création du lieu (valide = true)
-        if ($request->user_id == 1) {
+        if (User::find($request->user_id)->role->role == "admin") {
             $message = "Le lieu a bien été créé.";
 
             // sinon, le lieu est créé mais en attente de validation (valide = false)
             // il n'est donc pas encore affiché sur la carte
         } else {
             $message = "Le lieu a bien été proposé (en attente de validation par l'administrateur).";
-
         }
 
         // ************************************ sauvegarde du lieu *************************************
@@ -93,10 +93,7 @@ class LieuController extends BaseController
             'categorie_id' => $request->categorie
         ]);
 
-        // on stocke l'id du lieu créé en session (pour l'upload d'image juste après)
-        // session()->put('lieu_id', $lieu->id);
-
-        // On retourne la réponse JSON
+        // On retourne la réponse JSON (code 201 = ressource créée avec succès)
         return $this->sendResponse($lieu, $message, 201);
     }
 
@@ -134,7 +131,7 @@ class LieuController extends BaseController
         return response()->json($imagesNumber);
     }
 
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -147,25 +144,25 @@ class LieuController extends BaseController
         $validator = Validator::make($request->all(), [
             'nom' => 'required|max:100',
             'description' => 'required|max:3000',
-            'latitude' => 'required',
-            'longitude' => 'required',
-            'note' => 'required',
-            'temps' => 'required',
-            'categorie_id' => 'required',
+            'latitude' => 'required|between:-90,90',
+            'longitude' => 'required|between:-180,180',
+            'categorie' => 'required|integer',
+            'note' => 'required|integer|min:1|max:10',
+            'temps' => 'required|integer|min:1|max:24',
             'difficulte' => 'required',
-            'kilometres' => 'nullable|integer',
+            'kilometres' => 'nullable|integer|max:100',
+            'departement' => 'required',
             'adresse' => 'required|max:75',
-            'code_postal' => 'required',
-            'ville' => 'required',
-            'statut' => 'required',
-            'commentaire' => 'nullable|max:1000'
+            'code_postal' => 'required|min:5|max:5',
+            'ville' => 'required|max:50',
+            'statut' => 'required'
         ]);
 
         if ($validator->fails()) {
             return $this->sendError('Error validation', $validator->errors());
         }
 
-        // on modifie les infos du lieu
+        // on met à jour le lieu en base de données
         $lieu->update($request->except('_token'));
 
         // On retourne la réponse en JSON

@@ -6,32 +6,21 @@
     </div>
 
     <div class="container-fluid p-3 p-lg-5">
+
         <div class="row">
+
             <div v-if="userPlaces.length == 0"><i class="greenIcon fa-solid fa-xmark fa-5x"></i>
                 <p>Vous n'avez posté aucun lieu</p>
-                <router-link to="/proposerlieu"><button class="btn btn-lg mt-3 greenButton rounded-pill">Proposer un lieu</button>
+                <router-link to="/proposerlieu"><button class="btn btn-lg mt-3 greenButton rounded-pill">Proposer un
+                        lieu</button>
                 </router-link>
             </div>
-            <div v-else class="col-lg-6 border border-3 border-white card card35vh text-white"
-                v-for="(userPlace, index) in userPlaces" :key="userPlace.id" :style="`background-image: url(images/${
-                userPlace.image_mise_en_avant[0] ?  userPlace.image_mise_en_avant[0].nom : 'placeholder.png'
-                }); background-position: center; background-size: cover;`">
-                <div class="p-3 fs-3 textWithShadow"> {{ userPlace.nom }} </div>
-                <div v-if="userPlace.statut == 'validé'" class="mx-auto bg-success w-25">validé</div>
-                <div v-else-if="userPlace.statut == 'en attente'" class="mx-auto bg-info w-25">en attente de validation
-                </div>
-                <div v-else-if="userPlace.statut == 'à modifier'" class="mx-auto bg-warning w-25">à modifier pour être
-                    validé
-                </div>
-                <div v-else class="mx-auto bg-danger w-25">refusé
-                </div>
-                <div class="card-body">
-                    <router-link :to="`/lieu/${userPlace.id}`"><button class="btn greenButton me-2">Détails du lieu</button>
-                    </router-link>
-                    <router-link :to="`modifierLieu/${userPlace.id}`"><button class="btn blueButton">Modifier lieu</button>
-                    </router-link>
-                </div>
+
+            <div v-else class="col-lg-6 border border-3 border-white" v-for="userPlace in userPlaces"
+                :key="userPlace.id">
+                <RectangleLieu :lieu="userPlace" />
             </div>
+
         </div>
     </div>
 
@@ -41,8 +30,13 @@
 import { useUserStore } from "../../stores/userStore";
 import { mapState } from "pinia";
 import { mapActions } from "pinia";
+import RectangleLieu from "../utilities/RectangleLieu.vue";
 
 export default {
+
+    components: {
+        RectangleLieu
+    },
 
     computed: {
         ...mapState(useUserStore, ['id', 'userPlaces'])

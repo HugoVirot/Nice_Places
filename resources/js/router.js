@@ -43,6 +43,7 @@ const routes = [
   },
   {
     path: "/toplieux",
+    name: "toplieux",
     component: TopLieux,
   },
   {
@@ -67,6 +68,7 @@ const routes = [
   },
   {
     path: "/meslieuxpostes",
+    name: 'meslieuxpostes',
     component: MesLieuxPostes,
   },
   {
