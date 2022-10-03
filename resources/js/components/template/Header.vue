@@ -52,7 +52,7 @@
                         <router-link to="/proposerlieu" class="nav-link">proposer un lieu</router-link>
 
                         <!-- si utilisateur connecté : mon compte / mes lieux, si pas connecté : inscription/connexion -->
-                        <span v-if="userLoggedIn" class="d-flex justify-content-between">
+                        <span v-if="userLoggedIn" class="d-md-flex justify-content-between">
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                                     data-bs-toggle="dropdown" aria-expanded="false">
@@ -61,7 +61,7 @@
                                         <i class="text-danger fa-solid fa-bell"></i>
                                     </span>
                                 </a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <ul class="dropdown-menu ms-5 ms-md-0 ps-5 ps-md-0" aria-labelledby="navbarDropdownMenuLink">
                                     <li>
                                         <router-link to="/moncompte" class="nav-link">mon compte</router-link>
                                     </li>
@@ -166,6 +166,10 @@ header {
     font-size: 16px;
 }
 
+.dropdown-menu {
+    margin-top: 0 !important
+}
+
 a {
     text-decoration: none;
     color: inherit
@@ -173,6 +177,10 @@ a {
 
 a:hover{
     color: #94D1BE !important
+}
+
+nav .router-link-active, nav .router-link-exact-active{
+    color: grey !important
 }
 
 .dropdown-menu .router-link {

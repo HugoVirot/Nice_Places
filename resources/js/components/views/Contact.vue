@@ -102,7 +102,6 @@ export default {
 
             axios.post('/api/notifications', { titre: titreMessage, message: this.message, lieu_id: null, user_id: 1 })
                 .then((response) => {
-                    console.log(response)
                     this.$router.push('/successmessage/home/' + response.data.message);
                 }).catch((error) => {
                     this.validationErrors = error.response.data.errors;

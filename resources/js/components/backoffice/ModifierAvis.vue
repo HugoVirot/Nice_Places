@@ -161,7 +161,6 @@ export default {
         },
 
         sendNotification() {
-            console.log("sendnotif"); // on passe dedans
             let titre = ""
             let message = ""
 
@@ -169,27 +168,29 @@ export default {
 
                 case ("validé"):
                     titre = `Félicitations ${this.avis.user.pseudo}, votre avis a été validé !`;
-                    message = `Après vérification, j'ai décidé de valider votre avis<br>
+                    message = `<p>Bonjour ${this.avis.user.pseudo}.</p>
+                    Après vérification, j'ai décidé de valider votre avis : <br> 
                     <p>Lieu : ${this.avis.lieu.nom} </p>
                     <p>Note : ${this.note} </p>
                     <p>Commentaire : ${this.commentaire ? this.commentaire.substring(0, 100) + '...' : 'aucun'}</p>
                     <i style="color:#94D1BE" class="mx-auto fa-solid fa-circle-check fa-5x p-2"></i><br>
-                    Merci pour ce partage, Nice Places est maintenant plus complet grâce à vous !<br>
-                    A très bientôt.<br>
-                    L'administrateur.`
+                    <p>Merci pour ce partage !<br>
+                    A très bientôt.</p><br>
+                    <p class="text-end">L'administrateur.</p>`
                     break
 
                 case ("refusé"):
                     titre = `${this.avis.user.pseudo}, votre avis a été refusé.`;
-                    message = `Après vérification, j'ai décidé de refuser votre avis : <br> 
+                    message = `<p>Bonjour ${this.avis.user.pseudo}.</p>
+                    Après vérification, j'ai décidé de refuser votre avis : <br> 
                     <p>Lieu : ${this.avis.lieu.nom} </p>
                     <p>Note : ${this.note} </p>
                     <p>Commentaire : ${this.commentaire ? this.commentaire.substring(0, 100) + '...' : 'aucun'}</p>
                     <i class="mx-auto fa-solid fa-xmark fa-5x p-2 text-danger"></i><br>
-                    <p>Il a été refusé pour la(les) raison(s) suivante(s) : ${this.raisonRefus}<p>
-                    Merci de votre compréhension.<br>
-                    A très bientôt.<br>
-                    L'administrateur.`
+                    <p>Il a été refusé pour la ou les raison(s) suivante(s) : ${this.raisonRefus}<p>
+                    <p>Merci de votre compréhension.<br>
+                    A très bientôt.</p><br>
+                    <p class="text-end">L'administrateur.</p>`
                     break
             }
 

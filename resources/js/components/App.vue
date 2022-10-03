@@ -97,10 +97,8 @@ export default {
 
 			// si l'utilisateur a choisi un département
 			if (this.departement) {
-				console.log(this.departement);
 				// on filtre l'ensemble des lieux pour ne garder que ceux du département de l'utilisateur
 				listeLieuxFiltres = this.lieux.filter(lieu => lieu.departement.id == this.departement.id)
-				console.log(listeLieuxFiltres);
 
 				//sinon => on cible la France entière
 			} else {

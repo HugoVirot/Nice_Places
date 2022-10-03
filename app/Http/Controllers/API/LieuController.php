@@ -146,16 +146,17 @@ class LieuController extends BaseController
             'description' => 'required|max:3000',
             'latitude' => 'required|between:-90,90',
             'longitude' => 'required|between:-180,180',
-            'categorie' => 'required|integer',
-            'note' => 'required|integer|min:1|max:10',
+            'categorie_id' => 'required|integer',
+            'note' => 'required|min:1|max:10',
             'temps' => 'required|integer|min:1|max:24',
             'difficulte' => 'required',
             'kilometres' => 'nullable|integer|max:100',
-            'departement' => 'required',
+            'departement_id' => 'required',
             'adresse' => 'required|max:75',
             'code_postal' => 'required|min:5|max:5',
             'ville' => 'required|max:50',
-            'statut' => 'required'
+            'statut' => 'required',
+            'commentaire' => 'nullable|max:1000'
         ]);
 
         if ($validator->fails()) {

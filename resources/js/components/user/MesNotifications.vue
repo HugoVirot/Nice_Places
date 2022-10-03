@@ -125,6 +125,6 @@ h3 {
 
 .notificationMessage {
     line-height: 3em;
-    color: black
+    color: grey
 }
 </style>

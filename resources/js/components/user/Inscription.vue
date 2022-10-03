@@ -16,6 +16,17 @@
 
                         <form @submit.prevent="sendData">
 
+                            <div class="form-group row m-2 mb-3">
+                                <div class="col-md-9">
+                                    <label for="politique">J'ai lu et j'accepte la
+                                        <router-link to="/politique">politique de confidentialité</router-link>
+                                    </label>
+                                </div>
+                                <div class="col-md-1">
+                                    <input type="checkbox" v-model="politique" id="politique" name="politique">
+                                </div>
+                            </div>
+
                             <div class="form-group row m-2">
                                 <label for="pseudo" class="col-md-4 col-form-label text-md-right">pseudo</label>
 
@@ -33,6 +44,7 @@
                                         required autocomplete="email">
                                 </div>
                             </div>
+                            <div id="emailHelp" class="form-text">Nous ne partagerons jamais votre e-mail avec des tiers.</div>
 
                             <div class="form-group row m-2">
                                 <label for="departement" class="col-md-4 col-form-label text-md-right">département
@@ -109,7 +121,7 @@
                             <div v-if="passwordCorrect == true"
                                 class="form-group row mx-auto rounded-pill mt-2 mb-4 bg-white w-50">
                                 <i class="fa-solid fa-circle-check greenIcon fa-3x p-2 mb-2"></i>
-                                <p class="text-success">Mot de passe sécurisé</p>
+                                <p class="titleIcon">Mot de passe sécurisé</p>
                             </div>
 
                             <div class="form-group row m-2">
@@ -127,18 +139,7 @@
                             <div v-if="passwordCorrect && password == password_confirmation"
                                 class="form-group row mx-auto m-2 mt-3 rounded-pill bg-white w-50">
                                 <i class="fa-solid fa-circle-check greenIcon fa-3x p-2"></i>
-                                <p class="text-success">Confirmation OK</p>
-                            </div>
-
-                            <div class="form-group row m-2">
-                                <div class="col-md-9">
-                                    <label for="politique">J'ai lu et j'accepte la
-                                        <router-link to="/politique">politique de confidentialité</router-link>
-                                    </label>
-                                </div>
-                                <div class="col-md-1">
-                                    <input type="checkbox" v-model="politique" id="politique" name="politique">
-                                </div>
+                                <p class="titleIcon">Confirmation OK</p>
                             </div>
 
                             <div v-if="politique" class="form-group row mt-3 text-center">
@@ -228,7 +229,7 @@ export default {
             let titre = `Bienvenue sur Nice Places ${this.pseudo} !`;
             let message = `<p class="text-secondary">Bonjour ${this.pseudo} et bienvenue sur Nice Places !<br>
             Votre inscription est réussie.<br>
-            <i class="mx-auto my-3 fa-solid fa-door-open fa-5x text-success"></i><br>
+            <i style="color:#94D1BE" class="mx-auto my-3 fa-solid fa-door-open fa-5x"></i><br>
             Venez découvrir la France et partager vos lieux préférés avec nous !<br>
             A très bientôt.</p>
             <p class="text-end">L'administrateur.</p>`

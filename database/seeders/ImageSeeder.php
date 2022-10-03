@@ -120,5 +120,31 @@ class ImageSeeder extends Seeder
                 'statut' => 'validée'
             ]);
         }
+
+        // image pour tests notifications
+
+        Image::create([
+            'nom' => 'imagetest1.jpg',
+            'mise_en_avant' => true,
+            'user_id' => 2,
+            'lieu_id' => 100,
+            'statut' => 'en attente'
+        ]);
+
+        Image::create([
+            'nom' => 'imagetest2.jpg',
+            'mise_en_avant' => true,
+            'user_id' => 2,
+            'lieu_id' => 100,
+            'statut' => 'en attente'
+        ]);
+
+        Image::create([
+            'nom' => 'imagetest3.jpg',
+            'mise_en_avant' => true,
+            'user_id' => 2,
+            'lieu_id' => 100,
+            'statut' => 'en attente'
+        ]);
     }
 }

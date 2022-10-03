@@ -14,7 +14,9 @@
         </div>
     </div>
 
-    <div class="container-fluid p-3 p-lg-5">
+    <div class="container-fluid p-3 p-lg-5" :style="`background-image: url(/images/${
+        lieu.image_mise_en_avant[0] ?  lieu.image_mise_en_avant[0].nom : 'rocks.jpg'
+        }); background-position: center; background-size: cover;`">>
 
         <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
 
@@ -98,10 +100,8 @@
 
                                 <div class="col-md-6">
                                     <select v-model="categorie_id" class="form-select" aria-label="categorie_id">
-                                        <option v-for="categorie in categories" :key="categorie.id"
-                                            :value="categorie.id"
-                                            :selected="categorie.id == categorie_id ? 'selected' : ''">{{ categorie.nom
-                                            }}
+                                        <option v-for="categorie in categories" :value="categorie.id">
+                                            {{ categorie.nom }}
                                         </option>
                                     </select>
                                 </div>
@@ -155,6 +155,16 @@
                             </div>
 
                             <div class="form-group row m-2">
+                                <label class="col-md-4 col-form-label text-md-right"
+                                    for="departement_id">département</label>
+                                <select id="departement_id" required v-model="departement_id" class="form-select w-50"
+                                    aria-label="filtre" autocomplete="departement_id">
+                                    <option v-for="department in departements" :value="department.id">
+                                        {{ department.code }} - {{ department.nom }}</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group row m-2">
                                 <label for="adresse" class="col-md-4 col-form-label text-md-right">adresse</label>
 
                                 <div class="col-md-6">
@@ -184,7 +194,8 @@
 
                             <div class="form-group row mt-3 text-center">
                                 <div class="col-md-6 offset-md-3">
-                                    <button type="submit" class="btn btn-lg greenButton rounded-pill text-light btn-info">
+                                    <button type="submit"
+                                        class="btn btn-lg greenButton rounded-pill text-light btn-info">
                                         Valider
                                     </button>
                                 </div>
@@ -210,7 +221,7 @@ export default {
 
     computed: {
         ...mapState(useUserStore, ['role']),
-        ...mapState(useLieuxStore, ['categories']),
+        ...mapState(useLieuxStore, ['categories', 'departements']),
         ...mapWritableState(useLieuxStore, ['lieux'])
     },
 
@@ -227,6 +238,7 @@ export default {
             temps: "",
             difficulte: "",
             kilometres: "",
+            departement_id: "",
             adresse: "",
             code_postal: "",
             ville: "",
@@ -255,6 +267,7 @@ export default {
             this.temps = lieu.temps
             this.difficulte = lieu.difficulte
             this.kilometres = lieu.kilometres
+            this.departement_id = lieu.departement_id
             this.adresse = lieu.adresse
             this.code_postal = lieu.code_postal
             this.ville = lieu.ville
@@ -275,6 +288,7 @@ export default {
                 temps: this.temps,
                 difficulte: this.difficulte,
                 kilometres: this.kilometres,
+                departement_id: this.departement_id,
                 adresse: this.adresse,
                 code_postal: this.code_postal,
                 ville: this.ville,
@@ -298,12 +312,11 @@ export default {
             // puis on le remplace par sa nouvelle version
             this.lieux[index] = response.data.data
 
-            console.log(this.lieux);
             // on sauvegarde dans le store
             this.storeLieux(this.lieux)
 
             // on envoie une notification en cas de changement de statut
-            if (this.statutPrecedent !== this.statut) {
+            if (this.statutPrecedent !== this.statut && this.statut !== "en attente") {
                 this.sendNotification()
             }
 
@@ -321,30 +334,29 @@ export default {
                 case ("validé"):
                     titre = `Félicitations ${this.lieu.user.pseudo}, votre lieu ${this.nom} a été validé !`;
                     message = `Après vérification, j'ai décidé de valider votre lieu : ${this.nom}.<br> 
-                    <i style="color:#94D1BE" class="mx-auto fa-solid fa-circle-check fa-5x p-2"></i><br>
-            Merci pour ce partage, Nice Places est maintenant plus complet grâce à vous !<br>
-            A très bientôt.<br>
-            L'administrateur.`
+                                <i style="color:#94D1BE" class="mx-auto fa-solid fa-circle-check fa-5x p-2"></i><br>
+                                Vous pouvez déjà le retrouver sur la carte ou sur votre onglet "mes lieux postés".<br>
+                                Merci pour ce partage, Nice Places est maintenant plus complet grâce à vous !<br>
+                                A très bientôt.<br>
+                                <span class="text-right">L'administrateur.</span>`
                     break
-
                 case ("à modifier"):
                     titre = `${this.lieu.user.pseudo}, votre lieu ${this.nom} a besoin de modifications pour être validé.`;
                     message = `Après vérification, votre lieu ${this.nom} a besoin des modifications suivantes : <br> 
-                    ${this.commentaire}<br>
-                    <i style="color:#94D1BE" class="mx-auto fa-solid fa-pen-to-square fa-5x p-2"></i><br>
-            Merci de faire le nécessaire pour qu'il soit validé.<br>
-            A très bientôt.<br>
-            L'administrateur.`
+                                ${this.commentaire}<br>
+                                <i style="color:#94D1BE" class="mx-auto fa-solid fa-pen-to-square fa-5x p-2"></i><br>
+                                Merci de faire le nécessaire pour qu'il soit validé.<br>
+                                A très bientôt.<br>
+                                <span class="text-right">L'administrateur.</span>`
                     break
-
                 case ("refusé"):
                     titre = `${this.lieu.user.pseudo}, votre lieu ${this.nom} a été refusé.`;
                     message = `Après vérification, j'ai décidé de refuser votre lieu : ${this.nom}, pour la ou les raison(s) suivante(s) : <br> 
                                 ${this.commentaire}<br>
                                 <i class="mx-auto fa-solid fa-xmark fa-5x p-2 text-danger"></i><br>
-            Merci de votre compréhension.<br>
-            A très bientôt.<br>
-            L'administrateur.`
+                                Merci de votre compréhension.<br>
+                                A très bientôt.<br>
+                                <span class="text-right">L'administrateur.</span>`
                     break
             }
 
@@ -367,11 +379,3 @@ export default {
     },
 }
 </script>
-
-<style scoped>
-.container-fluid {
-    background-image: url(../../../../public/images/rocks.jpg);
-    background-position: center;
-    background-size: cover;
-}
-</style>

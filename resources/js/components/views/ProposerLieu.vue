@@ -83,12 +83,12 @@ export default {
         // que son lieu a bien été proposé et est mis en attente
         createNotification(lieuId) {
             let titre = `Votre lieu ${this.nom} a bien été proposé !`;
-            let message = `Merci ${this.pseudo} !<br> 
+            let message = `<p>Merci ${this.pseudo} !<p><br> 
             <i style="color:#94D1BE" class="mx-auto fa-solid fa-paper-plane fa-5x p-2"></i><br>
-            Votre lieu, ${this.nom}, a bien été proposé.<br>
+            <p>Votre lieu, ${this.nom}, a bien été proposé.<br>
             Il a été mis en attente et va être vérifié par l'administrateur.<br>
             Ce dernier reviendra alors vers vous.<br>
-            A très bientôt.`
+            A très bientôt.</p>`
 
             axios.post('/api/notifications', { titre: titre, message: message, user_id: this.id, lieu_id: lieuId },)
                 .then(response => console.log(response.data.message))

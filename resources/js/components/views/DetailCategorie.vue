@@ -22,24 +22,9 @@
         </div>
 
         <div class="row">
-            <!-- composant qui affiche les lieux (le créer et lui passer les lieux en props)-->
-            <div class="col-lg-6 border border-3 border-white card card35vh text-white" v-for="(lieu, index) in categorie.lieux"
-                :key="lieu.id"
-                :style="`background-image: url(/images/${lieu.image_mise_en_avant[0].nom}); background-position: center; background-size: cover;`">
-                <span>
-                    <div class="p-2 textWithShadow">
-                        <p class="fs-1 text-white">{{ lieu.nom }}</p>
-                        <p class="text-white fs-4">
-                            <i class="yellowStar fa-solid fa-star ms-2 me-1"></i>{{ lieu.note }}
-                            <i class="greenIcon fa-solid fa-hourglass-half ms-2 me-1"></i>
-                            {{ lieu.temps }} heure(s)
-                            <i class="greenIcon fa-solid fa-gauge-simple-high ms-2 me-1"></i>
-                            {{ lieu.difficulte }}
-                        </p>
-                    </div>
-                    <router-link :to="`/lieu/${lieu.id}`"><button class="btn greenButton btn-lg">Détails du lieu</button>
-                    </router-link>
-                </span>
+            <!-- le composant RectangleLieu affiche chaque lieu (qu'il reçoit en props)-->
+            <div class="col-lg-6 border border-3 border-white" v-for="lieu in categorie.lieux" :key="lieu.id">
+                <RectangleLieu :lieu="lieu" />
             </div>
         </div>
     </div>
@@ -50,6 +35,7 @@
 import axios from "axios";
 import Filtres from "../utilities/Filtres.vue"
 import Tris from "../utilities/Tris.vue"
+import RectangleLieu from "../utilities/RectangleLieu.vue";
 
 export default {
     data() {
@@ -60,7 +46,7 @@ export default {
         }
     },
 
-    components: { Filtres, Tris },
+    components: { Filtres, Tris, RectangleLieu },
 
     methods: {
         updateLieux(lieuxTriesOuFiltres) {  // déclenchée si tri ou filtre appliqué via composant enfant Tris ou  Filtres

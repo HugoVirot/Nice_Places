@@ -119,14 +119,16 @@ export default {
                 .then((response) => {
                     let message = response.data.message
 
-                    // on récupère la nouvelle liste des catégories 
-                    axios.get('/api/categories')
-                        .then(response => {
-                            this.storeCategories(response.data)
-                            this.$router.push('/SuccessMessage/backoffice/' + message)
-                        }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
-                            alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
-                        })
+                    // une fois la catégorie supprimée, on la retire des avis du store
+                    // cela permet d'éviter un appel api
+                    let index = this.categories.findIndex(categorie => categorie.id == id)
+                    this.categories.splice(index, 1)
+
+                    // on sauvegarde la nouvelle liste dans le store
+                    this.storeCategories(this.categories)
+
+                    // on redirige vers l'accueil en affichant le message de succès
+                    this.$router.push('/SuccessMessage/backoffice/' + message)
 
                 }).catch((error) => {
                     this.validationErrors = error.response.data.errors;

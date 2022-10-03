@@ -78,7 +78,7 @@ class ImageController extends BaseController
         ]);
 
         // on retourne un message de succès et les noms des images uploadées
-        $message = "Image envoyée avec succès !";
+        $message = "Image envoyée !";
 
         if ($request->user_id !== 1) {
             $message .= " En attente de validation par l'administrateur.";

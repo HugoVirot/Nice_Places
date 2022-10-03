@@ -21,7 +21,6 @@ import MesNotifications from "./components/user/MesNotifications"
 import UploadImages from "./components/views/UploadImages"
 import Contact from "./components/views/Contact"
 import Politique from "./components/views/Politique"
-import { useUserStore } from "./stores/userStore";
 
 const routes = [
   {
@@ -121,14 +120,5 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 });
-
-router.beforeEach(() => {
-  // permet de réinitialiser les messages d'erreur des formulaires entre deux pages
-  const userStore = useUserStore()
-  if (userStore.validationErrors && userStore.validationErrors.error) {
-    console.log("suppression erreurs de validation");
-    userStore.storeErrors([])
-  }
-})
 
 export default router;

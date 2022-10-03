@@ -11,7 +11,7 @@
             <div v-if="countNewImages > 0" @click="showImages = !showImages"
                 class="mx-auto text-danger border border-4 rounded border-danger col-md-4 offset-md-1 py-5">
                 <i class="fa-5x fa-solid fa-images mb-3"></i>
-                <p class="fs-3"><span class="fs-1">{{ countNewImages }}</span> images à valider</p>
+                <p class="fs-3"><span class="fs-1">{{ countNewImages }}</span> image(s) à valider</p>
             </div>
             <!-- images à jour-->
             <div v-else @click="showImages = !showImages"
@@ -24,7 +24,7 @@
             <div v-if="countNewLieux > 0" @click="showLieux = !showLieux"
                 class="mx-auto text-danger border border-4 rounded border-danger col-md-4 offset-md-1 py-5">
                 <i class="fa-5x fa-solid fa-images mb-3"></i>
-                <p class="fs-3"><span class="fs-1">{{ countNewLieux }}</span> lieux à valider</p>
+                <p class="fs-3"><span class="fs-1">{{ countNewLieux }}</span> lieu(x) à valider</p>
             </div>
             <!-- lieux à jour-->
             <div v-else @click="showLieux = !showLieux"
@@ -91,9 +91,9 @@
                         cette catégorie seront supprimés.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal"
                         @click="handleDeleting()">Oui</button>
-                    <button type="button" class="btn btn-primary">Non</button>
+                    <button type="button" class="btn btn-danger">Non</button>
                 </div>
             </div>
         </div>
@@ -140,10 +140,10 @@
                     <td v-else class="bg-danger text-white">refusé</td>
                     <td>{{ lieu.nom }}</td>
                     <td>
-                        <router-link :to="`/modifierlieu/${lieu.id}`"><i class="fa-solid fa-pen-to-square"></i>
+                        <router-link :to="`/modifierlieu/${lieu.id}`"><i class="fa-solid fa-pen-to-square fa-2x greenIcon"></i>
                         </router-link>
                     </td>
-                    <td><i class="fa-solid fa-eraser" data-bs-toggle="modal" data-bs-target="#confirmationModal"
+                    <td><i class="fa-solid fa-eraser fa-2x text-danger" data-bs-toggle="modal" data-bs-target="#confirmationModal"
                             @click="elementToDelete = 'lieu'; idOfElementToDelete = lieu.id"></i></td>
                     <td>{{ lieu.description.substring(0, 100) }}</td>
                     <td>{{ lieu.latitude }}</td>
@@ -197,11 +197,11 @@
                         
                         }}</td>
                         <td>
-                            <router-link :to="`/modifiercategorie/${categorie.id}`"><i
-                                    class="fa-solid fa-pen-to-square"></i>
+                            <router-link :to="`/modifiercategorie/${categorie.id}`">
+                                <i class="fa-solid fa-pen-to-square fa-2x greenIcon"></i>
                             </router-link>
                         </td>
-                        <td><i class="fa-solid fa-eraser" data-bs-toggle="modal" data-bs-target="#confirmationModal"
+                        <td><i class="fa-solid fa-eraser fa-2x text-danger" data-bs-toggle="modal" data-bs-target="#confirmationModal"
                                 @click="elementToDelete = 'categorie'; idOfElementToDelete = categorie.id"></i></td>
                     </tr>
 
@@ -305,10 +305,10 @@
                         
                         }}</td>
                         <td>
-                            <router-link :to="`/modifieravis/${avis.id}`"><i class="fa-solid fa-pen-to-square"></i>
+                            <router-link :to="`/modifieravis/${avis.id}`"><i class="fa-solid fa-pen-to-square fa-2x greenIcon"></i>
                             </router-link>
                         </td>
-                        <td><i class="fa-solid fa-eraser" data-bs-toggle="modal" data-bs-target="#confirmationModal"
+                        <td><i class="fa-solid fa-eraser fa-2x text-danger" data-bs-toggle="modal" data-bs-target="#confirmationModal"
                                 @click="elementToDelete = 'avis'; idOfElementToDelete = avis.id"></i></td>
                     </tr>
 
@@ -346,7 +346,7 @@
                         moment(user.updated_at).format("ddd DD MMM YYYY [à] HH:mm")
                         
                         }}</td>
-                        <td><i class="fa-solid fa-eraser" data-bs-toggle="modal" data-bs-target="#confirmationModal"
+                        <td><i class="fa-solid fa-eraser fa-2x text-danger" data-bs-toggle="modal" data-bs-target="#confirmationModal"
                                 @click="elementToDelete = 'user'; idOfElementToDelete = user.id"></i></td>
                     </tr>
 
@@ -399,10 +399,10 @@
                     <td>{{ image.taille }} kb</td>
                     <td>{{ moment(image.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
                     <td>
-                        <router-link :to="`/modifierimage/${image.id}`"><i class="fa-solid fa-pen-to-square"></i>
+                        <router-link :to="`/modifierimage/${image.id}`"><i class="fa-solid fa-pen-to-square fa-2x greenIcon"></i>
                         </router-link>
                     </td>
-                    <td><i class="fa-solid fa-eraser" data-bs-toggle="modal" data-bs-target="#confirmationModal"
+                    <td><i class="fa-solid fa-eraser fa-2x text-danger" data-bs-toggle="modal" data-bs-target="#confirmationModal"
                             @click="elementToDelete = 'image'; idOfElementToDelete = image.id"></i></td>
 
                     <!-- modal pour afficher l'image en grand -->
@@ -458,14 +458,14 @@ export default {
         // renvoie le nombre d'images avec statut "en attente"
         countNewLieux() {
             if (this.lieux) {
-            return this.lieux.filter(lieu => lieu.statut == "en attente").length
+                return this.lieux.filter(lieu => lieu.statut == "en attente" | lieu.statut == "à modifier").length
             }
         },
 
         // renvoie le nombre d'images avec statut "en attente"
         countNewAvis() {
-            if (this.avis){
-            return this.avis.filter(avi => avi.statut == "en attente").length
+            if (this.avis) {
+                return this.avis.filter(avi => avi.statut == "en attente").length
             }
         },
 
@@ -532,16 +532,16 @@ export default {
 
                     let message = response.data.message
 
-                    // on va récupérer la nouvelle liste des avis
-                    axios.get('/api/avis')
+                    // une fois l'avis supprimé, on le retire des avis du store
+                    // cela permet d'éviter un appel api qui récupérerait tous les avis alors qu'un seul a changé
+                    let index = this.avis.findIndex(avi => avi.id == id)
+                    this.avis.splice(index, 1)
 
-                        .then(response => {
-                            this.storeAvis(response.data)
-                            // on redirige vers l'accueil en affichant le message de succès
-                            this.$router.push('/successmessage/backoffice/' + message)
-                        }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
-                            alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
-                        })
+                    // on sauvegarde la nouvelle liste dans le store
+                    this.storeAvis(this.avis)
+
+                    // on redirige vers l'accueil en affichant le message de succès
+                    this.$router.push('/successmessage/backoffice/' + message)
 
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
@@ -555,15 +555,16 @@ export default {
 
                     let message = response.data.message
 
-                    // on va récupérer la nouvelle liste des lieux
-                    axios.get('/api/lieus')
-                        .then(response => {
-                            this.storeLieux(response.data)
-                            // on redirige vers l'accueil en affichant le message de succès
-                            this.$router.push('/SuccessMessage/backoffice/' + message)
-                        }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
-                            alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
-                        })
+                    // même principe que pour les avis ci-dessus
+                    let index = this.lieux.findIndex(lieu => lieu.id == id)
+                    this.lieux.splice(index, 1)
+
+                    // on sauvegarde la nouvelle liste dans le store
+                    this.storeLieux(this.lieux)
+
+                    // on redirige vers l'accueil en affichant le message de succès
+                    this.$router.push('/SuccessMessage/backoffice/' + message)
+
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
@@ -577,16 +578,15 @@ export default {
 
                     let message = response.data.message
 
-                    // on va récupérer la nouvelle liste des catégories
-                    axios.get('/api/categories')
+                    // même principe que pour les avis ci-dessus
+                    let index = this.categories.findIndex(categorie => categorie.id == id)
+                    this.categories.splice(index, 1)
 
-                        .then(response => {
-                            this.storeCategories(response.data)
-                            // on redirige vers le back office en affichant le message de succès
-                            this.$router.push('/SuccessMessage/backoffice/' + message)
-                        }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
-                            alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
-                        })
+                    // on sauvegarde la nouvelle liste dans le store
+                    this.storeCategories(this.categories)
+
+                    // on redirige vers l'accueil en affichant le message de succès
+                    this.$router.push('/SuccessMessage/backoffice/' + message)
 
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
@@ -619,16 +619,15 @@ export default {
 
                     let message = response.data.message
 
-                    // on va récupérer la nouvelle liste des lieux
-                    axios.get('/api/users')
+                    // même principe que pour les avis ci-dessus
+                    let index = this.users.findIndex(user => user.id == id)
+                    this.users.splice(index, 1)
 
-                        .then(response => {
-                            this.storeUsers(response.data)
-                            // on redirige vers l'accueil en affichant le message de succès
-                            this.$router.push('/SuccessMessage/backoffice/' + message)
-                        }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
-                            alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
-                        })
+                    // on sauvegarde la nouvelle liste dans le store
+                    this.storeUsers(this.users)
+
+                    // on redirige vers l'accueil en affichant le message de succès
+                    this.$router.push('/SuccessMessage/backoffice/' + message)
 
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
@@ -643,16 +642,15 @@ export default {
 
                     let message = response.data.message
 
-                    // on va récupérer la nouvelle liste des lieux
-                    axios.get('/api/images')
+                    // même principe que pour les avis ci-dessus
+                    let index = this.images.findIndex(image => image.id == id)
+                    this.images.splice(index, 1)
 
-                        .then(response => {
-                            this.storeImages(response.data)
-                            // on redirige vers l'accueil en affichant le message de succès
-                            this.$router.push('/SuccessMessage/backoffice/' + message)
-                        }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
-                            alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
-                        })
+                    // on sauvegarde la nouvelle liste dans le store
+                    this.storeImages(this.images)
+
+                    // on redirige vers l'accueil en affichant le message de succès
+                    this.$router.push('/SuccessMessage/backoffice/' + message)
 
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
@@ -662,7 +660,6 @@ export default {
         getLieux() {
             axios.get("http://localhost:8000/api/lieus")
                 .then(response => {
-                    console.log("getLieux");
                     this.storeLieux(response.data)
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
@@ -698,12 +695,10 @@ export default {
     },
 
     created() {
-        console.log("created du backoffice");
         // on initialise moment pour afficher la date en français
         this.moment = moment
 
-        // on récupère lieux / avis / images / users (catégorie déjà récupérées sur App.vue)
-        this.getLieux()
+        // on récupère avis / images / users (catégories et lieux déjà récupérées sur App.vue)
         this.getAvis()
         this.getImages()
         this.getUsers()

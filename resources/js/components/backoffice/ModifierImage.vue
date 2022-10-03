@@ -68,7 +68,8 @@
 
                             <div class="form-group row mt-3 text-center">
                                 <div class="col-md-6 offset-md-3">
-                                    <button type="submit" class="btn btn-lg greenButton rounded-pill text-light btn-info">
+                                    <button type="submit"
+                                        class="btn btn-lg greenButton rounded-pill text-light btn-info">
                                         Valider
                                     </button>
                                 </div>
@@ -144,18 +145,16 @@ export default {
                     let newImage = response.data.data
 
                     if (this.statut == "validée") { // notification validée => message de succès
-                        this.createSuccessNotification(this.id)
+                        this.createSuccessNotification()
                         // on actualise la liste des images en remplaçant l'ancienne version par la nouvelle 
                         let index = this.images.findIndex(image => image.id == newImage.id)
-                        console.log(index);
                         this.images.splice(index, 1, newImage)
                         // on sauvegarde la nouvelle liste dans le store
                         this.storeImages(this.images)
-                        console.log(this.images)
 
                     } else if (this.statut == "refusée") { // notification refusée : message de refus avec la raison
                         // else if au lieu de else pour éviter un message de refus si l'image reste en attente
-                        this.createRefusalNotification(this.id)
+                        this.createRefusalNotification()
 
                         // on supprime l'image de la bdd (inutile de la conserver plus longtemps)
                         axios.delete("/api/images/" + this.image.id)
@@ -174,12 +173,6 @@ export default {
                             }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                                 alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                             })
-
-
-                    } else if (this.statut == "") {
-                        // cas du contenu choquant / totalement interdit sur le site
-                        // déclencher la suppression immédiate de l'image
-                        // message avertissant de l'exclusion de l'utilisateur et de la suppression immédiate de son compte
                     }
 
                     this.$router.push('/SuccessMessage/backoffice/' + message)
@@ -189,10 +182,11 @@ export default {
                 })
         },
 
-        createSuccessNotification(userId) {
-
+        createSuccessNotification() {
+            console.log("createsuccessnotif");
+            console.log(this.image.user.id);
             let titre = `Votre image ${this.nom} a bien été validée !`;
-            let message = `<p class="text-secondary">Bonjour ${this.pseudo},<br>
+            let message = `<p class="text-secondary">Bonjour ${this.image.user.pseudo},<br>
                     Félicitations, votre image a bien été validée !<br>
                     <i style="color: #94D1BE" class="mx-auto my-3 fa-solid fa-circle-check fa-5x"></i><br>
                     Elle est visible dès maintenant sur la page du lieu concerné.<br>
@@ -200,26 +194,27 @@ export default {
                     Merci et à très bientôt.</p>
                     <p class="text-end">L'administrateur.</p>`
 
-            axios.post('/api/notifications', { titre: titre, message: message, user_id: userId, lieu_id: this.image.lieu_id })
+            axios.post('/api/notifications', { titre: titre, message: message, user_id: this.image.user_id, lieu_id: this.image.lieu_id })
                 .then(response => console.log(response.data.message))
                 .catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
-
         },
+        
 
-        createRefusalNotification(userId) {
-
+        createRefusalNotification() {
+            console.log("createrefusnotif");
+            console.log(this.image.user.id);
             let titre = `Votre image ${this.nom} a été refusée`;
-            let message = `<p class="text-secondary">Bonjour ${this.pseudo},<br>
-        Votre image a été refusée pour la (les) raison(s) suivant(es) : <br>
-        ${this.raisonsRefus}<br>
-        <i style="color: #94D1BE" class="mx-auto my-3 fa-solid fa-xmark fa-5x"></i><br>
-        N'hésitez pas à en proposer de nouvelles, pour ce lieu ou pour d'autres.<br>
-        Merci et à très bientôt.</p>
-        <p class="text-end">L'administrateur.</p>`
+            let message = `<p class="text-secondary">Bonjour ${this.image.user.pseudo},<br>
+                Votre image a été refusée pour la (les) raison(s) suivant(es) : <br>
+                ${this.raisonsRefus}<br>
+                <i style="color: #94D1BE" class="mx-auto my-3 fa-solid fa-xmark fa-5x"></i><br>
+                N'hésitez pas à en proposer de nouvelles, pour ce lieu ou pour d'autres.<br>
+                Merci et à très bientôt.</p>
+                <p class="text-end">L'administrateur.</p>`
 
-            axios.post('/api/notifications', { titre: titre, message: message, user_id: userId, lieu_id: this.image.lieu_id })
+            axios.post('/api/notifications', { titre: titre, message: message, user_id: this.image.user_id, lieu_id: this.image.lieu_id })
                 .then(response => console.log(response.data.message))
                 .catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
