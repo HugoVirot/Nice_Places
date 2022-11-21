@@ -10,6 +10,14 @@ use Illuminate\Support\Facades\Validator;
 
 class NotificationController extends BaseController
 {
+
+    public function __construct()
+    {
+        // middleware sanctum appliqué sur tout le contrôleur
+        $this->middleware('auth:sanctum')->except('store');
+    }
+
+
     /**
      * Get the notifications of a particular user.
      *

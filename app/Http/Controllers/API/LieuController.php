@@ -13,23 +13,19 @@ class LieuController extends BaseController
     public function __construct()
     {
         // middleware sanctum appliqué sur store / update / destroy
-        // $this->middleware('auth:sanctum')->except(['index', 'show']);
-
-        //middleware admin à ajouter pour destroy (en supplément)
+        $this->middleware('auth:sanctum')->except(['index', 'show']);
     }
-
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response 
      */
     public function index()
     {
         $lieux = Lieu::all();
-        return response()->json($lieux);
+        return $this->sendResponse($lieux, 'Lieux récupérés avec succès');
     }
-
 
     /**
      * Store a newly created resource in storage.
@@ -42,19 +38,19 @@ class LieuController extends BaseController
         // on précise les critères attendus pour les champs
         // longitude et latitude : intervalles possibles définis avec between
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|max:100',
-            'description' => 'required|max:3000',
+            'nom' => 'required|min:10|max:100',
+            'description' => 'required|min:25|max:3000',
             'latitude' => 'required|between:-90,90',
             'longitude' => 'required|between:-180,180',
             'categorie' => 'required|integer',
             'note' => 'required|integer|min:1|max:10',
-            'temps' => 'required|integer|min:1|max:24',
-            'difficulte' => 'required',
-            'kilometres' => 'nullable|integer|max:100',
+            'temps' => 'required|integer|min:1|max:24', // temps en heures
+            'difficulte' => 'required', // énumération : choix entre "famille", "amateur" et "sportif"
+            'kilometres' => 'nullable|integer|min:1|max:100',
             'departement' => 'required',
-            'adresse' => 'required|max:75',
+            'adresse' => 'required|min:5|max:75',
             'code_postal' => 'required|min:5|max:5',
-            'ville' => 'required|max:50'
+            'ville' => 'required|min:3|max:50',
         ]);
 
         if ($validator->fails()) {
@@ -97,7 +93,6 @@ class LieuController extends BaseController
         return $this->sendResponse($lieu, $message, 201);
     }
 
-
     /**
      * Display the specified resource.
      *
@@ -109,28 +104,26 @@ class LieuController extends BaseController
         $lieu->load(['avis' => function ($query) {
             $query->latest()->get();
         }]);
-        $lieu->load('images');
-        return response()->json($lieu);
-    }
 
+        $lieu->load('images');
+        return $this->sendResponse($lieu, 'Lieu récupéré avec succès');
+    }
 
     // récupérer les lieux postés par l'utilisateur
 
     public function getPlacesByUser(Request $request)
     {
         $userPlaces = Lieu::where('user_id', intval($request->user_id))->get();
-        return response()->json($userPlaces);
+        return $this->sendResponse($userPlaces, 'Nombre de lieux postés récupéré avec succès');
     }
-
 
     // récupérer le nombre d'images par lieu
 
     public function getImagesNumberByPlace(Lieu $lieu)
     {
         $imagesNumber = count($lieu->images);
-        return response()->json($imagesNumber);
+        return $this->sendResponse($imagesNumber, 'Nombre d\'images pour le lieu récupéré avec succès');
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -142,21 +135,21 @@ class LieuController extends BaseController
     public function update(Request $request, Lieu $lieu)
     {
         $validator = Validator::make($request->all(), [
-            'nom' => 'required|max:100',
-            'description' => 'required|max:3000',
+            'nom' => 'required|min:10|max:100',
+            'description' => 'required|min:25|max:3000',
             'latitude' => 'required|between:-90,90',
             'longitude' => 'required|between:-180,180',
             'categorie_id' => 'required|integer',
             'note' => 'required|min:1|max:10',
-            'temps' => 'required|integer|min:1|max:24',
-            'difficulte' => 'required',
-            'kilometres' => 'nullable|integer|max:100',
-            'departement_id' => 'required',
-            'adresse' => 'required|max:75',
+            'temps' => 'required|integer|min:1|max:24', // temps en heures
+            'difficulte' => 'required', // énumération : choix entre "famille", "amateur" et "sportif"
+            'kilometres' => 'nullable|integer|min:1|max:100',
+            'departement_id' => 'required|integer',
+            'adresse' => 'required|min:5|max:75',
             'code_postal' => 'required|min:5|max:5',
-            'ville' => 'required|max:50',
+            'ville' => 'required|min:3|max:50',
             'statut' => 'required',
-            'commentaire' => 'nullable|max:1000'
+            'commentaire' => 'nullable|min:5|max:1000' // notes de l'admin
         ]);
 
         if ($validator->fails()) {
@@ -170,7 +163,6 @@ class LieuController extends BaseController
         $message = "Lieu modifié avec succès";
         return $this->sendResponse($lieu, $message);
     }
-
 
     /**
      * Remove the specified resource from storage.

@@ -14,7 +14,7 @@ class AvisController extends BaseController
     public function __construct()
     {
         // middleware sanctum appliqué sur tout sauf show
-        // $this->middleware('auth:sanctum')->except(['show']);
+        $this->middleware('auth:sanctum')->except(['show']);
 
         //middleware admin à ajouter pour index (en supplément de sanctum)
     }
@@ -27,7 +27,7 @@ class AvisController extends BaseController
     public function index()
     {
         $avis = Avis::all();
-        return response()->json($avis);
+        return $this->sendResponse($avis, 'Avis récupérés avec succès');
     }
 
     /**

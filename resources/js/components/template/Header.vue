@@ -145,7 +145,7 @@ export default {
 
 <style>
 @font-face {
-    font-family: 'Cooper', Arial;
+    font-family: 'Cooper';
     src: './Cooper Black Regular.ttf';
 }
 
@@ -188,7 +188,7 @@ nav .router-link-active, nav .router-link-exact-active{
 }
 
 body {
-    font-family: 'Cooper';
+    font-family: 'Cooper', Arial;
 }
 
 #leftstripe {

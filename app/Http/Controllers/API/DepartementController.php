@@ -14,6 +14,6 @@ class DepartementController extends BaseController
     public function index()
     {
         $departements = Departement::all();
-        return response()->json($departements);
+        return $this->sendResponse($departements, 'Départements récupérés avec succès');
     }
 }

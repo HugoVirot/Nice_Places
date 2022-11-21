@@ -660,7 +660,7 @@ export default {
         getLieux() {
             axios.get("http://localhost:8000/api/lieus")
                 .then(response => {
-                    this.storeLieux(response.data)
+                    this.storeLieux(response.data.data)
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
@@ -669,7 +669,7 @@ export default {
         getAvis() {
             axios.get("http://localhost:8000/api/avis")
                 .then(response => {
-                    this.storeAvis(response.data)
+                    this.storeAvis(response.data.data)
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
@@ -678,7 +678,7 @@ export default {
         getUsers() {
             axios.get("http://localhost:8000/api/users")
                 .then(response => {
-                    this.storeUsers(response.data)
+                    this.storeUsers(response.data.data)
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
@@ -687,7 +687,7 @@ export default {
         getImages() {
             axios.get("http://localhost:8000/api/images")
                 .then(response => {
-                    this.storeImages(response.data)
+                    this.storeImages(response.data.data)
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })

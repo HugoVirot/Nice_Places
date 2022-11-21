@@ -26,8 +26,9 @@ class LoginController extends BaseController
             $authUser = User::find(Auth::user()->id);
             $authUser->load('role'); 
 
-            // on lui crée un token de session (enregistré dans la table personnal_access_tokens)
-            // on le stocke dans $success ainsi que ses autres infos
+            // on lui crée un token de session via la fonction createToken
+            // le token est hashé en Sha-256 avant d'être enregistré dans la table personnal_access_tokens
+            // on le stocke dans $success ainsi que ses autres infos renvoyées en json
             $success['token'] =  $authUser->createToken('LoginUser' . $authUser->id)->plainTextToken;
             $success['pseudo'] =  $authUser->pseudo;
             $success["email"] = $authUser->email;
@@ -40,7 +41,8 @@ class LoginController extends BaseController
             
         } else {
             // si échec de la connexion, on renvoie un message d'erreur
-            return $this->sendError('Echec de la connexion.', ['error' => 'L\'utilisateur n\'existe pas ou le mot de passe est incorrect']);
+            return $this->sendError('Echec de la connexion.', 
+            ['error' => 'L\'utilisateur n\'existe pas ou le mot de passe est incorrect']);
         }
     }
 }

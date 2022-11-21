@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Avis;
 
@@ -15,6 +14,6 @@ class AvisSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Avis::factory(50)->create();
+        Avis::factory(50)->create();
     }
 }

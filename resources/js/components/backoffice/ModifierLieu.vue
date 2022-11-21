@@ -16,7 +16,7 @@
 
     <div class="container-fluid p-3 p-lg-5" :style="`background-image: url(/images/${
         lieu.image_mise_en_avant[0] ?  lieu.image_mise_en_avant[0].nom : 'rocks.jpg'
-        }); background-position: center; background-size: cover;`">>
+        }); background-position: center; background-size: cover;`">
 
         <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
 
@@ -372,7 +372,7 @@ export default {
 
         axios.get("/api/lieus/" + this.lieuId)
             .then(response => {
-                this.updateLocalData(response.data)
+                this.updateLocalData(response.data.data)
             }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                 alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
             })

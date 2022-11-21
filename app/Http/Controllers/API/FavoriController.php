@@ -12,7 +12,7 @@ class FavoriController extends BaseController
     public function __construct()
     {
         // middleware sanctum appliqué sur toutes les méthodes
-        // $this->middleware('auth:sanctum');
+        $this->middleware('auth:sanctum');
     }
 
     /**

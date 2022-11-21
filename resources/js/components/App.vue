@@ -49,7 +49,7 @@ export default {
 		getCategories() {
 			axios.get("http://localhost:8000/api/categories")
 				.then(response => {
-					this.storeCategories(response.data)
+					this.storeCategories(response.data.data)
 				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
 					alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
 				})
@@ -58,7 +58,7 @@ export default {
 		getLieux() {
 			axios.get("http://localhost:8000/api/lieus")
 				.then(response => {
-					this.storeLieux(response.data)
+					this.storeLieux(response.data.data)
 				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
 					alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
 				})
@@ -67,7 +67,7 @@ export default {
 		getDepartements() {
 			axios.get("http://localhost:8000/api/departements")
 				.then(response => {
-					this.storeDepartements(response.data)
+					this.storeDepartements(response.data.data)
 				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
 					alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
 				})
@@ -76,7 +76,7 @@ export default {
 		getRegions() {
 			axios.get("http://localhost:8000/api/regions")
 				.then(response => {
-					this.storeRegions(response.data)
+					this.storeRegions(response.data.data)
 				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
 					alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
 				})
@@ -85,7 +85,7 @@ export default {
 		getFavoris() {
 			axios.get("http://localhost:8000/api/favoris/" + this.id)
 				.then(response => {
-					this.storeFavoris(response.data)
+					this.storeFavoris(response.data.data)
 				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
 					alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
 				})

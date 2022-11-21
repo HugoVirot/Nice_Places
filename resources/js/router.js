@@ -21,6 +21,7 @@ import MesNotifications from "./components/user/MesNotifications"
 import UploadImages from "./components/views/UploadImages"
 import Contact from "./components/views/Contact"
 import Politique from "./components/views/Politique"
+import { useUserStore } from "./stores/userStore";
 
 const routes = [
   {
@@ -52,6 +53,7 @@ const routes = [
   {
     path: "/proposerlieu",
     component: ProposerLieu,
+    meta: { requiresAuth: true }
   },
   {
     path: "/inscription",
@@ -64,19 +66,23 @@ const routes = [
   {
     path: "/moncompte",
     component: MonCompte,
+    meta: { requiresAuth: true }
   },
   {
     path: "/meslieuxpostes",
     name: 'meslieuxpostes',
     component: MesLieuxPostes,
+    meta: { requiresAuth: true }
   },
   {
     path: "/meslieuxfavoris",
     component: MesLieuxFavoris,
+    meta: { requiresAuth: true }
   },
   {
     path: "/backoffice",
     component: BackOffice,
+    meta: { requiresAuth: true }
   },
   {
     path: "/successmessage/:nextpage/:message/:lieuid?",
@@ -84,27 +90,33 @@ const routes = [
   },
   {
     path: "/modifierlieu/:id",
-    component: ModifierLieu
+    component: ModifierLieu,
+    meta: { requiresAuth: true }
   },
   {
     path: "/modifiercategorie/:id",
-    component: ModifierCategorie
+    component: ModifierCategorie,
+    meta: { requiresAuth: true }
   },
   {
     path: "/modifieravis/:id",
-    component: ModifierAvis
+    component: ModifierAvis,
+    meta: { requiresAuth: true }
   },
   {
     path: "/modifierimage/:id",
-    component: ModifierImage
+    component: ModifierImage,
+    meta: { requiresAuth: true }
   },
   {
     path: "/mesnotifications",
-    component: MesNotifications
+    component: MesNotifications,
+    meta: { requiresAuth: true }
   },
   {
     path: "/uploadimages/:id",
-    component: UploadImages
+    component: UploadImages,
+    meta: { requiresAuth: true }
   },
   {
     path: "/contact",
@@ -120,5 +132,13 @@ const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
+// router.beforeEach((to, from, next) => {
+//   if (to.meta.requiresAuth && !useUserStore.state.token) {
+//     next({ path: "/inscription" })
+//   } else {
+//     next()
+//   }
+// })
 
 export default router;

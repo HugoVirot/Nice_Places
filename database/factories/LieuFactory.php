@@ -27,7 +27,8 @@ class LieuFactory extends Factory
             'difficulte' => $this->faker->randomElement(['famille' ,'amateur', 'sportif']),
             'adresse' => $this->faker->secondaryAddress(),
             'code_postal' => substr($this->faker->departmentNumber() . '000', 0, 5),
-            'ville' => $this->faker->randomElement(['Lyon' ,'Marseille', 'Nantes', 'Niort', 'Fontenay-le-Comte', 'Bordeaux', 'Annecy']),
+            'ville' => $this->faker->randomElement(['Lyon' ,'Marseille', 'Nantes', 'Niort', 
+            'Fontenay-le-Comte', 'Bordeaux', 'Annecy']),
             'user_id' => rand(2, 10),
             'categorie_id' => rand(1,9),
             'departement_id' => rand(1,99)

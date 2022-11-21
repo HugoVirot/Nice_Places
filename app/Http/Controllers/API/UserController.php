@@ -16,7 +16,7 @@ class UserController extends BaseController
     public function __construct()
     {
         // middleware sanctum appliqué sur index / update / destroy
-        // $this->middleware('auth:sanctum')->except(['store', 'show']);
+        $this->middleware('auth:sanctum')->except(['store']);
 
         //middleware admin à ajouter pour index (en supplément)
     }
@@ -82,13 +82,11 @@ class UserController extends BaseController
             'departement_id' => $request->departement
         ]);
 
-        // création d'un token de session (enregistré dans la table personnal_access_tokens)
-        $success['token'] =  $user->createToken('RegistrationUser' . $user->id)->plainTextToken;
         $success['pseudo'] =  $user->pseudo;
         $success["email"] = $user->email;
         $success['id'] = $user->id;
 
-        return $this->sendResponse($success, 'Inscription réussie.');
+        return $this->sendResponse($success, 'Inscription réussie.', 201);
     }
 
 

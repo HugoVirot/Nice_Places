@@ -82,6 +82,7 @@ export default {
             // on récupère aussi ses notifications qu'on stocke également dans le state
             axios.post('/api/login', { email: this.email, password: this.password })
                 .then(response => {
+                    console.log(response)
                     this.storeUserData(response.data.data)
                     this.getNotifications()
                     this.$router.push('/successmessage/home/' + response.data.message)
@@ -94,7 +95,7 @@ export default {
         getNotifications() {
             axios.get('/api/getnotificationsbyuser/' + this.id)
                 .then(response => {
-                    this.storeNotifications(response.data);
+                    this.storeNotifications(response.data.data);
                 }).catch(() => {
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })

@@ -158,7 +158,7 @@
 
                             <p class="text-danger">Attention : cette action est irréversible.</p>
                             <p class="text-danger">En supprimant votre compte, vous perdrez tous vos favoris.</p>
-                            <p>Les lieux et les avis que vous avez postés seront conservés (ils seront anonymisés).</p>
+                            <p  class="text-white">Les lieux et les avis que vous avez postés seront conservés (ils seront anonymisés).</p>
                             <div class="form-group row m-3 text-center">
                                 <div class="col-md-6 offset-md-3">
                                     <button type="submit" class="btn rounded-pill text-light btn-danger">
@@ -286,7 +286,7 @@ export default {
 
 <style scoped>
 .container-fluid {
-    background-image: url(../../../../public/images/rochers.jpg);
+    background-image: url(../../../../public/images/sunset2.jpg);
     background-position: center;
     background-size: cover;
 }

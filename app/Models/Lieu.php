@@ -61,21 +61,7 @@ class Lieu extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'nom',
-        'description',
-        'latitude',
-        'longitude',
-        'note',
-        'temps',
-        'difficulte',
-        'categorie_id',
-        'kilometres',
-        'departement_id',
-        'adresse',
-        'code_postal',
-        'ville',
-        'user_id',
-        'statut',
-        'commentaire'
+        'nom', 'description', 'latitude', 'longitude', 'note', 'temps', 'difficulte', 'categorie_id',
+        'kilometres', 'departement_id', 'adresse', 'code_postal', 'ville', 'user_id', 'statut', 'commentaire'
     ];
 }

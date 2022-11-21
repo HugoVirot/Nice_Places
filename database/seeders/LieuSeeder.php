@@ -220,7 +220,7 @@ class LieuSeeder extends Seeder
             'departement_id' => 87
         ]);
 
-        // insertion de 10 lieux aléatoires via la LieuFactory (ids 11 à 110)
+        // insertion de 100 lieux aléatoires via la LieuFactory (ids 11 à 110)
         \App\Models\Lieu::factory(100)->create();
     }
 }

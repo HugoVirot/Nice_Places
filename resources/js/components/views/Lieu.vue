@@ -279,7 +279,7 @@ export default {
                     axios.get('/api/favoris/' + this.id)
 
                         .then(response => {
-                            this.storeFavoris(response.data)
+                            this.storeFavoris(response.data.data)
                             this.$router.push('/SuccessMessage/lastpage/' + message)
                         }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                             alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
@@ -298,7 +298,7 @@ export default {
                     axios.get('/api/favoris/' + this.id)
 
                         .then(response => {
-                            this.storeFavoris(response.data)
+                            this.storeFavoris(response.data.data)
                             this.$router.push('/SuccessMessage/lastpage/' + message)
                         }).catch(() => {
                             alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")

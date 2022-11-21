@@ -206,7 +206,7 @@ export default {
 
         axios.get("/api/avis/" + this.$route.params.id)
             .then(response => {
-                this.updateLocalData(response.data)
+                this.updateLocalData(response.data.data)
             }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                 alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
             })
@@ -218,7 +218,7 @@ export default {
 
 <style scoped>
 .container-fluid {
-    background-image: url(../../../../public/images/beach_sunset.jpg);
+    background-image: url(../../../../public/images/sunset2.jpg);
     background-position: center;
     background-size: cover;
 }

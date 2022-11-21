@@ -13,9 +13,7 @@ class ImageController extends BaseController
     public function __construct()
     {
         // middleware sanctum appliqué sur index / store / update / destroy
-        // $this->middleware('auth:sanctum');
-
-        //middleware admin à ajouter pour index (en supplément)
+        $this->middleware('auth:sanctum');
     }
 
     /**

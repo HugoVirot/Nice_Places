@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import axios from 'axios'
 
 export const useUserStore = defineStore({
     // id requis pour connecter le store aux devtools
@@ -45,6 +46,7 @@ export const useUserStore = defineStore({
             this.role = userData.role
             this.token = userData.token
             this.userLoggedIn = true
+            axios.defaults.headers.common.Authorization = `Bearer ${userData.token}`
         },
 
         // mémoriser le fait qu'un choix a été fait par rapport à la géoloc

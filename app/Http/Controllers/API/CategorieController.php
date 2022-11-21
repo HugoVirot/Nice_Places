@@ -11,10 +11,8 @@ class CategorieController extends BaseController
 
     public function __construct()
     {
-        // middleware sanctum appliqué sur toutes les méthodes
-        // $this->middleware('auth:sanctum')->except('index');
-
-        //middleware admin à ajouter pour tout (en supplément)
+        // middleware sanctum appliqué sur store / update / destroy
+        $this->middleware('auth:sanctum')->except('index', 'show');
     }
 
     /**
@@ -25,7 +23,7 @@ class CategorieController extends BaseController
     public function index()
     {
         $categories = Categorie::all();
-        return response()->json($categories);
+        return $this->sendResponse($categories, 'Catégories récupérés avec succès');
     }
 
     /**
