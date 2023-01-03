@@ -1,6 +1,6 @@
 <template>
 
-    <section class="p-2">
+    <section class="p-2" v-if="notifications">
         <div class="p-3">
             <i class="greenIcon mx-auto fa-3x fa-solid fa-message"></i>
             <h1 class="mt-2">Mes notifications</h1>
@@ -85,17 +85,20 @@ export default {
     },
 
     methods: {
+        // on rend accessible l'action storeNotifications du userStore
         ...mapActions(useUserStore, ['storeNotifications']),
 
+        // récupérer les notifications de l'utilisateur en fonction de son id
         getNotifications() {
             axios.get('/api/getnotificationsbyuser/' + this.id)
                 .then(response => {
-                    this.storeNotifications(response.data.data);
+                    this.storeNotifications(response.data);
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })
         },
 
+        // marquer une notification comme lue
         markNotificationAsRead(notificationId) {
             axios.put('/api/notifications/' + notificationId)
                 .then(() => {

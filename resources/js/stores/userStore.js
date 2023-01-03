@@ -46,7 +46,7 @@ export const useUserStore = defineStore({
             this.role = userData.role
             this.token = userData.token
             this.userLoggedIn = true
-            // transmettre le token avec chaque requête si connecté
+            // transmettre le token (créé par l'API) avec chaque requête si connecté
             axios.defaults.headers.common.Authorization = `Bearer ${userData.token}`
         },
 

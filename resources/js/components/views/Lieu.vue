@@ -1,6 +1,6 @@
 <template>
 
-    <div v-if="lieu">
+    <div v-if="!loading">
 
         <div class="pt-5 pb-2">
             <!-- <i class="greenIcon mx-auto fa-3x fa-solid fa-map-location-dot"></i> -->
@@ -259,7 +259,8 @@ export default {
             lieuId: this.$route.params.id,
             lieu: null,
             showAllReviews: false,
-            showFullComment: false
+            showFullComment: false,
+            loading : true
         };
     },
 
@@ -316,7 +317,8 @@ export default {
         // on récupère les infos du lieu (voir pour les passer en props)
         axios.get("/api/lieus/" + this.lieuId)
             .then((response) => {
-                this.lieu = response.data;
+                this.lieu = response.data.data
+                this.loading = false
             }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                 alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
             })

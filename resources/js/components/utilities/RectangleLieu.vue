@@ -1,4 +1,4 @@
-<template>
+ <template>
     <router-link :to="`/lieu/${lieu.id}`">
         <div class="card card35vh text-white p-2" :style="`background-image: url(/images/${
         lieu.image_mise_en_avant[0] ?  lieu.image_mise_en_avant[0].nom : 'defaultpicture.jpg'

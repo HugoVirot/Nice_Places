@@ -15,7 +15,7 @@
     </div>
 
     <div class="container-fluid p-3 p-lg-5" :style="`background-image: url(/images/${
-        lieu.image_mise_en_avant[0] ?  lieu.image_mise_en_avant[0].nom : 'rocks.jpg'
+        lieu.image_mise_en_avant ? lieu.image_mise_en_avant[0].nom : 'rocks.jpg'
         }); background-position: center; background-size: cover;`">
 
         <ValidationErrors :errors="validationErrors" v-if="validationErrors" />

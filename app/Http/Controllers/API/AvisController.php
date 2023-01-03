@@ -31,6 +31,17 @@ class AvisController extends BaseController
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Lieu  $lieu
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Avis $avi)
+    {
+        return $this->sendResponse($avi, 'Avis récupéré avec succès');
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

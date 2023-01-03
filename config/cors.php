@@ -28,7 +28,9 @@ return [
     'exposed_headers' => [],
 
     'max_age' => 0,
-
+// Doc Laravel : You should ensure that your application's CORS configuration is returning the Access-Control-Allow-Credentials 
+// header with a value of True. This may be accomplished by setting the supports_credentials option within your application's 
+// config/cors.php configuration file to true.
     'supports_credentials' => true,
 
 ];

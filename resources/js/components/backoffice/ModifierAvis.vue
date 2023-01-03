@@ -3,7 +3,8 @@
     <div class="p-3" v-if="avis">
         <i class="fa-3x fa-solid fa-pen-to-square"></i>
         <h1 class="mt-2">Modifier avis n°{{ avis.id }}</h1>
-        <h2>Posté par {{ avis.user.pseudo }}</h2>
+        <h2 v-if="avis.user">Posté par {{ avis.user.pseudo }}</h2>
+        <h2 v-else>Posté par : utilisateur supprimé</h2>
         <div>
             <div v-if="statut == 'validé'" class="mx-auto bg-success text-white w-25">validé</div>
             <div v-else-if="statut == 'en attente'" class="mx-auto bg-info w-25">en attente de validation
@@ -148,7 +149,7 @@ export default {
                     this.storeAvis(this.listeAvis)
 
                     // on envoie une notification en cas de changement de statut
-                    if (this.statutPrecedent !== this.statut) {
+                    if (this.statutPrecedent !== this.statut && this.statut !== "en attente") {
                         this.sendNotification()
                     }
 

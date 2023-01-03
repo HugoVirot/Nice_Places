@@ -7,7 +7,7 @@
 
 
         <div class="container text-start">
-
+ 
             <h2 class="mt-4">Définitions</h2>
 
             <p>Client : tout professionnel ou personne physique capable au sens des articles 1123 et suivants du Code

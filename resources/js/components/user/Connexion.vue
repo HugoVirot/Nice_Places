@@ -78,24 +78,33 @@ export default {
         ...mapActions(useUserStore, ['storeUserData', 'storeNotifications']),
 
         logIn() {
-            // on tente la connexion. Si réussie, on stocke les données du user dans le state
-            // on récupère aussi ses notifications qu'on stocke également dans le state
-            axios.post('/api/login', { email: this.email, password: this.password })
-                .then(response => {
-                    console.log(response)
-                    this.storeUserData(response.data.data)
-                    this.getNotifications()
-                    this.$router.push('/successmessage/home/' + response.data.message)
+            // on initialise la protection CSRF Sanctum via cette route 
+            axios.get('/sanctum/csrf-cookie')
 
-                }).catch((error) => {
-                    this.validationErrors = error.response.data.errors;
+                .then(() => {
+                    // on tente la connexion. Si réussie, on stocke les données du user dans le state
+                    // on récupère aussi ses notifications qu'on stocke également dans le state
+                    axios.post('/api/login', { email: this.email, password: this.password })
+                        .then(response => {
+                            console.log(response.data)
+                            this.storeUserData(response.data.data)
+                            this.getNotifications()
+                            this.$router.push('/successmessage/home/' + response.data.message)
+
+                        }).catch((error) => {
+                            this.validationErrors = error.response.data.errors
+                        })
+
+                }).catch(() => {
+                    alert("Problème de sécurité. Vous pouvez essayer de recharger la page pour corriger le problème. Réessayez plus tard")
                 })
         },
 
         getNotifications() {
             axios.get('/api/getnotificationsbyuser/' + this.id)
                 .then(response => {
-                    this.storeNotifications(response.data.data);
+                    // on ne stocke les notifications de l'utilisateur que s'il en possède
+                    if (response.data.length > 0) { this.storeNotifications(response.data) }
                 }).catch(() => {
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                 })

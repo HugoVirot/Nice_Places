@@ -41,11 +41,11 @@
                                     (facultatif)</label>
 
                                 <div class="col-md-6">
-                                    <select id="departement" required v-model="departement" class="form-select mx-auto"
+                                    <select id="departement" v-model="departement" class="form-select mx-auto"
                                         aria-label="filtre" autocomplete="departement">
                                         <option v-for="department in departements" :value="department"
-                                            :selected="department.nom == departement ? 'selected' : ''">{{
-                                            department.code }} - {{ department.nom }}</option>
+                                            :selected="departement && department.code == departement.code ? 'selected' : ''">
+                                            {{ department.code }} - {{ department.nom }}</option>
                                     </select>
                                 </div>
 
@@ -271,7 +271,9 @@ export default {
         deleteAccount() {
             axios.delete('/api/users/' + this.id)
                 .then((response) => {
-                    // suppression compte réussie => déconnexion + retour accueil
+                    // suppression compte fonctionne (plus dans bdd) mais il ne se passe rien ensuite
+                    // => pas de déconnexion, mais le user n'existe plus. On reste connecté.
+                    // à corriger
                     this.logOut()
                     this.$router.push('/SuccessMessage/home/' + response.data.message)
                 })

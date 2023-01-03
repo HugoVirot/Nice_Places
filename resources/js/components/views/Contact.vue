@@ -26,7 +26,6 @@
                                         autocomplete="nom" autofocus>
                                 </div>
                             </div>
-
                             <div class="form-group row m-2">
                                 <label for="email" class="col-md-4 col-form-label text-md-right">adresse mail</label>
                                 <div class="col-md-6">

@@ -11,10 +11,8 @@ window.axios = require('axios');
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 // implémentation de Sanctum => cette ligne permet d'éviter le problème de CORS
+// axios envoie le cookie XSRF d'authentification à chaque requête
 window.axios.defaults.withCredentials = true;
-
-import { useUserStore } from './stores/userStore'
-const userStore = useUserStore
 
 // afficher chaque requête en console
 window.axios.interceptors.request.use(request => {
