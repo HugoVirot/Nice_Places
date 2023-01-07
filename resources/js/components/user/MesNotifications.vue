@@ -11,7 +11,7 @@
                 <div v-if="notifications.length > 0"
                     class="greenIcon mx-auto my-5 border border-4 rounded border-secondary col-md-4 offset-md-1 py-5">
                     <i class="fa-5x fa-solid fa-envelope mb-3"></i>
-                    <p><span class="fs-1">{{ notifications.length }}</span> notification(s) reçues au total</p>
+                    <p><span class="fs-1">{{ notifications.length }}</span> notification(s) reçue(s) au total</p>
                 </div>
 
                 <div v-show="notifications.length > 0 && countUnreadNotifications > 0"

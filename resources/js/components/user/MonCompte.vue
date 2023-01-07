@@ -218,8 +218,9 @@ export default {
     components: { ValidationErrors },
 
     methods: {
-        ...mapActions(useUserStore, ['storeUserData', 'logOut']),
+        ...mapActions(useUserStore, ['storeUserData']),
 
+        // vérifier si le mot de passe réunit les critères de sécurité
         checkPassword(password) {
 
             this.passwordTyped = true
@@ -255,8 +256,8 @@ export default {
             }
         },
 
+        // on envoie les modifs pour les sauvegarder en bdd puis on redirige
         sendData() {
-            // on sauvegarde les modifs en bdd puis on redirige
             axios.put('/api/users/' + this.id, {
                 pseudo: this.pseudo, email: this.email, departement_id: this.departement.id, oldPassword: this.oldPassword,
                 password: this.password, password_confirmation: this.password_confirmation
@@ -268,13 +269,14 @@ export default {
             })
         },
 
+        // suppression du compte utilisateur
         deleteAccount() {
             axios.delete('/api/users/' + this.id)
                 .then((response) => {
                     // suppression compte fonctionne (plus dans bdd) mais il ne se passe rien ensuite
                     // => pas de déconnexion, mais le user n'existe plus. On reste connecté.
                     // à corriger
-                    this.logOut()
+                    this.logOutUser()
                     this.$router.push('/SuccessMessage/home/' + response.data.message)
                 })
                 .catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
@@ -282,6 +284,16 @@ export default {
                 })
 
         },
+
+        // déconnecter l'utilisateur (utilisé après la suppression de compte)
+        logOutUser() {
+            // on réinitialise le store 
+            const userStore = useUserStore()
+            userStore.$reset()
+
+            // on redirige vers l'accueil
+            this.$router.push('/SuccessMessage/home/Déconnexion réussie')
+        }
     }
 }
 </script>

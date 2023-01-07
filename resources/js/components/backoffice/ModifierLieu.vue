@@ -15,7 +15,7 @@
     </div>
 
     <div class="container-fluid p-3 p-lg-5" :style="`background-image: url(/images/${
-        lieu.image_mise_en_avant ? lieu.image_mise_en_avant[0].nom : 'rocks.jpg'
+        lieu.image_mise_en_avant && lieu.image_mise_en_avant[0] ? lieu.image_mise_en_avant[0].nom : 'rocks.jpg'
         }); background-position: center; background-size: cover;`">
 
         <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
@@ -292,7 +292,9 @@ export default {
                 adresse: this.adresse,
                 code_postal: this.code_postal,
                 ville: this.ville,
-                statut: this.statut,
+                // si le statut était "à modifier", on le fait passer automatiquement à "en attente"
+                // sinon, on renvoie le statut actuel
+                statut: this.statut == "à modifier" ? "en attente" : this.statut,
                 commentaire: this.commentaire
             })
                 .then(response => this.handleSuccess(response))

@@ -78,7 +78,7 @@ export default {
         ...mapActions(useUserStore, ['storeUserData', 'storeNotifications']),
 
         logIn() {
-            // on initialise la protection CSRF Sanctum via cette route 
+            // on initialise la protection CSRF Sanctum via cette route
             axios.get('/sanctum/csrf-cookie')
 
                 .then(() => {
@@ -86,9 +86,9 @@ export default {
                     // on récupère aussi ses notifications qu'on stocke également dans le state
                     axios.post('/api/login', { email: this.email, password: this.password })
                         .then(response => {
-                            console.log(response.data)
-                            this.storeUserData(response.data.data)
-                            this.getNotifications()
+                            //console.log(response.data) 
+                            this.storeUserData(response.data.data) 
+                            this.getNotifications()               
                             this.$router.push('/successmessage/home/' + response.data.message)
 
                         }).catch((error) => {

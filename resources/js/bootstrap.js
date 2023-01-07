@@ -15,7 +15,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.withCredentials = true;
 
 // afficher chaque requête en console
-window.axios.interceptors.request.use(request => {
-    console.log('Starting Request', JSON.stringify(request, null, 2))
-    return request
-  })
+// window.axios.interceptors.request.use(request => {
+//     console.log('Starting Request', JSON.stringify(request, null, 2))
+//     return request
+//   })

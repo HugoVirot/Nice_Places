@@ -15,6 +15,6 @@ class RegionController extends BaseController
     public function index()
     {
         $regions = Region::all();
-        return response()->json($regions);
+        return $this->sendResponse($regions, "Régions récupérées avec succès");
     }
 }

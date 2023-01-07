@@ -25,7 +25,7 @@ export default {
 			'threeLastPlaces'
 		]),
 
-		...mapState(useUserStore, ['departement', 'id', 'geolocationAnswered'])
+		...mapState(useUserStore, ['departement', 'id'])
 	},
 
 	// on surveille le choix d'un département ou le changement de département de l'utilisateur
@@ -91,8 +91,9 @@ export default {
 				})
 		},
 
-		// on récupère les 3 endroits les mieux notés + les 3 derniers
+		// ***************** on récupère les 3 endroits les mieux notés + les 3 derniers postés ****************
 		getThreeTopAndLastPlaces() {
+			
 			let listeLieuxFiltres
 
 			// si l'utilisateur a choisi un département
@@ -105,7 +106,7 @@ export default {
 				listeLieuxFiltres = this.lieux
 			}
 
-			// on trie les lieux par note et on garde les 3 1ers, puis on les stocke dans le store
+			// on trie les lieux par note et on garde les 3 mieux notés, puis on les stocke dans le store
 			let troisTopLieux = listeLieuxFiltres.sort((a, b) => {
 				if (a.note > b.note) return -1;
 				return a.note < b.note ? 1 : 0;
@@ -113,7 +114,7 @@ export default {
 
 			this.storeThreeTopPlaces(troisTopLieux)
 
-			// idem pour les 3 derniers
+			// idem pour les 3 derniers postés
 			let troisDerniersLieux = listeLieuxFiltres.sort((a, b) => {
 				if (a.created_at > b.created_at) return -1;
 				return a.created_at < b.created_at ? 1 : 0;

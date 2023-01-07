@@ -116,6 +116,12 @@ export default {
                 <div class="card">
                     <div class="card-header text-white mb-3">Partagez vos coups de coeur avec nous !</div>
 
+                    <a href="https://www.lecoindunet.com/coordonnees-gps-lieu-google-maps" target="_blank">
+                        <button class="btn blueButton my-3">
+                            méthode pour trouver la latitude et la longitude d'un endroit (PC/smartphone/tablette)
+                        </button>
+                    </a>
+
                     <div class="card-body">
 
                         <form @submit.prevent="sendData" enctype="multipart/form-data">
@@ -217,7 +223,7 @@ export default {
                                     aria-label="filtre">
                                     <option v-for="(departement, index) in departements" :selected="index == 0"
                                         :value="departement.id">{{
-                                        departement.code
+                                            departement.code
                                         }} - {{ departement.nom }}</option>
                                 </select>
                             </div>
@@ -252,7 +258,8 @@ export default {
 
                             <div class="form-group row mt-3 text-center">
                                 <div class="col-md-6 offset-md-3">
-                                    <button type="submit" class="btn btn-lg greenButton rounded-pill text-light btn-info">
+                                    <button type="submit"
+                                        class="btn btn-lg greenButton rounded-pill text-light btn-info">
                                         Valider
                                     </button>
                                 </div>

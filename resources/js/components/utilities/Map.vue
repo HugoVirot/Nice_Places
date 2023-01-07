@@ -261,7 +261,7 @@ export default {
                 navigator.geolocation.getCurrentPosition(position => {
                     this.storeGeolocationAnswered(true)
                     this.storeUserPosition({ latitude: position.coords.latitude, longitude: position.coords.longitude })
-                    // console.log("accès position accepté, choix et coordonnées stockés dans le state")
+                    //console.log("accès position accepté, choix et coordonnées stockés dans le state")
                     this.initializeMap(this)
 
                     // ici la fonction anonyme est lancée en cas de refus (fonction dite "de callback")                    

@@ -42,11 +42,11 @@ export const useUserStore = defineStore({
             this.email = userData.email
             this.id = userData.id
             this.departement = userData.departement
-            this.region = userData.departement.region.nom
+            this.region = userData.departement ? userData.departement.region.nom : null
             this.role = userData.role
             this.token = userData.token
-            this.userLoggedIn = true
-            // transmettre le token (créé par l'API) avec chaque requête si connecté
+            this.userLoggedIn = true 
+            // pour transmettre le token (créé par l'API) avec chaque requête si connecté
             axios.defaults.headers.common.Authorization = `Bearer ${userData.token}`
         },
 

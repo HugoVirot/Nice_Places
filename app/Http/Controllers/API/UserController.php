@@ -33,9 +33,9 @@ class UserController extends BaseController
         // On récupère tous les utilisateurs
         $users = User::all();
 
-        // On retourne les informations des utilisateurs en JSON
+        // On retourne les informations des utilisateurs en JSON via la fonction sendResponse du BaseController
         // $users = body de la réponse / on peut ajouter un code de statut, faculatif (200 par défaut)
-        return response()->json($users);
+        return $this->sendResponse($users, "Utilisateurs récupérés avec succès");
     }
 
 

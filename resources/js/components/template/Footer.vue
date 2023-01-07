@@ -2,7 +2,7 @@
     <footer class="container-fluid greenBackground text-center p-5 mt-5">
         <img id="logoFooter" src="images/logo2.png">
         <p class="text-white fs-4">sorties nature près de chez vous</p>
-        <p><router-link to="politique/">mentions légales / politique de confidentialité</router-link> | 
+        <p><router-link to="/politique">mentions légales / politique de confidentialité</router-link> | 
             <router-link to="/contact">contact</router-link></p>
         <p>© 2022 Nice Places</p>
     </footer>

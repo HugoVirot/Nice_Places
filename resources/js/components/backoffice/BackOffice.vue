@@ -156,7 +156,7 @@
                     <td>{{ lieu.code_postal }}</td>
                     <td>{{ lieu.ville }}</td>
                     <td>{{ lieu.commentaire ? lieu.commentaire : "aucun" }}</td>
-                    <td>{{ lieu.user ? lieu.user.pseudo : 'compte supprimé'}}</td>
+                    <td>{{ lieu.user ? lieu.user.pseudo : 'utilisateur supprimé'}}</td>
                     <td>{{ moment(lieu.created_at).format("ddd DD MMM YYYY [à] HH:mm") }}</td>
                     <td> {{ lieu.created_at == lieu.updated_at ? "jamais modifié" :
                     moment(avis.updated_at).format("ddd DD MMM YYYY [à] HH:mm")
@@ -294,7 +294,7 @@
                             validation
                         </td>
                         <td v-else class="bg-danger text-white">refusé</td>
-                        <td>{{ avis.user.pseudo }}</td>
+                        <td>{{ avis.user ? avis.user.pseudo : "utilisateur supprimé" }}</td>
                         <td>{{ avis.lieu.nom }}</td>
                         <td>{{ avis.note }}</td>
                         <td v-if="avis.commentaire">{{ avis.commentaire.substring(0, 60) }}</td>
@@ -392,7 +392,7 @@
                     <td v-else class="bg-danger text-white">refusée</td>
                     <td>{{ image.id }}</td>
                     <td>{{ image.nom }}</td>
-                    <td>{{ image.user.pseudo }}</td>
+                    <td>{{ image.user ? image.user.pseudo : 'utilisateur supprimé'}}</td>
                     <td>{{ image.mise_en_avant ? 'oui' : 'non' }}</td>
                     <td>{{ image.longueur }} px</td>
                     <td>{{ image.largeur }} px</td>

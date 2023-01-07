@@ -129,8 +129,6 @@ export default {
     },
 
     methods: {
-        ...mapActions(useUserStore, ['logOut']),
-
         logOutUser() {
             // on réinitialise le store 
             const userStore = useUserStore()

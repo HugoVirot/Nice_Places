@@ -24,7 +24,7 @@ class ImageController extends BaseController
     public function index()
     {
         $images = Image::all();
-        return response()->json($images);
+        return $this->sendResponse($images, 'Images récupérées avec succès');
     }
 
     /**
@@ -52,6 +52,7 @@ class ImageController extends BaseController
         $image = $request->file('image');
 
         //nom de l'image = nom du lieu (espaces changés en underscores) + _image_ + le N° de l'image pour ce lieu + l'extension
+        // exemple : parc_des_oiseaux_image_1.jpg
         $imageName = str_replace(' ', '_', substr($request->nom_lieu, 0, 20)) . "_image_" . $imagesTotalForPlace + 1  . '.' . $image->extension();
 
         // on récupère les dimensions de l'image
@@ -93,7 +94,7 @@ class ImageController extends BaseController
      */
     public function show(Image $image)
     {
-        return response()->json($image);
+        return $this->sendResponse($image, "Image récupérée avec succès !");
     }
 
     /**

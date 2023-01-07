@@ -183,8 +183,6 @@ export default {
         },
 
         createSuccessNotification() {
-            console.log("createsuccessnotif");
-            console.log(this.image.user.id);
             let titre = `Votre image ${this.nom} a bien été validée !`;
             let message = `<p class="text-secondary">Bonjour ${this.image.user.pseudo},<br>
                     Félicitations, votre image a bien été validée !<br>
@@ -203,13 +201,12 @@ export default {
         
 
         createRefusalNotification() {
-            console.log("createrefusnotif");
-            console.log(this.image.user.id);
             let titre = `Votre image ${this.nom} a été refusée`;
             let message = `<p class="text-secondary">Bonjour ${this.image.user.pseudo},<br>
                 Votre image a été refusée pour la (les) raison(s) suivant(es) : <br>
                 ${this.raisonsRefus}<br>
                 <i style="color: #94D1BE" class="mx-auto my-3 fa-solid fa-xmark fa-5x"></i><br>
+                Merci de bien proposer des images correspondant au lieu, bien cadrées et bien nettes.<br>
                 N'hésitez pas à en proposer de nouvelles, pour ce lieu ou pour d'autres.<br>
                 Merci et à très bientôt.</p>
                 <p class="text-end">L'administrateur.</p>`

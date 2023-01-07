@@ -84,7 +84,7 @@
                                 <div class="row">
                                     <p>minimum 8 caractères
                                         <i v-if="eightCharacters" class="p-2 greenIcon fa-solid fa-check"></i>
-                                        <i v-else class="fa-solid fa-xmark"></i>
+                                        <i v-else class="fa-solid fa-xmark fa-2x"></i>
                                     </p>
                                 </div>
 

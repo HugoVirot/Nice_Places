@@ -5,7 +5,7 @@
         <h1 class="mt-2">Mes lieux favoris</h1>
     </div>
 
-    <section v-if="listeFavoris.length > 0">
+    <section v-if="listeFavoris && listeFavoris.length > 0">
 
         <Filtres :lieux="listeFavoris" :lieuxNonFiltres="favorisNonFiltres" @filtre_applique="updateLieux" />
 

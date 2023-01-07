@@ -25,7 +25,7 @@ class FavoriController extends BaseController
         // on charge les lieux favoris de l'utilisateur
         $user->load('favoris');
         // on les renvoie en format json
-        return response()->json($user->favoris);
+        return $this->sendResponse($user->favoris, 'Favoris récupérés avec succès');
     }
 
     /**

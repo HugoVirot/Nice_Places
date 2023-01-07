@@ -87,7 +87,7 @@ class AvisController extends BaseController
         $lieu->save();
 
         // On retourne l'avis créé avec un message de confirmation
-        $message = "Votre avis a bien été enregistré.";
+        $message = "Votre avis a bien été enregistré. Il sera contrôlé par l'administrateur.";
         return $this->sendResponse($avis, $message, 201);
     }
 
