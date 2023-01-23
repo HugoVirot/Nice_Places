@@ -51,7 +51,7 @@
                                     (facultatif)</label>
 
                                 <div class="col-md-6">
-                                    <select id="departement" v-model="departement" class="form-select mx-auto"
+                                    <select id="departement" v-model="departement" name="departement" class="form-select mx-auto"
                                         aria-label="filtre" autocomplete="departement">
                                         <option v-for="departement in departements" :value="departement.id">{{
                                         departement.code

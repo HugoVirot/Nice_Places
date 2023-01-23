@@ -82,21 +82,23 @@ export default {
             axios.get('/sanctum/csrf-cookie')
 
                 .then(() => {
-                    // on tente la connexion. Si réussie, on stocke les données du user dans le state
-                    // on récupère aussi ses notifications qu'on stocke également dans le state
+                    // on tente la connexion
                     axios.post('/api/login', { email: this.email, password: this.password })
                         .then(response => {
-                            //console.log(response.data) 
+                            // si elle réussit : stockage des données utilisateur reçues dans le localstorage via le userStore
                             this.storeUserData(response.data.data) 
-                            this.getNotifications()               
+                            // récupération des notifications de l'utilisateur qu'on stocke également dans le userStore
+                            this.getNotifications()  
+                            // redirection vers un composant affichant le message de succès "vous êtes connecté"             
                             this.$router.push('/successmessage/home/' + response.data.message)
-
+                        // si elle échoue : on affiche la ou les erreurs rencontrée(s)
                         }).catch((error) => {
                             this.validationErrors = error.response.data.errors
                         })
 
+                // si la requête d'initialisation de la protection CSRF a échoué, on affiche ce message
                 }).catch(() => {
-                    alert("Problème de sécurité. Vous pouvez essayer de recharger la page pour corriger le problème. Réessayez plus tard")
+                    alert("Problème de sécurité. Merci de recharger la page. Réessayez plus tard ou contactez l'administrateur si le problème persiste.")
                 })
         },
 

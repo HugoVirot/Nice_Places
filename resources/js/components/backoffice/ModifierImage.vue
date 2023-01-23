@@ -13,7 +13,7 @@
 
     <p v-if="image">postée par {{ image.user.pseudo }}</p>
 
-    <img class="w-75" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
+    <img class="w-50" :src="`/images/${image.nom}`" :alt="`${image.nom}`">
 
 
     <div class="container-fluid p-3 p-lg-5">

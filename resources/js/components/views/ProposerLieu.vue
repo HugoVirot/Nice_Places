@@ -166,7 +166,7 @@ export default {
                             <div class="form-group row m-2">
                                 <label for="categorie" class="col-md-4 col-form-label text-md-right">catégorie</label>
                                 <div class="col-md-6">
-                                    <select required v-model="categorie" class="form-select" aria-label="categorie">
+                                    <select required v-model="categorie" class="form-select" aria-label="categorie" name="categorie">
                                         <option v-for="categorie in categories" :key="categorie.id"
                                             :value="categorie.id">{{ categorie.nom }}</option>
                                     </select>
@@ -198,7 +198,7 @@ export default {
                                     difficulté</label>
 
                                 <div class="col-md-6">
-                                    <select required v-model="difficulte" class="form-select" aria-label="difficulte">
+                                    <select required v-model="difficulte" class="form-select" aria-label="difficulte" name="difficulte">
                                         <option selected value="famille">famille</option>
                                         <option value="amateur">amateur</option>
                                         <option value="sportif">sportif</option>
@@ -219,7 +219,7 @@ export default {
                             <div class="form-group row m-2">
                                 <label class="col-md-4 col-form-label text-md-right"
                                     for="departement">département</label>
-                                <select id="departement" required v-model="departement" class="form-select w-50 mx-auto"
+                                <select id="departement" name="departement" required v-model="departement" class="form-select w-50 mx-auto"
                                     aria-label="filtre">
                                     <option v-for="(departement, index) in departements" :selected="index == 0"
                                         :value="departement.id">{{

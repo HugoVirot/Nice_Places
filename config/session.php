@@ -31,7 +31,7 @@ return [
     |
     */
 
-    'lifetime' => env('SESSION_LIFETIME', 120),
+    'lifetime' => env('SESSION_LIFETIME', 60 * 24 * 7), // la session dure 7 jours (60 min * 24h * 7j)
 
     'expire_on_close' => false,
 
@@ -154,9 +154,11 @@ return [
     | available to in your application. A sensible default has been set.
     |
     */
+    //pour la mise en production
+    'domain' => env('.nice-places.fr'),
 
-    //'domain' => env('SESSION_DOMAIN'),
-    'domain' => env('.localhost:8000'),
+    // pour travailler en local
+    //'domain' => env('.localhost:8000'),
 
     /*
     |--------------------------------------------------------------------------
@@ -169,7 +171,7 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE'),
+    'secure' => true,
 
     /*
     |--------------------------------------------------------------------------

@@ -26,9 +26,9 @@
 
             <!-- hamburger -->
 
-            <button class="navbar-toggler greenBackground mt-3 d-md-none my-auto" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
-                aria-label="Toggle navigation">
+            <button class="navbar-toggler greenBackground mt-3 d-md-none my-auto" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
+                aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
         </div>
@@ -61,7 +61,8 @@
                                         <i class="text-danger fa-solid fa-bell"></i>
                                     </span>
                                 </a>
-                                <ul class="dropdown-menu ms-5 ms-md-0 ps-5 ps-md-0" aria-labelledby="navbarDropdownMenuLink">
+                                <ul class="dropdown-menu ms-5 ms-md-0 ps-5 ps-md-0"
+                                    aria-labelledby="navbarDropdownMenuLink">
                                     <li>
                                         <router-link to="/moncompte" class="nav-link">mon compte</router-link>
                                     </li>
@@ -134,6 +135,9 @@ export default {
             const userStore = useUserStore()
             userStore.$reset()
 
+            // on remet à zéro le header Authorization pour ne plus transmettre le token créé par l'API
+            axios.defaults.headers.common.Authorization = ''
+
             // on redirige vers l'accueil
             this.$router.push('/SuccessMessage/home/Déconnexion réussie')
         }
@@ -173,11 +177,12 @@ a {
     color: inherit
 }
 
-a:hover{
+a:hover {
     color: #94D1BE !important
 }
 
-nav .router-link-active, nav .router-link-exact-active{
+nav .router-link-active,
+nav .router-link-exact-active {
     color: grey !important
 }
 

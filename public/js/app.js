@@ -24274,6 +24274,9 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       var userStore = (0,_stores_userStore__WEBPACK_IMPORTED_MODULE_0__.useUserStore)();
       userStore.$reset();
 
+      // on remet à zéro le header Authorization pour ne plus transmettre le token créé par l'API
+      axios.defaults.headers.common.Authorization = '';
+
       // on redirige vers l'accueil
       this.$router.push('/SuccessMessage/home/Déconnexion réussie');
     }
@@ -24325,21 +24328,25 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       var _this = this;
       // on initialise la protection CSRF Sanctum via cette route
       axios__WEBPACK_IMPORTED_MODULE_0___default().get('/sanctum/csrf-cookie').then(function () {
-        // on tente la connexion. Si réussie, on stocke les données du user dans le state
-        // on récupère aussi ses notifications qu'on stocke également dans le state
+        // on tente la connexion
         axios__WEBPACK_IMPORTED_MODULE_0___default().post('/api/login', {
           email: _this.email,
           password: _this.password
         }).then(function (response) {
-          //console.log(response.data) 
+          // si elle réussit : stockage des données utilisateur reçues dans le localstorage via le userStore
           _this.storeUserData(response.data.data);
+          // récupération des notifications de l'utilisateur qu'on stocke également dans le userStore
           _this.getNotifications();
+          // redirection vers un composant affichant le message de succès "vous êtes connecté"             
           _this.$router.push('/successmessage/home/' + response.data.message);
+          // si elle échoue : on affiche la ou les erreurs rencontrée(s)
         })["catch"](function (error) {
           _this.validationErrors = error.response.data.errors;
         });
+
+        // si la requête d'initialisation de la protection CSRF a échoué, on affiche ce message
       })["catch"](function () {
-        alert("Problème de sécurité. Vous pouvez essayer de recharger la page pour corriger le problème. Réessayez plus tard");
+        alert("Problème de sécurité. Merci de recharger la page. Réessayez plus tard ou contactez l'administrateur si le problème persiste.");
       });
     },
     getNotifications: function getNotifications() {
@@ -27471,7 +27478,7 @@ var _hoisted_32 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_ValidationErrors = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ValidationErrors");
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [_hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h1", _hoisted_3, "Modifier l'image " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.image.nom), 1 /* TEXT */), $data.image ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_4, [$data.statut == 'validée' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_5, "validée")) : $data.statut == 'en attente' ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_6, "en attente de validation ")) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, "refusée "))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), $data.image ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("p", _hoisted_8, "postée par " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.image.user.pseudo), 1 /* TEXT */)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
-    "class": "w-75",
+    "class": "w-50",
     src: "/images/".concat($data.image.nom),
     alt: "".concat($data.image.nom)
   }, null, 8 /* PROPS */, _hoisted_9), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [$data.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
@@ -28634,6 +28641,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
       return $data.departement = $event;
     }),
+    name: "departement",
     "class": "form-select mx-auto",
     "aria-label": "filtre",
     autocomplete: "departement"
@@ -30872,7 +30880,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return $data.categorie = $event;
     }),
     "class": "form-select",
-    "aria-label": "categorie"
+    "aria-label": "categorie",
+    name: "categorie"
   }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.categories, function (categorie) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
       key: categorie.id,
@@ -30908,7 +30917,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return $data.difficulte = $event;
     }),
     "class": "form-select",
-    "aria-label": "difficulte"
+    "aria-label": "difficulte",
+    name: "difficulte"
   }, _hoisted_39, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.difficulte]])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_40, [_hoisted_41, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_42, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     min: "1",
     max: "150",
@@ -30922,6 +30932,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     autocomplete: "kilometres"
   }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.kilometres]])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_43, [_hoisted_44, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
     id: "departement",
+    name: "departement",
     required: "",
     "onUpdate:modelValue": _cache[9] || (_cache[9] = function ($event) {
       return $data.departement = $event;
@@ -31170,6 +31181,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./router */ "./resources/js/router.js");
 /* harmony import */ var pinia__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! pinia */ "./node_modules/pinia/dist/pinia.mjs");
 /* harmony import */ var pinia_plugin_persistedstate__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! pinia-plugin-persistedstate */ "./node_modules/pinia-plugin-persistedstate/dist/index.mjs");
+/* harmony import */ var _stores_userStore__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./stores/userStore */ "./resources/js/stores/userStore.js");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 // on importe Bootstrap
@@ -31197,6 +31209,15 @@ pinia.use(pinia_plugin_persistedstate__WEBPACK_IMPORTED_MODULE_5__["default"]);
 // on inclut le routeur et le store dans l'application
 (0,vue__WEBPACK_IMPORTED_MODULE_2__.createApp)(_components_App_vue__WEBPACK_IMPORTED_MODULE_3__["default"]).use(_router__WEBPACK_IMPORTED_MODULE_4__["default"]).use(pinia).mount("#app");
 
+// main.js
+
+
+// Expose a store to window during testing
+// if (window.Cypress && process.env.NODE_ENV === 'development') { 
+//   const userStore = useUserStore() 
+//   window.userStore = userStore
+// }
+
 /***/ }),
 
 /***/ "./resources/js/bootstrap.js":
@@ -31221,10 +31242,10 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.withCredentials = true;
 
 // afficher chaque requête en console
-// window.axios.interceptors.request.use(request => {
-//     console.log('Starting Request', JSON.stringify(request, null, 2))
-//     return request
-//   })
+window.axios.interceptors.request.use(function (request) {
+  console.log('Starting Request', JSON.stringify(request, null, 2));
+  return request;
+});
 
 /***/ }),
 
@@ -37004,7 +37025,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n@font-face {\r\n    font-family: 'Cooper';\r\n    src: './Cooper Black Regular.ttf';\n}\nheader {\r\n    background-color: white;\r\n    box-shadow: 5px 3px 3px #94D1BE;\n}\n#twostripes {\r\n    width: 15vw\n}\n#logo {\r\n    width: 260px\n}\n#textelogo {\r\n    font-size: 16px;\n}\n.dropdown-menu {\r\n    margin-top: 0 !important\n}\na {\r\n    text-decoration: none;\r\n    color: inherit\n}\na:hover{\r\n    color: #94D1BE !important\n}\nnav .router-link-active, nav .router-link-exact-active{\r\n    color: grey !important\n}\n.dropdown-menu .router-link {\r\n    color: #94D1BE\n}\nbody {\r\n    font-family: 'Cooper', Arial;\n}\n#leftstripe {\r\n    width: 33vw;\r\n    height: 2vh;\n}\n#rightstripe {\r\n    width: 33vw;\r\n    background-color: #1C6E8C;\r\n    height: 2vh;\n}\n.greentext {\r\n    color: #94D1BE\n}\n.navbar-brand,\r\n.nav-link {\r\n    color: #1C6E8C\n}\n.navbar-toggler {\r\n    border-radius: 30%;\n}\n@media screen and (max-width: 480px) {\n#logo {\r\n        width: 180px\n}\n}\r\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n@font-face {\r\n    font-family: 'Cooper';\r\n    src: './Cooper Black Regular.ttf';\n}\nheader {\r\n    background-color: white;\r\n    box-shadow: 5px 3px 3px #94D1BE;\n}\n#twostripes {\r\n    width: 15vw\n}\n#logo {\r\n    width: 260px\n}\n#textelogo {\r\n    font-size: 16px;\n}\n.dropdown-menu {\r\n    margin-top: 0 !important\n}\na {\r\n    text-decoration: none;\r\n    color: inherit\n}\na:hover {\r\n    color: #94D1BE !important\n}\nnav .router-link-active,\r\nnav .router-link-exact-active {\r\n    color: grey !important\n}\n.dropdown-menu .router-link {\r\n    color: #94D1BE\n}\nbody {\r\n    font-family: 'Cooper', Arial;\n}\n#leftstripe {\r\n    width: 33vw;\r\n    height: 2vh;\n}\n#rightstripe {\r\n    width: 33vw;\r\n    background-color: #1C6E8C;\r\n    height: 2vh;\n}\n.greentext {\r\n    color: #94D1BE\n}\n.navbar-brand,\r\n.nav-link {\r\n    color: #1C6E8C\n}\n.navbar-toggler {\r\n    border-radius: 30%;\n}\n@media screen and (max-width: 480px) {\n#logo {\r\n        width: 180px\n}\n}\r\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -80177,8 +80198,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_demi__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-demi */ "./node_modules/pinia/node_modules/vue-demi/lib/index.mjs");
 /* harmony import */ var _vue_devtools_api__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @vue/devtools-api */ "./node_modules/@vue/devtools-api/lib/esm/index.js");
 /*!
-  * pinia v2.0.28
-  * (c) 2022 Eduardo San Martin Morote
+  * pinia v2.0.29
+  * (c) 2023 Eduardo San Martin Morote
   * @license MIT
   */
 
