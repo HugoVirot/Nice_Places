@@ -127,7 +127,7 @@ export default {
 	created() {
 
 		// on récupère les cat / lieux / dep / régions et on les stocke dans le store
-		// getLieux est nécessaire à chaque affichage du composant pour actualiser les listes
+		// getLieux est nécessaire à chaque affichage du composant pour actualiser la liste
 		// (les autres changent rarement surtout départements et régions)
 		this.getLieux()
 
@@ -360,7 +360,7 @@ export default {
 										</div>
 
 										<div class="col-9" v-if="lastPlace.user">
-											<p>par {{ lastPlace.user.pseudo }}</p>
+											<p class="text-white">par {{ lastPlace.user.pseudo }}</p>
 										</div>
 									</div>
 

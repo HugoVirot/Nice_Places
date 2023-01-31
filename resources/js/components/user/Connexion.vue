@@ -37,7 +37,7 @@
 
                             <div class="form-group row mt-3 text-center">
                                 <div class="col-md-6 offset-md-3">
-                                    <button type="submit"
+                                    <button type="submit" id="valider"
                                         class="btn btn-lg greenButton rounded-pill text-light btn-info">
                                         Valider
                                     </button>

@@ -1,12 +1,6 @@
 // ****************** TEST D'INSCRIPTION ET DE CONNEXION ******************
 
-// import du userStore pour le tester 
-// import { createTestingPinia } from '@pinia/testing'
-// import { useUserStore } from '../../resources/js/stores/userStore'
-
-// const userStore = useUserStore()
-
-// test affichage accueil
+// ***********************test affichage accueil*****************************
 describe('display Nice Places Home Page', () => {
   it('see Nice Places Home Page', () => {
     cy.visit('http://localhost:8000')

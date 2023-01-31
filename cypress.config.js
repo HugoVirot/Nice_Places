@@ -32,7 +32,7 @@ module.exports = defineConfig({
     }
   },
 
-  "env": {
+  env: {
     "db": {
       "host": "localhost",
       "user": "root",
