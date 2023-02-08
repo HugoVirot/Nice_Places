@@ -9,23 +9,15 @@
         <!-- composant affichant les erreurs de validation des formulaires -->
         <ValidationErrors :errors="validationErrors" v-if="validationErrors" />
 
-        <div class="row justify-content-center p-2 p-lg-5">
+        <div class="row justify-content-center p-2 p-lg-4">
+            <h2 class="mx-auto text-white mb-5">Bienvenue, {{ pseudo }} !</h2>
             <div class="col-md-8 p-1">
                 <div class="card">
-                    <div class="card-header text-white mb-3">Modifier mes infos</div>
+                    <div class="card-header text-white mb-3 fs-5">Modifier mes infos</div>
 
                     <form @submit.prevent="sendData">
 
                         <div class="card-body">
-
-                            <div class="form-group row m-2">
-                                <label for="pseudo" class="col-md-4 col-form-label text-md-right">pseudo</label>
-
-                                <div class="col-md-6">
-                                    <input v-model="pseudo" id="pseudo" type="text" class="form-control" name="pseudo"
-                                        autocomplete="pseudo" autofocus>
-                                </div>
-                            </div>
 
                             <div class="form-group row m-2">
                                 <label for="email" class="col-md-4 col-form-label text-md-right">e-mail</label>
@@ -37,23 +29,33 @@
                             </div>
 
                             <div class="form-group row m-2">
-                                <label for="departement" class="col-md-4 col-form-label text-md-right">département
-                                    (facultatif)</label>
+                                <p class="mb-2 blueElement mt-2">Département actuel :
+                                    <span v-if="departement" class="fs-5"> {{ departement.nom }} ({{ departement.code }})</span>
+                                    <span v-else class="fs-5"> aucun</span>
+                                </p>
+                                <label for="departement" class="col-md-4 col-form-label text-md-right">changer de
+                                    département</label>
 
                                 <div class="col-md-6">
                                     <select id="departement" v-model="departement" class="form-select mx-auto"
                                         aria-label="filtre" autocomplete="departement">
-                                        <option v-for="department in departements" :value="department"
-                                            :selected="departement && department.code == departement.code ? 'selected' : ''">
+                                        <option v-for="department in departements" :value="department">
                                             {{ department.code }} - {{ department.nom }}</option>
                                     </select>
                                 </div>
+                            </div>
 
+                            <div class="form-group row mt-3 text-center">
+                                <div class="col-md-6 offset-md-3">
+                                    <button id="boutonValider" type="submit" class="btn btn-lg rounded-pill text-light">
+                                        Valider
+                                    </button>
+                                </div>
                             </div>
 
                         </div>
 
-                        <div class="card-header text-white mt-3 mb-1"> Modifier le mot de passe</div>
+                        <div class="card-header text-white mt-3 mb-1 fs-5"> Modifier le mot de passe</div>
 
                         <div class="card-body">
 
@@ -148,7 +150,7 @@
 
 
                 <div class="card">
-                    <div class="card-header text-white mb-3">Supprimer mon compte</div>
+                    <div class="card-header text-white mb-3 fs-5">Supprimer mon compte</div>
 
                     <form @submit.prevent="deleteAccount">
 
@@ -158,7 +160,8 @@
 
                             <p class="text-danger">Attention : cette action est irréversible.</p>
                             <p class="text-danger">En supprimant votre compte, vous perdrez tous vos favoris.</p>
-                            <p  class="text-white">Les lieux et les avis que vous avez postés seront conservés (ils seront anonymisés).</p>
+                            <p class="text-white">Les lieux et les avis que vous avez postés seront conservés (ils
+                                seront anonymisés).</p>
                             <div class="form-group row m-3 text-center">
                                 <div class="col-md-6 offset-md-3">
                                     <button type="submit" class="btn rounded-pill text-light btn-danger">
@@ -259,9 +262,9 @@ export default {
         // on envoie les modifs pour les sauvegarder en bdd puis on redirige
         sendData() {
             axios.put('/api/users/' + this.id, {
-                pseudo: this.pseudo, email: this.email, departement_id: this.departement.id, oldPassword: this.oldPassword,
+                email: this.email, departement_id: this.departement.id, oldPassword: this.oldPassword,
                 password: this.password, password_confirmation: this.password_confirmation
-            }).then(response => { 
+            }).then(response => {
                 this.storeUserData(response.data.data)
                 this.$router.push('/successmessage/lastpage/' + response.data.message)
             }).catch((error) => {

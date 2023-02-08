@@ -98,7 +98,7 @@ export default {
 
                 // si la requête d'initialisation de la protection CSRF a échoué, on affiche ce message
                 }).catch(() => {
-                    alert("Problème de sécurité. Merci de recharger la page. Réessayez plus tard ou contactez l'administrateur si le problème persiste.")
+                    alert("Problème d'authentification'. Merci de recharger la page. Réessayez plus tard ou contactez l'administrateur si le problème persiste.")
                 })
         },
 

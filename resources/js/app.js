@@ -25,10 +25,9 @@ pinia.use(piniaPluginPersistedstate)
 // on inclut le routeur et le store dans l'application
 createApp(App).use(router).use(pinia).mount("#app")
 
-// main.js
-import { useUserStore } from './stores/userStore';
 
 // Expose a store to window during testing
+//import { useUserStore } from './stores/userStore';
 // if (window.Cypress && process.env.NODE_ENV === 'development') { 
 //   const userStore = useUserStore() 
 //   window.userStore = userStore

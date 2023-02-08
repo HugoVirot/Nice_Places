@@ -21,7 +21,6 @@ function queryTestDb(query, config) {
   })
 }
 
-
 module.exports = defineConfig({
   e2e: {
     baseUrl: 'http://localhost:8000',

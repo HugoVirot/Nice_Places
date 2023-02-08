@@ -436,8 +436,7 @@ export default {
 /******************* titres ************/
 
 h1,
-h2,
-.blueElement {
+h2 {
 	color: #1c6e8c
 }
 

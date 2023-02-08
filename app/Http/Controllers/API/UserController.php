@@ -16,7 +16,7 @@ class UserController extends BaseController
     public function __construct()
     {
         // middleware sanctum appliqué sur index / update / destroy
-        $this->middleware('auth:sanctum')->except(['store', 'destroy']);
+        $this->middleware('auth:sanctum')->except(['store']);
 
         //middleware admin à ajouter pour index (en supplément)
     }
@@ -116,7 +116,6 @@ class UserController extends BaseController
     public function update(Request $request, User $user)
     {
         $validator = Validator::make($request->all(), [
-            'pseudo' => 'required|max:20',
             'email' => 'required|email|max:20',
             'oldPassword' => 'nullable',
             'password' => [
@@ -138,7 +137,6 @@ class UserController extends BaseController
 
         // On modifie les informations de l'utilisateur
         $user->update([
-            'pseudo' => $request->pseudo,
             'email' => $request->email,
             'departement_id' => $request->departement_id
         ]);
