@@ -9,7 +9,7 @@
             <div class="mt-1 d-none d-md-block greenBackground" id="leftstripe"></div>
 
             <!-- image avec deux bandes (mobiles uniquement) -->
-            <img class="d-block mt-3 d-md-none" id="twostripes" alt="twostripes"
+            <img class="d-block mt-3 d-md-none" id="twostripes" alt="bandes colorées header mobile"
                 src="images/bandes-gauche-header.png" />
 
             <div class="d-flex flex-column mx-auto text-center">

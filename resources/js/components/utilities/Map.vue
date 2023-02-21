@@ -167,7 +167,7 @@ export default {
                                         "<i class=\"fa-solid fa-star ms-3 me-2\" style=\"color: yellow\"></i>" +
                                         "<span class=\"fs-5 text-secondary\" style=\"font-family:'Cooper'\">" + lieu.note + "</span></div>" +
                                         "<h5 style=\"color: #1C6E8C; font-family:'Cooper'\">" + lieu.nom + "</h5>" +
-                                        "<img class=\"mx-auto\" src=\"images/" + imageCouvertureLieu + "\" style=\"width:35vw\">" +
+                                        "<img class=\"mx-auto\" src=\"images/" + imageCouvertureLieu + "\" alt=\"image représentant le lieu\" style=\"width:35vw\">" +
                                         "<p style=\"font-family:'Cooper'\" class=\"text-center text-secondary\">" + lieu.adresse + "<br>" + lieu.code_postal + " " + lieu.ville + "</p></div>"
 
                                     let popupOptions =  // on choisit les options du popup

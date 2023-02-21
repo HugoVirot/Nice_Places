@@ -42,9 +42,9 @@
             </div>
 
         </div>
-        <img class="singlePicture" v-if="lieu.images.length == 0" src="/images/defaultpicture.jpg">
+        <img class="singlePicture" v-if="lieu.images.length == 0" src="/images/defaultpicture.jpg" alt="image par défaut">
 
-        <img class="singlePicture" v-else-if="lieu.images.length == 1" :src="`/images/${lieu.images[0].nom}`">
+        <img class="singlePicture" v-else-if="lieu.images.length == 1" :src="`/images/${lieu.images[0].nom}`" alt="image du lieu">
 
         <div v-else id="carouselLieu" class="carousel slide carousel-fade container" data-bs-ride="carousel">
 
@@ -52,7 +52,7 @@
 
                 <div v-for="(image, index) in lieu.images"
                     :class="['carousel-item', { active: image.mise_en_avant == true }]">
-                    <img :src="`/images/${image.nom}`" class="d-block w-100" alt="">
+                    <img :src="`/images/${image.nom}`" class="d-block w-100" :alt="image.nom">
                 </div>
 
                 <div class="carousel-indicators">

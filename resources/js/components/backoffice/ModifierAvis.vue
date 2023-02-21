@@ -219,7 +219,7 @@ export default {
 
 <style scoped>
 .container-fluid {
-    background-image: url(../../../../public/images/sunset2.jpg);
+    background-image: url(../../../../public/images/sunset.jpg);
     background-position: center;
     background-size: cover;
 }

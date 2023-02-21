@@ -47,7 +47,7 @@ export default {
 
 		// on récupère les catégories et on les stocke dans le store, idem ensuite pour lieux/départements/régions/favoris
 		getCategories() {
-			axios.get("http://localhost:8000/api/categories")
+			axios.get("https://www.nice-places.fr/api/categories")
 				.then(response => {
 					this.storeCategories(response.data.data)
 				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
@@ -56,7 +56,7 @@ export default {
 		},
 
 		getLieux() {
-			axios.get("http://localhost:8000/api/lieus")
+			axios.get("https://www.nice-places.fr/api/lieus")
 				.then(response => {
 					this.storeLieux(response.data.data)
 				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
@@ -65,7 +65,7 @@ export default {
 		},
 
 		getDepartements() {
-			axios.get("http://localhost:8000/api/departements")
+			axios.get("https://www.nice-places.fr/api/departements")
 				.then(response => {
 					this.storeDepartements(response.data.data)
 				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
@@ -74,7 +74,7 @@ export default {
 		},
 
 		getRegions() {
-			axios.get("http://localhost:8000/api/regions")
+			axios.get("https://www.nice-places.fr/api/regions")
 				.then(response => {
 					this.storeRegions(response.data.data)
 				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
@@ -83,7 +83,7 @@ export default {
 		},
 
 		getFavoris() {
-			axios.get("http://localhost:8000/api/favoris/" + this.id)
+			axios.get("https://www.nice-places.fr/api/favoris/" + this.id)
 				.then(response => {
 					this.storeFavoris(response.data.data)
 				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
@@ -186,7 +186,7 @@ export default {
 			<div class="container-fluid p-5" id="presentation" style="background-image: url(images/mervent2.jpg)">
 				<div class="row pb-4">
 					<div class="col-md-6 my-auto">
-						<img id="bigLogo" class="w-100 h-100 bg-white rounded" src="images/logo.png">
+						<img id="bigLogo" class="w-100 h-100 bg-white rounded" src="images/logo.png" alt="logo nice places">
 					</div>
 
 					<div class="col-md-6 my-auto">

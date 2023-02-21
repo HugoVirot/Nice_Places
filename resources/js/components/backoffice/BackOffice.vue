@@ -658,7 +658,7 @@ export default {
         },
 
         getAvis() {
-            axios.get("http://localhost:8000/api/avis")
+            axios.get("https://www.nice-places.fr/api/avis")
                 .then(response => {
                     this.storeAvis(response.data.data)
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
@@ -667,7 +667,7 @@ export default {
         },
 
         getUsers() {
-            axios.get("http://localhost:8000/api/users")
+            axios.get("https://www.nice-places.fr/api/users")
                 .then(response => {
                     this.storeUsers(response.data.data)
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
@@ -676,7 +676,7 @@ export default {
         },
 
         getImages() {
-            axios.get("http://localhost:8000/api/images")
+            axios.get("https://www.nice-places.fr/api/images")
                 .then(response => {
                     this.storeImages(response.data.data)
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
