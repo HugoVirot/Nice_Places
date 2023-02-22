@@ -48,7 +48,7 @@ export default {
 
         // on récupère les lieux postes par le user
         getLieuxPostes() {
-            axios.post("https://www.nice-places.fr/api/lieus/getplacesbyuser", null, {
+            axios.post("/api/lieus/getplacesbyuser", null, {
                 params: {
                     user_id: this.id
                 }

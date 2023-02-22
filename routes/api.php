@@ -70,9 +70,9 @@ Route::get('getnotificationsbyuser/{user}', [App\Http\Controllers\API\Notificati
 
 //************************************** route DEPARTEMENTS *************************************************
 
-route::get("/departements", App\Http\Controllers\API\DepartementController::class)->name("getDepartements");
+route::get("/departements", [App\Http\Controllers\API\DepartementController::class, 'index'])->name("getDepartements");
 
 
 //************************************** route REGIONS *************************************************
 
-route::get("/regions", App\Http\Controllers\API\RegionController::class)->name("getRegions");
+route::get("/regions", [App\Http\Controllers\API\RegionController::class, 'index'])->name("getRegions");

@@ -154,11 +154,9 @@ return [
     | available to in your application. A sensible default has been set.
     |
     */
-    //pour la mise en production
-    'domain' => env('.nice-places.fr'),
+    // 
+    'domain' => env('APP_ENV') == 'production' ? '.nice-places.fr' : '.localhost:8000',
 
-    // pour travailler en local
-    //'domain' => env('.localhost:8000'),
 
     /*
     |--------------------------------------------------------------------------

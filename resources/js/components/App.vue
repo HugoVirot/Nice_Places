@@ -34,7 +34,7 @@ export default {
 		departement() {
 			this.getThreeTopAndLastPlaces()
 		},
-		id() { // on surveille également le changement d'utilisateur
+		id() { // on surveille également le changement d'id et donc d'utilisateur
 			this.getThreeTopAndLastPlaces()
 		}
 	},
@@ -47,7 +47,7 @@ export default {
 
 		// on récupère les catégories et on les stocke dans le store, idem ensuite pour lieux/départements/régions/favoris
 		getCategories() {
-			axios.get("https://www.nice-places.fr/api/categories")
+			axios.get("/api/categories")
 				.then(response => {
 					this.storeCategories(response.data.data)
 				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
@@ -56,7 +56,7 @@ export default {
 		},
 
 		getLieux() {
-			axios.get("https://www.nice-places.fr/api/lieus")
+			axios.get("/api/lieus")
 				.then(response => {
 					this.storeLieux(response.data.data)
 				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
@@ -65,7 +65,7 @@ export default {
 		},
 
 		getDepartements() {
-			axios.get("https://www.nice-places.fr/api/departements")
+			axios.get("/api/departements")
 				.then(response => {
 					this.storeDepartements(response.data.data)
 				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
@@ -74,7 +74,7 @@ export default {
 		},
 
 		getRegions() {
-			axios.get("https://www.nice-places.fr/api/regions")
+			axios.get("/api/regions")
 				.then(response => {
 					this.storeRegions(response.data.data)
 				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
@@ -83,7 +83,7 @@ export default {
 		},
 
 		getFavoris() {
-			axios.get("https://www.nice-places.fr/api/favoris/" + this.id)
+			axios.get("/api/favoris/" + this.id)
 				.then(response => {
 					this.storeFavoris(response.data.data)
 				}).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
