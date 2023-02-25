@@ -30,7 +30,8 @@
 
                             <div class="form-group row m-2">
                                 <p class="mb-2 blueElement mt-2">Département actuel :
-                                    <span v-if="departement" class="fs-5"> {{ departement.nom }} ({{ departement.code }})</span>
+                                    <span v-if="departement" class="fs-5"> {{ departement.nom }} ({{ departement.code
+                                    }})</span>
                                     <span v-else class="fs-5"> aucun</span>
                                 </p>
                                 <label for="departement" class="col-md-4 col-form-label text-md-right">changer de
@@ -39,6 +40,7 @@
                                 <div class="col-md-6">
                                     <select id="departement" v-model="departement" class="form-select mx-auto"
                                         aria-label="filtre" autocomplete="departement">
+                                        <option value="null">aucun</option>
                                         <option v-for="department in departements" :value="department">
                                             {{ department.code }} - {{ department.nom }}</option>
                                     </select>
@@ -82,8 +84,8 @@
                                     passe</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="password" @keyup="checkPassword(password)" id="password"
-                                        type="password" class="form-control" name="password">
+                                    <input v-model="password" @keyup="checkPassword(password)" id="password" type="password"
+                                        class="form-control" name="password">
                                 </div>
                             </div>
 
@@ -178,7 +180,6 @@
             </div>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -296,6 +297,15 @@ export default {
 
             // on redirige vers l'accueil
             this.$router.push('/SuccessMessage/home/Déconnexion réussie')
+        }
+    },
+
+    created() {
+        const userStore = useUserStore()
+
+        if (userStore.token != '') {
+            // pour transmettre le token (créé par l'API) avec chaque requête si connecté
+            axios.defaults.headers.common.Authorization = `Bearer ${userStore.token}`
         }
     }
 }

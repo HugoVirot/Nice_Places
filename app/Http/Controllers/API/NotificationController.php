@@ -51,8 +51,8 @@ class NotificationController extends BaseController
         }
 
         $notification = Notification::create($request->all());
-
-        $this->sendResponse($notification, "Notification envoyée");
+        
+        $this->sendResponse($notification, 'Notification envoyée');
     }
 
 

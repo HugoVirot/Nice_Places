@@ -3,7 +3,7 @@
     <div class="container-fluid greenBackground text-center py-5 my-5 text-white">
         <h3 class="p-2">Félicitations</h3>
         <i class="fa-solid fa-circle-check fa-5x p-2"></i>
-        <h2 class="p-2">{{ message }}</h2>
+        <h2 class="p-2">{{ message !== 'undefined' ? message : 'succès'}}</h2>
     </div>
 
 </template>

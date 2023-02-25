@@ -13,19 +13,33 @@ class LieuController extends BaseController
     public function __construct()
     {
         // middleware sanctum appliqué sur store / update / destroy
-        $this->middleware('auth:sanctum')->except(['index', 'show']);
+        $this->middleware('auth:sanctum')->except(['index', 'show', 'getAllPlaces']);
     }
 
+
     /**
-     * Display a listing of the resource.
+     * Récupérer les lieux validés uniquement (pour l'affichage utilisateur)
      *
      * @return \Illuminate\Http\Response 
      */
     public function index()
     {
+        $lieux = Lieu::where('statut', 'validé')->get();
+        return $this->sendResponse($lieux, 'Lieux validés récupérés avec succès');
+    }
+
+
+    /**
+     * Récupérer tous les lieux (pour le back-office admin)
+     *
+     * @return \Illuminate\Http\Response 
+     */
+    public function getAllPlaces()
+    {
         $lieux = Lieu::all();
         return $this->sendResponse($lieux, 'Lieux récupérés avec succès');
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -93,6 +107,7 @@ class LieuController extends BaseController
         return $this->sendResponse($lieu, $message, 201);
     }
 
+
     /**
      * Display the specified resource.
      *
@@ -109,6 +124,7 @@ class LieuController extends BaseController
         return $this->sendResponse($lieu, 'Lieu récupéré avec succès');
     }
 
+
     // récupérer les lieux postés par l'utilisateur
 
     public function getPlacesByUser(Request $request)
@@ -117,6 +133,7 @@ class LieuController extends BaseController
         return $this->sendResponse($userPlaces, 'Nombre de lieux postés récupéré avec succès');
     }
 
+
     // récupérer le nombre d'images par lieu
 
     public function getImagesNumberByPlace(Lieu $lieu)
@@ -124,6 +141,7 @@ class LieuController extends BaseController
         $imagesNumber = count($lieu->images);
         return $this->sendResponse($imagesNumber, 'Nombre d\'images pour le lieu récupéré avec succès');
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -163,6 +181,7 @@ class LieuController extends BaseController
         $message = "Lieu modifié avec succès";
         return $this->sendResponse($lieu, $message);
     }
+
 
     /**
      * Remove the specified resource from storage.

@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Nice Places | Sorties Nature près de chez vous</title>
+    <link rel="shortcut icon" type="image/png" href="{{ asset('images/icons/favicon.png') }}">
     <meta name="description"
         content="Découvrez de nouvelles sorties nature avec Nice Places  : forêts, plages, rivières, randonnées, parcs naturels, etc. 
         Partagez aussi vos lieux préférés. L'aventure vous attend !">

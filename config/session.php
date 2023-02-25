@@ -155,8 +155,9 @@ return [
     |
     */
     // 
-    'domain' => env('APP_ENV') == 'production' ? '.nice-places.fr' : '.localhost:8000',
-
+    // 'domain' => env('APP_ENV') == 'production' ? '.nice-places.fr' : '.localhost:8000',
+    // 'domain' => '.localhost:8000',
+    'domain' => env('SESSION_DOMAIN'),
 
     /*
     |--------------------------------------------------------------------------

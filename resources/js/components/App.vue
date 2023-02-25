@@ -22,7 +22,8 @@ export default {
 			'regions',
 			'userPosition',
 			'threeTopPlaces',
-			'threeLastPlaces'
+			'threeLastPlaces',
+			'getValidatedPlaces'
 		]),
 
 		...mapState(useUserStore, ['departement', 'id'])
@@ -35,6 +36,9 @@ export default {
 			this.getThreeTopAndLastPlaces()
 		},
 		id() { // on surveille également le changement d'id et donc d'utilisateur
+			this.getThreeTopAndLastPlaces()
+		},
+		lieux(){ // et les lieux (permet de récupérer les 3 derniers lieux / 3 top lieux au 1er chargement de App)
 			this.getThreeTopAndLastPlaces()
 		}
 	},

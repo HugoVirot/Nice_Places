@@ -22,7 +22,7 @@ Route::post('register', [App\Http\Controllers\API\UserController::class, 'store'
 Route::post('login', [App\Http\Controllers\API\LoginController::class, 'login'])->name('login');
 
 
-// ****************** Pour toutes les routes : apiResource = mode ressource version API, sans create et edit ****************
+// ************* Pour toutes les routes : apiResource = mode ressource version API, sans create et edit ****************
 
 // **************************************** routes USERS ***************************************************
 
@@ -32,6 +32,9 @@ Route::apiResource("users", App\Http\Controllers\API\UserController::class)->exc
 // **************************************** routes LIEUX ***************************************************
 
 Route::apiResource("lieus", App\Http\Controllers\API\LieuController::class);
+
+//récupérer tous les lieux mêmes ceux non validés (pour l'admin)
+Route::get('getallplaces', [App\Http\Controllers\API\LieuController::class, 'getAllPlaces'])->name('getallplaces');
 
 // récupérer les lieux postés par l'utilisateur
 Route::post('lieus/getplacesbyuser', [App\Http\Controllers\API\LieuController::class, 'getPlacesByUser'])->name('getplacesbyuser');

@@ -657,6 +657,15 @@ export default {
                 })
         },
 
+        getLieux() { // on récupère tous les lieux même les non validés. Ils remplacent la liste de lieux "normaux" (uniquement ceux validés).
+            axios.get("/api/getallplaces")
+                .then(response => {
+                    this.storeLieux(response.data.data)
+                }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
+                    alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
+                })
+        },
+
         getAvis() {
             axios.get("/api/avis")
                 .then(response => {
@@ -689,7 +698,8 @@ export default {
         // on initialise moment pour afficher la date en français
         this.moment = moment
 
-        // on récupère avis / images / users (catégories et lieux déjà récupérées sur App.vue)
+        // on récupère lieux / avis / images / users (catégories et déjà récupérées sur App.vue)
+        this.getLieux()
         this.getAvis()
         this.getImages()
         this.getUsers()
