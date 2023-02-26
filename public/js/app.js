@@ -24784,15 +24784,16 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
   computed: _objectSpread(_objectSpread({}, (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapWritableState)(_stores_userStore__WEBPACK_IMPORTED_MODULE_2__.useUserStore, ['pseudo', 'email', 'id', 'departement'])), (0,pinia__WEBPACK_IMPORTED_MODULE_4__.mapState)(_stores_lieuxStore__WEBPACK_IMPORTED_MODULE_3__.useLieuxStore, ['departements'])),
   data: function data() {
     return {
-      passwordTyped: false,
       oldPassword: "",
       password: "",
       password_confirmation: "",
+      passwordTyped: false,
       eightCharacters: false,
       oneLetter: false,
       oneUppercaseOneLowercase: false,
       oneDigit: false,
       oneSpecialCharacter: false,
+      passwordCorrect: false,
       validationErrors: ""
     };
   },
@@ -24827,6 +24828,9 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         this.oneSpecialCharacter = true;
       } else {
         this.oneSpecialCharacter = false;
+      }
+      if (this.eightCharacters && this.oneLetter && this.oneUppercaseOneLowercase && this.oneDigit && this.oneSpecialCharacter) {
+        this.passwordCorrect = true;
       }
     },
     // on envoie les modifs pour les sauvegarder en bdd puis on redirige
@@ -24871,7 +24875,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
   }),
   created: function created() {
     var userStore = (0,_stores_userStore__WEBPACK_IMPORTED_MODULE_2__.useUserStore)();
-    if (userStore.token != '') {
+    if (userStore.token) {
       // pour transmettre le token (créé par l'API) avec chaque requête si connecté
       (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.headers.common.Authorization) = "Bearer ".concat(userStore.token);
     }
@@ -28572,55 +28576,55 @@ var _hoisted_28 = {
 };
 var _hoisted_29 = {
   key: 0,
-  "class": "p-2 greenIcon fa-solid fa-check"
+  "class": "p-2 bg-white rounded-circle greenIcon fa-solid fa-check"
 };
 var _hoisted_30 = {
   key: 1,
-  "class": "fa-solid fa-xmark fa-2x"
+  "class": "p-2 bg-white rounded-circle fa-solid fa-xmark"
 };
 var _hoisted_31 = {
   "class": "row"
 };
 var _hoisted_32 = {
   key: 0,
-  "class": "p-2 greenIcon fa-solid fa-check"
+  "class": "p-2 bg-white rounded-circle greenIcon fa-solid fa-check"
 };
 var _hoisted_33 = {
   key: 1,
-  "class": "fa-solid fa-xmark"
+  "class": "p-2 bg-white rounded-circle fa-solid fa-xmark"
 };
 var _hoisted_34 = {
   "class": "row"
 };
 var _hoisted_35 = {
   key: 0,
-  "class": "p-2 greenIcon fa-solid fa-check"
+  "class": "p-2 bg-white rounded-circle greenIcon fa-solid fa-check"
 };
 var _hoisted_36 = {
   key: 1,
-  "class": "fa-solid fa-xmark"
+  "class": "p-2 bg-white rounded-circle fa-solid fa-xmark"
 };
 var _hoisted_37 = {
   "class": "row"
 };
 var _hoisted_38 = {
   key: 0,
-  "class": "p-2 greenIcon fa-solid fa-check"
+  "class": "p-2 bg-white rounded-circle greenIcon fa-solid fa-check"
 };
 var _hoisted_39 = {
   key: 1,
-  "class": "fa-solid fa-xmark"
+  "class": "p-2 bg-white rounded-circle fa-solid fa-xmark"
 };
 var _hoisted_40 = {
   "class": "row"
 };
 var _hoisted_41 = {
   key: 0,
-  "class": "p-2 greenIcon fa-solid fa-check"
+  "class": "p-2 bg-white rounded-circle greenIcon fa-solid fa-check"
 };
 var _hoisted_42 = {
   key: 1,
-  "class": "fa-solid fa-xmark"
+  "class": "p-2 bg-white rounded-circle fa-solid fa-xmark"
 };
 var _hoisted_43 = {
   key: 1,
@@ -29189,69 +29193,99 @@ var _hoisted_31 = {
 };
 var _hoisted_32 = {
   key: 0,
-  "class": "p-2 fa-solid fa-check"
+  "class": "p-2 bg-white rounded-circle greenIcon fa-solid fa-check"
 };
 var _hoisted_33 = {
   key: 1,
-  "class": "fa-solid fa-xmark"
+  "class": "p-2 bg-white rounded-circle fa-solid fa-xmark"
 };
 var _hoisted_34 = {
   "class": "row"
 };
 var _hoisted_35 = {
   key: 0,
-  "class": "p-2 fa-solid fa-check"
+  "class": "p-2 bg-white rounded-circle greenIcon fa-solid fa-check"
 };
 var _hoisted_36 = {
   key: 1,
-  "class": "fa-solid fa-xmark"
+  "class": "p-2 bg-white rounded-circle fa-solid fa-xmark"
 };
 var _hoisted_37 = {
   "class": "row"
 };
 var _hoisted_38 = {
   key: 0,
-  "class": "p-2 fa-solid fa-check"
+  "class": "p-2 bg-white rounded-circle greenIcon fa-solid fa-check"
 };
 var _hoisted_39 = {
   key: 1,
-  "class": "fa-solid fa-xmark"
+  "class": "p-2 bg-white rounded-circle fa-solid fa-xmark"
 };
 var _hoisted_40 = {
   "class": "row"
 };
 var _hoisted_41 = {
   key: 0,
-  "class": "p-2 fa-solid fa-check"
+  "class": "p-2 bg-white rounded-circle greenIcon fa-solid fa-check"
 };
 var _hoisted_42 = {
   key: 1,
-  "class": "fa-solid fa-xmark"
+  "class": "p-2 bg-white rounded-circle fa-solid fa-xmark"
 };
 var _hoisted_43 = {
   "class": "row"
 };
 var _hoisted_44 = {
   key: 0,
-  "class": "p-2 fa-solid fa-check"
+  "class": "p-2 bg-white rounded-circle greenIcon fa-solid fa-check"
 };
 var _hoisted_45 = {
   key: 1,
-  "class": "fa-solid fa-xmark"
+  "class": "p-2 bg-white rounded-circle fa-solid fa-xmark"
 };
 var _hoisted_46 = {
-  "class": "form-group row m-2"
+  key: 0,
+  "class": "form-group row mx-auto rounded-pill mt-2 mb-4 bg-white w-50"
 };
 var _hoisted_47 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+    "class": "fa-solid fa-circle-check greenIcon fa-3x p-2 mb-2"
+  }, null, -1 /* HOISTED */);
+});
+var _hoisted_48 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
+    "class": "titleIcon"
+  }, "Mot de passe sécurisé", -1 /* HOISTED */);
+});
+var _hoisted_49 = [_hoisted_47, _hoisted_48];
+var _hoisted_50 = {
+  "class": "form-group row m-2"
+};
+var _hoisted_51 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
     "for": "password_confirmation",
     "class": "col-md-4 col-form-label text-md-right"
   }, "confirmez le mot de passe", -1 /* HOISTED */);
 });
-var _hoisted_48 = {
+var _hoisted_52 = {
   "class": "col-md-6"
 };
-var _hoisted_49 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_53 = {
+  key: 1,
+  "class": "form-group row mx-auto m-2 mt-3 rounded-pill bg-white w-50"
+};
+var _hoisted_54 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", {
+    "class": "fa-solid fa-circle-check greenIcon fa-3x p-2"
+  }, null, -1 /* HOISTED */);
+});
+var _hoisted_55 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
+    "class": "titleIcon"
+  }, "Confirmation OK", -1 /* HOISTED */);
+});
+var _hoisted_56 = [_hoisted_54, _hoisted_55];
+var _hoisted_57 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "form-group row m-3 text-center"
   }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
@@ -29262,16 +29296,16 @@ var _hoisted_49 = /*#__PURE__*/_withScopeId(function () {
     "class": "btn btn-lg rounded-pill text-light"
   }, " Valider ")])], -1 /* HOISTED */);
 });
-var _hoisted_50 = {
+var _hoisted_58 = {
   "class": "card"
 };
-var _hoisted_51 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_59 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
     "class": "card-header text-white mb-3 fs-5"
   }, "Supprimer mon compte", -1 /* HOISTED */);
 });
-var _hoisted_52 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"card-body\" data-v-90a36cda><i class=\"fa-solid fa-triangle-exclamation fa-5x text-danger mb-2\" data-v-90a36cda></i><p class=\"text-danger\" data-v-90a36cda>Attention : cette action est irréversible.</p><p class=\"text-danger\" data-v-90a36cda>En supprimant votre compte, vous perdrez tous vos favoris.</p><p class=\"text-white\" data-v-90a36cda>Les lieux et les avis que vous avez postés seront conservés (ils seront anonymisés).</p><div class=\"form-group row m-3 text-center\" data-v-90a36cda><div class=\"col-md-6 offset-md-3\" data-v-90a36cda><button type=\"submit\" class=\"btn rounded-pill text-light btn-danger\" data-v-90a36cda> Supprimer mon compte </button></div></div></div>", 1);
-var _hoisted_53 = [_hoisted_52];
+var _hoisted_60 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"card-body\" data-v-90a36cda><i class=\"fa-solid fa-triangle-exclamation fa-5x text-danger mb-2\" data-v-90a36cda></i><p class=\"text-danger\" data-v-90a36cda>Attention : cette action est irréversible.</p><p class=\"text-danger\" data-v-90a36cda>En supprimant votre compte, vous perdrez tous vos favoris.</p><p class=\"text-white\" data-v-90a36cda>Les lieux et les avis que vous avez postés seront conservés (ils seront anonymisés).</p><div class=\"form-group row m-3 text-center\" data-v-90a36cda><div class=\"col-md-6 offset-md-3\" data-v-90a36cda><button type=\"submit\" class=\"btn rounded-pill text-light btn-danger\" data-v-90a36cda> Supprimer mon compte </button></div></div></div>", 1);
+var _hoisted_61 = [_hoisted_60];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_ValidationErrors = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ValidationErrors");
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [_hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" composant affichant les erreurs de validation des formulaires "), $data.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_ValidationErrors, {
@@ -29321,7 +29355,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     type: "password",
     "class": "form-control",
     name: "password"
-  }, null, 544 /* HYDRATE_EVENTS, NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.password]])])]), $data.passwordTyped ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_30, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 8 caractères "), $data.eightCharacters ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_32)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_33))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_34, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 lettre "), $data.oneLetter ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_35)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_36))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_37, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 chiffre "), $data.oneDigit ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_38)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_39))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_40, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 majuscule et 1 minuscule "), $data.oneUppercaseOneLowercase ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_41)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_42))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_43, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 caractère spécial "), $data.oneSpecialCharacter ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_44)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_45))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_46, [_hoisted_47, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_48, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+  }, null, 544 /* HYDRATE_EVENTS, NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.password]])])]), $data.passwordTyped ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_30, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 8 caractères "), $data.eightCharacters ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_32)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_33))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_34, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 lettre "), $data.oneLetter ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_35)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_36))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_37, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 chiffre "), $data.oneDigit ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_38)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_39))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_40, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 majuscule et 1 minuscule "), $data.oneUppercaseOneLowercase ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_41)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_42))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_43, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("minimum 1 caractère spécial "), $data.oneSpecialCharacter ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_44)) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("i", _hoisted_45))])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), $data.passwordCorrect == true ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_46, _hoisted_49)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_50, [_hoisted_51, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_52, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
       return $data.password_confirmation = $event;
     }),
@@ -29329,11 +29363,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     type: "password",
     "class": "form-control",
     name: "password_confirmation"
-  }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.password_confirmation]])])]), _hoisted_49], 32 /* HYDRATE_EVENTS */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_50, [_hoisted_51, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
+  }, null, 512 /* NEED_PATCH */), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.password_confirmation]])])]), $data.passwordCorrect && $data.password == $data.password_confirmation ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_53, _hoisted_56)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _hoisted_57], 32 /* HYDRATE_EVENTS */)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_58, [_hoisted_59, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
     onSubmit: _cache[7] || (_cache[7] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function () {
       return $options.deleteAccount && $options.deleteAccount.apply($options, arguments);
     }, ["prevent"]))
-  }, _hoisted_53, 32 /* HYDRATE_EVENTS */)])])])])], 64 /* STABLE_FRAGMENT */);
+  }, _hoisted_61, 32 /* HYDRATE_EVENTS */)])])])])], 64 /* STABLE_FRAGMENT */);
 }
 
 /***/ }),
@@ -29942,7 +29976,7 @@ var _hoisted_1 = {
   key: 0
 };
 var _hoisted_2 = {
-  "class": "alert alert-danger"
+  "class": "alert alert-danger list-unstyled"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [$options.validationErrors ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", _hoisted_2, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($options.validationErrors, function (value, key, index) {
@@ -31654,6 +31688,8 @@ var useUserStore = (0,pinia__WEBPACK_IMPORTED_MODULE_1__.defineStore)({
     }
   },
   actions: {
+    // stocker les infos de l'utilisateur dans le store
+    // appelée lors de la connexion et lors de la modif des infos
     storeUserData: function storeUserData(userData) {
       this.pseudo = userData.pseudo;
       this.email = userData.email;
@@ -31661,10 +31697,16 @@ var useUserStore = (0,pinia__WEBPACK_IMPORTED_MODULE_1__.defineStore)({
       this.departement = userData.departement;
       this.region = userData.departement ? userData.departement.region.nom : null;
       this.role = userData.role;
-      this.token = userData.token;
-      this.userLoggedIn = true;
-      // pour transmettre le token (créé par l'API) avec chaque requête si connecté
-      (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.headers.common.Authorization) = "Bearer ".concat(userData.token);
+
+      // si token présent dans userData (= connexion, pas présent si modif infos)
+      if (userData.token) {
+        // on stocke le token dans le store
+        this.token = userData.token;
+        // pour transmettre le token (créé par l'API) avec chaque requête si connecté
+        (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults.headers.common.Authorization) = "Bearer ".concat(userData.token);
+        // on définit le statut de l'utilisateur : il est connecté
+        this.userLoggedIn = true;
+      }
     },
     // mémoriser le fait qu'un choix a été fait par rapport à la géoloc
     storeGeolocationAnswered: function storeGeolocationAnswered(answer) {

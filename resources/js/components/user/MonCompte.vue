@@ -93,40 +93,46 @@
 
                                 <div class="row">
                                     <p>minimum 8 caractères
-                                        <i v-if="eightCharacters" class="p-2 fa-solid fa-check"></i>
-                                        <i v-else class="fa-solid fa-xmark"></i>
+                                        <i v-if="eightCharacters" class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
+                                        <i v-else class="p-2 bg-white rounded-circle fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 lettre
-                                        <i v-if="oneLetter" class="p-2 fa-solid fa-check"></i>
-                                        <i v-else class="fa-solid fa-xmark"></i>
+                                        <i v-if="oneLetter" class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
+                                        <i v-else class="p-2 bg-white rounded-circle fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 chiffre
-                                        <i v-if="oneDigit" class="p-2 fa-solid fa-check"></i>
-                                        <i v-else class="fa-solid fa-xmark"></i>
+                                        <i v-if="oneDigit" class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
+                                        <i v-else class="p-2 bg-white rounded-circle fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 majuscule et 1 minuscule
-                                        <i v-if="oneUppercaseOneLowercase" class="p-2 fa-solid fa-check"></i>
-                                        <i v-else class="fa-solid fa-xmark"></i>
+                                        <i v-if="oneUppercaseOneLowercase" class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
+                                        <i v-else class="p-2 bg-white rounded-circle fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 caractère spécial
-                                        <i v-if="oneSpecialCharacter" class="p-2 fa-solid fa-check"></i>
-                                        <i v-else class="fa-solid fa-xmark"></i>
+                                        <i v-if="oneSpecialCharacter" class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
+                                        <i v-else class="p-2 bg-white rounded-circle fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                             </div>
+                        </div>
+
+                        <div v-if="passwordCorrect == true"
+                            class="form-group row mx-auto rounded-pill mt-2 mb-4 bg-white w-50">
+                            <i class="fa-solid fa-circle-check greenIcon fa-3x p-2 mb-2"></i>
+                            <p class="titleIcon">Mot de passe sécurisé</p>
                         </div>
 
                         <div class="form-group row m-2">
@@ -138,6 +144,12 @@
                                 <input v-model="password_confirmation" id="password_confirmation" type="password"
                                     class="form-control" name="password_confirmation">
                             </div>
+                        </div>
+
+                        <div v-if="passwordCorrect && password == password_confirmation"
+                            class="form-group row mx-auto m-2 mt-3 rounded-pill bg-white w-50">
+                            <i class="fa-solid fa-circle-check greenIcon fa-3x p-2"></i>
+                            <p class="titleIcon">Confirmation OK</p>
                         </div>
 
                         <div class="form-group row m-3 text-center">
@@ -206,15 +218,16 @@ export default {
 
     data() {
         return {
-            passwordTyped: false,
             oldPassword: "",
             password: "",
             password_confirmation: "",
+            passwordTyped: false,
             eightCharacters: false,
             oneLetter: false,
             oneUppercaseOneLowercase: false,
             oneDigit: false,
             oneSpecialCharacter: false,
+            passwordCorrect: false,
             validationErrors: ""
         }
     },
@@ -257,6 +270,10 @@ export default {
                 this.oneSpecialCharacter = true
             } else {
                 this.oneSpecialCharacter = false;
+            }
+
+            if (this.eightCharacters && this.oneLetter && this.oneUppercaseOneLowercase && this.oneDigit && this.oneSpecialCharacter) {
+                this.passwordCorrect = true
             }
         },
 
@@ -303,7 +320,7 @@ export default {
     created() {
         const userStore = useUserStore()
 
-        if (userStore.token != '') {
+        if (userStore.token) {
             // pour transmettre le token (créé par l'API) avec chaque requête si connecté
             axios.defaults.headers.common.Authorization = `Bearer ${userStore.token}`
         }

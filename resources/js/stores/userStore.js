@@ -31,12 +31,12 @@ export const useUserStore = defineStore({
             else {
                 return null
             }
-
         }
 
     },
 
-    actions: {
+    actions: { // stocker les infos de l'utilisateur dans le store
+        // appelée lors de la connexion et lors de la modif des infos
         storeUserData(userData) {
             this.pseudo = userData.pseudo
             this.email = userData.email
@@ -44,10 +44,16 @@ export const useUserStore = defineStore({
             this.departement = userData.departement
             this.region = userData.departement ? userData.departement.region.nom : null
             this.role = userData.role
-            this.token = userData.token
-            this.userLoggedIn = true 
-            // pour transmettre le token (créé par l'API) avec chaque requête si connecté
-            axios.defaults.headers.common.Authorization = `Bearer ${userData.token}`
+
+            // si token présent dans userData (= connexion, pas présent si modif infos)
+            if (userData.token) {
+                // on stocke le token dans le store
+                this.token = userData.token
+                // pour transmettre le token (créé par l'API) avec chaque requête si connecté
+                axios.defaults.headers.common.Authorization = `Bearer ${userData.token}`
+                // on définit le statut de l'utilisateur : il est connecté
+                this.userLoggedIn = true
+            }
         },
 
         // mémoriser le fait qu'un choix a été fait par rapport à la géoloc

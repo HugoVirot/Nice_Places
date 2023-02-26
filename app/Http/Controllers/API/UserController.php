@@ -145,7 +145,7 @@ class UserController extends BaseController
         if ($request->password) {
 
             // si ancien mdp fourni ET valide (vérifié via Hash::check), modification validée 
-            if (isset($request->oldPassword) && Hash::check($request->oldPassword, User::find($user->id)->password)) {
+            if ($request->oldPassword && Hash::check($request->oldPassword, User::find($user->id)->password)) {
                 // on sauvegarde le nouveau mot de passe hashé
                 $user->update([
                     'password' => Hash::make($request->password)

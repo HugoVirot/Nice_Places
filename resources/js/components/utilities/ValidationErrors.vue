@@ -1,6 +1,6 @@
 <template>
     <div v-if="validationErrors">
-        <ul class="alert alert-danger">
+        <ul class="alert alert-danger list-unstyled">
             <li v-for="(value, key, index) in validationErrors">{{ value }}</li>
         </ul>
     </div>`

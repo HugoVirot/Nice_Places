@@ -83,36 +83,36 @@
 
                                 <div class="row">
                                     <p>minimum 8 caractères
-                                        <i v-if="eightCharacters" class="p-2 greenIcon fa-solid fa-check"></i>
-                                        <i v-else class="fa-solid fa-xmark fa-2x"></i>
+                                        <i v-if="eightCharacters" class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
+                                        <i v-else class="p-2 bg-white rounded-circle fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 lettre
-                                        <i v-if="oneLetter" class="p-2 greenIcon fa-solid fa-check"></i>
-                                        <i v-else class="fa-solid fa-xmark"></i>
+                                        <i v-if="oneLetter" class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
+                                        <i v-else class="p-2 bg-white rounded-circle fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 chiffre
-                                        <i v-if="oneDigit" class="p-2 greenIcon fa-solid fa-check"></i>
-                                        <i v-else class="fa-solid fa-xmark"></i>
+                                        <i v-if="oneDigit" class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
+                                        <i v-else class="p-2 bg-white rounded-circle fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 majuscule et 1 minuscule
-                                        <i v-if="oneUppercaseOneLowercase" class="p-2 greenIcon fa-solid fa-check"></i>
-                                        <i v-else class="fa-solid fa-xmark"></i>
+                                        <i v-if="oneUppercaseOneLowercase" class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
+                                        <i v-else class="p-2 bg-white rounded-circle fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 caractère spécial
-                                        <i v-if="oneSpecialCharacter" class="p-2 greenIcon fa-solid fa-check"></i>
-                                        <i v-else class="fa-solid fa-xmark"></i>
+                                        <i v-if="oneSpecialCharacter" class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
+                                        <i v-else class="p-2 bg-white rounded-circle fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
