@@ -17,7 +17,7 @@ return [
 
     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
         '%s%s',
-        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
+        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,http://localhost:8000,::1',
         'nice-places.fr',
         Sanctum::currentApplicationUrlWithPort()
     ))),
@@ -47,7 +47,8 @@ return [
     |
     */
 
-    'expiration' => 60 * 24 * 7, // tokens valables 7 jours (60 min * 24h * 7j)
+    // 'expiration' => 60 * 24 * 7, // tokens valables 7 jours (60 min * 24h * 7j)
+    'expiration' => 60, // tokens valables 60 minutes
 
     /*
     |--------------------------------------------------------------------------

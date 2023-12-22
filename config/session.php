@@ -31,7 +31,7 @@ return [
     |
     */
 
-    'lifetime' => env('SESSION_LIFETIME', 60 * 24 * 7), // la session dure 7 jours (60 min * 24h * 7j)
+    'lifetime' => 30, // la session dure 30 minutes
 
     'expire_on_close' => false,
 
@@ -156,8 +156,9 @@ return [
     */
     // 
     // 'domain' => env('APP_ENV') == 'production' ? '.nice-places.fr' : '.localhost:8000',
-    // 'domain' => '.localhost:8000',
-    'domain' => env('SESSION_DOMAIN'),
+    //'domain' => '.localhost:8000',
+    'domain' => env('SESSION_DOMAIN', null),
+    // 'domain' => '.nice-places.fr',
 
     /*
     |--------------------------------------------------------------------------

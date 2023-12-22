@@ -169,13 +169,13 @@ export default {
                                 this.storeImages(this.images)
 
                                 message = "Suppression effectuée et notifiée à l'utilisateur."
-                                this.$router.push('/SuccessMessage/backoffice/' + message)
+                                this.$router.push('/successmessagebackoffice/' + message)
                             }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                                 alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                             })
                     }
 
-                    this.$router.push('/SuccessMessage/backoffice/' + message)
+                    this.$router.push('/successmessagebackoffice/' + message)
                 })
                 .catch((error) => {
                     this.validationErrors = error.response.data.errors;

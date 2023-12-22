@@ -26,7 +26,7 @@ Route::post('login', [App\Http\Controllers\API\LoginController::class, 'login'])
 
 // **************************************** routes USERS ***************************************************
 
-Route::apiResource("users", App\Http\Controllers\API\UserController::class)->except('store');
+Route::apiResource("users", App\Http\Controllers\API\UserController::class);
 
 
 // **************************************** routes LIEUX ***************************************************
@@ -79,3 +79,29 @@ route::get("/departements", [App\Http\Controllers\API\DepartementController::cla
 //************************************** route REGIONS *************************************************
 
 route::get("/regions", [App\Http\Controllers\API\RegionController::class, 'index'])->name("getRegions");
+
+
+//************************************** token pour application mobile *********************************
+
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+ 
+Route::post('/sanctum/token', function (Request $request) {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+        'device_name' => 'required',
+    ]);
+ 
+    $user = User::where('email', $request->email)->first();
+ 
+    if (! $user || ! Hash::check($request->password, $user->password)) {
+        throw ValidationException::withMessages([
+            'email' => ['Les informations fournies sont incorrectes.'],
+        ]);
+    }
+ 
+    return $user->createToken($request->device_name)->plainTextToken;
+});

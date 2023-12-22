@@ -563,7 +563,7 @@ export default {
                     this.storeLieux(this.lieux)
 
                     // on redirige vers l'accueil en affichant le message de succès
-                    this.$router.push('/SuccessMessage/backoffice/' + message)
+                    this.$router.push('/successmessagebackoffice/' + message)
 
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
@@ -586,7 +586,7 @@ export default {
                     this.storeCategories(this.categories)
 
                     // on redirige vers l'accueil en affichant le message de succès
-                    this.$router.push('/SuccessMessage/backoffice/' + message)
+                    this.$router.push('/successmessagebackoffice/' + message)
 
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
@@ -604,7 +604,7 @@ export default {
                     this.storeCategories(this.categories)
 
                     // on redirige vers le back-office en affichant le message de succès
-                    this.$router.push('/SuccessMessage/backoffice/' + message)
+                    this.$router.push('/successmessagebackoffice/' + message)
 
                 }).catch((error) => {
                     this.validationErrors = error.response.data.errors;
@@ -627,7 +627,7 @@ export default {
                     this.storeUsers(this.users)
 
                     // on redirige vers l'accueil en affichant le message de succès
-                    this.$router.push('/SuccessMessage/backoffice/' + message)
+                    this.$router.push('/successmessagebackoffice/' + message)
 
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
@@ -650,7 +650,7 @@ export default {
                     this.storeImages(this.images)
 
                     // on redirige vers l'accueil en affichant le message de succès
-                    this.$router.push('/SuccessMessage/backoffice/' + message)
+                    this.$router.push('/successmessagebackoffice/' + message)
 
                 }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
@@ -698,7 +698,7 @@ export default {
         // on initialise moment pour afficher la date en français
         this.moment = moment
 
-        // on récupère lieux / avis / images / users (catégories et déjà récupérées sur App.vue)
+        // on récupère lieux / avis / images / users (catégories déjà récupérées sur App.vue)
         this.getLieux()
         this.getAvis()
         this.getImages()

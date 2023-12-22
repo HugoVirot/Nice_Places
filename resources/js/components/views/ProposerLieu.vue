@@ -73,7 +73,7 @@ export default {
                     this.createNotification(lieu.id)
                     // }
 
-                    this.$router.push('/SuccessMessage/uploadimages/' + message + '/' + lieu.id)
+                    this.$router.push('/successmessageuploadimages/' + message + '/' + lieu.id)
                 }).catch((error) => {
                     this.validationErrors = error.response.data.errors;
                 })

@@ -1,4 +1,4 @@
-import MonCompte from "../../resources/js/components/user/MonCompte.vue" // import du composant Inscription
+import MonCompte from "../../resources/js/components/user/MonCompte.vue" // import du composant Mon Compte
 import { createTestingPinia } from '@pinia/testing'  // import de pinia (version pour tests unitaires)
 import { shallowMount, RouterLinkStub } from '@vue/test-utils' // import de shallowMount (pour instancier le composant
 // sans ses composants enfants) + RouterLinkStub (pour que le bouton router-link soit reconnu durant le test)

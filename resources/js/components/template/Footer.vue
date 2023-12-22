@@ -4,7 +4,7 @@
         <p class="text-white fs-4">sorties nature près de chez vous</p>
         <p><router-link to="/politique">mentions légales / politique de confidentialité</router-link> | 
             <router-link to="/contact">contact</router-link></p>
-        <p>© 2022 Nice Places</p>
+        <p>© 2022-2023 Nice Places</p>
     </footer>
 </template>
 

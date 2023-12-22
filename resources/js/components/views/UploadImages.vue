@@ -117,7 +117,7 @@ export default {
                 .then((response) => {
                     let message = response.data.message
                     // on redirige vers l'accueil
-                    this.$router.push('/SuccessMessage/home/' + message)
+                    this.$router.push('/successmessagehome/' + message)
                 })
                 .catch((error) => {
                     this.validationErrors = error.response.data.errors;

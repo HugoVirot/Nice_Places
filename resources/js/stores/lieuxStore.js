@@ -7,11 +7,11 @@ export const useLieuxStore = defineStore({
     state: () => {
         return {
             lieux: "",
+            categories: "",
             departements: "",
             regions: "",
             threeTopPlaces: "",
             threeLastPlaces: "",
-            categories: ""
         }
     },
 
@@ -20,6 +20,7 @@ export const useLieuxStore = defineStore({
         getValidatedPlaces() {
             return this.lieux.filter(lieu => lieu.statut == "validé")
         },
+        //on récupère les 100 lieux les mieux notés
         getTopRatedPlaces() {
             return this.lieux.slice(0, 100).sort((a, b) => {
                 if (a.note > b.note) return -1;

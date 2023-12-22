@@ -154,7 +154,7 @@ export default {
                     }
 
                     // enfin on redirige sur le back-office avec le message de succès
-                    this.$router.push('/SuccessMessage/backoffice/' + message)
+                    this.$router.push('/successmessagebackoffice/' + message)
                 })
                 .catch((error) => {
                     this.validationErrors = error.response.data.errors;

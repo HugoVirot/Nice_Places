@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\API\BaseController;
 use Illuminate\Validation\Rules\Password;
+use App\Http\Controllers\API\BaseController;
 
 class UserController extends BaseController
 {
@@ -51,7 +51,7 @@ class UserController extends BaseController
         $validator = Validator::make(
             $request->all(),
             [
-                'pseudo' => 'required|max:20|unique:users',
+                'pseudo' => 'required|min:5|max:20|unique:users',
                 'email' => 'required|email|max:50|unique:users',
                 'password' => [
                     'required', 'confirmed',
@@ -59,7 +59,7 @@ class UserController extends BaseController
                         ->mixedCase() // au moins 1 minuscule et une majuscule
                         ->letters()  // au moins une lettre
                         ->numbers() // au moins un chiffre
-                        ->symbols() // au moins un caractère spécial     
+                        ->symbols() // au moins un caractère spécial parmi ! @ # $ % ^ & * ?  
                 ],
                 'departement' => [
                     'nullable'
@@ -116,7 +116,7 @@ class UserController extends BaseController
     public function update(Request $request, User $user)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|max:20',
+            'email' => 'required|email|max:50',
             'oldPassword' => 'nullable',
             'password' => [
                 'nullable', 'confirmed',

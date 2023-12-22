@@ -119,7 +119,7 @@ export default {
                 .then((response) => {
                     let message = response.data.message
 
-                    // une fois la catégorie supprimée, on la retire des avis du store
+                    // une fois la catégorie supprimée, on la retire des catégories du store
                     // cela permet d'éviter un appel api
                     let index = this.categories.findIndex(categorie => categorie.id == id)
                     this.categories.splice(index, 1)
@@ -128,7 +128,7 @@ export default {
                     this.storeCategories(this.categories)
 
                     // on redirige vers l'accueil en affichant le message de succès
-                    this.$router.push('/SuccessMessage/backoffice/' + message)
+                    this.$router.push('/successmessagebackoffice/' + message)
 
                 }).catch((error) => {
                     this.validationErrors = error.response.data.errors;

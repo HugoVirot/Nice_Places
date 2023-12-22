@@ -286,7 +286,9 @@ export default {
                 this.storeUserData(response.data.data)
                 this.$router.push('/successmessage/lastpage/' + response.data.message)
             }).catch((error) => {
+                if(error.response){
                 this.validationErrors = error.response.data.errors;
+                }
             })
         },
 
@@ -298,7 +300,7 @@ export default {
                     // => pas de déconnexion, mais le user n'existe plus. On reste connecté.
                     // à corriger
                     this.logOutUser()
-                    this.$router.push('/SuccessMessage/home/' + response.data.message)
+                    this.$router.push('/successmessagehome/' + response.data.message)
                 })
                 .catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                     alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
@@ -313,7 +315,7 @@ export default {
             userStore.$reset()
 
             // on redirige vers l'accueil
-            this.$router.push('/SuccessMessage/home/Déconnexion réussie')
+            this.$router.push('/successmessagehome/Déconnexion réussie')
         }
     },
 

@@ -44,18 +44,19 @@
                                         required autocomplete="email">
                                 </div>
                             </div>
-                            <div id="emailHelp" class="form-text">Nous ne partagerons jamais votre e-mail avec des tiers.</div>
+                            <div id="emailHelp" class="form-text">Nous ne partagerons jamais votre e-mail avec des tiers.
+                            </div>
 
                             <div class="form-group row m-2">
                                 <label for="departement" class="col-md-4 col-form-label text-md-right">département
                                     (facultatif)</label>
 
                                 <div class="col-md-6">
-                                    <select id="departement" v-model="departement" name="departement" class="form-select mx-auto"
-                                        aria-label="filtre" autocomplete="departement">
-                                        <option v-for="departement in departements" :value="departement.id">{{
-                                        departement.code
-                                        }} - {{ departement.nom }}</option>
+                                    <select id="departement" v-model="departement" name="departement"
+                                        class="form-select mx-auto" aria-label="filtre" autocomplete="departement">
+                                        <option v-for="departement in departements" :value="departement.id">
+                                            {{ departement.code }} - {{ departement.nom }}
+                                        </option>
                                     </select>
                                 </div>
 
@@ -73,9 +74,8 @@
                                 <label for="password" class="col-md-4 col-form-label text-md-right">mot de passe</label>
 
                                 <div class="col-md-6">
-                                    <input v-model="password" @keyup="checkPassword(password)" id="password"
-                                        type="password" class="form-control" name="password" required
-                                        autocomplete="new-password">
+                                    <input v-model="password" @keyup="checkPassword(password)" id="password" type="password"
+                                        class="form-control" name="password" required autocomplete="new-password">
                                 </div>
                             </div>
 
@@ -83,35 +83,40 @@
 
                                 <div class="row">
                                     <p>minimum 8 caractères
-                                        <i v-if="eightCharacters" class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
+                                        <i v-if="eightCharacters"
+                                            class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
                                         <i v-else class="p-2 bg-white rounded-circle fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 lettre
-                                        <i v-if="oneLetter" class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
+                                        <i v-if="oneLetter"
+                                            class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
                                         <i v-else class="p-2 bg-white rounded-circle fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 chiffre
-                                        <i v-if="oneDigit" class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
+                                        <i v-if="oneDigit"
+                                            class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
                                         <i v-else class="p-2 bg-white rounded-circle fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 majuscule et 1 minuscule
-                                        <i v-if="oneUppercaseOneLowercase" class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
+                                        <i v-if="oneUppercaseOneLowercase"
+                                            class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
                                         <i v-else class="p-2 bg-white rounded-circle fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
 
                                 <div class="row">
                                     <p>minimum 1 caractère spécial
-                                        <i v-if="oneSpecialCharacter" class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
+                                        <i v-if="oneSpecialCharacter"
+                                            class="p-2 bg-white rounded-circle greenIcon fa-solid fa-check"></i>
                                         <i v-else class="p-2 bg-white rounded-circle fa-solid fa-xmark"></i>
                                     </p>
                                 </div>
@@ -125,8 +130,8 @@
                             </div>
 
                             <div class="form-group row m-2">
-                                <label for="password_confirmation"
-                                    class="col-md-4 col-form-label text-md-right">confirmez le
+                                <label for="password_confirmation" class="col-md-4 col-form-label text-md-right">confirmez
+                                    le
                                     mot de passe</label>
 
                                 <div class="col-md-6">
@@ -209,8 +214,9 @@ export default {
     components: { ValidationErrors },
 
     methods: {
-        sendData() {
-            axios.post('/api/register', { pseudo: this.pseudo, email: this.email, departement: this.departement, password: this.password, password_confirmation: this.password_confirmation })
+        sendData() {          
+            axios.post('/api/register', { pseudo: this.pseudo, email: this.email, departement: this.departement, 
+                password: this.password, password_confirmation: this.password_confirmation })
                 .then(response => {
 
                     let message = response.data.message
@@ -297,6 +303,5 @@ export default {
 
 .fa-xmark {
     color: red
-}
-</style>
+}</style>
 

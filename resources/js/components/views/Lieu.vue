@@ -1,12 +1,11 @@
 <template>
-
     <div v-if="!loading">
 
         <div class="pt-5 pb-2">
             <!-- <i class="greenIcon mx-auto fa-3x fa-solid fa-map-location-dot"></i> -->
             <p class="fs-5">catégorie :<span class="greenIcon p-2 ms-2 fa-2x" :style="{ color: lieu.categorie.couleur }"
                     v-html="lieu.categorie.icone"></span>{{
-                    lieu.categorie.nom
+                        lieu.categorie.nom
                     }}</p>
             <h1 class="mt-2">{{ lieu.nom }}</h1>
 
@@ -21,13 +20,12 @@
 
                     <div class="col-md-6" v-if="lieu.user">
                         <p><i class="greenIcon fa-solid fa-user ms-2 me-3"></i><span class="fs-5">Posté par {{
-                        lieu.user.pseudo
+                            lieu.user.pseudo
                         }}</span></p>
                     </div>
 
                     <div v-if="userLoggedIn" class="col-md-4">
-                        <i v-if="isInFavorites" @click="removeToFavorites"
-                            class="greenIcon fa-solid fa-heart fa-2x"></i>
+                        <i v-if="isInFavorites" @click="removeToFavorites" class="greenIcon fa-solid fa-heart fa-2x"></i>
                         <i v-else @click="addToFavorites" class="greenIcon fa-regular fa-heart fa-2x"></i>
                     </div>
 
@@ -42,9 +40,11 @@
             </div>
 
         </div>
+
         <img class="singlePicture" v-if="lieu.images.length == 0" src="/images/defaultpicture.jpg" alt="image par défaut">
 
-        <img class="singlePicture" v-else-if="lieu.images.length == 1" :src="`/images/${lieu.images[0].nom}`" alt="image du lieu">
+        <img class="singlePicture" v-else-if="lieu.images.length == 1" :src="`/images/${lieu.images[0].nom}`"
+            alt="image du lieu">
 
         <div v-else id="carouselLieu" class="carousel slide carousel-fade container" data-bs-ride="carousel">
 
@@ -105,7 +105,8 @@
                     <p v-if="lieu.kilometres"> <i class="fa-2x fa-solid fa-shoe-prints me-3"></i>
                         {{ lieu.kilometres }} kilomètres (en moyenne)</p>
                     <p>
-                        <router-link :to="`/uploadimages/${lieu.id}`"><button class="btn btn-lg greenButton rounded-pill">proposer
+                        <router-link :to="`/uploadimages/${lieu.id}`"><button
+                                class="btn btn-lg greenButton rounded-pill">proposer
                                 des images</button></router-link>
                     </p>
                 </div>
@@ -115,6 +116,7 @@
         <Map v-if="lieu" :lieuSeul="lieu" />
 
         <h2 class="m-5">Avis sur ce lieu</h2>
+
         <div v-if="lieu.avis.length > 0">
             <div v-for="(avis, index) in lieu.avis">
 
@@ -245,7 +247,7 @@ import { mapActions } from 'pinia';
 export default {
 
     computed: {
-        ...mapState(useUserStore, ['id', 'userLoggedIn', 'favoris', 'isInFavorites']),
+        ...mapState(useUserStore, ['id', 'userLoggedIn', 'favoris']),
 
         isInFavorites() {
             // on retourne true si le lieu fait partie des favoris de l'utilisateur
@@ -260,7 +262,7 @@ export default {
             lieu: null,
             showAllReviews: false,
             showFullComment: false,
-            loading : true
+            loading: true
         };
     },
 
@@ -281,7 +283,7 @@ export default {
 
                         .then(response => {
                             this.storeFavoris(response.data.data)
-                            this.$router.push('/SuccessMessage/lastpage/' + message)
+                            this.$router.push('/successmessagelastpage/' + message)
                         }).catch(() => { // message d'erreur pour l'utilisateur en cas d'échec de l'appel API
                             alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                         })
@@ -300,7 +302,7 @@ export default {
 
                         .then(response => {
                             this.storeFavoris(response.data.data)
-                            this.$router.push('/SuccessMessage/lastpage/' + message)
+                            this.$router.push('/successmessagelastpage/' + message)
                         }).catch(() => {
                             alert("Une erreur s'est produite. Certains éléments peuvent ne pas être affichés. Vous pouvez essayer de recharger la page pour corriger le problème.")
                         })
@@ -341,7 +343,6 @@ export default {
 }
 
 #detailsLieu i {
-   color: #1c6e8c
+    color: #1c6e8c
 }
-
 </style>

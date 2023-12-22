@@ -11,22 +11,24 @@ import axios from "axios"
 
 export default {
 
-	// computed permet de se connecter aux variables du state => mise à jour automatique au niveau du composant
-	// si un de ces variables du state change
+	// la syntaxe computed + mapstate permet de se connecter aux variables du state 
+	// => mise à jour automatique au niveau du composant si une de ces variables du state change
 	computed: {
 		...mapState(useLieuxStore, [
-			'categories',
 			'lieux',
-			'favoris',
+			'categories',
 			'departements',
 			'regions',
-			'userPosition',
 			'threeTopPlaces',
 			'threeLastPlaces',
 			'getValidatedPlaces'
 		]),
 
-		...mapState(useUserStore, ['departement', 'id'])
+		...mapState(useUserStore, [
+			'favoris',
+			'userPosition',
+			'departement',
+			'id'])
 	},
 
 	// on surveille le choix d'un département ou le changement de département de l'utilisateur
@@ -38,7 +40,7 @@ export default {
 		id() { // on surveille également le changement d'id et donc d'utilisateur
 			this.getThreeTopAndLastPlaces()
 		},
-		lieux(){ // et les lieux (permet de récupérer les 3 derniers lieux / 3 top lieux au 1er chargement de App)
+		lieux() { // et les lieux (permet de récupérer les 3 derniers lieux / 3 top lieux au 1er chargement de App)
 			this.getThreeTopAndLastPlaces()
 		}
 	},
@@ -97,7 +99,7 @@ export default {
 
 		// ***************** on récupère les 3 endroits les mieux notés + les 3 derniers postés ****************
 		getThreeTopAndLastPlaces() {
-			
+
 			let listeLieuxFiltres
 
 			// si l'utilisateur a choisi un département
@@ -232,8 +234,8 @@ export default {
 					<!-- ********************** boucle qui affiche les 3 catégories avec le + de lieux ************************* -->
 
 					<div v-for="(categorie, index) in categories.slice(0, 3)"
-						class="mx-auto col-md-6 col-lg-4 p-5 border border-white"
-						:style="`background-image: url(/images/categorie${categorie.id}.jpg); background-position: center; background-size: cover;`">
+						class="mx-auto col-md-6 col-lg-4 p-5 border border-white" :style="`background-image: url(/images/categorie${categorie.id}.jpg); 
+													background-position: center; background-size: cover;`">
 
 						<p class="fs-2 m-auto text-white textWithShadow p-5">{{ categorie.nom }}</p>
 
@@ -270,7 +272,7 @@ export default {
 						<div v-for="(topPlace, index) in threeTopPlaces"
 							class="mx-auto col-md-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
 							:style="`background-image: url(images/${topPlace.image_mise_en_avant[0] ? topPlace.image_mise_en_avant[0].nom : 'defaultpicture.jpg'
-							}); background-position: center; background-size: cover;`">
+								}); background-position: center; background-size: cover;`">
 							<div class="infosTopLieux pt-1 pb-3">
 
 								<div class="rankingAndName row d-flex justify-content-between align-items-center">
@@ -291,7 +293,7 @@ export default {
 									<div class="col-6 d-flex">
 										<i class="greenIcon fa-2x fa-solid fa-location-dot me-2"></i>
 										<p class="text-white my-auto">{{ topPlace.ville }} ({{
-										topPlace.code_postal.substr(0, 2)
+											topPlace.code_postal.substr(0, 2)
 										}})</p>
 									</div>
 								</div>
@@ -329,8 +331,8 @@ export default {
 
 						<div v-for="lastPlace in threeLastPlaces"
 							class="mx-auto col-md-6 col-lg-4 p-2 border border-white d-flex flex-column justify-content-between"
-							:style="`background-image: url(images/${lastPlace.image_mise_en_avant[0] ?  lastPlace.image_mise_en_avant[0].nom : 'defaultpicture.jpg'
-							}); background-position: center; background-size: cover;`">
+							:style="`background-image: url(images/${lastPlace.image_mise_en_avant[0] ? lastPlace.image_mise_en_avant[0].nom : 'defaultpicture.jpg'
+								}); background-position: center; background-size: cover;`">
 							<div class="infosDerniersLieux pt-2 px-1">
 
 								<div class="row">
@@ -352,7 +354,7 @@ export default {
 
 										<div class="col-9">
 											<p class="text-white">{{ lastPlace.ville }} ({{
-											lastPlace.code_postal.substr(0, 2) }})</p>
+												lastPlace.code_postal.substr(0, 2) }})</p>
 										</div>
 
 									</div>
@@ -423,7 +425,6 @@ export default {
 	<!-- **************************************** FOOTER ******************************************** -->
 
 	<Footer />
-
 </template>
 
 <style>

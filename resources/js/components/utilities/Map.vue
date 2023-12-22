@@ -97,7 +97,7 @@ export default {
                         // création de la div qui va contenir le panneau de contrôle
                         let div = L.DomUtil.create('div', 'p-3');
 
-                        //ajout de style avec des classes Bootstrap
+                        // 99ajout de style avec des classes Bootstrap
                         L.DomUtil.addClass(div, 'bg-white')
                         L.DomUtil.addClass(div, 'text-left')
                         L.DomUtil.addClass(div, 'border')

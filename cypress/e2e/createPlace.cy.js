@@ -84,7 +84,7 @@ describe('Display the creation form, fill it up and submit it', () => {
 
         // cy.wait(1000) // attendre deux secondes (temps affichage message succès)
 
-        cy.url().should('include', '/SuccessMessage')
+        cy.url().should('include', '/successmessage')
     })
 })
 

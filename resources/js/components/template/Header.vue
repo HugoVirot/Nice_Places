@@ -86,7 +86,8 @@
                                         </router-link>
                                     </li>
                                     <li v-if="role == 'admin'">
-                                        <router-link to="/backoffice" class="nav-link">back-office
+                                        <router-link to="/backoffice" class="nav-link">
+                                            back-office
                                         </router-link>
                                     </li>
                                 </ul>
@@ -138,7 +139,7 @@ export default {
             axios.defaults.headers.common.Authorization = ''
 
             // on redirige vers l'accueil
-            this.$router.push('/SuccessMessage/home/Déconnexion réussie')
+            this.$router.push('/successmessagehome/Déconnexion réussie')
         }
     }
 }
@@ -147,7 +148,7 @@ export default {
 <style>
 @font-face {
     font-family: 'Cooper';
-    src: './Cooper Black Regular.ttf';
+    src: './Cooper_Black_Regular.ttf' format('truetype');
 }
 
 header {

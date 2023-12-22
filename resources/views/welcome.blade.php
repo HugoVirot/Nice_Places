@@ -20,13 +20,14 @@
     <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
         integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
         crossorigin=""></script>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body>
     <div id="app"></div> <!-- le projet Vue JS est injecté ici -->
     <script>
         window.Laravel = <?php echo json_encode([
-            'csrfToken' => csrf_token(),
+            'csrfToken' => csrf_token()
         ]); ?>
     </script>
     <script src="{{ asset('js/app.js') }}"></script>

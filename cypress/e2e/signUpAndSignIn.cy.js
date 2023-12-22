@@ -1,6 +1,7 @@
 // ****************** TEST D'INSCRIPTION ET DE CONNEXION ******************
 
 // ***********************test affichage accueil*****************************
+
 describe('display Nice Places Home Page', () => {
   it('see Nice Places Home Page', () => {
     cy.visit('http://localhost:8000')
@@ -19,6 +20,7 @@ describe('attempt to sign up', () => {
 
   // remplissage du formulaire : politique de conf. (checkbox), pseudo, email, mdp + confirmation, département
   it("type data and submit form", () => {
+    // cy.getCookies().should('have.length', 2)
 
     cy.get('[type=checkbox]').check({ force: true })
       .should('be.checked')
